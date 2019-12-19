@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:background="@drawable/card"
+    android:layout_margin="6dp"
+    android:id="@+id/card">
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:paddingTop="12dp"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+        android:textColor="#ddffffff"
+        android:textSize="14sp"/>
+</LinearLayout>

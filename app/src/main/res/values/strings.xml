@@ -1,0 +1,138 @@
+<resources>
+    <string name="app_name">posidon</string>
+    <string name="aboutbtn">About</string>
+    <string name="walls">Walls</string>
+
+    <string name="appLabels">App labels</string>
+    <string name="icon_pack">Icon pack</string>
+    <string name="iconSize">Icon size</string>
+    <string name="columns">Columns</string>
+
+    <string name="settings_title">Customizations</string>
+    <string name="settings_title_apps">App drawer</string>
+    <string name="settings_title_desktop">Feed</string>
+    <string name="settings_title_clock_format">Clock</string>
+    <string name="settings_title_search">Search</string>
+    <string name="settings_title_dev">Developer</string>
+    <string name="settings_title_dock">Dock</string>
+    <string name="settings_title_feed">Feed</string>
+    <string name="settings_title_ui">Theme</string>
+    <string name="settings_title_other">Other</string>
+    <string name="settings_title_icons">Icons</string>
+
+    <string name="defaultdateformat">d MMM | cccc</string>
+    <string name="settingsdateformat">Date</string>
+    <string name="searchbarhint">Search..</string>
+    <string name="feed_sources">Sources</string>
+    <string name="defaultfeedurl">androidpolice.com/feed</string>
+    <string name="settings_icon_count">Icon count</string>
+    <string name="slogan">Minimal, feature-rich, different.</string>
+    <string name="developer">Leo Shneyderis</string>
+    <string name="settingshidestatus">Hide statusbar</string>
+    <string name="spacing">Spacing</string>
+    <string name="storage_access_description">Grant storage access for things like accessing the wallpaper for the blur in the app drawer</string>
+    <string name="storage_access">Storage access</string>
+    <string name="ok">OK</string>
+    <string name="notification_access">Notification access</string>
+    <string name="notification_access_description">Grant notification access to have your notifications displayed on your homescreen</string>
+    <string name="pixel_stock_android">Pixel</string>
+    <string name="one_ui">One UI</string>
+    <string name="ios">iOS</string>
+    <string name="surprise_me">Surprise me..</string>
+    <string name="preset_chooser_title">Choose a preset:</string>
+    <string name="done">Done</string>
+    <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Website</string>
+    <string name="leoxshn_description">Created the launcher</string>
+    <string name="sajid_shaik">Sajid Shaik</string>
+    <string name="sajid_shaik_description">Designed the launcher icon</string>
+    <string name="app_name_hint">name</string>
+    <string name="version">Version</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="component">Component</string>
+    <string name="propenties">Properties</string>
+    <string name="edit">Edit</string>
+    <string name="remove_icon">Remove icon</string>
+    <string name="colorpicker_hint">Hex code (ff000000 for black)</string>
+    <string name="apply">apply</string>
+    <string name="setting_show_component">Show component in app properties</string>
+    <string name="color">Color</string>
+    <string name="radius">Radius</string>
+    <string name="bottom_padding">Bottom padding</string>
+    <string name="blur">Blur</string>
+    <string name="setting_title_hide_apps">Hide apps</string>
+    <string name="setting_hide_until_user_scrolls">Hide until user scrolls</string>
+    <string name="corner_radius">Corner radius</string>
+    <string name="background">Background</string>
+    <string name="text_color">Text color</string>
+    <string name="images">Images</string>
+    <string name="title_color">Title color</string>
+    <string name="sans_serif">Sans Serif</string>
+    <string name="posidon_sans">Posidon Sans</string>
+    <string name="monospace">Monospace</string>
+    <string name="math_operation">Math Operation</string>
+    <string name="no_results_for">No results for \"%1$s\"</string>
+    <string name="ip_address_external">IP address (external)</string>
+    <string name="failed_to_connect">Failed to connect</string>
+    <string name="next">Next</string>
+    <string name="hint_color">Hint color</string>
+    <string name="hint_text">Hint text</string>
+    <string name="font">Font</string>
+    <string name="default_icon_theme">System</string>
+    <string name="force_stop_launcher">Force stop / Restart</string>
+    <string name="icon_shape">Icon shape</string>
+    <string name="squircle">Squircle</string>
+    <string name="square">Square</string>
+    <string name="rounded_square">Rounded square</string>
+    <string name="circle">Circle</string>
+    <string name="accent_color">Accent color</string>
+    <string name="animated">Animated</string>
+    <string name="generate_adaptive_icons">Generate adaptive icons</string>
+    <string name="settings_title_icon_packs">Icon packs</string>
+    <string name="show_in_dock">Show in dock</string>
+    <string name="show_in_drawer">Show in drawer</string>
+    <string name="duration">Duration</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="minimal_statusbar">Minimal statusbar</string>
+    <string name="statusbar">Statusbar</string>
+    <string name="notifications">Notifications</string>
+    <string name="text_shadow">Text shadow</string>
+    <string name="ubuntu">Ubuntu</string>
+    <string name="wall_apply_home_screen">Home screen</string>
+    <string name="wall_apply_lock_screen">Lock screen</string>
+    <string name="wall_apply_both">Both</string>
+    <string name="settings_rows">Rows</string>
+    <string name="settings_title_folders">Folders</string>
+    <string name="telegram">Telegram</string>
+    <string name="action_buttons">Action buttons</string>
+    <string name="sorting">Sorting</string>
+    <string name="layers">Layers</string>
+    <string name="start">Start</string>
+    <string name="remove">Remove</string>
+    <string name="labelColor">Label color</string>
+    <string name="num_notifications">%1$d notifications</string>
+    <string name="collapse_notifications">Collapse notifications</string>
+    <string name="open_dyslexic">OpenDyslexic3</string>
+    <string name="app_open_animation">App open anim</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="would_you_like_to_rate_this_launcher">Would you like to rate this launcher?</string>
+    <string name="layout">Layout</string>
+    <string name="sample_feed_source">posidon news</string>
+    <string name="sample_feed_card_title">New version of posidon launcher is out!</string>
+    <string name="hidden_apps">Hidden apps</string>
+    <string name="choose_a_launcher">Choose a launcher</string>
+    <string name="launchers">Launchers</string>
+
+    <array name="sortingAlgorithms">
+        <item>Alphabetically</item>
+        <item>By color</item>
+    </array>
+
+    <array name="animationNames">
+        <item>posidon</item>
+        <item>clip reveal</item>
+        <item>scale up</item>
+    </array>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="customizations"
+        android:enabled="true"
+        android:icon="@drawable/customizations"
+        android:shortcutShortLabel="@string/settings_title"
+        android:shortcutLongLabel="@string/settings_title">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="posidon.launcher"
+            android:targetClass="posidon.launcher.customizations.Customizations" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="walls"
+        android:enabled="true"
+        android:icon="@drawable/walls"
+        android:shortcutShortLabel="@string/walls"
+        android:shortcutLongLabel="@string/walls">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="posidon.launcher"
+            android:targetClass="posidon.launcher.wall.Gallery" />
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Leo Shneyderis
+  ~ All rights reserved
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:id="@+id/settings">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:gravity="center"
+                android:text="@string/setting_title_hide_apps"
+                android:textColor="#ffffff"
+                android:textSize="32sp"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/settingscardbg"
+                app:cardCornerRadius="25dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardElevation="0dp">
+                <ListView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@android:color/transparent"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:clipToPadding="false"/>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

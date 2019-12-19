@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="posidon.launcher.view.ResizableLayout">
+    <ImageView
+        android:id="@+id/cross"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|right"
+        android:layout_margin="12dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_cross"
+        android:tint="#ff3333"
+        android:background="@drawable/button_bg_round"
+        android:backgroundTint="#6D8A1C1C"
+        android:visibility="gone"/>
+    <View
+        android:id="@+id/handle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/resize_handle"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="gone"
+        android:layout_marginBottom="-12dp"/>
+</merge>

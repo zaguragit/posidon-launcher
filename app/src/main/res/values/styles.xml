@@ -1,0 +1,139 @@
+<resources>
+
+    <style name="hometheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:dialogTheme">@style/dialog</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:fontFamily">@font/posidonsans</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="font_sans_serif"><item name="android:fontFamily">sans-serif</item></style>
+    <style name="font_posidon_sans"><item name="android:fontFamily">@font/posidonsans</item></style>
+    <style name="font_monospace"><item name="android:fontFamily">@font/ubuntu_mono</item></style>
+    <style name="font_ubuntu"><item name="android:fontFamily">@font/ubuntu_medium</item></style>
+    <style name="open_dyslexic"><item name="android:fontFamily">@font/open_dyslexic3</item></style>
+
+    <style name="longpressmenusheet" parent="Theme.AppCompat.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="bottomsheet" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.2</item>
+        <item name="android:windowBackground">@drawable/black_gradient</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    <style name="dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="dialogCornerRadius">25dp</item>
+        <item name="android:windowMinWidthMajor">192dp</item>
+        <item name="android:windowMinWidthMinor">192dp</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="applongpressbtn">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/cardtxt</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingBottom">18dp</item>
+    </style>
+
+    <style name="colorprev">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_weight">0</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="settings" parent="hometheme">
+        <item name="colorPrimary">@color/settingsbg</item>
+        <item name="android:windowBackground">@color/settingsbg</item>
+        <item name="android:navigationBarColor">@color/settingsbg</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
+    <style name="settingsbtn">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:drawablePadding">15dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textColor">@color/cardtxt</item>
+        <item name="android:textColorHint">#33ffffff</item>
+    </style>
+
+    <style name="customcategory">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:drawablePadding">24dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/cardtitle</item>
+    </style>
+
+    <style name="customcardtitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:padding">18dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/cardtitle</item>
+    </style>
+
+    <style name="settingscard">
+        <item name="android:background">@drawable/settings_card</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="wallgallery" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/wallgallerybg</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/wallgallerybg</item>
+        <item name="android:statusBarColor">@color/wallgallerybg</item>
+        <item name="android:fontFamily">@font/posidonsans</item>
+    </style>
+
+    <style name="wallprev" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:fontFamily">@font/posidonsans</item>
+    </style>
+
+    <style name="tutorial" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/wallgallerybg</item>
+        <item name="android:statusBarColor">@color/tutorialbg</item>
+        <item name="android:navigationBarColor">@color/cardbg</item>
+        <item name="android:windowBackground">@color/tutorialbg</item>
+        <item name="android:fontFamily">@font/posidonsans</item>
+    </style>
+
+    <style name="welcome" parent="tutorial">
+        <item name="android:navigationBarColor">@color/tutorialbg</item>
+    </style>
+
+    <style name="hiddenApps" parent="hometheme">
+        <item name="android:navigationBarColor">@color/hiddenAppsBG</item>
+        <item name="android:statusBarColor">@color/hiddenAppsBG</item>
+        <item name="android:windowBackground">@color/hiddenAppsBG</item>
+    </style>
+</resources>

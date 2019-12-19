@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/posidonsans</item>
+        <item>@font/clear_font</item>
+        <item>@font/ubuntu_medium</item>
+        <item>@font/ubuntu_mono</item>
+        <item>@font/open_dyslexic3</item>
+    </array>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@android:id/background"
+        android:gravity="center_vertical|fill_horizontal">
+        <shape android:shape="rectangle">
+            <corners android:radius="4dp"/>
+            <size android:height="15dp"/>
+            <solid android:color="#55ffffff"/>
+        </shape>
+    </item>
+    <item
+        android:id="@android:id/secondaryProgress"
+        android:gravity="center_vertical|fill_horizontal">
+        <scale android:scaleWidth="100%">
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp"/>
+                <size android:height="15dp"/>
+                <solid android:color="#88eeeeee"/>
+            </shape>
+        </scale>
+    </item>
+    <item
+        android:id="@android:id/progress"
+        android:gravity="center_vertical|fill_horizontal">
+        <scale android:scaleWidth="100%">
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp"/>
+                <size android:height="15dp"/>
+                <solid android:color="#eeffffff"/>
+            </shape>
+        </scale>
+    </item>
+    <item
+        android:id="@+id/lightning"
+        android:gravity="center_vertical|start">
+        <vector
+            android:width="12dp"
+            android:height="12dp"
+            android:viewportWidth="67.73333"
+            android:viewportHeight="67.73334">
+            <path
+                android:pathData="m27.5167,21.1667c-10.5833,12.7 -10.5833,12.7 -2.1167,14.5143 8.4667,1.8143 8.4667,1.8143 4.2333,12.7L25.4,59.2667c4.2333,0 4.2333,0 14.8167,-12.7 10.5833,-12.7 10.5833,-12.7 2.1167,-14.5143 -8.4667,-1.8143 -8.4667,-1.8143 -4.2333,-12.7l4.2333,-10.8857c-4.2333,0 -4.2333,0 -14.8167,12.7z"
+                android:fillColor="#ff000000"
+                android:fillAlpha="1"/>
+        </vector>
+    </item>
+</layer-list>

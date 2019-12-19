@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Leo Shneyderis
+  ~ All rights reserved
+  -->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/settings">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:gravity="center"
+                android:textSize="56sp"
+                android:textColor="#ffffff"
+                android:text="@string/app_name"
+                android:fontFamily="@font/posidonsans"/>
+            <LinearLayout
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:background="@drawable/settings_suggestion_card"
+                android:layout_margin="12dp"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/suggestionTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="#ffffff"
+                    android:text="@string/would_you_like_to_rate_this_launcher"
+                    android:padding="18dp"/>
+                <TextView
+                    android:onClick="hideCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:textColor="#888888"
+                    android:text="@string/no"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:background="@drawable/button_bg_round"
+                    android:layout_marginEnd="8dp"/>
+                <TextView
+                    android:id="@+id/yesBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:textColor="@color/accent"
+                    android:textStyle="bold"
+                    android:text="@string/yes"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:background="@drawable/button_bg_round"
+                    android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+        </FrameLayout>
+        <LinearLayout
+            android:id="@+id/catlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_catbg"
+            android:orientation="vertical">
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_drawer"
+                android:onClick="openApps"
+                android:text="@string/settings_title_apps"
+                android:layout_marginTop="12dp"/>
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_feed"
+                android:onClick="openHome"
+                android:text="@string/settings_title_desktop" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_dock"
+                android:onClick="openDock"
+                android:text="@string/settings_title_dock" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_folders"
+                android:onClick="openFolders"
+                android:text="@string/settings_title_folders" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_search"
+                android:onClick="openSearch"
+                android:text="@string/settings_title_search" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_theme"
+                android:onClick="openTheme"
+                android:text="@string/settings_title_ui" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_other"
+                android:onClick="openOther"
+                android:text="@string/settings_title_other" />
+            <TextView
+                android:id="@+id/devoptions"
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_dev"
+                android:onClick="openDev"
+                android:text="@string/settings_title_dev"
+                android:visibility="gone" />
+            <TextView
+                style="@style/customcategory"
+                android:layout_marginBottom="32dp"
+                android:drawableStart="@drawable/custom_about"
+                android:onClick="openAbout"
+                android:text="@string/aboutbtn"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

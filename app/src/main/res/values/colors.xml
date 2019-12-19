@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Leo Shneyderis
+  ~ All rights reserved
+  -->
+
+<resources>
+    <color name="accent">#1155ff</color>
+    <color name="settingsbg">#000000</color>
+    <color name="settingscardbg">#111213</color>
+    <color name="cardbg">#111213</color>
+    <color name="cardtxt">#eeeeee</color>
+    <color name="cardtxticon">#ddB1BDD1</color>
+    <color name="cardSeparator">#33dddddd</color>
+    <color name="cardtitle">#ffffff</color>
+    <color name="hint">#252627</color>
+    <color name="wallgallerybg">#111213</color>
+    <color name="walllabelbg">#aa2a2b2c</color>
+    <color name="wallgallerytoolbarbg">#dd151617</color>
+    <color name="tutorialbg">#000000</color>
+    <color name="darkoverlay">#33000000</color>
+    <color name="hiddenAppsBG">#dd000000</color>
+</resources>
