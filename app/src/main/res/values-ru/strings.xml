@@ -1,0 +1,138 @@
+<resources>
+    <string name="app_name">posidon</string>
+    <string name="aboutbtn">О приложении</string>
+    <string name="walls">Фоны экрана</string>
+
+    <string name="appLabels">Названия приложений</string>
+    <string name="icon_pack">Тема иконок</string>
+    <string name="iconSize">Размер иконок</string>
+    <string name="columns">Столбы</string>
+
+    <string name="settings_title">Персонализация</string>
+    <string name="settings_title_apps">Список приложений</string>
+    <string name="settings_title_desktop">Лента</string>
+    <string name="settings_title_clock_format">Время</string>
+    <string name="settings_title_search">Поиск</string>
+    <string name="settings_title_dev">Разработчики</string>
+    <string name="settings_title_dock">Док</string>
+    <string name="settings_title_feed">Лента</string>
+    <string name="settings_title_ui">Тема</string>
+    <string name="settings_title_other">Другое</string>
+    <string name="settings_title_icons">Иконки</string>
+
+    <string name="defaultdateformat">d MMM | cccc</string>
+    <string name="settingsdateformat">Время</string>
+    <string name="searchbarhint">Поиск..</string>
+    <string name="feed_sources">Источники</string>
+    <string name="defaultfeedurl">habr.com/rss</string>
+    <string name="settings_icon_count">Количество иконок</string>
+    <string name="slogan">Minimal, feature-rich, different.</string>
+    <string name="developer">Leo Shneyderis</string>
+    <string name="settingshidestatus">Прятать statusbar</string>
+    <string name="spacing">Расстояние</string>
+    <string name="storage_access_description">Предоставьте доступ к хранилищу для доступа к обоям (для размытия в списке приложений)</string>
+    <string name="storage_access">Доступ к хранилищу</string>
+    <string name="ok">OK</string>
+    <string name="notification_access">Доступ к уведомлениям</string>
+    <string name="notification_access_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
+    <string name="pixel_stock_android">Pixel</string>
+    <string name="one_ui">One UI</string>
+    <string name="ios">iOS</string>
+    <string name="surprise_me">Удивите меня..</string>
+    <string name="preset_chooser_title">Выберите шаблон:</string>
+    <string name="done">Готово</string>
+    <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Вебсайт</string>
+    <string name="leoxshn_description">Создал лаунчер</string>
+    <string name="sajid_shaik">Sajid Shaik</string>
+    <string name="sajid_shaik_description">Создал иконку для лаунчера</string>
+    <string name="app_name_hint">имя</string>
+    <string name="version">Версия</string>
+    <string name="uninstall">Удалить</string>
+    <string name="component">Component</string>
+    <string name="propenties">Свойства</string>
+    <string name="edit">Изменить</string>
+    <string name="remove_icon">Убрать иконку</string>
+    <string name="colorpicker_hint">Хекс код (ff000000 для черного)</string>
+    <string name="apply">применить</string>
+    <string name="setting_show_component">Show component in app properties</string>
+    <string name="color">Цвет</string>
+    <string name="radius">Радиус</string>
+    <string name="bottom_padding">Bottom padding</string>
+    <string name="blur">Blur</string>
+    <string name="setting_title_hide_apps">Спрятать приложения</string>
+    <string name="setting_hide_until_user_scrolls">Hide until user scrolls</string>
+    <string name="corner_radius">Радиус углов</string>
+    <string name="background">Фон</string>
+    <string name="text_color">Цвет текста</string>
+    <string name="images">Картинки</string>
+    <string name="title_color">Цвет нозвания</string>
+    <string name="sans_serif">Sans Serif</string>
+    <string name="posidon_sans">Posidon Sans</string>
+    <string name="monospace">Monospace</string>
+    <string name="math_operation">Математика</string>
+    <string name="no_results_for">Нет результатов для \"%1$s\"</string>
+    <string name="ip_address_external">IP адрес</string>
+    <string name="failed_to_connect">Не удалось подключиться</string>
+    <string name="next">Продолжить</string>
+    <string name="hint_color">Цвет подсказки</string>
+    <string name="hint_text">Текст подсказки</string>
+    <string name="font">Шрифт</string>
+    <string name="default_icon_theme">Система</string>
+    <string name="force_stop_launcher">Перезагрузить</string>
+    <string name="icon_shape">Форма иконок</string>
+    <string name="squircle">Squircle</string>
+    <string name="square">Квадрат</string>
+    <string name="rounded_square">Закругленный квадрат</string>
+    <string name="circle">Круг</string>
+    <string name="accent_color">Цветовой акцент</string>
+    <string name="animated">Анимированные</string>
+    <string name="generate_adaptive_icons">Генерировать адаптивные иконки</string>
+    <string name="settings_title_icon_packs">Темы иконок</string>
+    <string name="show_in_dock">Показывать в доке</string>
+    <string name="show_in_drawer">Показывать в списке приложений</string>
+    <string name="duration">Продолжительность</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="minimal_statusbar">Минимальный statusbar</string>
+    <string name="statusbar">Statusbar</string>
+    <string name="notifications">Уведомления</string>
+    <string name="text_shadow">Тень под текстом</string>
+    <string name="ubuntu">Ubuntu</string>
+    <string name="wall_apply_home_screen">Домашний экран</string>
+    <string name="wall_apply_lock_screen">Экран блокировки</string>
+    <string name="wall_apply_both">Оба</string>
+    <string name="settings_rows">Строки</string>
+    <string name="settings_title_folders">Папки</string>
+    <string name="telegram">Телеграм</string>
+    <string name="action_buttons">Кнопки функций</string>
+    <string name="sorting">Сортировка</string>
+    <string name="layers">Слои</string>
+    <string name="start">Старт</string>
+    <string name="remove">Удалить</string>
+    <string name="labelColor">Цвет текста</string>
+    <string name="num_notifications">%1$d уведомлений</string>
+    <string name="collapse_notifications">Сворачивать уведомления</string>
+    <string name="open_dyslexic">OpenDyslexic3</string>
+    <string name="app_open_animation">Анимация открытия приложения</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="would_you_like_to_rate_this_launcher">Вы хотели бы оценить этот лаунчер?</string>
+    <string name="layout">Расположение</string>
+    <string name="sample_feed_source">posidon news</string>
+    <string name="sample_feed_card_title">Вышла новая версия posidon launcher!</string>
+    <string name="hidden_apps">Hidden apps</string>
+    <string name="choose_a_launcher">Choose a launcher</string>
+    <string name="launchers">Лаунчеры</string>
+
+    <array name="sortingAlgorithms">
+        <item>По имени</item>
+        <item>По цвету</item>
+    </array>
+
+    <array name="animationNames">
+        <item>posidon</item>
+        <item>clip reveal</item>
+        <item>увеличить</item>
+    </array>
+</resources>

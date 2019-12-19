@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    android:padding="20dp">
+    <TextView
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="128dp"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:background="@drawable/button_bg_round"
+        android:textColor="@color/cardtxt"
+        android:textSize="18sp"
+        android:text="@string/wall_apply_home_screen"/>
+    <TextView
+        android:id="@+id/lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="128dp"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/button_bg_round"
+        android:textColor="@color/cardtxt"
+        android:textSize="18sp"
+        android:text="@string/wall_apply_lock_screen"/>
+    <TextView
+        android:id="@+id/both"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="128dp"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/button_bg_round"
+        android:textColor="@color/cardtxt"
+        android:textSize="18sp"
+        android:text="@string/wall_apply_both"/>
+</LinearLayout>

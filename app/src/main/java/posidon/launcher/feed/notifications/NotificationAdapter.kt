@@ -1,0 +1,112 @@
+package posidon.launcher.feed.notifications
+
+import android.content.Context
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.RecyclerView
+import posidon.launcher.LauncherMenu
+import posidon.launcher.R
+import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Settings
+import posidon.launcher.tools.Tools
+
+class NotificationAdapter(private val context: Context, private val window: Window) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+
+    class NotificationViewHolder(internal val view: ViewGroup, internal val card: CardView, internal val linearLayout: LinearLayout) : RecyclerView.ViewHolder(view)
+
+    override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
+        val view = RelativeLayout(context)
+        val hMargin = (16 * context.resources.displayMetrics.density).toInt()
+        val vMargin = (9 * context.resources.displayMetrics.density).toInt()
+        view.setPadding(hMargin, vMargin, hMargin, vMargin)
+
+        val card = CardView(context)
+        card.preventCornerOverlap = true
+        card.elevation = 0f
+        card.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        card.radius = context.resources.displayMetrics.density * Settings.getInt("feed:card_radius", 15)
+        card.setCardBackgroundColor(Settings.getInt("notificationbgcolor", -0x1))
+        view.addView(card)
+
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.VERTICAL
+        ll.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val padding = (8 * context.resources.displayMetrics.density).toInt()
+        ll.setPadding(padding, padding, padding, padding)
+        card.addView(ll)
+        return NotificationViewHolder(view, card, ll)
+    }
+
+    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
+        val groups = NotificationService.notificationGroups
+        if (groups != null && groups.size != 0) for (notification in groups[position]) {
+            val view: View = when {
+                notification.style == "MediaStyle" -> {
+                    holder.linearLayout.setPadding(0, 0, 0, 0)
+                    LayoutInflater.from(context).inflate(R.layout.notification_music, null)
+                }
+                notification.isSummary -> LayoutInflater.from(context).inflate(R.layout.notification_normal_summary, null)
+                else -> {
+                    val v1: View = LayoutInflater.from(context).inflate(R.layout.notification_normal, null)
+                    if (notification.actions != null && Settings.getBool("notificationActionsEnabled", false)) {
+                        v1.findViewById<LinearLayout>(R.id.action_list).visibility = View.VISIBLE
+                        for (action in notification.actions) {
+                            val a = TextView(context)
+                            a.text = action.title
+                            a.textSize = 14f
+                            a.setTextColor(Settings.getInt("notificationActionTextColor", -0xdad9d9))
+                            val r = 24 * context.resources.displayMetrics.density
+                            val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
+                            out.paint.color = Settings.getInt("notificationActionBGColor", 0x88e0e0e0.toInt())
+                            a.background = out
+                            val vPadding = (8 * context.resources.displayMetrics.density).toInt()
+                            val hPadding = (12 * context.resources.displayMetrics.density).toInt()
+                            a.setPadding(hPadding, vPadding, hPadding, vPadding)
+                            v1.findViewById<LinearLayout>(R.id.action_list).addView(a)
+                            (a.layoutParams as LinearLayout.LayoutParams).leftMargin = (6 * context.resources.displayMetrics.density).toInt()
+                            (a.layoutParams as LinearLayout.LayoutParams).rightMargin = (6 * context.resources.displayMetrics.density).toInt()
+                            a.setOnClickListener {
+                                try { action.actionIntent.send() }
+                                catch (e: Exception) { e.printStackTrace() }
+                            }
+                        }
+                    }
+                    v1
+                }
+            }
+
+            view.findViewById<TextView>(R.id.title).text = notification.title
+            view.findViewById<TextView>(R.id.txt).text = notification.text
+
+            if (notification.style == "MediaStyle") {
+                val bmpIcon = Tools.drawable2bitmap(notification.icon, true)
+                view.findViewById<ImageView>(R.id.iconimg).setImageDrawable(notification.icon)
+                val color = (0xeeffffff.toInt() and Palette.from(bmpIcon).generate().getDominantColor(Settings.getInt("notificationbgcolor", -0x1)))
+                holder.card.setCardBackgroundColor(color)
+                view.findViewById<ImageView>(R.id.bg).setImageBitmap(Tools.fastBlur(bmpIcon, 25))
+                view.findViewById<TextView>(R.id.title).setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+                view.findViewById<TextView>(R.id.txt).setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+            } else {
+                view.findViewById<ImageView>(R.id.iconimg).setImageDrawable(notification.icon)
+                view.findViewById<TextView>(R.id.title).setTextColor(Settings.getInt("notificationtitlecolor", -0xeeeded))
+                view.findViewById<TextView>(R.id.txt).setTextColor(Settings.getInt("notificationtxtcolor", -0xdad9d9))
+            }
+
+            view.setOnClickListener { notification.open() }
+            view.setOnLongClickListener(LauncherMenu(context, window))
+            holder.linearLayout.addView(view)
+        }
+    }
+
+    override fun getItemCount(): Int { return NotificationService.notificationGroups.size }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale
+        android:interpolator="@android:interpolator/decelerate_quad"
+        android:duration="200"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:fromXScale="100%"
+        android:fromYScale="100%"
+        android:toXScale="160%"
+        android:toYScale="160%"/>
+    <alpha
+        android:interpolator="@android:interpolator/accelerate_cubic"
+        android:duration="200"
+        android:fromAlpha="1"
+        android:toAlpha="0"/>
+</set>
