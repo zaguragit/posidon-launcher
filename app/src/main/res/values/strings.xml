@@ -124,6 +124,7 @@
     <string name="hidden_apps">Hidden apps</string>
     <string name="choose_a_launcher">Choose a launcher</string>
     <string name="launchers">Launchers</string>
+    <string name="horizontal_margin">Horizontal margin</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

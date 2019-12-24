@@ -14,6 +14,8 @@ class BigWidget : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.widget_big)
             views.setTextColor(R.id.time, Settings.getInt("clockcolor", -0x1))
             views.setTextColor(R.id.date, Settings.getInt("clockcolor", -0x1))
+            views.setCharSequence(R.id.date, "setFormat12Hour", Settings.getString("datef", context.resources.getString(R.string.defaultdateformat)))
+            views.setCharSequence(R.id.date, "setFormat24Hour", Settings.getString("datef", context.resources.getString(R.string.defaultdateformat)))
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }

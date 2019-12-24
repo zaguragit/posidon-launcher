@@ -134,7 +134,8 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/accent"
                         android:textSize="18sp"
-                        android:paddingTop="6dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="4dp"
                         android:paddingLeft="18dp"
                         android:paddingRight="18dp"
                         android:text="@string/icon_shape" />
@@ -142,12 +143,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
+                        android:padding="4dp">
                         <LinearLayout
                             android:id="@+id/icshapedef"
                             android:onClick="icshapedef"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp">
                             <ImageView
                                 android:layout_width="64dp"
                                 android:layout_height="64dp"
@@ -161,9 +163,10 @@
                         <LinearLayout
                             android:id="@+id/icshaperound"
                             android:onClick="icshaperound"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp">
+                            android:layout_marginTop="10dp"
+                            android:padding="8dp">
                             <androidx.cardview.widget.CardView
                                 android:layout_width="64dp"
                                 android:layout_height="64dp"
@@ -184,9 +187,10 @@
                         <LinearLayout
                             android:id="@+id/icshaperoundrect"
                             android:onClick="icshaperoundrect"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp">
+                            android:layout_marginTop="10dp"
+                            android:padding="8dp">
                             <androidx.cardview.widget.CardView
                                 android:layout_width="64dp"
                                 android:layout_height="64dp"
@@ -207,9 +211,10 @@
                         <LinearLayout
                             android:id="@+id/icshaperect"
                             android:onClick="icshaperect"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp">
+                            android:layout_marginTop="10dp"
+                            android:padding="8dp">
                             <ImageView
                                 android:layout_width="64dp"
                                 android:layout_height="64dp"
@@ -224,9 +229,10 @@
                         <LinearLayout
                             android:id="@+id/icshapesquircle"
                             android:onClick="icshapesquircle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp">
+                            android:layout_marginTop="10dp"
+                            android:padding="8dp">
                             <FrameLayout
                                 android:layout_width="64dp"
                                 android:layout_height="64dp">

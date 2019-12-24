@@ -118,7 +118,6 @@
                         style="@style/settingsbtn"
                         android:id="@+id/animationOptions"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
                         android:entries="@array/animationNames"
                         android:spinnerMode="dropdown"/>
                 </LinearLayout>

@@ -93,8 +93,7 @@ class IconPackPicker : AppCompatActivity() {
                 viewHolder.icon = convertView!!.findViewById(R.id.iconimg)
                 viewHolder.text = convertView.findViewById(R.id.icontxt)
                 convertView.tag = viewHolder
-            } else
-                viewHolder = convertView.tag as ViewHolder
+            } else viewHolder = convertView.tag as ViewHolder
             viewHolder.icon!!.setImageDrawable(pacsForAdapter[position].icon)
             viewHolder.text!!.text = pacsForAdapter[position].label
             when (Settings.getInt("icsize", 1)) {
@@ -105,8 +104,7 @@ class IconPackPicker : AppCompatActivity() {
             if (Settings.getString("iconpack", "system") == pacsForAdapter[position].packageName) {
                 convertView.background = getDrawable(R.drawable.selection)
                 lastclicked = convertView
-            } else
-                convertView.setBackgroundColor(0x0)
+            } else convertView.setBackgroundColor(0x0)
             return convertView
         }
     }

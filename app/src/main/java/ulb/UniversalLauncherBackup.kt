@@ -9,14 +9,22 @@ package ulb
 
 object UniversalLauncherBackup {
 
-    ////SOME UNIVERSAL SETTINGS/////////////////////////////////////////////////////////////////////
-    const val DOCK_COLOR = "universal:dock_color"
-    const val DOCK_CORNER_RADIUS_TOP_RIGHT = "universal:dock_corner_radius_top_right"
-    const val DOCK_CORNER_RADIUS_TOP_LEFT = "universal:dock_corner_radius_top_left"
-    const val DOCK_CORNER_RADIUS_BOTTOM_RIGHT = "universal:dock_corner_radius_bottom_right"
-    const val DOCK_CORNER_RADIUS_BOTTOM_LEFT = "universal:dock_corner_radius_bottom_left"
-    const val DOCK_CORNER_RADIUS_ALL = "universal:dock_corner_radius_all"
-    const val APP_DRAWER_COLOR = "universal:app_drawer_color"
+    ////SOME UNIVERSAL SETTINGS (launchers don't have to support them, but if they have those settings, they should use the universal names instead of custom ones)
+    const val APP_DRAWER_COLOR = "ulb:app_drawer_color"
+    const val APP_DRAWER_COLUMNS = "ulb:app_drawer_columns"
+    const val APP_DRAWER_LABEL_COLOR = "ulb:app_drawer_label_color"
+    const val APP_DRAWER_LABELS_ENABLED = "ulb:app_drawer_labels_enabled"
+    const val DOCK_COLOR = "ulb:dock_color"
+    const val DOCK_COLUMNS = "ulb:dock_columns"
+    const val DOCK_ROWS = "ulb:dock_rows"
+    const val DOCK_CORNER_RADIUS_TOP_RIGHT = "ulb:dock_corner_radius_top_right"
+    const val DOCK_CORNER_RADIUS_TOP_LEFT = "ulb:dock_corner_radius_top_left"
+    const val DOCK_CORNER_RADIUS_BOTTOM_RIGHT = "ulb:dock_corner_radius_bottom_right"
+    const val DOCK_CORNER_RADIUS_BOTTOM_LEFT = "ulb:dock_corner_radius_bottom_left"
+    const val DOCK_CORNER_RADIUS_ALL = "ulb:dock_corner_radius_all"
+    const val DOCK_LABEL_COLOR = "ulb:dock_label_color"
+    const val DOCK_LABELS_ENABLED = "ulb:dock_labels_enabled"
+    const val ICON_PACKS = "ulb:icon_packs"
     // naming style -> <"universal"/appName/appName.category>:<parameter>
 
 
@@ -82,8 +90,6 @@ object UniversalLauncherBackup {
         val booleans: HashMap<String, String> = HashMap()
         val strings: HashMap<String, String> = HashMap()
         val lists: HashMap<String, String> = HashMap()
-
-        // TODO public fun save(context: Context, fileName: String) { context.openFileOutput(fileName, Context.MODE_PRIVATE).use { it.write(generateText().toByteArray()) } }
 
         public fun generateText(): String {
             val stringBuilder = StringBuilder()
@@ -213,8 +219,7 @@ list bla:bla bool 0 1 0 0 0 1 1 0 0 0 0 0 1 1 0 1 0 1 0 0 1 1 1 0 0
 
 /*
 syntax: <data type> <key> <value>
-
-only the value can have spaces, otherwise the data is impossible to interpret
+(only the value can have spaces, otherwise the data is impossible to interpret)
 
 
 data types = int, float, bool, text, list

@@ -22,12 +22,14 @@ import posidon.launcher.tools.Tools;
 
 public class NotificationService extends NotificationListenerService {
 
-	public static final ArrayList<ArrayList<Notification>> notificationGroups = new ArrayList<>();
+	private static ArrayList<ArrayList<Notification>> notificationGroups = new ArrayList<>();
 	public static Listener listener;
 	public static WeakReference<Context> contextReference;
 	public static int notificationsAmount;
 
 	private static boolean updating;
+
+	public static ArrayList<ArrayList<Notification>> groups() { return notificationGroups; }
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -35,8 +37,12 @@ public class NotificationService extends NotificationListenerService {
 			@Override
 			public void onSwipe(RecyclerView.ViewHolder viewHolder, int direction) {
 				try {
-					Notification notification = notificationGroups.get(viewHolder.getAdapterPosition()).get(0);
-					cancelNotification(notification.key);
+					int pos = viewHolder.getAdapterPosition();
+					ArrayList<Notification> group = notificationGroups.get(pos);
+					for (Notification notification : group)
+						cancelNotification(notification.key);
+					group.clear();
+					notificationGroups.remove(pos);
 				} catch (Exception e) { e.printStackTrace(); }
 				onUpdate();
 			}
@@ -65,10 +71,10 @@ public class NotificationService extends NotificationListenerService {
 		@Override
 		public void run() {
 			updating = true;
+			ArrayList<ArrayList<Notification>> groups = new ArrayList<>();
+			int i = 0;
+			int notificationsAmount2 = 0;
 			try {
-				notificationGroups.clear();
-				int i = 0;
-				notificationsAmount = 0;
 				if (notifications != null) while (i < notifications.length) {
 					ArrayList<Notification> group = new ArrayList<>();
 					//if (notifications[i].getPackageName().equals("android")) i++;
@@ -89,19 +95,22 @@ public class NotificationService extends NotificationListenerService {
 									last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)) {
 								group.add(formatNotification(notifications[i]));
 								if ((notifications[i].getNotification().flags & android.app.Notification.FLAG_GROUP_SUMMARY) != android.app.Notification.FLAG_GROUP_SUMMARY)
-									notificationsAmount++;
+									notificationsAmount2++;
 							}
 							last = extras;
 							i++;
 						}
 					} else {
 						group.add(formatNotification(notifications[i]));
-						notificationsAmount++;
+						notificationsAmount2++;
 						i++;
 					}
-					notificationGroups.add(group);
+					groups.add(group);
 				}
 			} catch (Exception e) { e.printStackTrace(); }
+			notificationGroups.clear();
+			notificationGroups = groups;
+			notificationsAmount = notificationsAmount2;
 			if (listener != null) listener.onUpdate();
 			updating = false;
 		}

@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -50,6 +51,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -113,7 +115,6 @@ public class Main extends AppCompatActivity {
 
 	private GridView drawerGrid;
 	private View searchbar;
-	private PackageManager packageManager;
 	private PowerManager powerManager;
 	private NestedScrollView desktop;
 	private RecyclerView feedRecycler;
@@ -366,7 +367,6 @@ public class Main extends AppCompatActivity {
 					}
 				});
 			}
-
 			@Override public void setCustomizations() {
 				Tools.applyFontSetting(Main.this);
 
@@ -423,6 +423,10 @@ public class Main extends AppCompatActivity {
 				drawerGrid.setNumColumns(Settings.getInt("numcolumns", 4));
 				drawerGrid.setVerticalSpacing((int)(getResources().getDisplayMetrics().density * Settings.getInt("verticalspacing", 12)));
 				feedRecycler.setVisibility(Settings.getBool("feedenabled", true) ? View.VISIBLE : View.GONE);
+				int marginX = (int)(Settings.getInt("feed:card_margin_x", 16) * getResources().getDisplayMetrics().density);
+				((LinearLayout.LayoutParams)feedRecycler.getLayoutParams()).setMargins(marginX, 0, marginX, 0);
+				((LinearLayout.LayoutParams)findViewById(R.id.parentNotification).getLayoutParams()).leftMargin = marginX;
+				((LinearLayout.LayoutParams)findViewById(R.id.parentNotification).getLayoutParams()).rightMargin = marginX;
 				if (Settings.getBool("hidefeed", false)) {
 					feedRecycler.setTranslationX(findViewById(R.id.homeView).getWidth());
 					feedRecycler.setAlpha(0);
@@ -516,8 +520,6 @@ public class Main extends AppCompatActivity {
 			}
 		};
 
-
-		packageManager = getPackageManager();
 		powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		desktop = findViewById(R.id.desktop);
 		desktop.setNestedScrollingEnabled(false);
@@ -723,6 +725,13 @@ public class Main extends AppCompatActivity {
 				WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
 				WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 		);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			ArrayList<Rect> list = new ArrayList<>();
+			list.add(new Rect(0, 0, Tools.getDisplayWidth(this), Tools.getDisplayHeight(this)));
+			findViewById(R.id.homeView).setSystemGestureExclusionRects(list);
+		}
+
 		methods.setCustomizations();
 
 		blurBg = new LayerDrawable(new Drawable[] {
