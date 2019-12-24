@@ -51,7 +51,7 @@ class CustomHiddenApps : AppCompatActivity() {
             pacs[i]!!.name = pacslist[i].activityInfo.name
             pacs[i]!!.label = pacslist[i].loadLabel(pm).toString()
         }
-        Sort.labelSort(pacs as Array<App>)
+        Sort.labelSort(pacs)
         list.adapter = ListAdapter(this, pacs)
     }
 
@@ -61,7 +61,7 @@ class CustomHiddenApps : AppCompatActivity() {
         Main.customized = true
     }
 
-    internal inner class ListAdapter(private val context: Context, private val pacsForAdapter: Array<App>) : BaseAdapter() {
+    internal inner class ListAdapter(private val context: Context, private val pacsForAdapter: Array<App?>) : BaseAdapter() {
 
         override fun getCount(): Int {
             return pacsForAdapter.size
@@ -80,8 +80,8 @@ class CustomHiddenApps : AppCompatActivity() {
             var text: TextView? = null
         }
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
+        override fun getView(position: Int, cv: View?, parent: ViewGroup): View {
+            var convertView = cv
             val viewHolder: ViewHolder
             val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -93,8 +93,8 @@ class CustomHiddenApps : AppCompatActivity() {
                 convertView.tag = viewHolder
             } else
                 viewHolder = convertView.tag as ViewHolder
-            viewHolder.icon!!.setImageDrawable(pacsForAdapter[position].icon)
-            viewHolder.text!!.text = pacsForAdapter[position].label
+            viewHolder.icon!!.setImageDrawable(pacsForAdapter[position]!!.icon)
+            viewHolder.text!!.text = pacsForAdapter[position]!!.label
             when (Settings.getInt("icsize", 1)) {
                 0 -> viewHolder.icon!!.setPadding(64, 64, 64, 64)
                 1 -> viewHolder.icon!!.setPadding(32, 32, 32, 32)
@@ -102,19 +102,17 @@ class CustomHiddenApps : AppCompatActivity() {
             }
             val finalConvertView = convertView
 
-            val hidden = Settings.getBool(pacsForAdapter[position].packageName + "/" + pacsForAdapter[position].name + "?hidden", false)
-            if (hidden)
-                finalConvertView.setBackgroundColor(0x33ff0000)
-            else
-                finalConvertView.setBackgroundColor(0x0)
+            val hidden = Settings.getBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
+            if (hidden) finalConvertView.setBackgroundColor(0x33ff0000)
+            else finalConvertView.setBackgroundColor(0x0)
             convertView.setOnClickListener {
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
-                    Settings.putBool(pacsForAdapter[position].packageName + "/" + pacsForAdapter[position].name + "?hidden", false)
+                    Settings.putBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
                     notifyDataSetChanged()
                 } else {
                     finalConvertView.setBackgroundColor(0x0)
-                    Settings.putBool(pacsForAdapter[position].packageName + "/" + pacsForAdapter[position].name + "?hidden", true)
+                    Settings.putBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", true)
                     notifyDataSetChanged()
                 }
             }

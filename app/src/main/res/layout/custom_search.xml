@@ -104,10 +104,9 @@
                         android:drawableStart="@drawable/ic_label"
                         android:text="@string/hint_text" />
                     <EditText
+                        style="@style/settingsInput"
                         android:id="@+id/hinttxt"
-                        style="@style/settingsbtn"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:hint="@string/searchbarhint"

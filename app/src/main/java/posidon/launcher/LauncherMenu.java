@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -106,8 +107,10 @@ public class LauncherMenu implements View.OnLongClickListener {
             public void onDismiss(DialogInterface dialogInterface) { exit(homescreen, window, behavior); }
         });
         dialog.show();
-        ArrayList<Rect> list = new ArrayList<>();
-        homescreen.setSystemGestureExclusionRects(list);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ArrayList<Rect> list = new ArrayList<>();
+            homescreen.setSystemGestureExclusionRects(list);
+        }
     }
 
     private static void exit(final View homescreen, Window window, BottomSheetBehavior behavior) {
@@ -117,9 +120,11 @@ public class LauncherMenu implements View.OnLongClickListener {
         page.setBackgroundColor(0x0);
         window.setBackgroundDrawableResource(android.R.color.transparent);
         behavior.setHideable(false);
-        ArrayList<Rect> list = new ArrayList<>();
-        list.add(new Rect(0, 0, Tools.getDisplayWidth(homescreen.getContext()), Tools.getDisplayHeight(homescreen.getContext())));
-        homescreen.setSystemGestureExclusionRects(list);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ArrayList<Rect> list = new ArrayList<>();
+            list.add(new Rect(0, 0, Tools.getDisplayWidth(homescreen.getContext()), Tools.getDisplayHeight(homescreen.getContext())));
+            homescreen.setSystemGestureExclusionRects(list);
+        }
         isActive = false;
     }
 }

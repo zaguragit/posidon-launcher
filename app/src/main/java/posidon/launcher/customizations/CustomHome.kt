@@ -32,6 +32,15 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings.getInt("clockcolor", -0x1))
 
+        val widget = Settings.getString("widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget")
+        when {
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
+            else -> {
+                findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
+            }
+        }
+
         val dateformat = Settings.getString("datef", resources.getString(R.string.defaultdateformat))
         val datefprev = findViewById<TextClock>(R.id.datefprev)
         val dateftxt = findViewById<EditText>(R.id.dateformat)
@@ -63,6 +72,20 @@ class CustomHome : AppCompatActivity() {
                 Settings.putInt("feed:card_radius", progress)
             }
         })
+
+        val cardHorizontalMarginSeekbar = findViewById<SeekBar>(R.id.cardHorizontalMarginSeekbar)
+        cardHorizontalMarginSeekbar.progress = Settings.getInt("feed:card_margin_x", 16)
+        val cardHorizontalMarginNum = findViewById<TextView>(R.id.cardHorizontalMarginNum)
+        cardHorizontalMarginNum.text = Settings.getInt("feed:card_margin_x", 16).toString()
+        cardHorizontalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                cardHorizontalMarginNum.text = progress.toString()
+                Settings.putInt("feed:card_margin_x", progress)
+            }
+        })
+
         findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorcircle(Settings.getInt("feed:card_bg", -0xdad9d9))
         findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorcircle(Settings.getInt("feed:card_txt_color", -0x1))
         findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings.getBool("feed:card_img_enabled", true)

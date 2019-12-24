@@ -26,7 +26,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val view = RelativeLayout(context)
-        val hMargin = (16 * context.resources.displayMetrics.density).toInt()
+        val hMargin = (Settings.getInt("feed:card_margin_x", 16) * context.resources.displayMetrics.density).toInt()
         val vMargin = (9 * context.resources.displayMetrics.density).toInt()
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
@@ -48,7 +48,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        val groups = NotificationService.notificationGroups
+        val groups = NotificationService.groups()
         if (groups != null && groups.size != 0) for (notification in groups[position]) {
             val view: View = when {
                 notification.style == "MediaStyle" -> {
@@ -108,5 +108,5 @@ class NotificationAdapter(private val context: Context, private val window: Wind
         }
     }
 
-    override fun getItemCount(): Int { return NotificationService.notificationGroups.size }
+    override fun getItemCount(): Int { return NotificationService.groups().size }
 }

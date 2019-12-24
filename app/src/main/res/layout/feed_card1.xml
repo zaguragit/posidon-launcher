@@ -7,8 +7,6 @@
     app:cardCornerRadius="30dp"
     app:cardPreventCornerOverlap="true"
     app:cardElevation="0dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     android:layout_marginBottom="9dp"
     android:layout_marginTop="9dp"
     android:id="@+id/card">

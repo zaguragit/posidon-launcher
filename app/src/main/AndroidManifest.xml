@@ -16,24 +16,26 @@
         android:supportsRtl="true"
         android:theme="@style/hometheme">
 
-        <receiver
-            android:name=".external.widgets.ClockWidget"
-            android:label="Minimal date">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+        <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/clock_widget_info" />
         </receiver>
 
-        <receiver
-            android:name=".external.widgets.BigWidget"
-            android:label="Big widget">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+        <receiver android:name=".external.widgets.BigWidget" android:label="Big widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/big_widget_info" />
         </receiver>
 
         <service
             android:name=".feed.notifications.NotificationService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter><action android:name="android.service.notification.NotificationListenerService" /></intent-filter>
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
         </service>
 
         <activity
@@ -170,9 +172,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".items.AddShortcutActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>
