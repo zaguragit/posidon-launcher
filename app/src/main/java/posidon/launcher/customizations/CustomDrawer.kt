@@ -104,7 +104,7 @@ class CustomDrawer : AppCompatActivity() {
         Settings.putBool("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
         if (Settings.getInt("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition) {
             Settings.putInt("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition)
-            Main.shouldsetapps = true
+            Main.shouldSetApps = true
         }
         Settings.putBool("blur", findViewById<Switch>(R.id.blurswitch).isChecked)
         Main.customized = true

@@ -59,7 +59,7 @@ public class ShortcutAdapter extends RecyclerView.Adapter<ShortcutAdapter.Shortc
             @Override
             public void onClick(View view) {
                 ItemLongPress.currentPopup.dismiss();
-                ((LauncherApps)(Objects.requireNonNull(context.getSystemService(Context.LAUNCHER_APPS_SERVICE)))).startShortcut(shortcuts.get(position), null, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.slightfadeout).toBundle());
+                ((LauncherApps)(Objects.requireNonNull(context.getSystemService(Context.LAUNCHER_APPS_SERVICE)))).startShortcut(shortcuts.get(position), null, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle());
             }
         });
     }

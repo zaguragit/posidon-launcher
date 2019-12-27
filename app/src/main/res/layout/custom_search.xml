@@ -62,22 +62,7 @@
                         android:text="@string/color"/>
                     <View
                         android:id="@+id/searchcolorprev"
-                        style="@style/colorprev"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="picksearchtxtcolor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/text_color"/>
-                    <View
-                        android:id="@+id/searchtxtcolorprev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -92,29 +77,8 @@
                         android:text="@string/hint_color"/>
                     <View
                         android:id="@+id/searchhintcolorprev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_label"
-                        android:text="@string/hint_text" />
-                    <EditText
-                        style="@style/settingsInput"
-                        android:id="@+id/hinttxt"
-                        android:layout_width="match_parent"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/searchbarhint"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"/>
-                </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -168,7 +132,7 @@
                         android:text="@string/color"/>
                     <View
                         android:id="@+id/docksearchcolorprev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -180,10 +144,10 @@
                         android:layout_width="0dp"
                         android:drawableStart="@drawable/ic_color"
                         android:layout_weight="1"
-                        android:text="@string/text_color"/>
+                        android:text="@string/hint_color"/>
                     <View
                         android:id="@+id/docksearchtxtcolorprev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -203,6 +167,66 @@
                         android:max="30"/>
                 </LinearLayout>
             </LinearLayout>
+
+
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_label"
+                        android:text="@string/hint_text" />
+                    <EditText
+                        style="@style/settingsInput"
+                        android:id="@+id/hinttxt"
+                        android:layout_width="match_parent"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/searchbarhint"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="picksearchtxtcolor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/text_color"/>
+                    <View
+                        android:id="@+id/searchtxtcolorprev"
+                        style="@style/colorPreview"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="pickSearchUiBgColor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/background"/>
+                    <View
+                        android:id="@+id/uiBgColorPrev"
+                        style="@style/colorPreview"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -98,7 +98,7 @@ class CustomTheme : AppCompatActivity() {
     override fun onPause() {
         Settings.putBool("animatedicons", (findViewById<View>(R.id.animatedicons) as Switch).isChecked)
         Settings.putBool("reshapeicons", (findViewById<View>(R.id.reshapeicons) as Switch).isChecked)
-        Main.shouldsetapps = true
+        Main.shouldSetApps = true
         Main.customized = true
         Main.accentColor = Settings.getInt("accent", 0x1155ff) or -0x1000000
         super.onPause()

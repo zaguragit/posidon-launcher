@@ -9,6 +9,7 @@ public class Notification {
 	public final CharSequence title;
 	public final CharSequence text;
 	public final boolean isSummary;
+	public final Drawable bigPic;
 	public final Drawable icon;
 	public final android.app.Notification.Action[] actions;
 	public final CharSequence style;
@@ -16,10 +17,11 @@ public class Notification {
 
 	private final PendingIntent contentIntent;
 
-	public Notification(CharSequence title, CharSequence text, boolean isSummary, Drawable icon, android.app.Notification.Action[] actions, PendingIntent contentIntent, @Nullable CharSequence style, String key) {
+	public Notification(CharSequence title, CharSequence text, boolean isSummary, Drawable bigPic, Drawable icon, android.app.Notification.Action[] actions, PendingIntent contentIntent, @Nullable CharSequence style, String key) {
 		this.title = title;
 		this.text = text;
 		this.isSummary = isSummary;
+		this.bigPic = bigPic;
 		this.icon = icon;
 		this.actions = actions;
 		this.contentIntent = contentIntent;

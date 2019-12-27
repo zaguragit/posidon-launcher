@@ -1,6 +1,7 @@
 package posidon.launcher;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHost;
@@ -12,6 +13,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
@@ -57,6 +59,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
@@ -85,6 +88,7 @@ import posidon.launcher.items.DrawerAdapter;
 import posidon.launcher.items.Folder;
 import posidon.launcher.items.ItemLongPress;
 import posidon.launcher.items.LauncherItem;
+import posidon.launcher.items.Shortcut;
 import posidon.launcher.search.SearchActivity;
 import posidon.launcher.tools.ColorTools;
 import posidon.launcher.tools.Settings;
@@ -105,7 +109,7 @@ public class Main extends AppCompatActivity {
 	public static final int REQUEST_CREATE_APPWIDGET = 1;
 	public static final int REQUEST_BIND_WIDGET = 2;
 
-	public static boolean shouldsetapps = false;
+	public static boolean shouldSetApps = false;
 	public static boolean customized = false;
 
 	public static App[] apps;
@@ -113,8 +117,11 @@ public class Main extends AppCompatActivity {
 	public static AppChangeReceiver receiver;
 	public static Methods methods;
 
+	@RequiresApi(api = Build.VERSION_CODES.M)
+	public static LauncherApps launcherApps;
+
 	private GridView drawerGrid;
-	private View searchbar;
+	private View searchBar;
 	private PowerManager powerManager;
 	private NestedScrollView desktop;
 	private RecyclerView feedRecycler;
@@ -125,6 +132,7 @@ public class Main extends AppCompatActivity {
 	private AppWidgetHostView hostView;
 	private ResizableLayout widgetLayout;
 	private int dockHeight;
+	private BottomSheetBehavior behavior;
 
 	private ProgressBar batteryBar;
 	private final BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
@@ -133,7 +141,6 @@ public class Main extends AppCompatActivity {
 		}
 	};
 
-	BottomSheetBehavior behavior;
 
 	@SuppressLint("ClickableViewAccessibility") @Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -144,6 +151,9 @@ public class Main extends AppCompatActivity {
 		}
 		accentColor = Settings.getInt("accent", 0x1155ff) | 0xff000000;
 		setContentView(R.layout.main);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			launcherApps = getSystemService(LauncherApps.class);
 
 		batteryBar = findViewById(R.id.battery);
 		registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -236,6 +246,25 @@ public class Main extends AppCompatActivity {
 							}
 						});
 						view.setOnLongClickListener(ItemLongPress.folder(Main.this, folder, i));
+					} else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
+						final Shortcut shortcut = new Shortcut(string);
+						if (!showLabels) view.findViewById(R.id.icontxt).setVisibility(View.GONE);
+						if (Tools.isInstalled(shortcut.getPackageName(), getPackageManager())) {
+							if (showLabels) {
+								((TextView) view.findViewById(R.id.icontxt)).setText(shortcut.label);
+								((TextView) view.findViewById(R.id.icontxt)).setTextColor(Settings.getInt("dockLabelColor", -0x11111112));
+							}
+							img.setImageDrawable(shortcut.icon);
+							view.setOnClickListener(new View.OnClickListener() {
+								@Override public void onClick(View view) {
+									shortcut.open(Main.this, view);
+								}
+							});
+							//view.setOnLongClickListener(ItemLongPress.dock(Main.this, app, i));
+						} else {
+							data[i] = "";
+							Settings.putString("dock", TextUtils.join("\n", data));
+						}
 					} else {
 						final App app = App.get(string);
                         if (!showLabels) view.findViewById(R.id.icontxt).setVisibility(View.GONE);
@@ -381,19 +410,19 @@ public class Main extends AppCompatActivity {
 
 				if (Settings.getBool("drawersearchbarenabled", true)) {
 					drawerGrid.setPadding(0, Tools.getStatusBarHeight(Main.this), 0, Tools.navbarHeight + (int)(56 * getResources().getDisplayMetrics().density));
-					searchbar.setPadding(0, 0, 0, Tools.navbarHeight);
-					searchbar.setVisibility(View.VISIBLE);
+					searchBar.setPadding(0, 0, 0, Tools.navbarHeight);
+					searchBar.setVisibility(View.VISIBLE);
 					bg = new ShapeDrawable();
 					tr = Settings.getInt("searchradius", 0) * getResources().getDisplayMetrics().density;
 					bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, 0, 0, 0, 0}, null, null));
 					bg.getPaint().setColor(Settings.getInt("searchcolor", 0x33000000));
-					searchbar.setBackground(bg);
+					searchBar.setBackground(bg);
 					TextView t = findViewById(R.id.searchTxt);
 					t.setTextColor(Settings.getInt("searchhintcolor", 0xFFFFFFFF));
 					t.setText(Settings.getString("searchhinttxt", "Search.."));
 					((ImageView)findViewById(R.id.searchIcon)).setImageTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{Settings.getInt("searchhintcolor", 0xFFFFFFFF)}));
 				} else {
-					searchbar.setVisibility(View.GONE);
+					searchBar.setVisibility(View.GONE);
 					drawerGrid.setPadding(0, Tools.getStatusBarHeight(Main.this), 0, Tools.navbarHeight + (int)(12 * getResources().getDisplayMetrics().density));
 				}
 
@@ -487,12 +516,12 @@ public class Main extends AppCompatActivity {
 				if (!Settings.getBool("hidestatus", false))
 					desktop.setPadding(0, (int)(Tools.getStatusBarHeight(Main.this) - 12 * getResources().getDisplayMetrics().density), 0, 0);
 
-				if (shouldsetapps) new AppLoader(Main.this).execute();
+				if (shouldSetApps) new AppLoader(Main.this, onAppLoaderEnd).execute();
 				else if (apps != null) {
 					drawerGrid.setAdapter(new DrawerAdapter(Main.this, apps));
 					setDock();
 				}
-				shouldsetapps = false;
+				shouldSetApps = false;
 				customized = false;
 
 				final ShapeDrawable notificationBackground = new ShapeDrawable();
@@ -536,7 +565,7 @@ public class Main extends AppCompatActivity {
 		Tools.updateNavbarHeight(Main.this);
 
 		drawerGrid = findViewById(R.id.drawergrid);
-		searchbar = findViewById(R.id.searchbar);
+		searchBar = findViewById(R.id.searchbar);
 		drawerGrid.setOnTouchListener(new View.OnTouchListener() {
 			@Override public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN && drawerGrid.canScrollVertically(-1))
@@ -592,7 +621,7 @@ public class Main extends AppCompatActivity {
 		});
 
 		//setApps(drawerGrid);
-		new AppLoader(Main.this).execute();
+		new AppLoader(Main.this, onAppLoaderEnd).execute();
 		feedRecycler = findViewById(R.id.feedrecycler);
 		feedRecycler.setLayoutManager(new LinearLayoutManager(Main.this));
 		feedRecycler.setNestedScrollingEnabled(false);
@@ -870,7 +899,7 @@ public class Main extends AppCompatActivity {
 	@Override protected void onResume() {
 		super.onResume();
 		widgetHost.startListening();
-		overridePendingTransition(0, R.anim.appexit);
+		overridePendingTransition(R.anim.home_enter, R.anim.appexit);
 		onUpdate();
 	}
 
@@ -945,12 +974,12 @@ public class Main extends AppCompatActivity {
 						View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
 						View.SYSTEM_UI_FLAG_LOW_PROFILE
 				);
-			if (shouldsetapps)  new AppLoader(Main.this).execute(); //setApps(drawerGrid);
+			if (shouldSetApps)  new AppLoader(Main.this, onAppLoaderEnd).execute(); //setApps(drawerGrid);
 		} else getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 	}
 
 	public class AppChangeReceiver extends BroadcastReceiver {
-        @Override public void onReceive(Context context, Intent intent) { new AppLoader(Main.this).execute(); }
+        @Override public void onReceive(Context context, Intent intent) { new AppLoader(Main.this, onAppLoaderEnd).execute(); }
     }
 
 	@Override public void onBackPressed() {
@@ -970,21 +999,25 @@ public class Main extends AppCompatActivity {
 		void setCustomizations();
 	}
 
-	private class AppLoader extends AsyncTask<Void, Void, Void> {
+	private static class AppLoader extends AsyncTask<Void, Void, Void> {
 
 		private App[] tmpApps;
-		private final Context context;
+		private final WeakReference<Activity> context;
+		private AsyncEndListener endListener;
 
-		private AppLoader(Context context) { this.context = context; }
+		private AppLoader(Activity context, AsyncEndListener endListener) {
+			this.context = new WeakReference<>(context);
+			this.endListener = endListener;
+		}
 
 		@Override protected Void doInBackground(Void[] objects) {
 			App.hidden.clear();
-			PackageManager packageManager = context.getPackageManager();
+			PackageManager packageManager = context.get().getPackageManager();
 			int skippedapps = 0;
 			List<ResolveInfo> pacslist = packageManager.queryIntentActivities(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0);
 			tmpApps = new App[pacslist.size()];
 
-			final int ICONSIZE = Tools.numtodp(65, Main.this);
+			final int ICONSIZE = Tools.numtodp(65, context.get());
 			Resources themeRes = null;
 			String iconpackName = Settings.getString("iconpack", "system");
 			String iconResource;
@@ -1035,7 +1068,7 @@ public class Main extends AppCompatActivity {
 					App app = new App();
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 						try {
-							app.icon = Tools.adaptic(context,
+							app.icon = Tools.adaptic(context.get(),
 									packageManager.getActivityIcon(new ComponentName(
 											pacslist.get(i).activityInfo.packageName,
 											pacslist.get(i).activityInfo.name)
@@ -1055,9 +1088,9 @@ public class Main extends AppCompatActivity {
 					if (iconResource != null) intres = Objects.requireNonNull(themeRes).getIdentifier(iconResource, "drawable", iconpackName);
 					if (intres != 0) try {
 						app.icon = themeRes.getDrawable(intres);
-						try { if (!powerManager.isPowerSaveMode() && Settings.getBool("animatedicons", true)) Tools.animate(app.icon); }
+						try { if (!((PowerManager) context.get().getSystemService(Context.POWER_SERVICE)).isPowerSaveMode() && Settings.getBool("animatedicons", true)) Tools.animate(app.icon); }
 						catch (Exception ignore) {}
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context, app.icon);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get(), app.icon);
 					} catch (Exception e) { e.printStackTrace(); } else try {
 						orig = Bitmap.createBitmap(app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 						app.icon.setBounds(0, 0, app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight());
@@ -1073,7 +1106,7 @@ public class Main extends AppCompatActivity {
 						if (back != null) canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
 						else canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
 						if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p);
-						app.icon = new BitmapDrawable(context.getResources(), scaledBitmap);
+						app.icon = new BitmapDrawable(context.get().getResources(), scaledBitmap);
 					} catch (Exception e) { e.printStackTrace(); }
 					App.putInSecondMap(app.packageName + "/" + app.name, app);
 					if (Settings.getBool(pacslist.get(i).activityInfo.packageName + "/" + pacslist.get(i).activityInfo.name + "?hidden", false)) {
@@ -1091,16 +1124,26 @@ public class Main extends AppCompatActivity {
 			Main.apps = tmpApps;
 			App.swapMaps();
 			App.clearSecondMap();
-			drawerGrid.setAdapter(new DrawerAdapter(context, Main.apps));
-			drawerGrid.setOnItemLongClickListener(ItemLongPress.drawer(context));
+			endListener.onEnd();
+		}
+
+		public interface AsyncEndListener {
+			void onEnd();
+		}
+	}
+
+	private AppLoader.AsyncEndListener onAppLoaderEnd = new AppLoader.AsyncEndListener() {
+		@Override
+		public void onEnd() {
+			drawerGrid.setAdapter(new DrawerAdapter(Main.this, Main.apps));
+			drawerGrid.setOnItemLongClickListener(ItemLongPress.drawer(Main.this));
 			drawerGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> av, View v, int i, long id) {
-					Main.apps[i].open(context, v);
+					Main.apps[i].open(Main.this, v);
 				}
 			});
-
 			methods.setDock();
 		}
-	}
+	};
 }

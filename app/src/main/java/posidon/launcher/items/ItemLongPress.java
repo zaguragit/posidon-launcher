@@ -211,7 +211,7 @@ public class ItemLongPress {
 								@Override
 								public void onDismiss() {
 									Settings.putString(app.packageName + "/" + app.name + "?label", editLabel.getText().toString().replace('\n', ' ').replace('¬', ' '));
-									Main.shouldsetapps = true;
+									Main.shouldSetApps = true;
 									Main.methods.setDock();
 								}
 							});
@@ -265,7 +265,7 @@ public class ItemLongPress {
 								@Override
 								public void onDismiss() {
 									Settings.putString(app.packageName + "/" + app.name + "?label", editLabel.getText().toString().replace('\n', ' ').replace('¬', ' '));
-									Main.shouldsetapps = true;
+									Main.shouldSetApps = true;
 									Main.methods.setDock();
 								}
 							});
@@ -294,7 +294,7 @@ public class ItemLongPress {
 							@Override
 							public void onDismiss() {
 								Settings.putString(app.packageName + "/" + app.name + "?label", editLabel.getText().toString().replace('\n', ' ').replace('¬', ' '));
-								Main.shouldsetapps = true;
+								Main.shouldSetApps = true;
 								Main.methods.setDock();
 							}
 						});

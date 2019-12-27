@@ -57,7 +57,7 @@ class CustomHiddenApps : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Main.shouldsetapps = true
+        Main.shouldSetApps = true
         Main.customized = true
     }
 

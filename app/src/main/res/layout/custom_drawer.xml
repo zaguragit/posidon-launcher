@@ -45,7 +45,7 @@
                         android:text="@string/background"/>
                     <View
                         android:id="@+id/bgColorPrev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                         android:text="@string/labelColor"/>
                     <View
                         android:id="@+id/labelColorPrev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

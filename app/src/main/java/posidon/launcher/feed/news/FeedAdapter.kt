@@ -76,7 +76,7 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
             holder.rssFeedView.findViewById<View>(R.id.gradient).layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         }
         holder.rssFeedView.findViewById<View>(R.id.card).setOnClickListener {
-            try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link!!.trim { it <= ' ' })), ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slideup, R.anim.slightfadeout).toBundle()) }
+            try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link!!.trim { it <= ' ' })), ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle()) }
             catch (e: Exception) { e.printStackTrace() }
         }
         holder.rssFeedView.findViewById<View>(R.id.card).setOnLongClickListener(LauncherMenu(context, window))

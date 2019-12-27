@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -61,10 +62,15 @@ public class SearchActivity extends AppCompatActivity {
 				return false;
 			}
 		});
-		findViewById(R.id.searchbar).setBackgroundColor(Settings.getInt("searchcolor", 0x33000000));
+
 		ShapeDrawable bg = new ShapeDrawable();
+		float tr = Settings.getInt("searchradius", 0) * getResources().getDisplayMetrics().density;
+		bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, 0, 0, 0, 0}, null, null));
+		bg.getPaint().setColor(Settings.getInt("searchcolor", 0x33000000));
+		findViewById(R.id.searchbar).setBackground(bg);
+		bg = new ShapeDrawable();
 		bg.setShape(new RectShape());
-		bg.getPaint().setColor(Settings.getInt("searchuibg", 0x88000000));
+		bg.getPaint().setColor(Settings.getInt("searchUiBg", 0x88000000));
 		getWindow().setBackgroundDrawable(bg);
 		searchTxt.setTextColor(Settings.getInt("searchtxtcolor", 0xFFFFFFFF));
 		((TextView)findViewById(R.id.failtxt)).setTextColor(Settings.getInt("searchtxtcolor", 0xFFFFFFFF));
@@ -93,7 +99,9 @@ public class SearchActivity extends AppCompatActivity {
 		operators.put("or", new Or());
 	}
 
+	boolean stillWantIP = false;
 	private void search(String string, GridView grid) {
+		stillWantIP = false;
 		int j = 0;
 		if (Main.apps != null) {
 			boolean showHidden = cook(string).equals(cook("hidden")) || cook(string).equals(cook("hiddenapps"));
@@ -167,12 +175,13 @@ public class SearchActivity extends AppCompatActivity {
 				((TextView)findViewById(R.id.failtxt)).setText(getString(R.string.no_results_for, string));
 			}
 			if (string.toLowerCase().contains("ip")) {
+				stillWantIP = true;
 				findViewById(R.id.smartbox).setVisibility(View.VISIBLE);
 				((TextView)findViewById(R.id.type)).setText(R.string.ip_address_external);
 				((TextView)findViewById(R.id.result)).setText("");
 				new Loader.text("https://checkip.amazonaws.com", new Loader.text.Listener() {
 					@Override
-					public void onFinished(String string) { ((TextView)findViewById(R.id.result)).setText(string); }
+					public void onFinished(String string) { if (stillWantIP) ((TextView)findViewById(R.id.result)).setText(string); }
 				}).execute();
 				findViewById(R.id.fail).setVisibility(View.GONE);
 			} else findViewById(R.id.smartbox).setVisibility(View.GONE);
