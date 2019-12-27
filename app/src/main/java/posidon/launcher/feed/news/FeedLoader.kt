@@ -14,7 +14,7 @@ import java.net.URL
 class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean>() {
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
-    private val END_STRINGS: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
+    private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
 
     override fun doInBackground(vararg voids: Void): Boolean? {
         for (u: String in Settings.getString("feedUrls", "androidpolice.com").split("|")) {
@@ -24,9 +24,9 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean
                 if (!url.endsWith("/")) url += "/"
                 var searching = true
                 var i = 0
-                while (searching && i < END_STRINGS.size) {
+                while (searching && i < endStrings.size) {
                     try {
-                        val newUrl = url + END_STRINGS[i]
+                        val newUrl = url + endStrings[i]
                         parseFeed(URL(newUrl).openConnection().getInputStream(), Source(url, url))
                         searching = false
                     }

@@ -1,6 +1,9 @@
 package posidon.launcher.tools
 
+import android.content.Context
+import android.os.Build
 import android.text.TextUtils
+import posidon.launcher.Main
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -23,10 +26,17 @@ object Dock {
             } else data[i] = "folder(" + folderContent + "¬" + data[i] + ")"
         }
         Settings.putString("dock", TextUtils.join("\n", data))
+        Main.methods.setDock()
     }
 
-    fun get(i: Int) {
-
+    fun get(context: Context, i: Int): LauncherItem? {
+        val data: Array<String?> = Settings.getString("dock", "").split("\n").toTypedArray()
+        val string = data[i] ?: return null
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
+            string.startsWith("folder(") && string.endsWith(')') -> Folder(context, string)
+            else -> App[string]
+        }
     }
 
     fun set(item: LauncherItem, i: Int) {

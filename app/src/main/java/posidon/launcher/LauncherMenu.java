@@ -75,7 +75,7 @@ public class LauncherMenu implements View.OnLongClickListener {
             public void onClick(View v) {
                 Intent i = new Intent(context, Customizations.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slightfadeout).toBundle());
+                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle());
                 dialog.dismiss();
             }
         });
@@ -84,7 +84,7 @@ public class LauncherMenu implements View.OnLongClickListener {
             public void onClick(View v) {
                 Intent i = new Intent(context, Gallery.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slightfadeout).toBundle());
+                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle());
                 dialog.dismiss();
             }
         });

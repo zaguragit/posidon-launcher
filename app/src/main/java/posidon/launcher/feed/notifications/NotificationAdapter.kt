@@ -57,7 +57,13 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                 }
                 notification.isSummary -> LayoutInflater.from(context).inflate(R.layout.notification_normal_summary, null)
                 else -> {
-                    val v1: View = LayoutInflater.from(context).inflate(R.layout.notification_normal, null)
+                    val v1: View
+                    if (notification.bigPic == null) {
+                        v1 = LayoutInflater.from(context).inflate(R.layout.notification_normal, null)
+                    } else {
+                        v1 = LayoutInflater.from(context).inflate(R.layout.notification_big_pic, null)
+                        v1.findViewById<ImageView>(R.id.bigPic).setImageDrawable(notification.bigPic)
+                    }
                     if (notification.actions != null && Settings.getBool("notificationActionsEnabled", false)) {
                         v1.findViewById<LinearLayout>(R.id.action_list).visibility = View.VISIBLE
                         for (action in notification.actions) {
@@ -69,8 +75,8 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                             val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
                             out.paint.color = Settings.getInt("notificationActionBGColor", 0x88e0e0e0.toInt())
                             a.background = out
-                            val vPadding = (8 * context.resources.displayMetrics.density).toInt()
-                            val hPadding = (12 * context.resources.displayMetrics.density).toInt()
+                            val vPadding = (10 * context.resources.displayMetrics.density).toInt()
+                            val hPadding = (15 * context.resources.displayMetrics.density).toInt()
                             a.setPadding(hPadding, vPadding, hPadding, vPadding)
                             v1.findViewById<LinearLayout>(R.id.action_list).addView(a)
                             (a.layoutParams as LinearLayout.LayoutParams).leftMargin = (6 * context.resources.displayMetrics.density).toInt()

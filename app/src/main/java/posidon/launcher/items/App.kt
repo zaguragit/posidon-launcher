@@ -37,9 +37,9 @@ class App : LauncherItem() {
                 "clip_reveal" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         context.startActivity(launchintent, ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle())
-                    else context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.slightfadeout).toBundle())
+                    else context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
                 }
-                else -> context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.slightfadeout).toBundle())
+                else -> context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
             }
         } catch (ignore: Exception) {}
     }
@@ -74,7 +74,7 @@ class App : LauncherItem() {
             val i = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             i.data = Uri.parse("package:$packageName")
-            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slightfadeout).toBundle())
+            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
         }
         d.findViewById<View>(R.id.uninstallbtn)!!.setOnClickListener {
             Tools.vibrate(context)

@@ -63,7 +63,7 @@
                         android:text="@string/accent_color"/>
                     <View
                         android:id="@+id/accentcolorprev"
-                        style="@style/colorprev"/>
+                        style="@style/colorPreview"/>
                 </LinearLayout>
             </LinearLayout>
 

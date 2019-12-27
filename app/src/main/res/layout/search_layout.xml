@@ -28,7 +28,8 @@
     <GridView
         android:id="@+id/searchgrid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:numColumns="1"
         android:clipToPadding="false"
         android:paddingBottom="64dp"
@@ -39,12 +40,15 @@
         android:id="@+id/smartbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:orientation="vertical"
         android:padding="12dp"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
         android:background="@drawable/search_card"
         android:visibility="gone"
-        android:layout_marginBottom="56dp">
+        android:layout_marginBottom="68dp">
         <TextView
             android:id="@+id/type"
             android:layout_width="match_parent"

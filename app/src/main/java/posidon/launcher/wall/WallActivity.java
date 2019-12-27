@@ -151,7 +151,7 @@ public class WallActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         } else {
             File direct = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? getExternalFilesDir("Wallpapers") : new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Wallpapers");
-            if (direct.exists() || direct.mkdirs()) {
+            if (direct != null && (direct.exists() || direct.mkdirs())) {
                 File file = new File(direct,name.replace(' ', '_') + ".png");
                 if (file.exists()) Snackbar.make(findViewById(R.id.nametxt), "Already Saved: " + file.getAbsolutePath(), Snackbar.LENGTH_SHORT).show();
                 else try {

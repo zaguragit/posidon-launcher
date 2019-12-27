@@ -5,6 +5,8 @@ import android.app.NotificationChannelGroup;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -120,7 +122,7 @@ public class NotificationService extends NotificationListenerService {
 			boolean isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && (notification.getNotification().flags & android.app.Notification.FLAG_GROUP_SUMMARY) == android.app.Notification.FLAG_GROUP_SUMMARY;
 
 			CharSequence title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE);
-			if (title == null || title.toString().replace(" ", "") == "") {
+			if (title == null || title.toString().replace(" ", "").isEmpty()) {
 				try { title = contextReference.get().getPackageManager().getApplicationLabel(contextReference.get().getPackageManager().getApplicationInfo(notification.getPackageName(), 0)); }
 				catch (Exception e) { e.printStackTrace(); }
 			}
@@ -140,8 +142,18 @@ public class NotificationService extends NotificationListenerService {
 			CharSequence text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT);
 			if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT);
 
+			Drawable bigPic = null;
+
+			Bitmap b = (Bitmap) extras.get(android.app.Notification.EXTRA_PICTURE);
+			if (b != null) {
+				try { bigPic = new BitmapDrawable(contextReference.get().getResources(), b); }
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 			return new Notification(
-					title, text, isSummary, icon,
+					title, text, isSummary, bigPic, icon,
 					notification.getNotification().actions,
 					notification.getNotification().contentIntent,
 					extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE),
