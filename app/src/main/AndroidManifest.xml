@@ -41,10 +41,11 @@
         <activity
             android:name=".Main"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:configChanges="mcc|mnc|uiMode|keyboardHidden|screenSize|orientation"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:allowEmbedded="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -58,10 +59,11 @@
             android:name=".desktop.DesktopMode"
             android:label="posidon desktop"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:configChanges="mcc|mnc|uiMode|keyboardHidden|screenSize|orientation"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:allowEmbedded="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SECONDARY_HOME" />

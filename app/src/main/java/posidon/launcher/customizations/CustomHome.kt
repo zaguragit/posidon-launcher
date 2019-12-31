@@ -55,6 +55,10 @@ class CustomHome : AppCompatActivity() {
         })
         dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
 
+
+        val showBehindDock = findViewById<Switch>(R.id.showBehindDock)
+        showBehindDock.isChecked = Settings.getBool("feed:show_behind_dock", false)
+
         val feedswitch = findViewById<Switch>(R.id.feedenabled)
         feedswitch.isChecked = Settings.getBool("feedenabled", true)
         val hidefeedswitch = findViewById<Switch>(R.id.hidefeed)
@@ -99,6 +103,7 @@ class CustomHome : AppCompatActivity() {
         findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked = Settings.getBool("collapseNotifications", false)
         findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings.getInt("notificationActionTextColor", 0x88e0e0e0.toInt()))
         findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings.getInt("notificationActionTextColor", -0xdad9d9))
+        Main.customized = true
     }
 
     fun pickclockcolor(v: View) { ColorTools.pickColor(this, "clockcolor", -0x1) }
@@ -141,7 +146,7 @@ class CustomHome : AppCompatActivity() {
         Settings.putBool("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
         Settings.putBool("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
         Settings.putBool("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
-        Main.customized = true
+        Settings.putBool("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
         super.onPause()
     }
 }

@@ -94,6 +94,7 @@ class CustomDrawer : AppCompatActivity() {
                 Settings.putInt("blurLayers", progress + 1)
             }
         })
+        Main.customized = true
     }
 
     fun pickBGColor(v: View) { ColorTools.pickColor(this, "drawercolor", -0x78000000) }
@@ -107,7 +108,6 @@ class CustomDrawer : AppCompatActivity() {
             Main.shouldSetApps = true
         }
         Settings.putBool("blur", findViewById<Switch>(R.id.blurswitch).isChecked)
-        Main.customized = true
         super.onPause()
     }
 }

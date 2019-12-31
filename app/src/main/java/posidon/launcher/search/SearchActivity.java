@@ -108,7 +108,7 @@ public class SearchActivity extends AppCompatActivity {
 			if (showHidden) j++;
 			for (App app : Main.apps) {
 				for (String word : app.label.split(" "))
-					if (cook(word).startsWith(cook(string))) {
+					if (cook(word).contains(cook(string)) || word.contains(string)) {
 						j++;
 						break;
 					}
@@ -119,7 +119,7 @@ public class SearchActivity extends AppCompatActivity {
 				j = 0;
 				for (App app : Main.apps) {
 					for (String word : app.label.split(" ")) {
-						if (cook(word).startsWith(cook(string))) {
+						if (cook(word).contains(cook(string)) || word.contains(string)) {
 							results[j] = app;
 							j++;
 							break;
@@ -184,6 +184,11 @@ public class SearchActivity extends AppCompatActivity {
 					public void onFinished(String string) { if (stillWantIP) ((TextView)findViewById(R.id.result)).setText(string); }
 				}).execute();
 				findViewById(R.id.fail).setVisibility(View.GONE);
+			} else if (string.toLowerCase().contains("pi") || string.toLowerCase().contains("π")) {
+				findViewById(R.id.smartbox).setVisibility(View.VISIBLE);
+				((TextView)findViewById(R.id.type)).setText(R.string.value_of_pi);
+				((TextView)findViewById(R.id.result)).setText("\u03c0 = " + Math.PI);
+				findViewById(R.id.fail).setVisibility(View.GONE);
 			} else findViewById(R.id.smartbox).setVisibility(View.GONE);
 		}
 	}
@@ -215,7 +220,7 @@ public class SearchActivity extends AppCompatActivity {
 				.replace("wh", "w")
 				.replace("ts", "s")
 				.replace("tz", "s")
-				.replace("gh", "")
+				.replace("gh", "g")
 				.replace("-", "")
 				.replace("_", "")
 				.replace("/", "")

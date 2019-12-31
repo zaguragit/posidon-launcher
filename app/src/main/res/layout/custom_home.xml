@@ -84,11 +84,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
+                <TextView style="@style/customcardtitle" android:text="@string/settings_title_feed" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/newscardradiusnum"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="28sp"
+                        android:textColor="@color/cardtxticon"/>
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:text="@string/corner_radius" />
+                    <posidon.launcher.view.Seekbar
+                        android:id="@+id/newscardradiusslider"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:max="50" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/cardHorizontalMarginNum"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="28sp"
+                        android:textColor="@color/cardtxticon"/>
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:text="@string/horizontal_margin" />
+                    <posidon.launcher.view.Seekbar
+                        android:id="@+id/cardHorizontalMarginSeekbar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:max="32" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_label"
+                        android:text="@string/show_behind_dock" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/showBehindDock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView style="@style/customcardtitle" android:text="@string/settings_title_feed" />
+                    <TextView style="@style/customcardtitle" android:text="@string/settings_title_news" />
                     <posidon.launcher.view.Switch
                         android:id="@+id/feedenabled"
                         android:layout_width="wrap_content"
@@ -123,54 +191,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/newscardradiusnum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/corner_radius" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/newscardradiusslider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="50" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/cardHorizontalMarginNum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/horizontal_margin" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/cardHorizontalMarginSeekbar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="32" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

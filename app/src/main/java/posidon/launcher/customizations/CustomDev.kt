@@ -25,11 +25,11 @@ class CustomDev : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         (findViewById<View>(R.id.showcomponent) as Switch).isChecked = Settings.getBool("showcomponent", false)
+        Main.customized = true
     }
 
     override fun onPause() {
         super.onPause()
         Settings.putBool("showcomponent", (findViewById<View>(R.id.showcomponent) as Switch).isChecked)
-        Main.customized = true
     }
 }

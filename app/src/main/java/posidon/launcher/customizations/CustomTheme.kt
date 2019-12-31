@@ -35,6 +35,7 @@ class CustomTheme : AppCompatActivity() {
         val pm = packageManager
         icShapeViews = arrayOf(findViewById(R.id.icshapedef), findViewById(R.id.icshaperound), findViewById(R.id.icshaperoundrect), findViewById(R.id.icshaperect), findViewById(R.id.icshapesquircle))
 
+        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Main.accentColor)
         val i = findViewById<TextView>(R.id.iconpackselector)
         try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings.getString("iconpack", "system")!!, 0)) }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
@@ -90,6 +91,8 @@ class CustomTheme : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) findViewById<View>(R.id.icshapesettings).visibility = View.GONE
         else icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundResource(R.drawable.selection)
+        Main.shouldSetApps = true
+        Main.customized = true
     }
 
     fun pickAccentColor(v: View) { ColorTools.pickColorNoAlpha(this, "accent", 0x1155ff) }
@@ -98,8 +101,6 @@ class CustomTheme : AppCompatActivity() {
     override fun onPause() {
         Settings.putBool("animatedicons", (findViewById<View>(R.id.animatedicons) as Switch).isChecked)
         Settings.putBool("reshapeicons", (findViewById<View>(R.id.reshapeicons) as Switch).isChecked)
-        Main.shouldSetApps = true
-        Main.customized = true
         Main.accentColor = Settings.getInt("accent", 0x1155ff) or -0x1000000
         super.onPause()
     }

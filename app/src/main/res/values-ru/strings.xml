@@ -121,10 +121,13 @@
     <string name="layout">Расположение</string>
     <string name="sample_feed_source">posidon news</string>
     <string name="sample_feed_card_title">Вышла новая версия posidon launcher!</string>
-    <string name="hidden_apps">Hidden apps</string>
-    <string name="choose_a_launcher">Choose a launcher</string>
+    <string name="hidden_apps">Скрытые приложения</string>
+    <string name="choose_a_launcher">Выберите лаунчер</string>
     <string name="launchers">Лаунчеры</string>
     <string name="horizontal_margin">Horizontal margin</string>
+    <string name="value_of_pi">Значение π</string>
+    <string name="settings_title_news">Новости</string>
+    <string name="show_behind_dock">Show behind dock</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

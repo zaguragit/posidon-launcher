@@ -97,7 +97,6 @@ import posidon.launcher.tools.ThemeTools;
 import posidon.launcher.tools.Tools;
 import posidon.launcher.tutorial.WelcomeActivity;
 import posidon.launcher.view.ResizableLayout;
-
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
@@ -216,8 +215,11 @@ public class Main extends AppCompatActivity {
 										icon.getLayoutParams().height = finalAppSize;
 										icon.getLayoutParams().width = finalAppSize;
 										icon.setImageDrawable(app.icon);
-										if (labelsEnabled) ((TextView) appIcon.findViewById(R.id.icontxt)).setText(app.label);
-										else appIcon.findViewById(R.id.icontxt).setVisibility(View.GONE);
+										if (labelsEnabled) {
+											TextView iconTxt = appIcon.findViewById(R.id.icontxt);
+											iconTxt.setText(app.label);
+											iconTxt.setTextColor(Settings.getInt("folder:label_color", 0xddffffff));
+										} else appIcon.findViewById(R.id.icontxt).setVisibility(View.GONE);
 										appIcon.setOnClickListener(new View.OnClickListener() {
 											@Override
 											public void onClick(View view) {
@@ -306,7 +308,14 @@ public class Main extends AppCompatActivity {
 				getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 				findViewById(R.id.drawercontent).getLayoutParams().height = metrics.heightPixels;
 				((FrameLayout.LayoutParams) findViewById(R.id.homeView).getLayoutParams()).topMargin = -dockHeight;
-				((CoordinatorLayout.LayoutParams) desktop.getLayoutParams()).setMargins(0, dockHeight, 0, (int) (dockHeight + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) - 18) * getResources().getDisplayMetrics().density));
+				if (Settings.getBool("feed:show_behind_dock", false)) {
+					((CoordinatorLayout.LayoutParams) desktop.getLayoutParams()).setMargins(0, dockHeight, 0, 0);
+					findViewById(R.id.desktopContent).setPadding(0, 0, 0, (int) (dockHeight + Tools.navbarHeight + Settings.getInt("dockbottompadding", 10) * getResources().getDisplayMetrics().density));
+
+				} else {
+					((CoordinatorLayout.LayoutParams) desktop.getLayoutParams()).setMargins(0, dockHeight, 0, (int) (dockHeight + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) - 18) * getResources().getDisplayMetrics().density));
+					findViewById(R.id.desktopContent).setPadding(0, (int)(6 * getResources().getDisplayMetrics().density), 0, (int)(24 * getResources().getDisplayMetrics().density));
+				}
 				//desktop.setPadding(0, dockHeight, 0, (int) (dockHeight + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) - 18) * getResources().getDisplayMetrics().density));
 				((CoordinatorLayout.LayoutParams) findViewById(R.id.blur).getLayoutParams()).topMargin = dockHeight;
 
@@ -609,7 +618,7 @@ public class Main extends AppCompatActivity {
 							blurBg.getDrawable(i).setAlpha(Math.min(repetitive - (i << 8) + i, 255));
 					}
 					desktop.setTranslationY(-200 * slideOffset);
-				} else {
+				} else if (!Settings.getBool("feed:show_behind_dock", false)) {
 					((CoordinatorLayout.LayoutParams) desktop.getLayoutParams()).bottomMargin =
 							(int) ((1 + slideOffset) * (dockHeight + Tools.navbarHeight +
 									(Settings.getInt("dockbottompadding", 10) - 18) *
