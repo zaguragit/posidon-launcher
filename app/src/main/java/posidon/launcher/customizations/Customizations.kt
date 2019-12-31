@@ -67,8 +67,9 @@ class Customizations : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Settings.getBool("devOptionsEnabled", false)) findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
-        else findViewById<View>(R.id.devoptions).visibility = View.GONE
+        findViewById<View>(R.id.devoptions).visibility =
+                if (Settings.getBool("devOptionsEnabled", false)) View.VISIBLE
+                else View.GONE
         cardThing()
         System.gc()
     }

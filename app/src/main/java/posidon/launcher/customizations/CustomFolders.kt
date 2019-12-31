@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Leo Shneyderis
+ * Copyright (c) 2020 Leo Shneyderis
  * All rights reserved
  */
 
@@ -41,17 +41,19 @@ class CustomFolders : AppCompatActivity() {
             }
         })
 
-        findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings.getBool("folderLabelsEnabled", false)
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings.getInt("folderBG", -0x22eeeded))
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings.getInt("folder:label_color", -0x22000001))
+        findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings.getBool("folderLabelsEnabled", false)
         findViewById<SeekBar>(R.id.radiusSlider).progress = Settings.getInt("folderCornerRadius", 18)
+        Main.customized = true
     }
 
     fun pickColor(v: View) { ColorTools.pickColor(this, "folderBG", -0x22eeeded) }
+    fun pickLabelColor(v: View) { ColorTools.pickColor(this, "folder:label_color", -0x22000001) }
 
     override fun onPause() {
         Settings.putBool("folderLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
         Settings.putInt("folderCornerRadius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
-        Main.customized = true
         super.onPause()
     }
 }

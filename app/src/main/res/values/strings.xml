@@ -125,6 +125,9 @@
     <string name="choose_a_launcher">Choose a launcher</string>
     <string name="launchers">Launchers</string>
     <string name="horizontal_margin">Horizontal margin</string>
+    <string name="value_of_pi">Value of π</string>
+    <string name="settings_title_news">News</string>
+    <string name="show_behind_dock">Show behind dock</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

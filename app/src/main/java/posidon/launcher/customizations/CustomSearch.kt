@@ -39,6 +39,7 @@ class CustomSearch : AppCompatActivity() {
         findViewById<View>(R.id.docksearchtxtcolorprev).background = ColorTools.colorcircle(Settings.getInt("docksearchtxtcolor", -0x1000000))
         findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings.getInt("docksearchradius", 30)
         findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorcircle(Settings.getInt("searchUiBg", -0x78000000))
+        Main.customized = true
     }
 
     fun picksearchcolor(v: View) { ColorTools.pickColor(this, "searchcolor", 0x33000000) }
@@ -53,7 +54,6 @@ class CustomSearch : AppCompatActivity() {
         Settings.putInt("searchradius", findViewById<SeekBar>(R.id.searchradiusslider).progress)
         Settings.putBool("docksearchbarenabled", findViewById<Switch>(R.id.docksearchbar).isChecked)
         Settings.putBool("drawersearchbarenabled", findViewById<Switch>(R.id.drawersearchbar).isChecked)
-        Main.customized = true
         super.onPause()
     }
 }

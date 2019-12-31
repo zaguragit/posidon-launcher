@@ -125,7 +125,10 @@
     <string name="hidden_apps">Hidden apps</string>
     <string name="choose_a_launcher">Escoger un launcher</string>
     <string name="launchers">Launchers</string>
-    <string name="horizontal_margin">Horizontal margin</string>
+    <string name="horizontal_margin">Margen horizontal</string>
+    <string name="value_of_pi">Valor de π</string>
+    <string name="settings_title_news">Noticias</string>
+    <string name="show_behind_dock">Show behind dock</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

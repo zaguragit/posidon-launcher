@@ -12,10 +12,11 @@
         android:padding="8dp"/>
     <TextView
         android:id="@+id/icontxt"
-        android:layout_width="wrap_content"
-        android:layout_height="14dp"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
         android:textSize="12sp"
         android:maxLines="1"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="4dp"
+        android:singleLine="true"/>
 </LinearLayout>

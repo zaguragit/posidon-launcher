@@ -25,9 +25,7 @@
             android:id="@+id/desktopContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="6dp"
-            android:paddingBottom="24dp">
+            android:orientation="vertical">
             <posidon.launcher.view.ResizableLayout
                 android:id="@+id/widgets"
                 android:layout_width="match_parent"

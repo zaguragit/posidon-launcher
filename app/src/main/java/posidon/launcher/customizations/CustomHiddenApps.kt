@@ -18,9 +18,9 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.items.App
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Sort
 import posidon.launcher.tools.Tools
@@ -53,12 +53,6 @@ class CustomHiddenApps : AppCompatActivity() {
         }
         Sort.labelSort(pacs)
         list.adapter = ListAdapter(this, pacs)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Main.shouldSetApps = true
-        Main.customized = true
     }
 
     internal inner class ListAdapter(private val context: Context, private val pacsForAdapter: Array<App?>) : BaseAdapter() {
@@ -106,6 +100,8 @@ class CustomHiddenApps : AppCompatActivity() {
             if (hidden) finalConvertView.setBackgroundColor(0x33ff0000)
             else finalConvertView.setBackgroundColor(0x0)
             convertView.setOnClickListener {
+                Main.shouldSetApps = true
+                Main.customized = true
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
                     Settings.putBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)

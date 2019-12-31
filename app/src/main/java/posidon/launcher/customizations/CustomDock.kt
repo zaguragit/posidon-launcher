@@ -78,6 +78,7 @@ class CustomDock : AppCompatActivity() {
                 Settings.putInt("dockbottompadding", progress)
             }
         })
+        Main.customized = true
     }
 
     fun pickColor(v: View) { ColorTools.pickColor(this, "dockcolor", -0x78000000) }
@@ -88,7 +89,6 @@ class CustomDock : AppCompatActivity() {
         val docklabelswitch = findViewById<Switch>(R.id.labelsEnabled)
         Settings.putBool("dockLabelsEnabled", docklabelswitch.isChecked)
         Settings.putInt("dockradius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
-        Main.customized = true
         super.onPause()
     }
 }

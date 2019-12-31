@@ -47,6 +47,7 @@ class CustomOther : AppCompatActivity() {
             "clip_reveal" -> 1
             else -> 0
         })
+        Main.customized = true
     }
 
     override fun onPause() {
@@ -57,7 +58,6 @@ class CustomOther : AppCompatActivity() {
             1 -> "clip_reveal"
             else -> "posidon"
         })
-        Main.customized = true
         super.onPause()
     }
 

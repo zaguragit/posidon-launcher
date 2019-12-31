@@ -8,8 +8,8 @@ android {
         applicationId "posidon.launcher"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 52
-        versionName "Release 1.5"
+        versionCode 53
+        versionName "Release 1.6"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

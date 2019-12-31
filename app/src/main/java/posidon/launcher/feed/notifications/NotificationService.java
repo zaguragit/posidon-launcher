@@ -60,7 +60,14 @@ public class NotificationService extends NotificationListenerService {
 	@Override public void onNotificationChannelGroupModified(String pkg, UserHandle user, NotificationChannelGroup group, int modificationType) { onUpdate(); }
 	@Override public void onNotificationRankingUpdate(RankingMap rankingMap) { onUpdate(); }
 
-	private void onUpdate() { if (!updating) new NotificationLoader(getActiveNotifications()).start(); }
+	private void onUpdate() {
+		if (!updating) try {
+			new NotificationLoader(getActiveNotifications()).start();
+		}
+		catch (Exception e) {
+			new NotificationLoader(null).start();
+		}
+	}
 
 	public interface Listener { void onUpdate(); }
 
