@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.items.App
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
 
@@ -53,7 +53,7 @@ class IconPackPicker : AppCompatActivity() {
         }
         val grid = findViewById<GridView>(R.id.grid)
         grid.adapter = IconPackListAdapter(this, apps as Array<App>)
-        grid.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
             Settings.putString("iconpack", apps[position].packageName)
             view.background = getDrawable(R.drawable.selection)
             if (lastclicked !== view) {
@@ -65,25 +65,17 @@ class IconPackPicker : AppCompatActivity() {
 
     internal inner class IconPackListAdapter(private val context: Context, private val pacsForAdapter: Array<App>) : BaseAdapter() {
 
-        override fun getCount(): Int {
-            return pacsForAdapter.size
-        }
-
-        override fun getItem(position: Int): Any? {
-            return null
-        }
-
-        override fun getItemId(position: Int): Long {
-            return 0
-        }
+        override fun getCount(): Int = pacsForAdapter.size
+        override fun getItem(position: Int): Any? = null
+        override fun getItemId(position: Int): Long = 0
 
         internal inner class ViewHolder {
             var icon: ImageView? = null
             var text: TextView? = null
         }
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
+        override fun getView(position: Int, cv: View?, parent: ViewGroup): View {
+            var convertView = cv
             val viewHolder: ViewHolder
             val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

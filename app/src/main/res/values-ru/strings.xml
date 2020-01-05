@@ -99,6 +99,7 @@
     <string name="notifications">Уведомления</string>
     <string name="text_shadow">Тень под текстом</string>
     <string name="ubuntu">Ubuntu</string>
+    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Домашний экран</string>
     <string name="wall_apply_lock_screen">Экран блокировки</string>
     <string name="wall_apply_both">Оба</string>
@@ -127,7 +128,8 @@
     <string name="horizontal_margin">Horizontal margin</string>
     <string name="value_of_pi">Значение π</string>
     <string name="settings_title_news">Новости</string>
-    <string name="show_behind_dock">Show behind dock</string>
+    <string name="show_behind_dock">Показывать за доком</string>
+    <string name="some_quick_adjustments">Some quick adjustments</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

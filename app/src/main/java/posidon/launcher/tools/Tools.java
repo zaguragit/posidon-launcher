@@ -72,7 +72,7 @@ public class Tools {
 	    return matrix;
 	}
 
-	public static void animate(Drawable d) {
+	public static Drawable animate(Drawable d) {
 		if (d instanceof AnimatedVectorDrawable && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			final AnimatedVectorDrawable avd = (AnimatedVectorDrawable) d;
 			avd.registerAnimationCallback(new Animatable2.AnimationCallback() {
@@ -92,6 +92,7 @@ public class Tools {
 			});
 			avd.start();
 		} else if (d instanceof AnimationDrawable) ((AnimationDrawable) d).start();
+		return d;
 	}
 
 	public static void clearAnimation(Drawable d) {
@@ -322,7 +323,6 @@ public class Tools {
 
 	public static Bitmap drawable2bitmap(Drawable drawable, boolean duplicateIfBitmapDrawable) {
 		Bitmap bitmap;
-
 		if (drawable instanceof BitmapDrawable) {
 			BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
 			if(bitmapDrawable.getBitmap() != null) {
@@ -330,14 +330,12 @@ public class Tools {
 				else return bitmapDrawable.getBitmap();
 			}
 		}
-
 		if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0)
 			bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
 		else bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
 		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-		drawable.draw(canvas);
+		try { drawable.draw(canvas); } catch (Exception ignore) {}
 		return bitmap;
 	}
 
@@ -522,8 +520,11 @@ public class Tools {
 			case "ubuntu":
 				activity.getTheme().applyStyle(R.style.font_ubuntu, true);
 				break;
+			case "lexendDeca":
+				activity.getTheme().applyStyle(R.style.font_lexend_deca, true);
+				break;
 			case "openDyslexic":
-				activity.getTheme().applyStyle(R.style.open_dyslexic, true);
+				activity.getTheme().applyStyle(R.style.font_open_dyslexic, true);
 				break;
 		}
 	}

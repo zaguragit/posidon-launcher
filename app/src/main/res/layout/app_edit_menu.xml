@@ -5,11 +5,18 @@
     android:layout_height="wrap_content"
     android:background="@drawable/settings_card"
     android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:padding="10dp">
+    <ImageView
+        android:id="@+id/iconimg"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="8dp"/>
     <EditText
         android:id="@+id/editlabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:imeOptions="actionGo"
         android:inputType="textNoSuggestions"
         android:hint="@string/app_name_hint"/>

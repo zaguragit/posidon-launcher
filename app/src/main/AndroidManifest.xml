@@ -189,6 +189,7 @@
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
             </intent-filter>
         </activity>
+        <activity android:name=".items.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
 
         <meta-data
             android:name="preloaded_fonts"

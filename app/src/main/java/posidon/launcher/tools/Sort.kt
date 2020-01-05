@@ -13,7 +13,7 @@ object Sort {
         while (i < apps.size - 1) {
             j = i + 1
             while (j < apps.size) {
-                if (apps[i]!!.label.compareTo(apps[j]!!.label, ignoreCase = true) > 0) {
+                if (apps[i]!!.label!!.compareTo(apps[j]!!.label!!, ignoreCase = true) > 0) {
                     temp = apps[i]!!
                     apps[i] = apps[j]
                     apps[j] = temp

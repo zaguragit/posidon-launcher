@@ -99,6 +99,7 @@
     <string name="notifications">Notifications</string>
     <string name="text_shadow">Text shadow</string>
     <string name="ubuntu">Ubuntu</string>
+    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Home screen</string>
     <string name="wall_apply_lock_screen">Lock screen</string>
     <string name="wall_apply_both">Both</string>
@@ -128,6 +129,7 @@
     <string name="value_of_pi">Value of π</string>
     <string name="settings_title_news">News</string>
     <string name="show_behind_dock">Show behind dock</string>
+    <string name="some_quick_adjustments">Some quick adjustments</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

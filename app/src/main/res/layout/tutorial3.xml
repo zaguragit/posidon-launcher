@@ -8,30 +8,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="28dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/settings_card">
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/custom_about"/>
-            <TextView
+            android:layout_weight="1">
+            <LinearLayout
+                style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textSize="18sp"
-                android:textColor="#ffffff"
-                android:text="@string/explanation"/>
-        </LinearLayout>
+                android:orientation="vertical">
+                <TextView style="@style/customcardtitle" android:text="@string/some_quick_adjustments" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_label"
+                        android:text="@string/settings_title_news" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/enableNews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:checked="true"/>
+                </LinearLayout>
+                <TextView
+                    style="@style/settingsbtn"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_label"
+                    android:text="@string/feed_sources"
+                    android:onClick="chooseFeeds"/>
+                <TextView
+                    style="@style/settingsbtn"
+                    android:onClick="iconPackSelector"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_apps"
+                    android:text="@string/icon_pack" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
         <TextView
             android:onClick="done3"
             android:id="@+id/next"
@@ -42,6 +59,6 @@
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:background="@color/accent"
-            android:text="@string/done"/>
+            android:text="@string/next"/>
     </LinearLayout>
 </merge>

@@ -3,12 +3,14 @@ package posidon.launcher.tutorial
 import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.View
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,32 +19,36 @@ import androidx.core.content.ContextCompat
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.customizations.FakeLauncherActivity
+import posidon.launcher.customizations.IconPackPicker
+import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.tools.Tools
 
 
 class Tutorial : AppCompatActivity() {
 
-    private val stylebtns = intArrayOf(R.id.stylepixel, R.id.styleoneui, R.id.styleios, R.id.styleposidon)
-    private var selectedstyle = -1
+    private val styleButtons = intArrayOf(R.id.stylepixel, R.id.styleoneui, R.id.styleios, R.id.styleposidon)
+    private var selectedStyle = -1
     private var done = false
+    private lateinit var settings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial1)
-        for (i in stylebtns.indices) {
-            findViewById<View>(stylebtns[i]).setOnClickListener {
-                if (selectedstyle != -1) findViewById<View>(stylebtns[selectedstyle]).background = getDrawable(R.drawable.button_bg_round)
+        settings = getDefaultSharedPreferences(applicationContext)
+        for (i in styleButtons.indices) {
+            findViewById<View>(styleButtons[i]).setOnClickListener {
+                if (selectedStyle != -1) findViewById<View>(styleButtons[selectedStyle]).background = getDrawable(R.drawable.button_bg_round)
                 val d = getDrawable(R.drawable.button_bg_round)!!.mutate() as GradientDrawable
                 d.setColor(resources.getColor(R.color.accent))
-                findViewById<View>(stylebtns[i]).background = d
-                selectedstyle = i
-                checkdone()
+                findViewById<View>(styleButtons[i]).background = d
+                selectedStyle = i
+                checkDone()
             }
         }
     }
 
-    private fun checkdone() {
-        if (selectedstyle != -1) {
+    private fun checkDone() {
+        if (selectedStyle != -1) {
             done = true
             val t = findViewById<TextView>(R.id.next)
             t.setTextColor(-0x1)
@@ -54,7 +60,7 @@ class Tutorial : AppCompatActivity() {
     fun grantNotificationAccess(v: View) {
         if (!NotificationManagerCompat.getEnabledListenerPackages(applicationContext).contains(applicationContext.packageName)) {
             applicationContext.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            checkdone()
+            checkDone()
         } else
             Toast.makeText(this, "Notification access already granted", Toast.LENGTH_LONG).show()
     }
@@ -64,15 +70,14 @@ class Tutorial : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
             }
-            checkdone()
+            checkDone()
         } else
             Toast.makeText(this, "Storage access already granted", Toast.LENGTH_LONG).show()
     }
 
     fun done1(v: View) {
         if (done) {
-            val settings = getDefaultSharedPreferences(applicationContext)
-            when (selectedstyle) {
+            when (selectedStyle) {
                 0 -> settings.edit()
                         .putInt("accent", 0x4285F4)
                         .putInt("icshape", 1)//circle
@@ -97,6 +102,7 @@ class Tutorial : AppCompatActivity() {
                         .putInt("feed:card_bg", 0xffffffff.toInt())
                         .putInt("feed:card_txt_color", 0xff252627.toInt())
                         .putInt("feed:card_layout", 1)
+                        .putInt("feed:card_margin_x", 16)
                         .putInt("notificationtitlecolor", 0xff000000.toInt())
                         .putInt("notificationtxtcolor", 0xff888888.toInt())
                         .putInt("notificationbgcolor", 0xffffffff.toInt())
@@ -126,6 +132,7 @@ class Tutorial : AppCompatActivity() {
                         .putInt("feed:card_bg", 0xffffffff.toInt())
                         .putInt("feed:card_txt_color", 0xff252627.toInt())
                         .putInt("feed:card_layout", 2)
+                        .putInt("feed:card_margin_x", 0)
                         .putInt("notificationtitlecolor", 0xff000000.toInt())
                         .putInt("notificationtxtcolor", 0xff000000.toInt())
                         .putInt("notificationbgcolor", 0xffffffff.toInt())
@@ -155,6 +162,7 @@ class Tutorial : AppCompatActivity() {
                         .putInt("feed:card_bg", 0xdd000000.toInt())
                         .putInt("feed:card_txt_color", 0xddffffff.toInt())
                         .putInt("feed:card_layout", 0)
+                        .putInt("feed:card_margin_x", 16)
                         .putInt("notificationtitlecolor", 0xdd000000.toInt())
                         .putInt("notificationtxtcolor", 0x88000000.toInt())
                         .putInt("notificationbgcolor", 0xa8eeeeee.toInt())
@@ -170,12 +178,12 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
+        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> settings.edit().putBoolean("feedenabled", checked).apply() }
+        Tools.updateNavbarHeight(this)
     }
 
     fun done3(v: View) {
-        val settings = getDefaultSharedPreferences(applicationContext)
         settings.edit()
-                .putBoolean("init", false)
                 .putString("dock", when {
                     Tools.isInstalled("org.mozilla.firefox", packageManager) -> "org.mozilla.firefox/org.mozilla.firefox.App"
                     else -> "com.android.chrome/com.google.android.apps.chrome.Main"
@@ -199,8 +207,12 @@ class Tutorial : AppCompatActivity() {
                     Tools.isInstalled("com.netflix.mediaclient", packageManager) -> "com.netflix.mediaclient/com.netflix.mediaclient.ui.launch.UIWebViewActivity"
                     Tools.isInstalled("com.hbo.android.app", packageManager) -> "com.hbo.android.app/com.hbo.android.app.bootstrap.ui.StartupActivity"
                     else -> ""
-                })
-                .apply()
+                }).apply()
+        setContentView(R.layout.tutorial4)
+    }
+
+    fun done4(v: View) {
+        settings.edit().putBoolean("init", false).apply()
         if (!isDefaultLauncher()) chooseLauncher()
         startActivity(Intent(this, Main::class.java))
         finish()
@@ -213,8 +225,11 @@ class Tutorial : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkdone()
+        checkDone()
     }
+
+    fun chooseFeeds(v: View) { startActivity(Intent(this, FeedChooser::class.java)) }
+    fun iconPackSelector(v: View) { startActivity(Intent(this, IconPackPicker::class.java)) }
 
     private fun chooseLauncher() {
         val packageManager: PackageManager = packageManager

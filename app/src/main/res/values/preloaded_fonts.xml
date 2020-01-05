@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/posidonsans</item>
+        <item>@font/posidon_sans</item>
         <item>@font/clear_font</item>
         <item>@font/ubuntu_medium</item>
         <item>@font/ubuntu_mono</item>

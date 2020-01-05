@@ -159,7 +159,8 @@
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/default_icon_theme"/>
+                                android:text="@string/default_icon_theme"
+                                android:layout_marginStart="10dp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/icshaperound"
@@ -183,7 +184,8 @@
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/circle"/>
+                                android:text="@string/circle"
+                                android:layout_marginStart="10dp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/icshaperoundrect"
@@ -207,7 +209,8 @@
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/rounded_square"/>
+                                android:text="@string/rounded_square"
+                                android:layout_marginStart="10dp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/icshaperect"
@@ -225,7 +228,8 @@
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/square"/>
+                                android:text="@string/square"
+                                android:layout_marginStart="10dp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/icshapesquircle"
@@ -258,7 +262,8 @@
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/squircle"/>
+                                android:text="@string/squircle"
+                                android:layout_marginStart="10dp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

@@ -100,6 +100,7 @@
     <string name="notifications">Notificaciones</string>
     <string name="text_shadow">Sombra de texto</string>
     <string name="ubuntu">Ubuntu</string>
+    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Pantalla de inicio</string>
     <string name="wall_apply_lock_screen">Pantalla de bloqueo</string>
     <string name="wall_apply_both">Ambos</string>
@@ -122,13 +123,14 @@
     <string name="layout">Layout</string>
     <string name="sample_feed_source">posidon news</string>
     <string name="sample_feed_card_title">Salió una nueva version de posidon launcher!</string>
-    <string name="hidden_apps">Hidden apps</string>
+    <string name="hidden_apps">Apps escondidas</string>
     <string name="choose_a_launcher">Escoger un launcher</string>
     <string name="launchers">Launchers</string>
     <string name="horizontal_margin">Margen horizontal</string>
     <string name="value_of_pi">Valor de π</string>
     <string name="settings_title_news">Noticias</string>
-    <string name="show_behind_dock">Show behind dock</string>
+    <string name="show_behind_dock">Mostrar detrás del dock</string>
+    <string name="some_quick_adjustments">Unos ajustes rapidos</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

@@ -22,7 +22,7 @@
                 android:textSize="56sp"
                 android:textColor="#ffffff"
                 android:text="@string/app_name"
-                android:fontFamily="@font/posidonsans"/>
+                android:fontFamily="@font/posidon_sans"/>
             <LinearLayout
                 android:id="@+id/card"
                 android:layout_width="match_parent"

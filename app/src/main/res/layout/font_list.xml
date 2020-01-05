@@ -28,11 +28,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:fontFamily="@font/posidonsans"
+            android:fontFamily="@font/posidon_sans"
             android:textSize="24sp"
             android:textColor="@color/cardtxt"
             android:text="@string/posidon_sans"/>
-
         <TextView
             android:id="@+id/monospace"
             android:layout_width="wrap_content"
@@ -49,6 +48,15 @@
             android:fontFamily="@font/ubuntu_medium"
             android:padding="10dp"
             android:text="@string/ubuntu"
+            android:textColor="@color/cardtxt"
+            android:textSize="24sp" />
+        <TextView
+            android:id="@+id/lexendDeca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/lexend_deca"
+            android:padding="10dp"
+            android:text="@string/lexend_deca"
             android:textColor="@color/cardtxt"
             android:textSize="24sp" />
         <TextView

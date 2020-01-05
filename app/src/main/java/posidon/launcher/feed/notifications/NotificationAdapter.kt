@@ -49,7 +49,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val groups = NotificationService.groups()
-        if (groups != null && groups.size != 0) for (notification in groups[position]) {
+        if (groups.size != 0) for (notification in groups[position]) {
             val view: View = when {
                 notification.style == "MediaStyle" -> {
                     holder.linearLayout.setPadding(0, 0, 0, 0)
