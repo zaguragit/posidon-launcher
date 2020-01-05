@@ -46,6 +46,7 @@ class CustomTheme : AppCompatActivity() {
             "posidonsans" -> fontName.text = getString(R.string.posidon_sans)
             "monospace" -> fontName.text = getString(R.string.monospace)
             "ubuntu" -> fontName.text = getString(R.string.ubuntu)
+            "lexendDeca" -> fontName.text = getString(R.string.lexend_deca)
             "openDyslexic" -> fontName.text = getString(R.string.open_dyslexic)
         }
         findViewById<View>(R.id.fontbox).setOnClickListener {
@@ -73,6 +74,12 @@ class CustomTheme : AppCompatActivity() {
                 d.dismiss()
                 Settings.putString("font", "ubuntu")
                 fontName.text = getString(R.string.ubuntu)
+                Tools.applyFontSetting(this@CustomTheme)
+            }
+            d.findViewById<View>(R.id.lexendDeca).setOnClickListener {
+                d.dismiss()
+                Settings.putString("font", "lexendDeca")
+                fontName.text = getString(R.string.lexend_deca)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.open_dyslexic).setOnClickListener {

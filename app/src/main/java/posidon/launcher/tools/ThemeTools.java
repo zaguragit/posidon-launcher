@@ -7,6 +7,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class ThemeTools {
 
@@ -49,44 +50,80 @@ public class ThemeTools {
 		return scaleFactor;
 	}
 
-	public static String getResourceName(Resources res, String string, String componentInfo) {
+	public static String getResourceName(Resources res, String iconPack, String componentInfo) {
 		String resource = null;
 		XmlResourceParser xrp = null;
 		XmlPullParser xpp = null;
 		try {
 			int n;
-	        if ((n = res.getIdentifier("appfilter", "xml", string)) != 0) xrp = res.getXml(n);
-	        else {
-	            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-	            factory.setValidating(false);
-	            xpp = factory.newPullParser();
-	            InputStream raw = res.getAssets().open("appfilter.xml");
-	            xpp.setInput(raw, null);
-	        }
+			if ((n = res.getIdentifier("appfilter", "xml", iconPack)) != 0) xrp = res.getXml(n);
+			else {
+				XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+				factory.setValidating(false);
+				xpp = factory.newPullParser();
+				InputStream raw = res.getAssets().open("appfilter.xml");
+				xpp.setInput(raw, null);
+			}
 
-	        if (n != 0) {
-		        while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT && resource == null) {
+			if (n != 0) {
+				while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT && resource == null) {
 					if (xrp.getEventType() == 2) {
 						try {
 							if (xrp.getName().equals("item") && xrp.getAttributeValue(0).compareTo(componentInfo)==0)
 								resource = xrp.getAttributeValue(1);
 						} catch(Exception ignore){}
 					}
-		            xrp.next();
-		        }
-	        } else {
-	        	while (xpp.getEventType() != XmlPullParser.END_DOCUMENT && resource == null) {
-	                if (xpp.getEventType() == 2) {
-	                	try {
+					xrp.next();
+				}
+			} else {
+				while (xpp.getEventType() != XmlPullParser.END_DOCUMENT && resource == null) {
+					if (xpp.getEventType() == 2) {
+						try {
 							if (xpp.getName().equals("item") && xpp.getAttributeValue(0).compareTo(componentInfo) == 0)
 								resource = xpp.getAttributeValue(1);
-	                	} catch(Exception ignore) {}
-	                }
+						} catch(Exception ignore) {}
+					}
 					xpp.next();
 				}
-	        }
+			}
 		} catch(Exception ignore) {}
 		return resource;
+	}
+
+	public static ArrayList<String> getResourceNames(Resources res, String iconPack) {
+		XmlResourceParser xrp = null;
+		XmlPullParser xpp = null;
+		ArrayList<String> strings = new ArrayList<>();
+		try {
+			int n;
+			if ((n = res.getIdentifier("appfilter", "xml", iconPack)) != 0) xrp = res.getXml(n);
+			else {
+				XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+				factory.setValidating(false);
+				xpp = factory.newPullParser();
+				InputStream raw = res.getAssets().open("appfilter.xml");
+				xpp.setInput(raw, null);
+			}
+
+			if (n != 0) {
+				while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
+					try {
+						if (xrp.getEventType() == 2 && !strings.contains(xrp.getAttributeValue(1)))
+							if (xrp.getName().equals("item")) strings.add(xrp.getAttributeValue(1));
+					} catch (Exception ignore) {}
+					xrp.next();
+				}
+			} else {
+				while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+					try {
+						if (xpp.getEventType() == 2 && !strings.contains(xpp.getAttributeValue(1)))
+							if (xpp.getName().equals("item")) strings.add(xpp.getAttributeValue(1));
+					} catch (Exception ignore) {}
+					xpp.next();
+				}
+			}
+		} catch(Exception ignore) {}
+		return strings;
 	}
 
 	public static String [] getIconBackAndMaskResourceName(Resources res, String packageName) {

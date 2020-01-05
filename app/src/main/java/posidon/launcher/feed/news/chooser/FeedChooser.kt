@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,7 +31,7 @@ class FeedChooser : AppCompatActivity() {
         val padding = (4 * resources.displayMetrics.density).toInt()
         grid.setPadding(padding, Tools.getStatusBarHeight(this), padding, Tools.navbarHeight + padding)
 
-        feedUrls.addAll(Settings.getString("feedUrls", "androidpolice.com").split("|"))
+        feedUrls.addAll(Settings.getString("feedUrls", "androidpolice.com")!!.split("|"))
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
@@ -52,6 +53,7 @@ class FeedChooser : AppCompatActivity() {
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()
         }
+        (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = (20 * resources.displayMetrics.density + Tools.navbarHeight).toInt()
     }
 
     override fun onPause() {

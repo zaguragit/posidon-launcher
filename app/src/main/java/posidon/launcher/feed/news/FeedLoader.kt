@@ -17,7 +17,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean
     private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
 
     override fun doInBackground(vararg voids: Void): Boolean? {
-        for (u: String in Settings.getString("feedUrls", "androidpolice.com").split("|")) {
+        for (u: String in Settings.getString("feedUrls", "androidpolice.com")!!.split("|")) {
             if (!TextUtils.isEmpty(u)) {
                 var url = if (!u.startsWith("http://") && !u.startsWith("https://")) "https://$u" else u
 

@@ -97,6 +97,7 @@ import posidon.launcher.tools.ThemeTools;
 import posidon.launcher.tools.Tools;
 import posidon.launcher.tutorial.WelcomeActivity;
 import posidon.launcher.view.ResizableLayout;
+
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
@@ -904,7 +905,11 @@ public class Main extends AppCompatActivity {
 		} else widgetLayout.setVisibility(View.GONE);
 	}
 
-	@Override public void onConfigurationChanged(@NonNull Configuration newConfig) { super.onConfigurationChanged(newConfig); onUpdate(); methods.setDock(); }
+	@Override public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		onUpdate();
+		methods.setDock();
+	}
 	@Override protected void onResume() {
 		super.onResume();
 		widgetHost.startListening();
@@ -920,6 +925,7 @@ public class Main extends AppCompatActivity {
 				feedRecycler.setAdapter(new FeedAdapter(feedModels, Main.this, getWindow()));
 			}
 		}).execute((Void) null);
+		NotificationService.listener.onUpdate();
 		if (Tools.canBlurWall(this)) {
 			final int blurLayers = Settings.getInt("blurLayers", 1);
 			final float radius = Settings.getFloat("blurradius", 15);
@@ -1074,54 +1080,63 @@ public class Main extends AppCompatActivity {
 			}
 
 			for (int i = 0; i < pacslist.size(); i++) {
-					App app = new App();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						try {
-							app.icon = Tools.adaptic(context.get(),
-									packageManager.getActivityIcon(new ComponentName(
-											pacslist.get(i).activityInfo.packageName,
-											pacslist.get(i).activityInfo.name)
-									)
-							);
-						} catch (Exception e) {
-							app.icon = pacslist.get(i).loadIcon(packageManager);
-							e.printStackTrace();
-						}
-					} else app.icon = pacslist.get(i).loadIcon(packageManager);
-					app.packageName = pacslist.get(i).activityInfo.packageName;
-					app.name = pacslist.get(i).activityInfo.name;
-					app.label = Settings.getString(app.packageName + "/" + app.name + "?label", pacslist.get(i).loadLabel(packageManager).toString());
+				App app = new App();
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					try {
+						app.icon = Tools.adaptic(context.get(),
+								packageManager.getActivityIcon(new ComponentName(
+										pacslist.get(i).activityInfo.packageName,
+										pacslist.get(i).activityInfo.name)
+								)
+						);
+					} catch (Exception e) {
+						app.icon = pacslist.get(i).loadIcon(packageManager);
+						e.printStackTrace();
+					}
+				} else app.icon = pacslist.get(i).loadIcon(packageManager);
+				app.packageName = pacslist.get(i).activityInfo.packageName;
+				app.name = pacslist.get(i).activityInfo.name;
+				app.label = Settings.getString(app.packageName + "/" + app.name + "?label", pacslist.get(i).loadLabel(packageManager).toString());
 
-					intres = 0;
-					iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + app.packageName + "/" + app.name + "}");
-					if (iconResource != null) intres = Objects.requireNonNull(themeRes).getIdentifier(iconResource, "drawable", iconpackName);
-					if (intres != 0) try {
-						app.icon = themeRes.getDrawable(intres);
-						try { if (!((PowerManager) context.get().getSystemService(Context.POWER_SERVICE)).isPowerSaveMode() && Settings.getBool("animatedicons", true)) Tools.animate(app.icon); }
-						catch (Exception ignore) {}
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get(), app.icon);
-					} catch (Exception e) { e.printStackTrace(); } else try {
-						orig = Bitmap.createBitmap(app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-						app.icon.setBounds(0, 0, app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight());
-						app.icon.draw(new Canvas(orig));
-						scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888);
-						scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888);
-						canvas = new Canvas(scaledBitmap);
-						if (back != null) canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p);
-						origCanv = new Canvas(scaledOrig);
-						orig = Tools.getResizedBitmap(orig, ((int) (ICONSIZE * scaleFactor)), ((int) (ICONSIZE * scaleFactor)));
-						origCanv.drawBitmap(orig, scaledOrig.getWidth() - (orig.getWidth() / 2f) - scaledOrig.getWidth() / 2f, scaledOrig.getWidth() - (orig.getWidth() / 2f) - scaledOrig.getWidth() / 2f, origP);
-						if (mask != null) origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp);
-						if (back != null) canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
-						else canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
-						if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p);
-						app.icon = new BitmapDrawable(context.get().getResources(), scaledBitmap);
-					} catch (Exception e) { e.printStackTrace(); }
-					App.putInSecondMap(app.packageName + "/" + app.name, app);
-					if (Settings.getBool(pacslist.get(i).activityInfo.packageName + "/" + pacslist.get(i).activityInfo.name + "?hidden", false)) {
-						skippedapps++;
-						App.hidden.add(app);
-					} else tmpApps[i - skippedapps] = app;
+				intres = 0;
+				iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + app.packageName + "/" + app.name + "}");
+				if (iconResource != null) intres = Objects.requireNonNull(themeRes).getIdentifier(iconResource, "drawable", iconpackName);
+				if (intres != 0) try {
+					app.icon = themeRes.getDrawable(intres);
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get(), app.icon);
+					try { if (!((PowerManager) context.get().getSystemService(Context.POWER_SERVICE)).isPowerSaveMode() && Settings.getBool("animatedicons", true)) Tools.animate(app.icon); }
+					catch (Exception ignore) {}
+				} catch (Exception e) { e.printStackTrace(); } else try {
+					orig = Bitmap.createBitmap(app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+					app.icon.setBounds(0, 0, app.icon.getIntrinsicWidth(), app.icon.getIntrinsicHeight());
+					app.icon.draw(new Canvas(orig));
+					scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888);
+					scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888);
+					canvas = new Canvas(scaledBitmap);
+					if (back != null) canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p);
+					origCanv = new Canvas(scaledOrig);
+					orig = Tools.getResizedBitmap(orig, ((int) (ICONSIZE * scaleFactor)), ((int) (ICONSIZE * scaleFactor)));
+					origCanv.drawBitmap(orig, scaledOrig.getWidth() - (orig.getWidth() / 2f) - scaledOrig.getWidth() / 2f, scaledOrig.getWidth() - (orig.getWidth() / 2f) - scaledOrig.getWidth() / 2f, origP);
+					if (mask != null) origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp);
+					if (back != null) canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
+					else canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0, 0, p);
+					if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p);
+					app.icon = new BitmapDrawable(context.get().getResources(), scaledBitmap);
+				} catch (Exception e) { e.printStackTrace(); }
+				String customIcon = Settings.getString("app:" + app.packageName + ":icon", "");
+				if (!customIcon.equals("")) try {
+					String[] data = customIcon.split(":")[1].split("[|]");
+					System.out.println(data[0]);
+					System.out.println(data[1]);
+					Resources t = packageManager.getResourcesForApplication(data[0]);
+					int intRes = t.getIdentifier(data[1], "drawable", data[0]);
+					app.icon = Tools.animate(t.getDrawable(intRes));
+				} catch (Exception e) { e.printStackTrace(); }
+				App.putInSecondMap(app.packageName + "/" + app.name, app);
+				if (Settings.getBool(pacslist.get(i).activityInfo.packageName + "/" + pacslist.get(i).activityInfo.name + "?hidden", false)) {
+					skippedapps++;
+					App.hidden.add(app);
+				} else tmpApps[i - skippedapps] = app;
 			}
 			tmpApps = Arrays.copyOf(tmpApps, tmpApps.length - skippedapps);
 			if (Settings.getInt("sortAlgorithm", 1) == 1) Sort.colorSort(tmpApps);

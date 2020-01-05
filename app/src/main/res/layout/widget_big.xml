@@ -28,7 +28,7 @@
         android:gravity="top"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:fontFamily="@font/posidonsans"
+        android:fontFamily="@font/posidon_sans"
         android:textColor="#ffffff"
         android:textSize="16sp"
         android:format12Hour="d MMM | cccc"

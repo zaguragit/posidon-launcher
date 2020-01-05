@@ -34,8 +34,8 @@ class CustomHome : AppCompatActivity() {
 
         val widget = Settings.getString("widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget")
         when {
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
+            widget?.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") ?: false -> {}
+            widget?.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") ?: false -> {}
             else -> {
                 findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
             }
