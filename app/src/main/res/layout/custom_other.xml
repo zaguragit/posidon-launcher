@@ -106,8 +106,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickColor">
+                    android:orientation="horizontal">
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
@@ -133,6 +132,24 @@
                     android:layout_width="match_parent"
                     android:drawableStart="@drawable/ic_apps"
                     android:text="@string/choose_a_launcher" />
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/settingsbtn"
+                    android:onClick="mkBackup"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_apps"
+                    android:text="@string/mk_backup" />
+                <TextView
+                    style="@style/settingsbtn"
+                    android:onClick="useBackup"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_apps"
+                    android:text="@string/use_backup" />
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"

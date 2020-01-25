@@ -3,9 +3,12 @@ package posidon.launcher.items
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
@@ -20,6 +23,7 @@ class CustomAppIcon : AppCompatActivity() {
     private lateinit var app: String
     private lateinit var gridView: GridView
     private lateinit var defaultOption: View
+    private lateinit var searchBar: EditText
     private var state = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,12 +34,26 @@ class CustomAppIcon : AppCompatActivity() {
             addView(li.inflate(R.layout.list_item, null).apply {
                 try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(packageManager.getApplicationIcon("com.android.systemui")) }
                 catch (ignore: Exception) {}
-                findViewById<TextView>(R.id.icontxt).text = "System"
+                findViewById<TextView>(R.id.icontxt).text = "Default"
                 setOnClickListener {
-                    Settings.putString("app:$app:icon", "")
+                    Settings.put("app:$app:icon", "")
                     finish()
                 }
                 defaultOption = this
+            })
+            addView(EditText(this@CustomAppIcon).apply {
+                hint = "Search icons"
+                addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {}
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                        (gridView.adapter as IconsAdapter).search(s.toString())
+                    }
+                })
+                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, (64 * resources.displayMetrics.density).toInt())
+                setBackgroundColor(0xdd111213.toInt())
+                visibility = View.GONE
+                searchBar = this
             })
             addView(gridView)
             orientation = LinearLayout.VERTICAL
@@ -55,12 +73,13 @@ class CustomAppIcon : AppCompatActivity() {
         }
 
         gridView.adapter = IconpacksAdapter()
-        gridView.setOnItemClickListener { _, _, i, _ ->
+        gridView.setOnItemClickListener { _,_,i,_ -> try {
             gridView.numColumns = 4
             gridView.adapter = IconsAdapter(iconPacks[i].packageName!!)
             state = 1
             defaultOption.visibility = View.GONE
-        }
+            searchBar.visibility = View.VISIBLE
+        } catch (e: Exception) {}}
     }
 
     internal inner class IconpacksAdapter : BaseAdapter() {
@@ -105,13 +124,39 @@ class CustomAppIcon : AppCompatActivity() {
 
         val icons: ArrayList<String>
         val themeRes = packageManager.getResourcesForApplication(iconPack)
+        val searchResults = ArrayList<String>()
 
         init {
             icons = try { ThemeTools.getResourceNames(themeRes, iconPack) }
             catch (ignore: Exception) { ArrayList() }
+            search("")
         }
 
-        override fun getCount(): Int = icons.size
+        fun search(term: String) {
+            searchResults.clear()
+            for (string in icons) if (cook(string).contains(cook(term))) searchResults.add(string)
+            notifyDataSetChanged()
+        }
+
+        private fun cook(s: String): String {
+            return s.toLowerCase()
+                    .replace(",", "")
+                    .replace(".", "")
+                    .replace("ñ", "n")
+                    .replace("ck", "c")
+                    .replace("cc", "c")
+                    .replace("z", "s")
+                    .replace("wh", "w")
+                    .replace("ts", "s")
+                    .replace("tz", "s")
+                    .replace("gh", "g")
+                    .replace("-", "")
+                    .replace("_", "")
+                    .replace("/", "")
+                    .replace("&", "")
+        }
+
+        override fun getCount(): Int = searchResults.size
         override fun getItem(position: Int): Any? = null
         override fun getItemId(position: Int): Long = 0
 
@@ -130,7 +175,7 @@ class CustomAppIcon : AppCompatActivity() {
             } else viewHolder = convertView.tag as ViewHolder
 
             try {
-                val intRes = themeRes.getIdentifier(icons[i], "drawable", iconPack)
+                val intRes = themeRes.getIdentifier(searchResults[i], "drawable", iconPack)
                 viewHolder.icon!!.setImageDrawable(Tools.animate(themeRes.getDrawable(intRes)))
             } catch (ignore: Exception) {}
             var appSize = 0
@@ -142,8 +187,8 @@ class CustomAppIcon : AppCompatActivity() {
             viewHolder.icon!!.layoutParams.height = appSize
             viewHolder.icon!!.layoutParams.width = appSize
             viewHolder.icon!!.setOnClickListener {
-                println("ref:$iconPack|${icons[i]}")
-                Settings.putString("app:$app:icon", "ref:$iconPack|${icons[i]}")
+                println("ref:$iconPack|${searchResults[i]}")
+                Settings.put("app:$app:icon", "ref:$iconPack|${searchResults[i]}")
                 Main.shouldSetApps = true
                 finish()
             }
@@ -157,8 +202,10 @@ class CustomAppIcon : AppCompatActivity() {
             1 -> {
                 state = 0
                 gridView.numColumns = 1
+                searchBar.setText("")
                 gridView.adapter = IconpacksAdapter()
                 defaultOption.visibility = View.VISIBLE
+                searchBar.visibility = View.GONE
             }
         }
     }

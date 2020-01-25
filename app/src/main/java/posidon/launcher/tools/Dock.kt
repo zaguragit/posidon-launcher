@@ -25,7 +25,7 @@ object Dock {
                 data[i] = "folder(" + data[i]!!.substring(7, data[i]!!.length - 1) + "¬" + folderContent + ")"
             } else data[i] = "folder(" + folderContent + "¬" + data[i] + ")"
         }
-        Settings.putString("dock", TextUtils.join("\n", data))
+        Settings.put("dock", TextUtils.join("\n", data))
         Main.methods.setDock()
     }
 
@@ -43,6 +43,6 @@ object Dock {
         var data: Array<String?> = Settings.getString("dock", "")!!.split("\n").toTypedArray()
         if (data.size <= i) data = data.copyOf(i + 1)
         data[i] = item.toString()
-        Settings.putString("dock", TextUtils.join("\n", data))
+        Settings.put("dock", TextUtils.join("\n", data))
     }
 }

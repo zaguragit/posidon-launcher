@@ -233,6 +233,3 @@ this syntax should use less data than SharedPreferences which to my knowledge is
 bool and text instead of boolean and string because it's shorter and uses less storage, and it's also more readable
 in a more efficient version, [int, float, bool, text] could be replaced by shorter names like: [I, F, B, S] (S for string or T for text)
 */
-
-
-/// probably the list syntax:

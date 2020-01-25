@@ -1,11 +1,12 @@
 package posidon.launcher.tools;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -25,11 +26,13 @@ import posidon.launcher.R;
 public class ColorTools {
 
 	public static int blendColors(int color1, int color2, float ratio) {
-		final float inverseRation = 1f - ratio;
-		float a = (Color.alpha(color1) * ratio) + (Color.alpha(color2) * inverseRation);
-		float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
-		float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
-		float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
+		if (ratio > 1) ratio = 1;
+		else if (ratio < 0) ratio = 0;
+		final float inverseRatio = 1f - ratio;
+		float a = (Color.alpha(color1) * ratio) + (Color.alpha(color2) * inverseRatio);
+		float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRatio);
+		float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRatio);
+		float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRatio);
 		return Color.argb((int) a, (int) r, (int) g, (int) b);
 	}
 
@@ -37,10 +40,11 @@ public class ColorTools {
 		return Color.green(bg) > 240 || (Color.green(bg) > 200 && Color.red(bg) > 120);
 	}
 
-	public static ShapeDrawable colorcircle(int color) {
-		ShapeDrawable d = new ShapeDrawable();
-		d.setShape(new OvalShape());
-		d.getPaint().setColor(color);
+	public static Drawable colorcircle(int color) {
+		GradientDrawable d = new GradientDrawable();
+		d.setShape(GradientDrawable.OVAL);
+		d.setColor(color);
+		d.setStroke(1, 0xff000000);
 		return d;
 	}
 
@@ -66,7 +70,7 @@ public class ColorTools {
 			@Override
 			public void onClick(View v) {
 				d.dismiss();
-				try { Settings.putInt(settingskey, (int)Long.parseLong(txt.getText().toString(), 16)); }
+				try { Settings.put(settingskey, (int)Long.parseLong(txt.getText().toString(), 16)); }
 				catch (NumberFormatException e) { Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show(); }
 			}
 		});
@@ -156,7 +160,7 @@ public class ColorTools {
 			@Override
 			public void onClick(View v) {
 				d.dismiss();
-				try { Settings.putInt(settingskey, (int)Long.parseLong(txt.getText().toString(), 16)); }
+				try { Settings.put(settingskey, (int)Long.parseLong(txt.getText().toString(), 16)); }
 				catch (NumberFormatException e) { Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show(); }
 			}
 		});

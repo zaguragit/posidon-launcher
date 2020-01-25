@@ -6,16 +6,13 @@
     android:orientation="vertical">
     <EditText
         android:id="@+id/title"
+        style="@style/settingsInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:gravity="center_horizontal"
-        android:textSize="16sp"
-        android:textColor="@color/cardtitle"
         android:layout_margin="12dp"
-        android:hint="@string/defaultfeedurl"
-        android:textColorHint="@color/hint"
-        android:inputType="textUri"/>
+        android:hint="@string/example_feed_url"
+        android:inputType="textUri"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

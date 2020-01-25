@@ -24,22 +24,22 @@
     <string name="settingsdateformat">Время</string>
     <string name="searchbarhint">Поиск..</string>
     <string name="feed_sources">Источники</string>
-    <string name="defaultfeedurl">habr.com/rss</string>
+    <string name="example_feed_url">habr.com/rss</string>
     <string name="settings_icon_count">Количество иконок</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Прятать statusbar</string>
     <string name="spacing">Расстояние</string>
-    <string name="storage_access_description">Предоставьте доступ к хранилищу для доступа к обоям (для размытия в списке приложений)</string>
+    <string name="permission_storage_description">Предоставьте доступ к хранилищу для доступа к обоям (для размытия в списке приложений)</string>
     <string name="storage_access">Доступ к хранилищу</string>
     <string name="ok">OK</string>
     <string name="notification_access">Доступ к уведомлениям</string>
-    <string name="notification_access_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
+    <string name="permission_notifications_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
     <string name="surprise_me">Удивите меня..</string>
-    <string name="preset_chooser_title">Выберите шаблон:</string>
+    <string name="preset_chooser_title">Выберите шаблон</string>
     <string name="done">Готово</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
     <string name="twitter">Twitter</string>
@@ -130,6 +130,11 @@
     <string name="settings_title_news">Новости</string>
     <string name="show_behind_dock">Показывать за доком</string>
     <string name="some_quick_adjustments">Some quick adjustments</string>
+    <string name="mk_backup">Сохранить резервную копию</string>
+    <string name="use_backup">Восстановить резервную копию</string>
+    <string name="permissions">Разрешения</string>
+    <string name="grant">Разрешить</string>
+    <string name="background_type">Background type</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

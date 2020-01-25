@@ -24,8 +24,8 @@ class SwipeToDeleteCallback : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.
     private var lastViewHolderToBeDragged: RecyclerView.ViewHolder? = null
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
-        lastViewHolderToBeDragged?.itemView?.animate()?.alpha(1f)?.duration = 80L
-        viewHolder?.itemView?.animate()?.alpha(0.9f)?.duration = 80L
+        lastViewHolderToBeDragged?.itemView?.animate()?.alpha(1f)?.duration = 150L
+        viewHolder?.itemView?.animate()?.alpha(0.9f)?.duration = 150L
         lastViewHolderToBeDragged = viewHolder
     }
 }

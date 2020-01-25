@@ -30,6 +30,6 @@ class CustomDev : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Settings.putBool("showcomponent", (findViewById<View>(R.id.showcomponent) as Switch).isChecked)
+        Settings.put("showcomponent", (findViewById<View>(R.id.showcomponent) as Switch).isChecked)
     }
 }

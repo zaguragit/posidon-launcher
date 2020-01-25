@@ -50,10 +50,13 @@ class CustomSearch : AppCompatActivity() {
     fun pickSearchUiBgColor(v: View) { ColorTools.pickColor(this, "searchUiBg", -0x78000000) }
 
     override fun onPause() {
-        Settings.putString("searchhinttxt", findViewById<TextView>(R.id.hinttxt).text.toString())
-        Settings.putInt("searchradius", findViewById<SeekBar>(R.id.searchradiusslider).progress)
-        Settings.putBool("docksearchbarenabled", findViewById<Switch>(R.id.docksearchbar).isChecked)
-        Settings.putBool("drawersearchbarenabled", findViewById<Switch>(R.id.drawersearchbar).isChecked)
+        Settings.apply {
+            putNotSave("searchhinttxt", findViewById<TextView>(R.id.hinttxt).text.toString())
+            putNotSave("searchradius", findViewById<SeekBar>(R.id.searchradiusslider).progress)
+            putNotSave("docksearchbarenabled", findViewById<Switch>(R.id.docksearchbar).isChecked)
+            putNotSave("drawersearchbarenabled", findViewById<Switch>(R.id.drawersearchbar).isChecked)
+            apply()
+        }
         super.onPause()
     }
 }

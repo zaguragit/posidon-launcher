@@ -34,8 +34,8 @@ class CustomHome : AppCompatActivity() {
 
         val widget = Settings.getString("widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget")
         when {
-            widget?.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") ?: false -> {}
-            widget?.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") ?: false -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") ?: false -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") ?: false -> {}
             else -> {
                 findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
             }
@@ -73,7 +73,7 @@ class CustomHome : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 newscardradiusnum.text = progress.toString()
-                Settings.putInt("feed:card_radius", progress)
+                Settings.put("feed:card_radius", progress)
             }
         })
 
@@ -86,7 +86,7 @@ class CustomHome : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 cardHorizontalMarginNum.text = progress.toString()
-                Settings.putInt("feed:card_margin_x", progress)
+                Settings.put("feed:card_margin_x", progress)
             }
         })
 
@@ -122,31 +122,34 @@ class CustomHome : AppCompatActivity() {
         dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
         dialog.findViewById<View>(R.id.card0)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.putInt("feed:card_layout", 0)
+            Settings.put("feed:card_layout", 0)
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card1)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.putInt("feed:card_layout", 1)
+            Settings.put("feed:card_layout", 1)
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card2)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.putInt("feed:card_layout", 2)
+            Settings.put("feed:card_layout", 2)
             dialog.dismiss()
         }
         dialog.show()
     }
 
     override fun onPause() {
-        Settings.putString("datef", findViewById<EditText>(R.id.dateformat).text.toString())
-        Settings.putBool("feedenabled", findViewById<Switch>(R.id.feedenabled).isChecked)
-        Settings.putBool("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
-        Settings.putBool("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
-        Settings.putBool("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
-        Settings.putBool("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
-        Settings.putBool("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
-        Settings.putBool("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
+        Settings.apply {
+            putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
+            putNotSave("feedenabled", findViewById<Switch>(R.id.feedenabled).isChecked)
+            putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
+            putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
+            putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
+            putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
+            putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
+            putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
+            apply()
+        }
         super.onPause()
     }
 }

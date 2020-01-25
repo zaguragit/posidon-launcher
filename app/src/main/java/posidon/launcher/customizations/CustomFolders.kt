@@ -37,7 +37,7 @@ class CustomFolders : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c.text = progress.toString()
-                Settings.putInt("folderColumns", columnSlider.progress)
+                Settings.put("folderColumns", columnSlider.progress)
             }
         })
 
@@ -52,8 +52,11 @@ class CustomFolders : AppCompatActivity() {
     fun pickLabelColor(v: View) { ColorTools.pickColor(this, "folder:label_color", -0x22000001) }
 
     override fun onPause() {
-        Settings.putBool("folderLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
-        Settings.putInt("folderCornerRadius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
+        Settings.apply {
+            putNotSave("folderLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
+            putNotSave("folderCornerRadius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
+            apply()
+        }
         super.onPause()
     }
 }

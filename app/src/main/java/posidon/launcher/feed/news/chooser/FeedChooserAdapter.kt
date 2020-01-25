@@ -46,20 +46,20 @@ class FeedChooserAdapter(internal val context: Context, private val feedUrls: Ar
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
             dialog.findViewById<EditText>(R.id.title)!!.text = Editable.Factory().newEditable(feedUrls[position])
-            dialog.findViewById<TextView>(R.id.title)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+            //dialog.findViewById<TextView>(R.id.title)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setTextColor(Main.accentColor)
             dialog.findViewById<TextView>(R.id.done)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls[position] = dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' ')
                 notifyDataSetChanged()
-                Settings.putString("feedUrls", feedUrls.joinToString("|"))
+                Settings.put("feedUrls", feedUrls.joinToString("|"))
             }
             dialog.findViewById<TextView>(R.id.remove)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls.removeAt(position)
                 notifyDataSetChanged()
-                Settings.putString("feedUrls", feedUrls.joinToString("|"))
+                Settings.put("feedUrls", feedUrls.joinToString("|"))
             }
             dialog.show()
             true

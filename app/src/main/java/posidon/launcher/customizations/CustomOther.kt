@@ -5,6 +5,7 @@
 
 package posidon.launcher.customizations
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,11 +15,13 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import java.io.FileNotFoundException
 import kotlin.system.exitProcess
 
 
@@ -38,7 +41,7 @@ class CustomOther : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                Settings.putInt("hapticfeedback", seekBar.progress)
+                Settings.put("hapticfeedback", seekBar.progress)
                 Tools.vibrate(this@CustomOther)
             }
         })
@@ -51,18 +54,42 @@ class CustomOther : AppCompatActivity() {
     }
 
     override fun onPause() {
-        Settings.putBool("hidestatus", (findViewById<View>(R.id.hidestatus) as Switch).isChecked)
-        Settings.putBool("mnmlstatus", (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked)
-        Settings.putString("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectedItemPosition) {
-            2 -> "scale_up"
-            1 -> "clip_reveal"
-            else -> "posidon"
-        })
+        Settings.apply {
+            putNotSave("hidestatus", (findViewById<View>(R.id.hidestatus) as Switch).isChecked)
+            putNotSave("mnmlstatus", (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked)
+            putNotSave("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectedItemPosition) {
+                2 -> "scale_up"
+                1 -> "clip_reveal"
+                else -> "posidon"
+            })
+            apply()
+        }
         super.onPause()
     }
 
-    fun openHideApps(v: View) { startActivity(Intent(this, CustomHiddenApps::class.java)) }
-    fun stop(v: View) { exitProcess(0) }
+    fun openHideApps(v: View) = startActivity(Intent(this, CustomHiddenApps::class.java))
+    fun stop(v: View): Unit = exitProcess(0)
+    fun mkBackup(v: View) = Settings.saveBackup()
+    fun useBackup(v: View) {
+        val intent = Intent()
+        intent.action = Intent.ACTION_OPEN_DOCUMENT
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "application/*"
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1) {
+                try { data?.data?.let {
+                    Settings.restoreFromBackup(it)
+                    Toast.makeText(this, "Backup restored!", Toast.LENGTH_LONG).show()
+                }}
+                catch (e: FileNotFoundException) { e.printStackTrace() }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
     fun chooseLauncher(v: View) {
         val packageManager: PackageManager = packageManager

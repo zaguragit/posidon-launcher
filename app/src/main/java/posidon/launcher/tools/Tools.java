@@ -507,7 +507,7 @@ public class Tools {
 	}
 
 	public static void applyFontSetting(Activity activity) {
-		switch (Settings.getString("font", "ubuntu")) {
+		switch (Settings.getString("font", "lexendDeca")) {
 			case "sansserif":
 				activity.getTheme().applyStyle(R.style.font_sans_serif, true);
 				break;

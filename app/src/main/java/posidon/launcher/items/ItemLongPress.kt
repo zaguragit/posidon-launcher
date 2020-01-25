@@ -145,7 +145,7 @@ object ItemLongPress {
                         var data = Settings.getString("dock", "")!!.split("\n").toTypedArray()
                         if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                         data[i] = ""
-                        Settings.putString("dock", TextUtils.join("\n", data))
+                        Settings.put("dock", TextUtils.join("\n", data))
                         Main.methods.setDock()
                     }
                     override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -157,10 +157,10 @@ object ItemLongPress {
                 var data = Settings.getString("dock", "")!!.split("\n").toTypedArray()
                 if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                 data[i] = ""
-                Settings.putString("dock", TextUtils.join("\n", data))
+                Settings.put("dock", TextUtils.join("\n", data))
                 popupWindow.showAtLocation(
                         view, Gravity.BOTTOM or gravity, x,
-                        (-view.y + view.height * Settings.getInt("dockRowCount", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * context.resources.displayMetrics.density).toInt()
+                        (-view.y + view.height * Settings.getInt("dock:rows", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * context.resources.displayMetrics.density).toInt()
                 )
             }
             true
@@ -183,7 +183,7 @@ object ItemLongPress {
                         val f = Folder(context, data[i])
                         f.apps.removeAt(folderIndex)
                         data[i] = if (f.apps.size == 1) f.apps[0]!!.packageName + "/" + f.apps[0]!!.name else f.toString()
-                        Settings.putString("dock", TextUtils.join("\n", data))
+                        Settings.put("dock", TextUtils.join("\n", data))
                         Main.methods.setDock()
                     }
                     override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -234,7 +234,7 @@ object ItemLongPress {
                         var data = Settings.getString("dock", "")!!.split("\n").toTypedArray()
                         if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                         data[i] = ""
-                        Settings.putString("dock", TextUtils.join("\n", data))
+                        Settings.put("dock", TextUtils.join("\n", data))
                         Main.methods.setDock()
                     }
 
@@ -248,7 +248,7 @@ object ItemLongPress {
                             folder.label = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
                             val data = Settings.getString("dock", "")!!.split("\n").toTypedArray()
                             data[i] = folder.toString()
-                            Settings.putString("dock", TextUtils.join("\n", data))
+                            Settings.put("dock", TextUtils.join("\n", data))
                             Main.methods.setDock()
                         }
                         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
@@ -260,10 +260,10 @@ object ItemLongPress {
                 var data = Settings.getString("dock", "")!!.split("\n").toTypedArray()
                 if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                 data[i] = ""
-                Settings.putString("dock", TextUtils.join("\n", data))
+                Settings.put("dock", TextUtils.join("\n", data))
                 popupWindow.showAtLocation(
                         view, Gravity.BOTTOM or gravity, x,
-                        (-view.y + view.height * Settings.getInt("dockRowCount", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * context.resources.displayMetrics.density).toInt()
+                        (-view.y + view.height * Settings.getInt("dock:rows", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * context.resources.displayMetrics.density).toInt()
                 )
             }
             true
@@ -281,9 +281,9 @@ object ItemLongPress {
             context.startActivity(intent)
             editWindow.dismiss()
         }
-        editLabel.setText(Settings.getString(app.packageName + "/" + app.name + "?label", app.label))
+        editLabel.setText(Settings.getString(app.packageName + "/" + app.name + "?label", app.label!!))
         editWindow.setOnDismissListener {
-            Settings.putString(app.packageName + "/" + app.name + "?label", editLabel.text.toString().replace('\n', ' ').replace('¬', ' '))
+            Settings.put(app.packageName + "/" + app.name + "?label", editLabel.text.toString().replace('\n', ' ').replace('¬', ' '))
             Main.shouldSetApps = true
             Main.methods.setDock()
         }

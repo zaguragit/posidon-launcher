@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Leo Shneyderis
+  ~ All rights reserved
+  -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/catlist">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:gravity="center"
+        android:textSize="48sp"
+        android:textColor="#ffffff"
+        android:text="@string/settings_title"
+        android:fontFamily="@font/posidon_sans"/>
+    <LinearLayout
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="@drawable/settings_suggestion_card"
+        android:layout_margin="12dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/suggestionTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="#ffffff"
+            android:text="@string/would_you_like_to_rate_this_launcher"
+            android:padding="18dp"/>
+        <TextView
+            android:onClick="hideCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:textColor="#8899aa"
+            android:text="@string/no"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:includeFontPadding="false"
+            android:background="@drawable/button_bg_round"
+            android:backgroundTint="#252932"
+            android:layout_marginEnd="8dp"/>
+        <TextView
+            android:id="@+id/yesBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:textColor="@color/accent"
+            android:textStyle="bold"
+            android:text="@string/yes"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:includeFontPadding="false"
+            android:background="@drawable/button_bg_round"
+            android:backgroundTint="#252932"
+            android:layout_marginEnd="8dp"/>
+    </LinearLayout>
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_drawer"
+        android:onClick="openApps"
+        android:text="@string/settings_title_apps"
+        android:layout_marginTop="12dp"/>
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_feed"
+        android:onClick="openHome"
+        android:text="@string/settings_title_desktop" />
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_dock"
+        android:onClick="openDock"
+        android:text="@string/settings_title_dock" />
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_folders"
+        android:onClick="openFolders"
+        android:text="@string/settings_title_folders" />
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_search"
+        android:onClick="openSearch"
+        android:text="@string/settings_title_search" />
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_theme"
+        android:onClick="openTheme"
+        android:text="@string/settings_title_ui" />
+    <TextView
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_other"
+        android:onClick="openOther"
+        android:text="@string/settings_title_other" />
+    <TextView
+        android:id="@+id/devoptions"
+        style="@style/customcategory"
+        android:drawableStart="@drawable/custom_dev"
+        android:onClick="openDev"
+        android:text="@string/settings_title_dev"
+        android:visibility="gone" />
+    <TextView
+        style="@style/customcategory"
+        android:layout_marginBottom="32dp"
+        android:drawableStart="@drawable/custom_about"
+        android:onClick="openAbout"
+        android:text="@string/aboutbtn"/>
+</LinearLayout>

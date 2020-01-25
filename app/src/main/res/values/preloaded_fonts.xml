@@ -6,5 +6,9 @@
         <item>@font/ubuntu_medium</item>
         <item>@font/ubuntu_mono</item>
         <item>@font/open_dyslexic3</item>
+        <item>@font/rajdhani_light</item>
+        <item>@font/prime_light</item>
+        <item>@font/prime_regular</item>
+        <item>@font/arenq</item>
     </array>
 </resources>
