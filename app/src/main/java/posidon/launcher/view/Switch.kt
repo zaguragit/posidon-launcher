@@ -14,8 +14,8 @@ import posidon.launcher.tools.Tools
 class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(context, attrs) {
 
     init {
-        this.trackDrawable = generateTrackDrawable()
-        this.thumbDrawable = generateThumbDrawable()
+        trackDrawable = generateTrackDrawable()
+        thumbDrawable = generateThumbDrawable()
     }
 
     override fun performClick(): Boolean {

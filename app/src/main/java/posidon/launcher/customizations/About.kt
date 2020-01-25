@@ -30,11 +30,11 @@ class About : Activity() {
         Tools.animate(findViewById<ImageView>(R.id.devprofile).drawable)
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {
-            if (Settings.getBool("devOptionsEnabled", false)) {
-                Settings.putBool("devOptionsEnabled", false)
+            if (Settings.getBool("dev:enabled", false)) {
+                Settings.put("dev:enabled", false)
                 Toast.makeText(this@About, "Developer mode disabled", Toast.LENGTH_SHORT).show()
             } else {
-                Settings.putBool("devOptionsEnabled", true)
+                Settings.put("dev:enabled", true)
                 Toast.makeText(this@About, "Developer mode enabled", Toast.LENGTH_SHORT).show()
             }
             true
@@ -56,7 +56,7 @@ class About : Activity() {
     } catch (ignore: Exception) {} }
 
     fun openWebsite(v: View) {
-        val uri = Uri.parse("https://leoxshn.github.io/posidon-web")
+        val uri = Uri.parse("https://posidon.io/launcher")
         val i = Intent(Intent.ACTION_VIEW, uri)
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     }

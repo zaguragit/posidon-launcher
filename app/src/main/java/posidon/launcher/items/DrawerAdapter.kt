@@ -33,9 +33,9 @@ class DrawerAdapter(private val context: Context, private val apps: Array<App>) 
         val viewHolder: ViewHolder
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
-            if (Settings.getInt("numcolumns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
+            if (Settings.getInt("drawer:columns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
                 convertView = li.inflate(R.layout.list_item, null)
-                if (Settings.getInt("numcolumns", 4) == 2) (convertView.findViewById<View>(R.id.icontxt) as TextView).textSize = 18f
+                if (Settings.getInt("drawer:columns", 4) == 2) (convertView.findViewById<View>(R.id.icontxt) as TextView).textSize = 18f
             }
             viewHolder = ViewHolder()
             viewHolder.icon = convertView.findViewById(R.id.iconimg)
@@ -64,10 +64,10 @@ class DrawerAdapter(private val context: Context, private val apps: Array<App>) 
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            if (Settings.getInt("numcolumns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null);
+            if (Settings.getInt("drawer:columns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null);
             else {
                 convertView = li.inflate(R.layout.list_item, null);
-                if (Settings.getInt("numcolumns", 4) == 2) ((TextView)convertView.findViewById(R.id.icontxt)).setTextSize(18);
+                if (Settings.getInt("drawer:columns", 4) == 2) ((TextView)convertView.findViewById(R.id.icontxt)).setTextSize(18);
             }
             viewHolder = new ViewHolder();
             viewHolder.icon = convertView.findViewById(R.id.iconimg);

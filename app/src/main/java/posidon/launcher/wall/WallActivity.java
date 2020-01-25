@@ -46,7 +46,7 @@ public class WallActivity extends AppCompatActivity {
         setContentView(R.layout.wall_preview);
         loading = findViewById(R.id.loading);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        if (img.getHeight() / img.getWidth() < getResources().getDisplayMetrics().heightPixels / getResources().getDisplayMetrics().widthPixels)
+        if (img != null && img.getHeight() / img.getWidth() < getResources().getDisplayMetrics().heightPixels / getResources().getDisplayMetrics().widthPixels)
             img = Tools.centerCropWallpaper(WallActivity.this, img);
         ((ImageView)findViewById(R.id.theimg)).setImageBitmap(img);
         final Bundle extras = getIntent().getExtras();

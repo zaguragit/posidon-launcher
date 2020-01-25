@@ -25,29 +25,29 @@
     <string name="settingsdateformat">Fecha</string>
     <string name="searchbarhint">Buscar..</string>
     <string name="feed_sources">Fuentes</string>
-    <string name="defaultfeedurl">andro4all.com/feed</string>
+    <string name="example_feed_url">andro4all.com/feed</string>
     <string name="settings_icon_count">Numero de iconos</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Esconder statusbar</string>
     <string name="spacing">Espaciado</string>
-    <string name="storage_access_description">El acceso al almacenamiento es nesesario para funccionalides como el desenfoque en el fondo del cajon de aplicaciones</string>
+    <string name="permission_storage_description">El acceso al almacenamiento es nesesario para funccionalides como el desenfoque en el fondo del cajon de aplicaciones</string>
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="ok">OK</string>
     <string name="notification_access">Acceso a notificaciones</string>
-    <string name="notification_access_description">Grant notification access to have your notifications displayed on your homescreen</string>
+    <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
     <string name="surprise_me">Sorprende me..</string>
-    <string name="preset_chooser_title">Escoge una plantilla:</string>
+    <string name="preset_chooser_title">Escoge una plantilla</string>
     <string name="done">Done</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
     <string name="twitter">Twitter</string>
     <string name="website">Website</string>
     <string name="leoxshn_description">Created the launcher</string>
     <string name="sajid_shaik">Sajid Shaik</string>
-    <string name="sajid_shaik_description">Designed the launcher icon</string>
+    <string name="sajid_shaik_description">Diseñó el icono del launcher</string>
     <string name="app_name_hint">name</string>
     <string name="version">Version</string>
     <string name="uninstall">Uninstall</string>
@@ -131,6 +131,11 @@
     <string name="settings_title_news">Noticias</string>
     <string name="show_behind_dock">Mostrar detrás del dock</string>
     <string name="some_quick_adjustments">Unos ajustes rapidos</string>
+    <string name="mk_backup">Guardar una copia de seguridad</string>
+    <string name="use_backup">Recuperar una copia de seguridad</string>
+    <string name="permissions">Permisos</string>
+    <string name="grant">Permitir</string>
+    <string name="background_type">Background type</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

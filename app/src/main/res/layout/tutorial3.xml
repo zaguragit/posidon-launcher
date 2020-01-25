@@ -13,40 +13,53 @@
             android:layout_height="0dp"
             android:layout_weight="1">
             <LinearLayout
-                style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView style="@style/customcardtitle" android:text="@string/some_quick_adjustments" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp"
+                    android:gravity="center"
+                    android:textSize="32sp"
+                    android:textColor="#ffffff"
+                    android:fontFamily="@font/posidon_sans"
+                    android:text="@string/some_quick_adjustments"
+                    android:layout_marginBottom="32dp"/>
                 <LinearLayout
+                    style="@style/settingscard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            style="@style/settingsbtn"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_label"
+                            android:text="@string/settings_title_news" />
+                        <posidon.launcher.view.Switch
+                            android:id="@+id/enableNews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="12dp"
+                            android:checked="true"/>
+                    </LinearLayout>
                     <TextView
                         style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:drawableStart="@drawable/ic_label"
-                        android:text="@string/settings_title_news" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/enableNews"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"
-                        android:checked="true"/>
+                        android:text="@string/feed_sources"
+                        android:onClick="chooseFeeds"/>
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="iconPackSelector"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/icon_pack" />
                 </LinearLayout>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_label"
-                    android:text="@string/feed_sources"
-                    android:onClick="chooseFeeds"/>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="iconPackSelector"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_apps"
-                    android:text="@string/icon_pack" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
         <TextView

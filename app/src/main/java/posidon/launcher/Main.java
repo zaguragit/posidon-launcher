@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -171,8 +172,8 @@ public class Main extends AppCompatActivity {
 				final String[] data = Settings.getString("dock", "").split("\n");
 				final GridLayout container = findViewById(R.id.dockContainer);
 				container.removeAllViews();
-				int columnCount = Settings.getInt("dockIconCount", 5);
-				int rowCount = Settings.getInt("dockRowCount", 1);
+				int columnCount = Settings.getInt("dock:columns", 5);
+				int rowCount = Settings.getInt("dock:rows", 1);
 				boolean showLabels = Settings.getBool("dockLabelsEnabled", false);
 				container.setColumnCount(columnCount);
 				container.setRowCount(rowCount);
@@ -209,7 +210,7 @@ public class Main extends AppCompatActivity {
 									if (app == null) {
 										folder.apps.remove(i1);
 										data[finalI] = folder.toString();
-										Settings.putString("dock", TextUtils.join("\n", data));
+										Settings.put("dock", TextUtils.join("\n", data));
 									} else {
 										View appIcon = LayoutInflater.from(getApplicationContext()).inflate(R.layout.drawer_item, null);
 										final ImageView icon = appIcon.findViewById(R.id.iconimg);
@@ -244,7 +245,7 @@ public class Main extends AppCompatActivity {
 								int x = (location[0] > Tools.getDisplayWidth(Main.this) / 2) ? Tools.getDisplayWidth(Main.this) - location[0] - view.getMeasuredWidth() : location[0];
 								popupWindow.showAtLocation(
 										view, Gravity.BOTTOM | gravity, x,
-										(int)(-view.getY() + view.getHeight() * Settings.getInt("dockRowCount", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * getResources().getDisplayMetrics().density)
+										(int)(-view.getY() + view.getHeight() * Settings.getInt("dock:rows", 1) + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) + 12) * getResources().getDisplayMetrics().density)
 								);
 							}
 						});
@@ -266,14 +267,14 @@ public class Main extends AppCompatActivity {
 							//view.setOnLongClickListener(ItemLongPress.dock(Main.this, app, i));
 						} else {
 							data[i] = "";
-							Settings.putString("dock", TextUtils.join("\n", data));
+							Settings.put("dock", TextUtils.join("\n", data));
 						}
 					} else {
 						final App app = App.get(string);
                         if (!showLabels) view.findViewById(R.id.icontxt).setVisibility(View.GONE);
 						if (app == null) {
 							data[i] = "";
-							Settings.putString("dock", TextUtils.join("\n", data));
+							Settings.put("dock", TextUtils.join("\n", data));
 						} else {
 							if (showLabels) {
 								((TextView) view.findViewById(R.id.icontxt)).setText(app.label);
@@ -320,78 +321,76 @@ public class Main extends AppCompatActivity {
 				//desktop.setPadding(0, dockHeight, 0, (int) (dockHeight + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) - 18) * getResources().getDisplayMetrics().density));
 				((CoordinatorLayout.LayoutParams) findViewById(R.id.blur).getLayoutParams()).topMargin = dockHeight;
 
-
 				getWindow().getDecorView().findViewById(android.R.id.content).setOnDragListener(new View.OnDragListener() {
-					@Override
-					public boolean onDrag(View v, DragEvent event) {
+					@Override public boolean onDrag(View v, DragEvent event) {
 						switch (event.getAction()) {
-							case DragEvent.ACTION_DRAG_LOCATION:
+							case DragEvent.ACTION_DRAG_LOCATION: {
 								Object[] objs = (Object[]) event.getLocalState();
 								View icon = (View) objs[1];
 								int[] location = new int[2];
 								icon.getLocationOnScreen(location);
-								float x = Math.abs(event.getX() - location[0] - icon.getWidth()/2f), y = Math.abs(event.getY() - location[1] - icon.getHeight()/2f);
-								if (x > icon.getWidth()/2f || y > icon.getHeight()/2f) {
-									((PopupWindow)objs[2]).dismiss();
+								float x = Math.abs(event.getX() - location[0] - icon.getWidth() / 2f), y = Math.abs(event.getY() - location[1] - icon.getHeight() / 2f);
+								if (x > icon.getWidth() / 2f || y > icon.getHeight() / 2f) {
+									((PopupWindow) objs[2]).dismiss();
 									behavior.setState(STATE_COLLAPSED);
 								}
 								break;
-							case DragEvent.ACTION_DRAG_STARTED:
+							} case DragEvent.ACTION_DRAG_STARTED: {
 								((View)((Object[]) event.getLocalState())[1]).setVisibility(View.INVISIBLE);
 								break;
-							case DragEvent.ACTION_DRAG_ENDED:
-								objs = (Object[]) event.getLocalState();
-								((View)objs[1]).setVisibility(View.VISIBLE);
-								((PopupWindow)objs[2]).setFocusable(true);
-								((PopupWindow)objs[2]).update();
+							} case DragEvent.ACTION_DRAG_ENDED: {
+								Object[] objs = (Object[]) event.getLocalState();
+								((View) objs[1]).setVisibility(View.VISIBLE);
+								((PopupWindow) objs[2]).setFocusable(true);
+								((PopupWindow) objs[2]).update();
 								break;
-							case DragEvent.ACTION_DROP:
+							} case DragEvent.ACTION_DROP: {
 								((View)((Object[]) event.getLocalState())[1]).setVisibility(View.VISIBLE);
 								if (behavior.getState() != STATE_EXPANDED) {
 									if (event.getY() > Tools.getDisplayHeight(Main.this) - dockHeight) {
 										LauncherItem item = (LauncherItem) ((Object[]) event.getLocalState())[0];
 										if (item instanceof App) {
 											App app = (App) item;
-											location = new int[2];
+											int[] location = new int[2];
 											for (int i = 0; i < container.getChildCount(); i++) {
 												container.getChildAt(i).getLocationOnScreen(location);
-												float threshHold = Math.min(container.getChildAt(i).getHeight() / 3, 100 * getResources().getDisplayMetrics().density);
+												float threshHold = Math.min(container.getChildAt(i).getHeight() / 2, 100 * getResources().getDisplayMetrics().density);
 												if (Math.abs(location[0] - (event.getX() - container.getChildAt(i).getHeight() / 2f)) < threshHold && Math.abs(location[1] - (event.getY() - container.getChildAt(i).getHeight() / 2f)) < threshHold) {
 													String[] data = Settings.getString("dock", "").split("\n");
 													if (data.length <= i)
 														data = Arrays.copyOf(data, i + 1);
 													if (data[i] == null || data[i].equals("") || data[i].equals("null")) {
 														data[i] = app.packageName + "/" + app.name;
-														Settings.putString("dock", TextUtils.join("\n", data));
+														Settings.put("dock", TextUtils.join("\n", data));
 													} else {
 														if (data[i].startsWith("folder(") && data[i].endsWith(")"))
 															data[i] = "folder(" + data[i].substring(7, data[i].length() - 1) + "¬" + app.packageName + "/" + app.name + ")";
 														else data[i] = "folder(" + "folder¬" + data[i] + "¬" + app.packageName + "/" + app.name + ")";
-														Settings.putString("dock", TextUtils.join("\n", data));
+														Settings.put("dock", TextUtils.join("\n", data));
 													}
 													break;
 												}
 											}
 										} else if (item instanceof Folder) {
 											Folder folder = (Folder) item;
-											location = new int[2];
+											int[] location = new int[2];
 											for (int i = 0; i < container.getChildCount(); i++) {
 												container.getChildAt(i).getLocationOnScreen(location);
-												float threshHold = Math.min(container.getChildAt(i).getHeight() / 3, 100 * getResources().getDisplayMetrics().density);
+												float threshHold = Math.min(container.getChildAt(i).getHeight() / 2, 100 * getResources().getDisplayMetrics().density);
 												if (Math.abs(location[0] - (event.getX() - container.getChildAt(i).getHeight() / 2f)) < threshHold && Math.abs(location[1] - (event.getY() - container.getChildAt(i).getHeight() / 2f)) < threshHold) {
 													String[] data = Settings.getString("dock", "").split("\n");
 													if (data.length <= i)
 														data = Arrays.copyOf(data, i + 1);
 													if (data[i] == null || data[i].equals("") || data[i].equals("null")) {
 														data[i] = folder.toString();
-														Settings.putString("dock", TextUtils.join("\n", data));
+														Settings.put("dock", TextUtils.join("\n", data));
 													} else {
 														String folderContent = folder.toString().substring(7, folder.toString().length() - 1);
 														if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
 															folderContent = folderContent.substring(folderContent.indexOf('¬') + 1);
 															data[i] = "folder(" + data[i].substring(7, data[i].length() - 1) + "¬" + folderContent + ")";
 														} else data[i] = "folder(" + folderContent + "¬" + data[i] + ")";
-														Settings.putString("dock", TextUtils.join("\n", data));
+														Settings.put("dock", TextUtils.join("\n", data));
 													}
 													break;
 												}
@@ -401,6 +400,7 @@ public class Main extends AppCompatActivity {
 									setDock();
 								}
 								break;
+							}
 						}
 						return true;
 					}
@@ -412,18 +412,12 @@ public class Main extends AppCompatActivity {
 				if (Settings.getBool("hidestatus", false)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 				else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-				ShapeDrawable bg = new ShapeDrawable();
-				float tr = Settings.getInt("dockradius", 30) * getResources().getDisplayMetrics().density;
-				bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, 0, 0, 0, 0}, null, null));
-				bg.getPaint().setColor(Settings.getInt("dockcolor", 0x88000000));
-				findViewById(R.id.drawer).setBackground(bg);
-
 				if (Settings.getBool("drawersearchbarenabled", true)) {
 					drawerGrid.setPadding(0, Tools.getStatusBarHeight(Main.this), 0, Tools.navbarHeight + (int)(56 * getResources().getDisplayMetrics().density));
 					searchBar.setPadding(0, 0, 0, Tools.navbarHeight);
 					searchBar.setVisibility(View.VISIBLE);
-					bg = new ShapeDrawable();
-					tr = Settings.getInt("searchradius", 0) * getResources().getDisplayMetrics().density;
+					ShapeDrawable bg = new ShapeDrawable();
+					float tr = Settings.getInt("searchradius", 0) * getResources().getDisplayMetrics().density;
 					bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, 0, 0, 0, 0}, null, null));
 					bg.getPaint().setColor(Settings.getInt("searchcolor", 0x33000000));
 					searchBar.setBackground(bg);
@@ -439,8 +433,8 @@ public class Main extends AppCompatActivity {
 				if (Settings.getBool("docksearchbarenabled", false)) {
 					findViewById(R.id.docksearchbar).setVisibility(View.VISIBLE);
 					findViewById(R.id.battery).setVisibility(View.VISIBLE);
-					bg = new ShapeDrawable();
-					tr = Settings.getInt("docksearchradius", 30) * getResources().getDisplayMetrics().density;
+					ShapeDrawable bg = new ShapeDrawable();
+					float tr = Settings.getInt("docksearchradius", 30) * getResources().getDisplayMetrics().density;
 					bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, tr, tr, tr, tr}, null, null));
 					bg.getPaint().setColor(Settings.getInt("docksearchcolor", 0xDDFFFFFF));
 					findViewById(R.id.docksearchbar).setBackground(bg);
@@ -459,7 +453,7 @@ public class Main extends AppCompatActivity {
 					findViewById(R.id.battery).setVisibility(View.GONE);
 				}
 
-				drawerGrid.setNumColumns(Settings.getInt("numcolumns", 4));
+				drawerGrid.setNumColumns(Settings.getInt("drawer:columns", 4));
 				drawerGrid.setVerticalSpacing((int)(getResources().getDisplayMetrics().density * Settings.getInt("verticalspacing", 12)));
 				feedRecycler.setVisibility(Settings.getBool("feedenabled", true) ? View.VISIBLE : View.GONE);
 				int marginX = (int)(Settings.getInt("feed:card_margin_x", 16) * getResources().getDisplayMetrics().density);
@@ -534,6 +528,28 @@ public class Main extends AppCompatActivity {
 				shouldSetApps = false;
 				customized = false;
 
+				switch (Settings.getInt("dock:background_type", 0)) {
+					case 0: {
+						ShapeDrawable bg = new ShapeDrawable();
+						float tr = Settings.getInt("dockradius", 30) * getResources().getDisplayMetrics().density;
+						bg.setShape(new RoundRectShape(new float[]{tr, tr ,tr, tr, 0, 0, 0, 0}, null, null));
+						bg.getPaint().setColor(Settings.getInt("dock:background_color", 0x88000000));
+						findViewById(R.id.drawer).setBackground(bg);
+						break;
+					} case 1: {
+						GradientDrawable bg = new GradientDrawable();
+						bg.setColors(new int[] {
+								Settings.getInt("dock:background_color", 0x88000000) & 0x00ffffff,
+								Settings.getInt("dock:background_color", 0x88000000),
+								Settings.getInt("drawer:background_color", 0x88000000)
+						}, new float[] {
+								0, (float) dockHeight / (Tools.getDisplayHeight(Main.this) + dockHeight), 1
+						});
+						findViewById(R.id.drawer).setBackground(bg);
+						break;
+					}
+				}
+
 				final ShapeDrawable notificationBackground = new ShapeDrawable();
 				float r = getResources().getDisplayMetrics().density * Settings.getInt("feed:card_radius", 15);
 				notificationBackground.setShape(new RoundRectShape(new float[]{r, r, r, r, r, r, r, r}, null, null));
@@ -589,14 +605,16 @@ public class Main extends AppCompatActivity {
 		behavior.setHideable(false);
 		final int[] things = new int[5];
 		final float[] radii = new float[8];
+		final int[] colors = new int[3];
+		final float[] floats =  new float[1];
 		behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 			@Override public void onStateChanged(@NonNull View bottomSheet, int newState) {
 				if (newState == STATE_COLLAPSED)
 					drawerGrid.smoothScrollToPositionFromTop(0, 0, 0);
 				things[0] = Settings.getInt("blurLayers", 1);
 				things[1] = Settings.getInt("dockradius", 30);
-				things[2] = Settings.getInt("drawercolor", 0x88000000);
-				things[3] = Settings.getInt("dockcolor", 0x88000000);
+				things[2] = Settings.getInt("dock:background_type", 0);
+				things[3] = Settings.getInt("dock:background_color", 0x88000000);
 				things[4] = Tools.canBlurWall(Main.this) ? 1 : 0;
 
 				float tr = things[1] * getResources().getDisplayMetrics().density;
@@ -604,15 +622,28 @@ public class Main extends AppCompatActivity {
 				radii[1] = tr;
 				radii[2] = tr;
 				radii[3] = tr;
+
+				colors[0] = Settings.getInt("dock:background_color", 0x88000000) & 0x00ffffff;
+				colors[1] = Settings.getInt("dock:background_color", 0x88000000);
+				colors[2] = Settings.getInt("drawer:background_color", 0x88000000);
+
+				floats[0] = (float) dockHeight / (Tools.getDisplayHeight(Main.this) + dockHeight);
 			}
 			@Override public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 				float inverseOffset = 1 - slideOffset;
 				drawerGrid.setAlpha(slideOffset);
 				desktop.setAlpha(inverseOffset);
 				if (slideOffset >= 0) {
-					ShapeDrawable bg = (ShapeDrawable) findViewById(R.id.drawer).getBackground();
-					bg.getPaint().setColor(ColorTools.blendColors(things[2], things[3], slideOffset));
-					bg.setShape(new RoundRectShape(radii, null, null));
+					if (things[2] == 0) {
+						ShapeDrawable bg = (ShapeDrawable) findViewById(R.id.drawer).getBackground();
+						bg.getPaint().setColor(ColorTools.blendColors(colors[2], things[3], slideOffset));
+						bg.setShape(new RoundRectShape(radii, null, null));
+					} else if (things[2] == 1) {
+						GradientDrawable bg = (GradientDrawable) findViewById(R.id.drawer).getBackground();
+						//colors[1] = ColorTools.blendColors(colors[2], things[3], slideOffset);
+						float invSquaredOffset = 1 - slideOffset * slideOffset;
+						bg.setColors(colors, new float[] {0, floats[0] * invSquaredOffset, invSquaredOffset});
+					}
 					if (things[4] == 1) {
 						int repetitive = (int)(slideOffset * 255) * things[0];
 						for (int i = 0; i < things[0]; i++)
@@ -630,7 +661,6 @@ public class Main extends AppCompatActivity {
 			}
 		});
 
-		//setApps(drawerGrid);
 		new AppLoader(Main.this, onAppLoaderEnd).execute();
 		feedRecycler = findViewById(R.id.feedrecycler);
 		feedRecycler.setLayoutManager(new LinearLayoutManager(Main.this));
@@ -706,14 +736,8 @@ public class Main extends AppCompatActivity {
 		widgetLayout = findViewById(R.id.widgets);
 		widgetLayout.getLayoutParams().height = Settings.getInt("widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT);
 		widgetLayout.setLayoutParams(widgetLayout.getLayoutParams());
-		widgetLayout.setOnLongClickListener(new View.OnLongClickListener() {
-			@Override public boolean onLongClick(View v) {
-				widgetLayout.setResizing(true);
-				return true;
-			}
-		});
 		widgetLayout.setOnResizeListener(new ResizableLayout.OnResizeListener() {
-			@Override public void onStop(int newHeight) { Settings.putInt("widgetHeight", newHeight); }
+			@Override public void onStop(int newHeight) { Settings.put("widgetHeight", newHeight); }
 			@Override public void onCrossPress() { deleteWidget(); }
 			@Override public void onUpdate(int newHeight) {
 				widgetLayout.getLayoutParams().height = newHeight;
@@ -780,7 +804,6 @@ public class Main extends AppCompatActivity {
 				new ColorDrawable(0x0)
 		}); ((ImageView) findViewById(R.id.blur)).setImageDrawable(blurBg);
 
-
 		System.gc();
 	}
 
@@ -823,7 +846,7 @@ public class Main extends AppCompatActivity {
 		widgetHost.deleteAppWidgetId(hostView.getAppWidgetId());
 		widgetLayout.removeView(hostView);
 		widgetLayout.setVisibility(View.GONE);
-		Settings.putString("widget", "");
+		Settings.put("widget", "");
 	}
 
 	public void createWidget(Intent data) {
@@ -836,6 +859,7 @@ public class Main extends AppCompatActivity {
 					.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 			AppWidgetProviderInfo providerInfo = widgetManager.getAppWidgetInfo(id);
 			hostView = widgetHost.createView(getApplicationContext(), id, providerInfo);
+			hostView.setLongClickable(false);
 			widgetLayout.addView(hostView);
 			View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
 				@Override
@@ -851,7 +875,7 @@ public class Main extends AppCompatActivity {
 				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider);
 				startActivityForResult(intent, REQUEST_BIND_WIDGET);
 			}
-			Settings.putString("widget",
+			Settings.put("widget",
 					providerInfo.provider.getPackageName() + "/" +
 					providerInfo.provider.getClassName() + "/" + id
 			);

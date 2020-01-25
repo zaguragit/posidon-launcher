@@ -104,11 +104,11 @@ class CustomHiddenApps : AppCompatActivity() {
                 Main.customized = true
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
-                    Settings.putBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
+                    Settings.put(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
                     notifyDataSetChanged()
                 } else {
                     finalConvertView.setBackgroundColor(0x0)
-                    Settings.putBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", true)
+                    Settings.put(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", true)
                     notifyDataSetChanged()
                 }
             }

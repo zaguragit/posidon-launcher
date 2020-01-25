@@ -12,17 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <FrameLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="300dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:gravity="center"
-                android:textSize="56sp"
-                android:textColor="#ffffff"
-                android:text="@string/app_name"
-                android:fontFamily="@font/posidon_sans"/>
+            android:layout_height="300dp"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:textColor="#ffffff"
+            android:text="@string/settings_title"
+            android:fontFamily="@font/posidon_sans"/>
+        <LinearLayout
+            android:id="@+id/catlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_catbg"
+            android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/card"
                 android:layout_width="match_parent"
@@ -47,37 +50,33 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textSize="14sp"
-                    android:textColor="#888888"
+                    android:textColor="#8899aa"
                     android:text="@string/no"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:includeFontPadding="false"
                     android:background="@drawable/button_bg_round"
-                    android:layout_marginEnd="8dp"/>
+                    android:backgroundTint="#252932"
+                    android:layout_marginEnd="12dp"/>
                 <TextView
                     android:id="@+id/yesBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textSize="14sp"
-                    android:textColor="@color/accent"
-                    android:textStyle="bold"
+                    android:textColor="#ffffff"
                     android:text="@string/yes"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:includeFontPadding="false"
                     android:background="@drawable/button_bg_round"
-                    android:layout_marginEnd="8dp"/>
+                    android:backgroundTint="@color/accent"
+                    android:layout_marginEnd="12dp"/>
             </LinearLayout>
-        </FrameLayout>
-        <LinearLayout
-            android:id="@+id/catlist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_catbg"
-            android:orientation="vertical">
             <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_drawer"
@@ -123,7 +122,6 @@
                 android:visibility="gone" />
             <TextView
                 style="@style/customcategory"
-                android:layout_marginBottom="32dp"
                 android:drawableStart="@drawable/custom_about"
                 android:onClick="openAbout"
                 android:text="@string/aboutbtn"/>

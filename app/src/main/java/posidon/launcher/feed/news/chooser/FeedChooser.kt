@@ -31,7 +31,7 @@ class FeedChooser : AppCompatActivity() {
         val padding = (4 * resources.displayMetrics.density).toInt()
         grid.setPadding(padding, Tools.getStatusBarHeight(this), padding, Tools.navbarHeight + padding)
 
-        feedUrls.addAll(Settings.getString("feedUrls", "androidpolice.com")!!.split("|"))
+        feedUrls.addAll(Settings.getString("feedUrls", defaultSources)!!.split("|"))
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
@@ -41,14 +41,14 @@ class FeedChooser : AppCompatActivity() {
             val dialog = BottomSheetDialog(this, R.style.bottomsheet)
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
-            dialog.findViewById<TextView>(R.id.title)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+            //dialog.findViewById<TextView>(R.id.title)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setTextColor(Main.accentColor)
             dialog.findViewById<TextView>(R.id.done)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls.add(dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' '))
                 grid.adapter!!.notifyDataSetChanged()
-                Settings.putString("feedUrls", feedUrls.joinToString("|"))
+                Settings.put("feedUrls", feedUrls.joinToString("|"))
             }
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()
@@ -59,5 +59,9 @@ class FeedChooser : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         feedUrls.clear()
+    }
+
+    companion object {
+        const val defaultSources = "androidpolice.com"
     }
 }

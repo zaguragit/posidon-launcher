@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.news.chooser.Source
 import posidon.launcher.tools.Settings
 import java.io.IOException
@@ -17,7 +18,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean
     private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
 
     override fun doInBackground(vararg voids: Void): Boolean? {
-        for (u: String in Settings.getString("feedUrls", "androidpolice.com")!!.split("|")) {
+        for (u: String in Settings.getString("feedUrls", FeedChooser.defaultSources)!!.split("|")) {
             if (!TextUtils.isEmpty(u)) {
                 var url = if (!u.startsWith("http://") && !u.startsWith("https://")) "https://$u" else u
 
@@ -27,7 +28,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean
                 while (searching && i < endStrings.size) {
                     try {
                         val newUrl = url + endStrings[i]
-                        parseFeed(URL(newUrl).openConnection().getInputStream(), Source(url, url))
+                        parseFeed(URL(newUrl).openConnection().getInputStream(), Source(urlToName(url), url))
                         searching = false
                     }
                     catch (e: Exception) {}
@@ -62,6 +63,17 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean
 
     interface Listener {
         fun onFinished(feedModels: List<FeedItem>)
+    }
+
+    fun urlToName(url: String): String {
+        var out = when {
+            url.startsWith("https://") -> url.substring(8)
+            url.startsWith("http://") -> url.substring(7)
+            else -> url
+        }
+        if (out.startsWith("www.")) out = out.substring(4)
+        if (out.endsWith("/")) out = out.substring(0, out.length - 1)
+        return out
     }
 
     @Throws(XmlPullParserException::class, IOException::class)

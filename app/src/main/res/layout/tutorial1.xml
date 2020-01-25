@@ -14,80 +14,67 @@
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="256dp"
                 android:gravity="center"
-                android:text="@string/app_name"
+                android:textSize="48sp"
                 android:textColor="#ffffff"
                 android:fontFamily="@font/posidon_sans"
-                android:layout_marginBottom="32dp"
-                android:textSize="64sp"/>
+                android:text="@string/preset_chooser_title"
+                android:layout_marginBottom="32dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:gravity="center_horizontal"
                 android:padding="10dp">
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#e2e2e2"
-                    android:text="@string/preset_chooser_title"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/stylepixel"
+                    android:layout_width="256dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-                    <TextView
-                        android:id="@+id/stylepixel"
-                        android:layout_width="256dp"
-                        android:layout_height="wrap_content"
-                        android:minWidth="64dp"
-                        android:gravity="center_horizontal"
-                        android:background="@drawable/button_bg_round"
-                        android:padding="16dp"
-                        android:textSize="16sp"
-                        android:layout_margin="8dp"
-                        android:textColor="#dddddd"
-                        android:text="@string/pixel_stock_android"/>
-                    <TextView
-                        android:id="@+id/styleoneui"
-                        android:layout_width="256dp"
-                        android:layout_height="wrap_content"
-                        android:minWidth="64dp"
-                        android:gravity="center_horizontal"
-                        android:background="@drawable/button_bg_round"
-                        android:padding="16dp"
-                        android:textSize="16sp"
-                        android:layout_margin="8dp"
-                        android:textColor="#dddddd"
-                        android:text="@string/one_ui"/>
-                    <TextView
-                        android:id="@+id/styleios"
-                        android:layout_width="256dp"
-                        android:layout_height="wrap_content"
-                        android:minWidth="64dp"
-                        android:gravity="center_horizontal"
-                        android:background="@drawable/button_bg_round"
-                        android:padding="16dp"
-                        android:textSize="16sp"
-                        android:layout_margin="8dp"
-                        android:textColor="#dddddd"
-                        android:text="@string/ios"/>
-                    <TextView
-                        android:id="@+id/styleposidon"
-                        android:layout_width="256dp"
-                        android:layout_height="wrap_content"
-                        android:minWidth="64dp"
-                        android:gravity="center_horizontal"
-                        android:background="@drawable/button_bg_round"
-                        android:padding="16dp"
-                        android:textSize="16sp"
-                        android:layout_margin="8dp"
-                        android:textColor="#dddddd"
-                        android:text="@string/surprise_me"/>
-                </LinearLayout>
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:padding="16dp"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="#dddddd"
+                    android:text="@string/pixel_stock_android"/>
+                <TextView
+                    android:id="@+id/styleoneui"
+                    android:layout_width="256dp"
+                    android:layout_height="wrap_content"
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:padding="16dp"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="#dddddd"
+                    android:text="@string/one_ui"/>
+                <TextView
+                    android:id="@+id/styleios"
+                    android:layout_width="256dp"
+                    android:layout_height="wrap_content"
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:padding="16dp"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="#dddddd"
+                    android:text="@string/ios"/>
+                <TextView
+                    android:id="@+id/styleposidon"
+                    android:layout_width="256dp"
+                    android:layout_height="wrap_content"
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:padding="16dp"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="#dddddd"
+                    android:text="@string/surprise_me"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

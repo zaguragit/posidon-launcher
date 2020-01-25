@@ -67,7 +67,7 @@ class NotificationService : NotificationListenerService() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         while (i < notifications.size) {
                             val group = ArrayList<Notification>()
-                            if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == android.app.Notification.FLAG_GROUP_SUMMARY) {
+                            if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
                                 val key = notifications[i].groupKey
                                 var last: Bundle? = null
                                 var extras: Bundle
@@ -76,9 +76,9 @@ class NotificationService : NotificationListenerService() {
                                     if (last == null || extras.getCharSequence(android.app.Notification.EXTRA_TITLE) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
-                                        last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)) {
+                                        last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
                                         group.add(formatNotification(notifications[i]))
-                                        if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != android.app.Notification.FLAG_GROUP_SUMMARY) notificationsAmount2++
+                                        if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
                                     }
                                     last = extras
                                     i++
@@ -108,7 +108,7 @@ class NotificationService : NotificationListenerService() {
 
         private fun formatNotification(notification: StatusBarNotification): Notification {
             val extras = notification.notification.extras
-            val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == android.app.Notification.FLAG_GROUP_SUMMARY
+            val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
             var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
                 try {

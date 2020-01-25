@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">posidon</string>
+    <string name="app_name">posidon launcher</string>
     <string name="aboutbtn">About</string>
     <string name="walls">Walls</string>
 
@@ -24,22 +24,22 @@
     <string name="settingsdateformat">Date</string>
     <string name="searchbarhint">Search..</string>
     <string name="feed_sources">Sources</string>
-    <string name="defaultfeedurl">androidpolice.com/feed</string>
+    <string name="example_feed_url">androidpolice.com/feed</string>
     <string name="settings_icon_count">Icon count</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Hide statusbar</string>
     <string name="spacing">Spacing</string>
-    <string name="storage_access_description">Grant storage access for things like accessing the wallpaper for the blur in the app drawer</string>
+    <string name="permission_storage_description">Grant storage access for things like accessing the wallpaper for the blur in the app drawer</string>
     <string name="storage_access">Storage access</string>
     <string name="ok">OK</string>
     <string name="notification_access">Notification access</string>
-    <string name="notification_access_description">Grant notification access to have your notifications displayed on your homescreen</string>
+    <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
     <string name="surprise_me">Surprise me..</string>
-    <string name="preset_chooser_title">Choose a preset:</string>
+    <string name="preset_chooser_title">Choose a preset</string>
     <string name="done">Done</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
     <string name="twitter">Twitter</string>
@@ -130,6 +130,11 @@
     <string name="settings_title_news">News</string>
     <string name="show_behind_dock">Show behind dock</string>
     <string name="some_quick_adjustments">Some quick adjustments</string>
+    <string name="mk_backup">Save a backup</string>
+    <string name="use_backup">Restore from backup</string>
+    <string name="permissions">Permissions</string>
+    <string name="grant">Grant</string>
+    <string name="background_type">Background type</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -140,5 +145,10 @@
         <item>posidon</item>
         <item>clip reveal</item>
         <item>scale up</item>
+    </array>
+
+    <array name="bgModes">
+        <item>solid</item>
+        <item>bottom glow</item>
     </array>
 </resources>

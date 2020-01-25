@@ -36,15 +36,15 @@ class CustomDrawer : AppCompatActivity() {
         icsize!!.progress = Settings.getInt("icsize", 1)
 
         val columnslider = findViewById<SeekBar>(R.id.columnslider)
-        columnslider.progress = Settings.getInt("numcolumns", 4) - 1
+        columnslider.progress = Settings.getInt("drawer:columns", 4) - 1
         val c = findViewById<TextView>(R.id.columnnum)
-        c.text = Settings.getInt("numcolumns", 4).toString()
+        c.text = Settings.getInt("drawer:columns", 4).toString()
         columnslider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c.text = (progress + 1).toString()
-                Settings.putInt("numcolumns", progress + 1)
+                Settings.put("drawer:columns", progress + 1)
             }
         })
 
@@ -57,12 +57,12 @@ class CustomDrawer : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 verticalspacingnum.text = progress.toString()
-                Settings.putInt("verticalspacing", progress)
+                Settings.put("verticalspacing", progress)
             }
         })
 
         findViewById<Switch>(R.id.labelsenabled).isChecked = Settings.getBool("labelsenabled", false)
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings.getInt("drawercolor", -0x78000000))
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings.getInt("drawer:background_color", -0x78000000))
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings.getInt("labelColor", 0xeeeeeeee.toInt()))
 
         findViewById<Spinner>(R.id.sortingOptions).setSelection(Settings.getInt("sortAlgorithm", 1))
@@ -77,7 +77,7 @@ class CustomDrawer : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 window.setBackgroundDrawable(BitmapDrawable(resources, Tools.blurredWall(this@CustomDrawer, progress.toFloat())))
-                Settings.putFloat("blurradius", progress.toFloat())
+                Settings.put("blurradius", progress.toFloat())
                 blurNum.text = progress.toString()
             }
         })
@@ -91,23 +91,26 @@ class CustomDrawer : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 blurLayerNum.text = (progress + 1).toString()
-                Settings.putInt("blurLayers", progress + 1)
+                Settings.put("blurLayers", progress + 1)
             }
         })
         Main.customized = true
     }
 
-    fun pickBGColor(v: View) { ColorTools.pickColor(this, "drawercolor", -0x78000000) }
+    fun pickBGColor(v: View) { ColorTools.pickColor(this, "drawer:background_color", -0x78000000) }
     fun pickLabelColor(v: View) { ColorTools.pickColor(this, "labelColor", 0xeeeeeeee.toInt()) }
 
     override fun onPause() {
-        Settings.putInt("icsize", icsize!!.progress)
-        Settings.putBool("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
-        if (Settings.getInt("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition) {
-            Settings.putInt("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition)
-            Main.shouldSetApps = true
+        Settings.apply {
+            putNotSave("icsize", icsize!!.progress)
+            putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
+            if (getInt("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition) {
+                putNotSave("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition)
+                Main.shouldSetApps = true
+            }
+            putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)
+            apply()
         }
-        Settings.putBool("blur", findViewById<Switch>(R.id.blurswitch).isChecked)
         super.onPause()
     }
 }
