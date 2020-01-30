@@ -10,7 +10,7 @@ import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 
-class DrawerAdapter(private val context: Context, private val apps: Array<App>) : BaseAdapter() {
+class DrawerAdapter(private val context: Context, private val apps: Array<App?>) : BaseAdapter() {
     override fun getCount(): Int {
         return apps.size
     }
@@ -33,23 +33,23 @@ class DrawerAdapter(private val context: Context, private val apps: Array<App>) 
         val viewHolder: ViewHolder
         val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
-            if (Settings.getInt("drawer:columns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
+            if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
                 convertView = li.inflate(R.layout.list_item, null)
-                if (Settings.getInt("drawer:columns", 4) == 2) (convertView.findViewById<View>(R.id.icontxt) as TextView).textSize = 18f
+                if (Settings["drawer:columns", 4] == 2) (convertView.findViewById<View>(R.id.icontxt) as TextView).textSize = 18f
             }
             viewHolder = ViewHolder()
             viewHolder.icon = convertView.findViewById(R.id.iconimg)
             viewHolder.text = convertView.findViewById(R.id.icontxt)
             convertView.tag = viewHolder
         } else viewHolder = convertView.tag as ViewHolder
-        viewHolder.icon!!.setImageDrawable(apps[position].icon)
-        if (Settings.getBool("labelsenabled", false)) {
-            viewHolder.text!!.text = apps[position].label
+        viewHolder.icon!!.setImageDrawable(apps[position]!!.icon)
+        if (Settings["labelsenabled", false]) {
+            viewHolder.text!!.text = apps[position]!!.label
             viewHolder.text!!.visibility = View.VISIBLE
-            viewHolder.text!!.setTextColor(Settings.getInt("labelColor", -0x11111112))
+            viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
         } else viewHolder.text!!.visibility = View.INVISIBLE
         var appSize = 0
-        when (Settings.getInt("icsize", 1)) {
+        when (Settings["icsize", 1]) {
             0 -> appSize = (context.resources.displayMetrics.density * 64).toInt()
             1 -> appSize = (context.resources.displayMetrics.density * 74).toInt()
             2 -> appSize = (context.resources.displayMetrics.density * 84).toInt()

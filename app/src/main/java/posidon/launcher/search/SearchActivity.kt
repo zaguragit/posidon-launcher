@@ -53,20 +53,20 @@ class SearchActivity : AppCompatActivity() {
             false
         }
         var bg = ShapeDrawable()
-        val tr = Settings.getInt("searchradius", 0) * resources.displayMetrics.density
+        val tr = Settings["searchradius", 0] * resources.displayMetrics.density
         bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-        bg.paint.color = Settings.getInt("searchcolor", 0x33000000)
+        bg.paint.color = Settings["searchcolor", 0x33000000]
         findViewById<View>(R.id.searchbar).background = bg
         bg = ShapeDrawable()
         bg.shape = RectShape()
-        bg.paint.color = Settings.getInt("searchUiBg", -0x78000000)
+        bg.paint.color = Settings["searchUiBg", -0x78000000]
         window.setBackgroundDrawable(bg)
-        searchTxt.setTextColor(Settings.getInt("searchtxtcolor", -0x1))
-        (findViewById<View>(R.id.failtxt) as TextView).setTextColor(Settings.getInt("searchtxtcolor", -0x1))
-        searchTxt.setHintTextColor(Settings.getInt("searchhintcolor", -0x1))
-        searchTxt.hint = Settings.getString("searchhinttxt", "Search..")
-        (findViewById<View>(R.id.searchIcon) as ImageView).imageTintList = ColorStateList.valueOf(Settings.getInt("searchhintcolor", -0x1))
-        (findViewById<View>(R.id.kill) as ImageView).imageTintList = ColorStateList.valueOf(Settings.getInt("searchhintcolor", -0x1))
+        searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
+        (findViewById<View>(R.id.failtxt) as TextView).setTextColor(Settings["searchtxtcolor", -0x1])
+        searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
+        searchTxt.hint = Settings["searchhinttxt", "Search.."]
+        (findViewById<View>(R.id.searchIcon) as ImageView).imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])
+        (findViewById<View>(R.id.kill) as ImageView).imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])
         findViewById<View>(R.id.kill).setOnClickListener { startActivity(Intent(this@SearchActivity, Main::class.java)) }
         operators["+"] = Add()
         operators["plus"] = Add()
@@ -84,7 +84,7 @@ class SearchActivity : AppCompatActivity() {
         operators["or"] = Or()
     }
 
-    var stillWantIP = false
+    private var stillWantIP = false
     private fun search(string: String, grid: GridView) {
         stillWantIP = false
         var j = 0
@@ -92,7 +92,7 @@ class SearchActivity : AppCompatActivity() {
             val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
             if (showHidden) j++
             for (app in Main.apps) {
-                for (word in app.label!!.split(" ").toTypedArray()) if (cook(word).contains(cook(string)) || word.contains(string)) {
+                for (word in app!!.label!!.split(" ").toTypedArray()) if (cook(word).contains(cook(string)) || word.contains(string)) {
                     j++
                     break
                 }
@@ -101,8 +101,8 @@ class SearchActivity : AppCompatActivity() {
             if (j > 0) {
                 findViewById<View>(R.id.fail).visibility = View.GONE
                 j = 0
-                for (app in Main.apps) {
-                    for (word in app.label!!.split(" ").toTypedArray()) {
+                for (app in Main.apps!!) {
+                    for (word in app!!.label!!.split(" ").toTypedArray()) {
                         if (cook(word).contains(cook(string)) || word.contains(string)) {
                             results[j] = app
                             j++

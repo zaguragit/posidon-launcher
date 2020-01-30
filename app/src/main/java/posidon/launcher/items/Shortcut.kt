@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Process
 import android.view.View
 import androidx.annotation.RequiresApi
-import posidon.launcher.Main.launcherApps
+import posidon.launcher.Main.Companion.launcherApps
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 
@@ -35,9 +35,9 @@ class Shortcut : LauncherItem {
         return "shortcut:$packageName/$id"
     }
 
-    public fun open(context: Context, view: View) {
+    fun open(context: Context, view: View) {
         try {
-            launcherApps.startShortcut(packageName, id, view.clipBounds, when (Settings.getString("anim:app_open", "posidon")) {
+            launcherApps.startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 "clip_reveal" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)

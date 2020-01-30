@@ -17,7 +17,7 @@ import android.view.Window
 import android.view.animation.PathInterpolator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.launcher.customizations.Customizations
-import posidon.launcher.tools.Settings.getFloat
+import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.wall.Gallery
 import java.util.*
@@ -68,7 +68,7 @@ class LauncherMenu(private val context: Context, private val window: Window) : O
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)
-            if (Tools.canBlurWall(context)) window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(context, getFloat("blurradius", 15f))), context.getDrawable(R.drawable.black_gradient)))) else window.setBackgroundDrawableResource(R.drawable.black_gradient)
+            if (Tools.canBlurWall(context)) window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(context, Settings["blurradius", 15f])), context.getDrawable(R.drawable.black_gradient)))) else window.setBackgroundDrawableResource(R.drawable.black_gradient)
             homescreen.setOnClickListener { dialog!!.dismiss() }
             dialog!!.setOnDismissListener { exit(homescreen, window, behavior) }
             dialog!!.show()

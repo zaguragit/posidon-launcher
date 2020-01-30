@@ -36,7 +36,7 @@ class CustomAppIcon : AppCompatActivity() {
                 catch (ignore: Exception) {}
                 findViewById<TextView>(R.id.icontxt).text = "Default"
                 setOnClickListener {
-                    Settings.put("app:$app:icon", "")
+                    Settings["app:$app:icon"] = ""
                     finish()
                 }
                 defaultOption = this
@@ -50,6 +50,7 @@ class CustomAppIcon : AppCompatActivity() {
                         (gridView.adapter as IconsAdapter).search(s.toString())
                     }
                 })
+                setPadding((18 * resources.displayMetrics.density).toInt(), 0, (18 * resources.displayMetrics.density).toInt(), 0)
                 layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, (64 * resources.displayMetrics.density).toInt())
                 setBackgroundColor(0xdd111213.toInt())
                 visibility = View.GONE
@@ -107,9 +108,9 @@ class CustomAppIcon : AppCompatActivity() {
             viewHolder.icon!!.setImageDrawable(iconPacks[position].icon)
             viewHolder.text!!.text = iconPacks[position].label
             viewHolder.text!!.visibility = View.VISIBLE
-            viewHolder.text!!.setTextColor(Settings.getInt("labelColor", -0x11111112))
+            viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
             var appSize = 0
-            when (Settings.getInt("icsize", 1)) {
+            when (Settings["icsize", 1]) {
                 0 -> appSize = (resources.displayMetrics.density * 64).toInt()
                 1 -> appSize = (resources.displayMetrics.density * 74).toInt()
                 2 -> appSize = (resources.displayMetrics.density * 84).toInt()
@@ -179,7 +180,7 @@ class CustomAppIcon : AppCompatActivity() {
                 viewHolder.icon!!.setImageDrawable(Tools.animate(themeRes.getDrawable(intRes)))
             } catch (ignore: Exception) {}
             var appSize = 0
-            when (Settings.getInt("icsize", 1)) {
+            when (Settings["icsize", 1]) {
                 0 -> appSize = (resources.displayMetrics.density * 64).toInt()
                 1 -> appSize = (resources.displayMetrics.density * 74).toInt()
                 2 -> appSize = (resources.displayMetrics.density * 84).toInt()
@@ -188,7 +189,7 @@ class CustomAppIcon : AppCompatActivity() {
             viewHolder.icon!!.layoutParams.width = appSize
             viewHolder.icon!!.setOnClickListener {
                 println("ref:$iconPack|${searchResults[i]}")
-                Settings.put("app:$app:icon", "ref:$iconPack|${searchResults[i]}")
+                Settings["app:$app:icon"] = "ref:$iconPack|${searchResults[i]}"
                 Main.shouldSetApps = true
                 finish()
             }

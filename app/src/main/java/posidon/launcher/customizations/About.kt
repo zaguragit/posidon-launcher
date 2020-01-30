@@ -30,11 +30,11 @@ class About : Activity() {
         Tools.animate(findViewById<ImageView>(R.id.devprofile).drawable)
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {
-            if (Settings.getBool("dev:enabled", false)) {
-                Settings.put("dev:enabled", false)
+            if (Settings["dev:enabled", false]) {
+                Settings["dev:enabled"] = false
                 Toast.makeText(this@About, "Developer mode disabled", Toast.LENGTH_SHORT).show()
             } else {
-                Settings.put("dev:enabled", true)
+                Settings["dev:enabled"] = true
                 Toast.makeText(this@About, "Developer mode enabled", Toast.LENGTH_SHORT).show()
             }
             true

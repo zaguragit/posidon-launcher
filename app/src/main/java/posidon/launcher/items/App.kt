@@ -32,7 +32,7 @@ class App : LauncherItem() {
             val launchintent = Intent(Intent.ACTION_MAIN)
             launchintent.component = ComponentName(packageName!!, name!!)
             launchintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            when (Settings.getString("anim:app_open", "posidon")) {
+            when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> context.startActivity(launchintent, ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle())
                 "clip_reveal" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -61,11 +61,11 @@ class App : LauncherItem() {
         g.setColor(appcolor)
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).background = g
         d.findViewById<TextView>(R.id.appname)!!.text = label
-        d.findViewById<ImageView>(R.id.iconimg)!!.setImageBitmap(Tools.drawable2bitmap(icon))
+        d.findViewById<ImageView>(R.id.iconimg)!!.setImageBitmap(Tools.drawable2bitmap(icon!!))
         try {
             d.findViewById<TextView>(R.id.version)!!.text = context.packageManager.getPackageInfo(packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {}
-        if (Settings.getBool("showcomponent", false)) {
+        if (Settings["showcomponent", false]) {
             d.findViewById<TextView>(R.id.componentname)!!.text = "$packageName/$name"
             d.findViewById<View>(R.id.component)!!.visibility = View.VISIBLE
         }

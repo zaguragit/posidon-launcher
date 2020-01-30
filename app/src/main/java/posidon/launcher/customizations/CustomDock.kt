@@ -31,54 +31,54 @@ class CustomDock : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<Spinner>(R.id.animationOptions).setSelection(Settings.getInt("dock:background_type", 0))
+        findViewById<Spinner>(R.id.animationOptions).setSelection(Settings["dock:background_type", 0])
 
         icsize = findViewById(R.id.dockiconsizeslider)
-        icsize!!.progress = Settings.getInt("dockicsize", 1)
+        icsize!!.progress = Settings["dockicsize", 1]
 
         val iccount = findViewById<SeekBar>(R.id.columnSlider)
-        iccount!!.progress = Settings.getInt("dock:columns", 5)
+        iccount!!.progress = Settings["dock:columns", 5]
         val c = findViewById<TextView>(R.id.iccountnum)
-        c.text = Settings.getInt("dock:columns", 5).toString()
+        c.text = Settings["dock:columns", 5].toString()
         iccount.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c.text = progress.toString()
-                Settings.put("dock:columns", iccount.progress)
+                Settings["dock:columns"] = iccount.progress
             }
         })
 
         val rowCount = findViewById<SeekBar>(R.id.dockRowCountSlider)
-        rowCount!!.progress = Settings.getInt("dock:rows", 1) - 1
+        rowCount!!.progress = Settings["dock:rows", 1] - 1
         val c2 = findViewById<TextView>(R.id.icRowNum)
-        c2.text = Settings.getInt("dock:rows", 1).toString()
+        c2.text = Settings["dock:rows", 1].toString()
         rowCount.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c2.text = (progress + 1).toString()
-                Settings.put("dock:rows", rowCount.progress + 1)
+                Settings["dock:rows"] = rowCount.progress + 1
             }
         })
 
         val docklabelswitch = findViewById<Switch>(R.id.labelsEnabled)
-        docklabelswitch.isChecked = Settings.getBool("dockLabelsEnabled", false)
+        docklabelswitch.isChecked = Settings["dockLabelsEnabled", false]
 
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings.getInt("dock:background_color", -0x78000000))
-        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings.getInt("dockLabelColor", -0x11111112))
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["dock:background_color", -0x78000000])
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["dockLabelColor", -0x11111112])
 
-        (findViewById<View>(R.id.radiusSlider) as SeekBar).progress = Settings.getInt("dockradius", 30)
+        (findViewById<View>(R.id.radiusSlider) as SeekBar).progress = Settings["dockradius", 30]
 
         val bottompadding = findViewById<SeekBar>(R.id.bottompaddingslider)
-        bottompadding.progress = Settings.getInt("dockbottompadding", 10)
-        (findViewById<View>(R.id.bottompadding) as TextView).text = Settings.getInt("dockbottompadding", 10).toString()
+        bottompadding.progress = Settings["dockbottompadding", 10]
+        (findViewById<View>(R.id.bottompadding) as TextView).text = Settings["dockbottompadding", 10].toString()
         bottompadding.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 (findViewById<View>(R.id.bottompadding) as TextView).text = progress.toString()
-                Settings.put("dockbottompadding", progress)
+                Settings["dockbottompadding"] = progress
             }
         })
         Main.customized = true

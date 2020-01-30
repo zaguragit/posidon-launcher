@@ -9,7 +9,7 @@ import posidon.launcher.tools.Settings
 class ApplyIcons : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try { Settings.put("iconpack", intent.extras!!.getString("iconpack")) }
+        try { Settings["iconpack"] = intent.extras!!.getString("iconpack") }
         catch (ignore: Exception) {}
         Main.shouldSetApps = true
         startActivity(Intent(this, Main::class.java))

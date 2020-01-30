@@ -135,6 +135,7 @@
     <string name="permissions">Permissions</string>
     <string name="grant">Grant</string>
     <string name="background_type">Background type</string>
+    <string name="max_image_width">Max Image Width</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

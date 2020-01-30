@@ -31,7 +31,12 @@ class FeedChooser : AppCompatActivity() {
         val padding = (4 * resources.displayMetrics.density).toInt()
         grid.setPadding(padding, Tools.getStatusBarHeight(this), padding, Tools.navbarHeight + padding)
 
-        feedUrls.addAll(Settings.getString("feedUrls", defaultSources)!!.split("|"))
+        feedUrls.addAll(Settings["feedUrls", defaultSources].split("|"))
+        if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
+            feedUrls.removeAt(0)
+            Settings["feedUrls"] = ""
+        }
+
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
@@ -48,7 +53,7 @@ class FeedChooser : AppCompatActivity() {
                 dialog.dismiss()
                 feedUrls.add(dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' '))
                 grid.adapter!!.notifyDataSetChanged()
-                Settings.put("feedUrls", feedUrls.joinToString("|"))
+                Settings["feedUrls"] = feedUrls.joinToString("|")
             }
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()

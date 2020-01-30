@@ -124,7 +124,7 @@ class NotificationService : NotificationListenerService() {
             if (icon == null) try {
                 icon = contextReference!!.get()!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.animate(icon)
-                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings.getInt("notificationbgcolor", -0x1) || notification.notification.color == 0) Settings.getInt("notificationtitlecolor", -0xeeeded) else notification.notification.color)
+                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings.get("notificationbgcolor", -0x1) || notification.notification.color == 0) Settings.get("notificationtitlecolor", -0xeeeded) else notification.notification.color)
                 icon.setTintList(colorList)
             } catch (e: Exception) { e.printStackTrace() }
             var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
