@@ -1,0 +1,62 @@
+package posidon.launcher.tools
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.net.URL
+
+class Loader {
+
+    class text(private val url: String, private val onFinished: (string: String) -> Unit) : AsyncTask<Unit?, String?, String?>() {
+
+        override fun doInBackground(vararg params: Unit?): String? {
+            try {
+                val builder = StringBuilder()
+                var buffer: String?
+                val bufferReader = BufferedReader(InputStreamReader(URL(url).openStream()))
+                while (bufferReader.readLine().also { buffer = it } != null) builder.append(buffer).append('\n')
+                bufferReader.close()
+                return builder.toString()
+            } catch (e: Exception) { e.printStackTrace() }
+            return null
+        }
+
+        override fun onPostExecute(string: String?) { string?.let { onFinished(it) }}
+    }
+
+    class bitmap(private val url: String, private val onFinished: (string: Bitmap) -> Unit, private var width: Int = AUTO, private var height: Int = AUTO, private val scaleIfSmaller: Boolean = true) : AsyncTask<Void?, Void?, Void?>() {
+        private var img: Bitmap? = null
+        override fun doInBackground(vararg voids: Void?): Void? {
+            try {
+                val input = URL(url).openConnection().getInputStream()
+                val tmp = BitmapFactory.decodeStream(input)
+                input.close()
+                when {
+                    width == AUTO && height == AUTO -> img = tmp
+                    !scaleIfSmaller && (width > tmp.width || height > tmp.height) && width > tmp.width && height == AUTO || height > tmp.height && width == AUTO -> img = tmp
+                    else -> {
+                        if (width == AUTO) width = height * tmp.width / tmp.height else if (height == AUTO) height = width * tmp.height / tmp.width
+                        img = Bitmap.createScaledBitmap(tmp, width, height, true)
+                    }
+                }
+            }
+            catch (ignore: FileNotFoundException) {}
+            catch (e: Exception) { e.printStackTrace() }
+            catch (e: OutOfMemoryError) {
+                img!!.recycle()
+                img = null
+                System.gc()
+            }
+            return null
+        }
+
+        override fun onPostExecute(aVoid: Void?) { img?.let { onFinished(it) } }
+
+        companion object {
+            const val AUTO = -1
+        }
+    }
+}

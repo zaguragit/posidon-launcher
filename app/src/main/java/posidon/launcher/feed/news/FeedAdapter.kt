@@ -42,24 +42,24 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
     override fun onBindViewHolder(holder: FeedModelViewHolder, position: Int) {
         val feedItem = FeedModels[position]
         holder.rssFeedView.findViewById<TextView>(R.id.title).text = feedItem.title
-        holder.rssFeedView.findViewById<TextView>(R.id.title).setTextColor(Settings.get("feed:card_txt_color", -0x1))
+        holder.rssFeedView.findViewById<TextView>(R.id.title).setTextColor(Settings["feed:card_txt_color", -0x1])
         if (feedItem.source.name != null) holder.rssFeedView.findViewById<TextView>(R.id.source).text = feedItem.source.name
-        holder.rssFeedView.findViewById<TextView>(R.id.source).setTextColor(Settings.get("feed:card_txt_color", -0x1))
-        if (Settings.get("feed:card_img_enabled", true) && feedItem.img != null) {
+        holder.rssFeedView.findViewById<TextView>(R.id.source).setTextColor(Settings["feed:card_txt_color", -0x1])
+        if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {
             if (images.containsKey(feedItem.img)) {
                 holder.rssFeedView.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
-                if (Settings.get("feed:card_text_shadow", true)) {
+                if (Settings["feed:card_text_shadow", true]) {
                     val gradientDrawable = GradientDrawable()
                     gradientDrawable.colors = intArrayOf(0x0, Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0x1000000))
                     holder.rssFeedView.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
                     holder.rssFeedView.findViewById<View>(R.id.gradient).background = gradientDrawable
                 } else holder.rssFeedView.findViewById<View>(R.id.gradient).visibility = View.GONE
             } else {
-                Loader.bitmap(feedItem.img, Loader.bitmap.Listener { img ->
-                    try {
+                Loader.bitmap(feedItem.img, { img ->
+                    if (img != null) try {
                         images[feedItem.img] = img
                         holder.rssFeedView.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
-                        if (Settings.get("feed:card_text_shadow", true)) {
+                        if (Settings["feed:card_text_shadow", true]) {
                             val gradientDrawable = GradientDrawable()
                             gradientDrawable.colors = intArrayOf(0x0, Palette.from(img).generate().getDarkMutedColor(-0x1000000))
                             holder.rssFeedView.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)

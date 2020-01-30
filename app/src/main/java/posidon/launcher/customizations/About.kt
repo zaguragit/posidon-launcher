@@ -26,8 +26,19 @@ class About : Activity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
-        Loader.bitmap("https://pbs.twimg.com/profile_images/1177585321636028416/2QGnyOET_400x400.jpg", Loader.bitmap.Listener { img -> findViewById<ImageView>(R.id.sajidshaikprofile).setImageBitmap(img) }).execute()
-        Tools.animate(findViewById<ImageView>(R.id.devprofile).drawable)
+        Loader.text("https://posidon.io/launcher/contributors/pictureUrls") {
+            var leoLink: String? = null
+            var sajidShaikLink: String? = null
+            for (line in it.split('\n')) {
+                if (line.startsWith("Leo: "))
+                    leoLink = line.substring(5)
+                else if (line.startsWith("SajidShaik: "))
+                    sajidShaikLink = line.substring(12)
+            }
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            leoLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }).execute() } ?: Toast.makeText(this, "problemmmooww", Toast.LENGTH_LONG).show()
+            sajidShaikLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }).execute() } ?: Toast.makeText(this, "problemmmoowwAgain", Toast.LENGTH_LONG).show()
+        }.execute()
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {
             if (Settings["dev:enabled", false]) {

@@ -23,7 +23,7 @@ import posidon.launcher.BuildConfig
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.tools.Loader.text
+import posidon.launcher.tools.Loader
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
 import java.util.*
@@ -101,7 +101,7 @@ class SearchActivity : AppCompatActivity() {
             if (j > 0) {
                 findViewById<View>(R.id.fail).visibility = View.GONE
                 j = 0
-                for (app in Main.apps!!) {
+                for (app in Main.apps) {
                     for (word in app!!.label!!.split(" ").toTypedArray()) {
                         if (cook(word).contains(cook(string)) || word.contains(string)) {
                             results[j] = app
@@ -161,7 +161,9 @@ class SearchActivity : AppCompatActivity() {
                 findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
                 (findViewById<View>(R.id.type) as TextView).setText(R.string.ip_address_external)
                 (findViewById<View>(R.id.result) as TextView).text = ""
-                text("https://checkip.amazonaws.com", text.Listener { if (stillWantIP) (findViewById<View>(R.id.result) as TextView).text = it }).execute()
+                Loader.text("https://checkip.amazonaws.com") {
+                    if (stillWantIP) (findViewById<View>(R.id.result) as TextView).text = it
+                }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (string.contains("pi", ignoreCase = true) || string.contains("π", ignoreCase = true)) {
                 findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
@@ -172,33 +174,13 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    internal abstract class Arithmetic {
-        abstract fun apply(x: Double, y: Double): Double
-    }
-
-    internal class Add : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = x + y
-    }
-
-    internal class Subtract : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = x - y
-    }
-
-    internal class Multiply : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = x * y
-    }
-
-    internal class Divide : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = x / y
-    }
-
-    internal class And : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble()
-    }
-
-    internal class Or : Arithmetic() {
-        override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble()
-    }
+    internal abstract class Arithmetic { abstract fun apply(x: Double, y: Double): Double }
+    internal class Add : Arithmetic() { override fun apply(x: Double, y: Double): Double = x + y }
+    internal class Subtract : Arithmetic() { override fun apply(x: Double, y: Double): Double = x - y }
+    internal class Multiply : Arithmetic() { override fun apply(x: Double, y: Double): Double = x * y }
+    internal class Divide : Arithmetic() { override fun apply(x: Double, y: Double): Double = x / y }
+    internal class And : Arithmetic() { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
+    internal class Or : Arithmetic() { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
 
     override fun onPause() {
         super.onPause()
