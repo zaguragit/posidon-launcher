@@ -135,7 +135,8 @@
     <string name="use_backup">Recuperar una copia de seguridad</string>
     <string name="permissions">Permisos</string>
     <string name="grant">Permitir</string>
-    <string name="background_type">Background type</string>
+    <string name="background_type">Tipo de fondo</string>
+    <string name="max_image_width">Max resolución de imagen</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -146,5 +147,10 @@
         <item>posidon</item>
         <item>clip reveal</item>
         <item>aumentar</item>
+    </array>
+
+    <array name="bgModes">
+        <item>solido</item>
+        <item>brillo inferior</item>
     </array>
 </resources>

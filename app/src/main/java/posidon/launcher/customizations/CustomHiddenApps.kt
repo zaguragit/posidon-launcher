@@ -89,14 +89,14 @@ class CustomHiddenApps : AppCompatActivity() {
                 viewHolder = convertView.tag as ViewHolder
             viewHolder.icon!!.setImageDrawable(pacsForAdapter[position]!!.icon)
             viewHolder.text!!.text = pacsForAdapter[position]!!.label
-            when (Settings.getInt("icsize", 1)) {
+            when (Settings["icsize", 1]) {
                 0 -> viewHolder.icon!!.setPadding(64, 64, 64, 64)
                 1 -> viewHolder.icon!!.setPadding(32, 32, 32, 32)
                 2 -> viewHolder.icon!!.setPadding(0, 0, 0, 0)
             }
             val finalConvertView = convertView
 
-            val hidden = Settings.getBool(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
+            val hidden = Settings[pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false]
             if (hidden) finalConvertView.setBackgroundColor(0x33ff0000)
             else finalConvertView.setBackgroundColor(0x0)
             convertView.setOnClickListener {
@@ -104,11 +104,11 @@ class CustomHiddenApps : AppCompatActivity() {
                 Main.customized = true
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
-                    Settings.put(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", false)
+                    Settings[pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden"] = false
                     notifyDataSetChanged()
                 } else {
                     finalConvertView.setBackgroundColor(0x0)
-                    Settings.put(pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden", true)
+                    Settings[pacsForAdapter[position]!!.packageName + "/" + pacsForAdapter[position]!!.name + "?hidden"] = true
                     notifyDataSetChanged()
                 }
             }

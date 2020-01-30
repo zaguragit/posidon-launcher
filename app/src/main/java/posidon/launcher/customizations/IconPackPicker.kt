@@ -28,12 +28,12 @@ class IconPackPicker : AppCompatActivity() {
         lastclicked = findViewById(R.id.systemicons)
 
         try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(pm.getApplicationIcon("com.android.systemui")) } catch (ignore: Exception) {}
-        if (Settings.getString("iconpack", "system") == "system") {
+        if (Settings["iconpack", "system"] == "system") {
             findViewById<View>(R.id.systemicons).background = getDrawable(R.drawable.selection)
         }
 
         findViewById<View>(R.id.systemicons).setOnClickListener { v ->
-            Settings.put("iconpack", "system")
+            Settings["iconpack"] = "system"
             v.background = getDrawable(R.drawable.selection)
             if (lastclicked !== v) {
                 lastclicked!!.setBackgroundColor(0x0)
@@ -54,7 +54,7 @@ class IconPackPicker : AppCompatActivity() {
         val grid = findViewById<GridView>(R.id.grid)
         grid.adapter = IconPackListAdapter(this, apps as Array<App>)
         grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
-            Settings.put("iconpack", apps[position].packageName!!)
+            Settings["iconpack"] = apps[position].packageName!!
             view.background = getDrawable(R.drawable.selection)
             if (lastclicked !== view) {
                 lastclicked!!.setBackgroundColor(0x0)
@@ -88,12 +88,12 @@ class IconPackPicker : AppCompatActivity() {
             } else viewHolder = convertView.tag as ViewHolder
             viewHolder.icon!!.setImageDrawable(pacsForAdapter[position].icon)
             viewHolder.text!!.text = pacsForAdapter[position].label
-            when (Settings.getInt("icsize", 1)) {
+            when (Settings["icsize", 1]) {
                 0 -> viewHolder.icon!!.setPadding(64, 64, 64, 64)
                 1 -> viewHolder.icon!!.setPadding(32, 32, 32, 32)
                 2 -> viewHolder.icon!!.setPadding(0, 0, 0, 0)
             }
-            if (Settings.getString("iconpack", "system") == pacsForAdapter[position].packageName) {
+            if (Settings["iconpack", "system"] == pacsForAdapter[position].packageName) {
                 convertView.background = getDrawable(R.drawable.selection)
                 lastclicked = convertView
             } else convertView.setBackgroundColor(0x0)

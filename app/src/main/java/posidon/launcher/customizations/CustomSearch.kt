@@ -28,17 +28,17 @@ class CustomSearch : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<Switch>(R.id.drawersearchbar).isChecked = Settings.getBool("drawersearchbarenabled", true)
-        findViewById<View>(R.id.searchcolorprev).background = ColorTools.colorcircle(Settings.getInt("searchcolor", 0x33000000))
-        findViewById<View>(R.id.searchtxtcolorprev).background = ColorTools.colorcircle(Settings.getInt("searchtxtcolor", -0x1))
-        findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorcircle(Settings.getInt("searchhintcolor", -0x1))
-        findViewById<TextView>(R.id.hinttxt).text = Settings.getString("searchhinttxt", "Search..")
-        findViewById<SeekBar>(R.id.searchradiusslider).progress = Settings.getInt("searchradius", 0)
-        findViewById<Switch>(R.id.docksearchbar).isChecked = Settings.getBool("docksearchbarenabled", false)
-        findViewById<View>(R.id.docksearchcolorprev).background = ColorTools.colorcircle(Settings.getInt("docksearchcolor", -0x22000001))
-        findViewById<View>(R.id.docksearchtxtcolorprev).background = ColorTools.colorcircle(Settings.getInt("docksearchtxtcolor", -0x1000000))
-        findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings.getInt("docksearchradius", 30)
-        findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorcircle(Settings.getInt("searchUiBg", -0x78000000))
+        findViewById<Switch>(R.id.drawersearchbar).isChecked = Settings["drawersearchbarenabled", true]
+        findViewById<View>(R.id.searchcolorprev).background = ColorTools.colorcircle(Settings["searchcolor", 0x33000000])
+        findViewById<View>(R.id.searchtxtcolorprev).background = ColorTools.colorcircle(Settings["searchtxtcolor", -0x1])
+        findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorcircle(Settings["searchhintcolor", -0x1])
+        findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
+        findViewById<SeekBar>(R.id.searchradiusslider).progress = Settings["searchradius", 0]
+        findViewById<Switch>(R.id.docksearchbar).isChecked = Settings["docksearchbarenabled", false]
+        findViewById<View>(R.id.docksearchcolorprev).background = ColorTools.colorcircle(Settings["docksearchcolor", -0x22000001])
+        findViewById<View>(R.id.docksearchtxtcolorprev).background = ColorTools.colorcircle(Settings["docksearchtxtcolor", -0x1000000])
+        findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings["docksearchradius", 30]
+        findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorcircle(Settings["searchUiBg", -0x78000000])
         Main.customized = true
     }
 

@@ -134,7 +134,8 @@
     <string name="use_backup">Восстановить резервную копию</string>
     <string name="permissions">Разрешения</string>
     <string name="grant">Разрешить</string>
-    <string name="background_type">Background type</string>
+    <string name="background_type">Тип фона</string>
+    <string name="max_image_width">Max Ширина Изображения</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -145,5 +146,10 @@
         <item>posidon</item>
         <item>clip reveal</item>
         <item>увеличить</item>
+    </array>
+
+    <array name="bgModes">
+        <item>простой</item>
+        <item>нижнее свечение</item>
     </array>
 </resources>

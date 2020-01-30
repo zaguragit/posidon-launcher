@@ -185,7 +185,7 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
-        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings.put("feedenabled", checked) }
+        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings["feedenabled"] = checked }
         Tools.updateNavbarHeight(this)
     }
 
@@ -223,7 +223,7 @@ class Tutorial : AppCompatActivity() {
     }
 
     fun done4(v: View) {
-        Settings.put("init", false)
+        Settings["init"] = false
         if (!isDefaultLauncher()) chooseLauncher()
         startActivity(Intent(this, Main::class.java))
         finish()

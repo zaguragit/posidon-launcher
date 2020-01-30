@@ -33,19 +33,19 @@ class CustomOther : AppCompatActivity() {
         setContentView(R.layout.custom_other)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        (findViewById<View>(R.id.hidestatus) as Switch).isChecked = Settings.getBool("hidestatus", false)
-        (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked = Settings.getBool("mnmlstatus", false)
+        (findViewById<View>(R.id.hidestatus) as Switch).isChecked = Settings["hidestatus", false]
+        (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked = Settings["mnmlstatus", false]
         val hapticbar = findViewById<SeekBar>(R.id.hapticbar)
-        hapticbar.progress = Settings.getInt("hapticfeedback", 14)
+        hapticbar.progress = Settings["hapticfeedback", 14]
         hapticbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                Settings.put("hapticfeedback", seekBar.progress)
+                Settings["hapticfeedback"] = seekBar.progress
                 Tools.vibrate(this@CustomOther)
             }
         })
-        findViewById<Spinner>(R.id.animationOptions).setSelection(when(Settings.getString("anim:app_open", "posidon")) {
+        findViewById<Spinner>(R.id.animationOptions).setSelection(when(Settings["anim:app_open", "posidon"]) {
             "scale_up" -> 2
             "clip_reveal" -> 1
             else -> 0

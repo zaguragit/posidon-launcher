@@ -26,9 +26,9 @@ class Folder(context: Context, string: String) : LauncherItem() {
         try {
             val previewApps = min(apps.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
-            drr[0] = ColorDrawable(Settings.getInt("folderBG", -0x22eeeded))
+            drr[0] = ColorDrawable(Settings.get("folderBG", -0x22eeeded))
             for (i in 0 until previewApps) {
-                drr[i + 1] = BitmapDrawable(context.resources, Tools.drawable2bitmap(apps[i]!!.icon))
+                drr[i + 1] = BitmapDrawable(context.resources, Tools.drawable2bitmap(apps[i]!!.icon!!))
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
@@ -60,9 +60,9 @@ class Folder(context: Context, string: String) : LauncherItem() {
             layerDrawable.draw(canvas)
             val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             canvas = Canvas(outputBitmap)
-            if (Settings.getInt("icshape", 4) != 3) {
+            if (Settings.get("icshape", 4) != 3) {
                 val path = Path()
-                when (Settings.getInt("icshape", 4)) {
+                when (Settings.get("icshape", 4)) {
                     1 -> path.addCircle(width.toFloat() / 2f + 1, height.toFloat() / 2f + 1, Math.min(width.toFloat(), height.toFloat() / 2f) - 2, Path.Direction.CCW)
                     2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), Math.min(width, height).toFloat() / 4f, Math.min(width, height).toFloat() / 4f, Path.Direction.CCW)
                     0, 4 -> {

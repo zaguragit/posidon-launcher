@@ -30,18 +30,16 @@ class CustomHome : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings.getInt("clockcolor", -0x1))
+        findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings["clockcolor", -0x1])
 
-        val widget = Settings.getString("widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget")
+        val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         when {
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") ?: false -> {}
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") ?: false -> {}
-            else -> {
-                findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
-            }
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
+            else -> findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
         }
 
-        val dateformat = Settings.getString("datef", resources.getString(R.string.defaultdateformat))
+        val dateformat = Settings["datef", resources.getString(R.string.defaultdateformat)]
         val datefprev = findViewById<TextClock>(R.id.datefprev)
         val dateftxt = findViewById<EditText>(R.id.dateformat)
         dateftxt.addTextChangedListener(object : TextWatcher {
@@ -57,52 +55,69 @@ class CustomHome : AppCompatActivity() {
 
 
         val showBehindDock = findViewById<Switch>(R.id.showBehindDock)
-        showBehindDock.isChecked = Settings.getBool("feed:show_behind_dock", false)
+        showBehindDock.isChecked = Settings["feed:show_behind_dock", false]
 
         val feedswitch = findViewById<Switch>(R.id.feedenabled)
-        feedswitch.isChecked = Settings.getBool("feedenabled", true)
+        feedswitch.isChecked = Settings["feedenabled", true]
+
         val hidefeedswitch = findViewById<Switch>(R.id.hidefeed)
-        hidefeedswitch.isChecked = Settings.getBool("hidefeed", false)
+        hidefeedswitch.isChecked = Settings["hidefeed", false]
+
+        val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
+        val maxWidth = Settings["feed:max_img_width", Tools.getDisplayWidth(this)]
+        newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Tools.getDisplayWidth(this).toFloat() * 6).toInt() - 1
+        newsCardMaxImageWidthSlider.max = 5
+        val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
+        newsCardMaxImageWidthNum.text = maxWidth.toString()
+        newsCardMaxImageWidthSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) { Settings.apply() }
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                val newVal: Int = Tools.getDisplayWidth(this@CustomHome) / 6 * (progress + 1)
+                newsCardMaxImageWidthNum.text = newVal.toString()
+                Settings.putNotSave("feed:max_img_width", newVal)
+            }
+        })
 
         val newscardradiusslider = findViewById<SeekBar>(R.id.newscardradiusslider)
-        newscardradiusslider.progress = Settings.getInt("feed:card_radius", 15)
+        newscardradiusslider.progress = Settings["feed:card_radius", 15]
         val newscardradiusnum = findViewById<TextView>(R.id.newscardradiusnum)
-        newscardradiusnum.text = Settings.getInt("feed:card_radius", 15).toString()
+        newscardradiusnum.text = Settings["feed:card_radius", 15].toString()
         newscardradiusslider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 newscardradiusnum.text = progress.toString()
-                Settings.put("feed:card_radius", progress)
+                Settings["feed:card_radius"] = progress
             }
         })
 
         val cardHorizontalMarginSeekbar = findViewById<SeekBar>(R.id.cardHorizontalMarginSeekbar)
-        cardHorizontalMarginSeekbar.progress = Settings.getInt("feed:card_margin_x", 16)
+        cardHorizontalMarginSeekbar.progress = Settings["feed:card_margin_x", 16]
         val cardHorizontalMarginNum = findViewById<TextView>(R.id.cardHorizontalMarginNum)
-        cardHorizontalMarginNum.text = Settings.getInt("feed:card_margin_x", 16).toString()
+        cardHorizontalMarginNum.text = Settings["feed:card_margin_x", 16].toString()
         cardHorizontalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 cardHorizontalMarginNum.text = progress.toString()
-                Settings.put("feed:card_margin_x", progress)
+                Settings["feed:card_margin_x"] = progress
             }
         })
 
-        findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorcircle(Settings.getInt("feed:card_bg", -0xdad9d9))
-        findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorcircle(Settings.getInt("feed:card_txt_color", -0x1))
-        findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings.getBool("feed:card_img_enabled", true)
-        findViewById<Switch>(R.id.newscardblackgradient).isChecked = Settings.getBool("feed:card_text_shadow", true)
+        findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorcircle(Settings["feed:card_bg", -0xdad9d9])
+        findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorcircle(Settings["feed:card_txt_color", -0x1])
+        findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings["feed:card_img_enabled", true]
+        findViewById<Switch>(R.id.newscardblackgradient).isChecked = Settings["feed:card_text_shadow", true]
 
-        findViewById<View>(R.id.notificationtitlecolorprev).background = ColorTools.colorcircle(Settings.getInt("notificationtitlecolor", -0xeeeded))
-        findViewById<View>(R.id.notificationtxtcolorprev).background = ColorTools.colorcircle(Settings.getInt("notificationtxtcolor", -0xdad9d9))
-        findViewById<View>(R.id.notificationbgprev).background = ColorTools.colorcircle(Settings.getInt("notificationbgcolor", -0x1))
+        findViewById<View>(R.id.notificationtitlecolorprev).background = ColorTools.colorcircle(Settings["notificationtitlecolor", -0xeeeded])
+        findViewById<View>(R.id.notificationtxtcolorprev).background = ColorTools.colorcircle(Settings["notificationtxtcolor", -0xdad9d9])
+        findViewById<View>(R.id.notificationbgprev).background = ColorTools.colorcircle(Settings["notificationbgcolor", -0x1])
 
-        findViewById<Switch>(R.id.actionButtonSwitch).isChecked = Settings.getBool("notificationActionsEnabled", false)
-        findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked = Settings.getBool("collapseNotifications", false)
-        findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings.getInt("notificationActionTextColor", 0x88e0e0e0.toInt()))
-        findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings.getInt("notificationActionTextColor", -0xdad9d9))
+        findViewById<Switch>(R.id.actionButtonSwitch).isChecked = Settings["notificationActionsEnabled", false]
+        findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked = Settings["collapseNotifications", false]
+        findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", 0x88e0e0e0.toInt()])
+        findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", -0xdad9d9])
         Main.customized = true
     }
 
@@ -122,17 +137,17 @@ class CustomHome : AppCompatActivity() {
         dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
         dialog.findViewById<View>(R.id.card0)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.put("feed:card_layout", 0)
+            Settings["feed:card_layout"] = 0
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card1)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.put("feed:card_layout", 1)
+            Settings["feed:card_layout"] = 1
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card2)!!.setOnClickListener {
             Tools.vibrate(this)
-            Settings.put("feed:card_layout", 2)
+            Settings["feed:card_layout"] = 2
             dialog.dismiss()
         }
         dialog.show()

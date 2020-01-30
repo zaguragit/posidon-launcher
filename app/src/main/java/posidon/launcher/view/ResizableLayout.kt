@@ -103,8 +103,8 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
-                startX = event.x
-                startY = event.y
+                startX = event.rawX
+                startY = event.rawY
                 if (!resizing) longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
             }
             MotionEvent.ACTION_UP -> {
@@ -114,7 +114,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
             }
             MotionEvent.ACTION_CANCEL -> longPressHandler.removeCallbacks(onLongPress)
             MotionEvent.ACTION_MOVE ->
-                if (!isAClick(startX, event.x, startY, event.y))
+                if (!isAClick(startX, event.rawX, startY, event.rawY))
                     longPressHandler.removeCallbacks(onLongPress)
         }
         return super.onInterceptTouchEvent(event)

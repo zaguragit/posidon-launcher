@@ -28,13 +28,13 @@ class AppList : FragmentActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         gridView = findViewById(R.id.apps)
 
-        gridView.adapter = DrawerAdapter(this, Main.apps)
+        gridView.adapter = DrawerAdapter(this, Main.apps!!)
         gridView.setOnItemClickListener {
-            _, view, i, _ -> Main.apps[i].open(this@AppList, view)
+            _, view, i, _ -> Main.apps!![i]!!.open(this@AppList, view)
             finish()
         }
 
-        findViewById<ImageView>(R.id.blur).setImageBitmap(Tools.blurredWall(this, Settings.getFloat("blurradius", 15f)))
+        findViewById<ImageView>(R.id.blur).setImageBitmap(Tools.blurredWall(this, Settings["blurradius", 15f]))
     }
 
     fun openSearch(v: View) { startActivity(Intent(this, SearchActivity::class.java), ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle()) }

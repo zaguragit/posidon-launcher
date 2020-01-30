@@ -59,7 +59,7 @@
                         android:layout_width="0dp"
                         android:drawableStart="@drawable/ic_color"
                         android:layout_weight="1"
-                        android:text="@string/color"/>
+                        android:text="@string/background"/>
                     <View
                         android:id="@+id/searchcolorprev"
                         style="@style/colorPreview"/>
@@ -129,7 +129,7 @@
                         android:layout_width="0dp"
                         android:drawableStart="@drawable/ic_color"
                         android:layout_weight="1"
-                        android:text="@string/color"/>
+                        android:text="@string/background"/>
                     <View
                         android:id="@+id/docksearchcolorprev"
                         style="@style/colorPreview"/>

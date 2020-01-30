@@ -28,7 +28,7 @@ class Customizations : AppCompatActivity() {
         setContentView(R.layout.customizations)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (Settings.getBool("dev:enabled", false)) findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
+        if (Settings["dev:enabled", false]) findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
         findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, (24 * resources.displayMetrics.density).toInt()))
         cardThing()
     }
@@ -44,7 +44,7 @@ class Customizations : AppCompatActivity() {
     fun openAbout   (v: View) = startActivity(Intent(this, About         ::class.java))
 
     fun hideCard(v: View? = null) {
-        Settings.put("rated", true)
+        Settings["rated"] = true
         findViewById<View>(R.id.card).animate()
                 .alpha(0f)
                 .scaleX(0.95f)
@@ -62,7 +62,7 @@ class Customizations : AppCompatActivity() {
     }
 
     private fun cardThing() {
-        if (Main.customized && !Settings.getBool("rated", false)) {
+        if (Main.customized && !Settings["rated", false]) {
             findViewById<View>(R.id.card).visibility = View.VISIBLE
             findViewById<View>(R.id.yesBtn).setOnClickListener {
                 val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
@@ -75,7 +75,7 @@ class Customizations : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         findViewById<View>(R.id.devoptions).visibility =
-                if (Settings.getBool("dev:enabled", false)) View.VISIBLE
+                if (Settings["dev:enabled", false]) View.VISIBLE
                 else View.GONE
         cardThing()
     }

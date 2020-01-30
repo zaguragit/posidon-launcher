@@ -16,14 +16,11 @@ import androidx.fragment.app.FragmentActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.tools.Settings.getBool
-import posidon.launcher.tools.Settings.getInt
-import posidon.launcher.tools.Settings.getString
+import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Sort.colorSort
 import posidon.launcher.tools.Sort.labelSort
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
-import java.util.*
 
 class DesktopMode : FragmentActivity() {
 
@@ -37,15 +34,15 @@ class DesktopMode : FragmentActivity() {
         setApps()
     }
 
-    fun showMenu(view: View?) = startActivity(Intent(this, AppList::class.java))
+    fun showMenu(v: View?) = startActivity(Intent(this, AppList::class.java))
 
     private fun setApps() {
         var skippedapps = 0
         val pacslist = packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
         Main.apps = arrayOfNulls(pacslist.size)
-        val ICONSIZE = Tools.numtodp(65, this)
+        val ICONSIZE = (65 * resources.displayMetrics.density).toInt()
         var themeRes: Resources? = null
-        val iconpackName = getString("iconpack", "system")
+        val iconpackName = Settings["iconpack", "system"]
         var iconResource: String?
         var intres: Int
         var intresiconback = 0
@@ -85,30 +82,31 @@ class DesktopMode : FragmentActivity() {
             if (intresiconmask != 0) mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
             if (intresiconfront != 0) front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
         }
+        var apps = Main.apps
         for (i in pacslist.indices) {
-            if (getBool(pacslist[i].activityInfo.packageName + "/" + pacslist[i].activityInfo.name + "?hidden", false)) skippedapps++ else {
-                Main.apps[i - skippedapps] = App()
+            if (Settings[pacslist[i].activityInfo.packageName + "/" + pacslist[i].activityInfo.name + "?hidden", false]) skippedapps++ else {
+                apps[i - skippedapps] = App()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     try {
-                        Main.apps[i - skippedapps].icon = Tools.adaptic(this@DesktopMode, packageManager.getActivityIcon(ComponentName(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)))
+                        apps[i - skippedapps]!!.icon = Tools.adaptic(this@DesktopMode, packageManager.getActivityIcon(ComponentName(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)))
                     } catch (e: Exception) { e.printStackTrace() }
-                } else Main.apps[i - skippedapps].icon = pacslist[i].loadIcon(packageManager)
-                Main.apps[i - skippedapps].packageName = pacslist[i].activityInfo.packageName
-                Main.apps[i - skippedapps].name = pacslist[i].activityInfo.name
-                Main.apps[i - skippedapps].label = getString(Main.apps[i - skippedapps].packageName + "/" + Main.apps[i - skippedapps].name + "?label", pacslist[i].loadLabel(packageManager).toString())
+                } else apps[i - skippedapps]!!.icon = pacslist[i].loadIcon(packageManager)
+                apps[i - skippedapps]!!.packageName = pacslist[i].activityInfo.packageName
+                apps[i - skippedapps]!!.name = pacslist[i].activityInfo.name
+                apps[i - skippedapps]!!.label = Settings[apps[i - skippedapps]!!.packageName + "/" + apps[i - skippedapps]!!.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
                 intres = 0
-                iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + Main.apps[i - skippedapps].packageName + "/" + Main.apps[i - skippedapps].name + "}")
+                iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + apps[i - skippedapps]!!.packageName + "/" + apps[i - skippedapps]!!.name + "}")
                 if (iconResource != null) intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
                 if (intres != 0) try { //Do NOT add the theme parameter to getDrawable()
-                    Main.apps[i - skippedapps].icon = themeRes!!.getDrawable(intres)
+                    apps[i - skippedapps]!!.icon = themeRes!!.getDrawable(intres)
                     try {
-                        if (!(getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && getBool("animatedicons", true)) Tools.animate(Main.apps[i - skippedapps].icon)
+                        if (!(getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) Tools.animate(apps[i - skippedapps]!!.icon!!)
                     } catch (ignore: Exception) {}
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Main.apps[i - skippedapps].icon = Tools.adaptic(this@DesktopMode, Main.apps[i - skippedapps].icon)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) apps[i - skippedapps]!!.icon = Tools.adaptic(this@DesktopMode, apps[i - skippedapps]!!.icon!!)
                 } catch (e: Exception) { e.printStackTrace() } else {
-                    orig = Bitmap.createBitmap(Main.apps[i - skippedapps].icon!!.intrinsicWidth, Main.apps[i - skippedapps].icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                    Main.apps[i - skippedapps].icon!!.setBounds(0, 0, Main.apps[i - skippedapps].icon!!.intrinsicWidth, Main.apps[i - skippedapps].icon!!.intrinsicHeight)
-                    Main.apps[i - skippedapps].icon!!.draw(Canvas(orig))
+                    orig = Bitmap.createBitmap(apps[i - skippedapps]!!.icon!!.intrinsicWidth, apps[i - skippedapps]!!.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                    apps[i - skippedapps]!!.icon!!.setBounds(0, 0, apps[i - skippedapps]!!.icon!!.intrinsicWidth, apps[i - skippedapps]!!.icon!!.intrinsicHeight)
+                    apps[i - skippedapps]!!.icon!!.draw(Canvas(orig))
                     scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
                     scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
                     canvas = Canvas(scaledBitmap)
@@ -119,11 +117,12 @@ class DesktopMode : FragmentActivity() {
                     if (mask != null) origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
                     if (back != null) canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p) else canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
                     if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
-                    Main.apps[i - skippedapps].icon = BitmapDrawable(resources, scaledBitmap)
+                    apps[i - skippedapps]!!.icon = BitmapDrawable(resources, scaledBitmap)
                 }
             }
         }
-        Main.apps = Arrays.copyOf(Main.apps, Main.apps.size - skippedapps)
-        if (getInt("sortAlgorithm", 1) == 1) colorSort(Main.apps) else labelSort(Main.apps)
+        apps = apps.copyOf(apps.size - skippedapps)
+        if (Settings["sortAlgorithm", 1] == 1) colorSort(apps) else labelSort(apps)
+        Main.apps = apps
     }
 }

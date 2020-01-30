@@ -29,22 +29,22 @@ class CustomFolders : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
         val columnSlider = findViewById<SeekBar>(R.id.columnSlider)
-        columnSlider!!.progress = Settings.getInt("folderColumns", 3)
+        columnSlider!!.progress = Settings["folderColumns", 3]
         val c = findViewById<TextView>(R.id.columnNum)
-        c.text = Settings.getInt("folderColumns", 3).toString()
+        c.text = Settings["folderColumns", 3].toString()
         columnSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c.text = progress.toString()
-                Settings.put("folderColumns", columnSlider.progress)
+                Settings["folderColumns"] = columnSlider.progress
             }
         })
 
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings.getInt("folderBG", -0x22eeeded))
-        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings.getInt("folder:label_color", -0x22000001))
-        findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings.getBool("folderLabelsEnabled", false)
-        findViewById<SeekBar>(R.id.radiusSlider).progress = Settings.getInt("folderCornerRadius", 18)
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["folderBG", -0x22eeeded])
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["folder:label_color", -0x22000001])
+        findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings["folderLabelsEnabled", false]
+        findViewById<SeekBar>(R.id.radiusSlider).progress = Settings["folderCornerRadius", 18]
         Main.customized = true
     }
 

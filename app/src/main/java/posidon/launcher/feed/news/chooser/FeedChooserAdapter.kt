@@ -53,13 +53,13 @@ class FeedChooserAdapter(internal val context: Context, private val feedUrls: Ar
                 dialog.dismiss()
                 feedUrls[position] = dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' ')
                 notifyDataSetChanged()
-                Settings.put("feedUrls", feedUrls.joinToString("|"))
+                Settings["feedUrls"] = feedUrls.joinToString("|")
             }
             dialog.findViewById<TextView>(R.id.remove)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls.removeAt(position)
                 notifyDataSetChanged()
-                Settings.put("feedUrls", feedUrls.joinToString("|"))
+                Settings["feedUrls"] = feedUrls.joinToString("|")
             }
             dialog.show()
             true
@@ -77,12 +77,4 @@ class FeedChooserAdapter(internal val context: Context, private val feedUrls: Ar
     override fun getItemId(i: Int): Long {
         return 0
     }
-
-    /*fun simplifyUrl(url: String): String {
-        var out = url
-        if (url.startsWith("https://")) out = url.substring(8)
-        else if (url.startsWith("http://")) out = url.substring(7)
-        if (out.startsWith("www.")) out = out.substring(4)
-        return out
-    }*/
 }

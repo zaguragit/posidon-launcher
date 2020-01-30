@@ -24,9 +24,9 @@ internal class SearchAdapter(private val context: Context, private val results: 
         val text = convertView.findViewById<TextView>(R.id.icontxt)
         icon.setImageDrawable(results[position]?.icon)
         text.text = results[position]?.label
-        text.setTextColor(Settings.getInt("searchtxtcolor", -0x1))
+        text.setTextColor(Settings.get("searchtxtcolor", -0x1))
         var appSize = 0
-        when (Settings.getInt("icsize", 1)) {
+        when (Settings.get("icsize", 1)) {
             0 -> appSize = (context.resources.displayMetrics.density * 64).toInt()
             1 -> appSize = (context.resources.displayMetrics.density * 72).toInt()
             2 -> appSize = (context.resources.displayMetrics.density * 96).toInt()

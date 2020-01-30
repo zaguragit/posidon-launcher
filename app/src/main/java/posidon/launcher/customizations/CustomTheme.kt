@@ -37,11 +37,11 @@ class CustomTheme : AppCompatActivity() {
 
         findViewById<TextView>(R.id.icShapeTxt).setTextColor(Main.accentColor)
         val i = findViewById<TextView>(R.id.iconpackselector)
-        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings.getString("iconpack", "system")!!, 0)) }
+        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
 
         val fontName = findViewById<TextView>(R.id.fontname)
-        when (Settings.getString("font", "lexendDeca")) {
+        when (Settings["font", "lexendDeca"]) {
             "sansserif" -> fontName.text = getString(R.string.sans_serif)
             "posidonsans" -> fontName.text = getString(R.string.posidon_sans)
             "monospace" -> fontName.text = getString(R.string.monospace)
@@ -54,50 +54,50 @@ class CustomTheme : AppCompatActivity() {
             d.setContentView(R.layout.font_list)
             d.findViewById<View>(R.id.sansserif).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "sansserif")
+                Settings["font"] = "sansserif"
                 fontName.text = getString(R.string.sans_serif)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.posidonsans).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "posidonsans")
+                Settings["font"] = "posidonsans"
                 fontName.text = getString(R.string.posidon_sans)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.monospace).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "monospace")
+                Settings["font"] = "monospace"
                 fontName.text = getString(R.string.monospace)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.ubuntu).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "ubuntu")
+                Settings["font"] = "ubuntu"
                 fontName.text = getString(R.string.ubuntu)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.lexendDeca).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "lexendDeca")
+                Settings["font"] = "lexendDeca"
                 fontName.text = getString(R.string.lexend_deca)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.findViewById<View>(R.id.open_dyslexic).setOnClickListener {
                 d.dismiss()
-                Settings.put("font", "openDyslexic")
+                Settings["font"] = "openDyslexic"
                 fontName.text = getString(R.string.open_dyslexic)
                 Tools.applyFontSetting(this@CustomTheme)
             }
             d.show()
         }
 
-        findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings.getInt("accent", 0x1155ff) or -0x1000000)
+        findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings["accent", 0x1155ff] or -0x1000000)
 
-        (findViewById<View>(R.id.animatedicons) as Switch).isChecked = Settings.getBool("animatedicons", true)
-        (findViewById<View>(R.id.reshapeicons) as Switch).isChecked = Settings.getBool("reshapeicons", false)
+        (findViewById<View>(R.id.animatedicons) as Switch).isChecked = Settings["animatedicons", true]
+        (findViewById<View>(R.id.reshapeicons) as Switch).isChecked = Settings["reshapeicons", false]
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) findViewById<View>(R.id.icshapesettings).visibility = View.GONE
-        else icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundResource(R.drawable.selection)
+        else icShapeViews!![Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         Main.shouldSetApps = true
         Main.customized = true
     }
@@ -109,7 +109,7 @@ class CustomTheme : AppCompatActivity() {
         Settings.apply {
             putNotSave("animatedicons", (findViewById<View>(R.id.animatedicons) as Switch).isChecked)
             putNotSave("reshapeicons", (findViewById<View>(R.id.reshapeicons) as Switch).isChecked)
-            Main.accentColor = getInt("accent", 0x1155ff) or -0x1000000
+            Main.accentColor = Settings["accent", 0x1155ff] or -0x1000000
             apply()
         }
         super.onPause()
@@ -119,37 +119,37 @@ class CustomTheme : AppCompatActivity() {
         super.onResume()
         val pm = packageManager
         val i = findViewById<TextView>(R.id.iconpackselector)
-        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings.getString("iconpack", "system")!!, 0)) }
+        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
     }
 
     fun icshapedef(v: View) {
-        icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundColor(0x0)
-        Settings.put("icshape", 0)
+        icShapeViews!![Settings["icshape", 4]].setBackgroundColor(0x0)
+        Settings["icshape"] = 0
         v.setBackgroundResource(R.drawable.selection)
     }
 
     fun icshaperound(v: View) {
-        icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundColor(0x0)
-        Settings.put("icshape", 1)
+        icShapeViews!![Settings["icshape", 4]].setBackgroundColor(0x0)
+        Settings["icshape"] = 1
         v.setBackgroundResource(R.drawable.selection)
     }
 
     fun icshaperoundrect(v: View) {
-        icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundColor(0x0)
-        Settings.put("icshape", 2)
+        icShapeViews!![Settings["icshape", 4]].setBackgroundColor(0x0)
+        Settings["icshape"] = 2
         v.setBackgroundResource(R.drawable.selection)
     }
 
     fun icshaperect(v: View) {
-        icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundColor(0x0)
-        Settings.put("icshape", 3)
+        icShapeViews!![Settings["icshape", 4]].setBackgroundColor(0x0)
+        Settings["icshape"] = 3
         v.setBackgroundResource(R.drawable.selection)
     }
 
     fun icshapesquircle(v: View) {
-        icShapeViews!![Settings.getInt("icshape", 4)].setBackgroundColor(0x0)
-        Settings.put("icshape", 4)
+        icShapeViews!![Settings["icshape", 4]].setBackgroundColor(0x0)
+        Settings["icshape"] = 4
         v.setBackgroundResource(R.drawable.selection)
     }
 }
