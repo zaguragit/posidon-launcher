@@ -158,6 +158,22 @@
                         android:entries="@array/sortingAlgorithms"
                         android:spinnerMode="dropdown"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_label"
+                        android:layout_weight="1"
+                        android:text="@string/scrollbar" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/scrollbarEnabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

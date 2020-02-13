@@ -62,6 +62,7 @@ class CustomDrawer : AppCompatActivity() {
         })
 
         findViewById<Switch>(R.id.labelsenabled).isChecked = Settings["labelsenabled", false]
+        findViewById<Switch>(R.id.scrollbarEnabled).isChecked = Settings["drawer:scrollbar_enabled", false]
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["drawer:background_color", -0x78000000])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
@@ -104,6 +105,7 @@ class CustomDrawer : AppCompatActivity() {
         Settings.apply {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
+            putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
             if (get("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition) {
                 putNotSave("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition)
                 Main.shouldSetApps = true

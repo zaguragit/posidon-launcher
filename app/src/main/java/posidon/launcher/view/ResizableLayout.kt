@@ -92,7 +92,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
 
     private val longPressHandler = Handler()
     private val onLongPress = Runnable {
-        if (!LauncherMenu.isActive) {
+        if (!LauncherMenu.isActive && hasWindowFocus()) {
             Tools.vibrate(context)
             resizing = true
         }
@@ -100,27 +100,34 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
 
     var startX = 0f
     var startY = 0f
+    var startRawX = 0f
+    var startRawY = 0f
     override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
-                startX = event.rawX
-                startY = event.rawY
-                if (!resizing) longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
+                startX = event.x
+                startY = event.y
+                startRawX = event.rawX
+                startRawY = event.rawY
+                if (!resizing) {
+                    longPressHandler.removeCallbacksAndMessages(null)
+                    longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
+                }
             }
             MotionEvent.ACTION_UP -> {
-                if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout())
+                if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout() && hasWindowFocus())
                     return true
-                longPressHandler.removeCallbacks(onLongPress)
+                longPressHandler.removeCallbacksAndMessages(null)
             }
-            MotionEvent.ACTION_CANCEL -> longPressHandler.removeCallbacks(onLongPress)
+            MotionEvent.ACTION_CANCEL -> longPressHandler.removeCallbacksAndMessages(null)
             MotionEvent.ACTION_MOVE ->
-                if (!isAClick(startX, event.rawX, startY, event.rawY))
-                    longPressHandler.removeCallbacks(onLongPress)
+                if (!(isAClick(startX, event.x, startY, event.y) && isAClick(startRawX, event.rawX, startRawY, event.rawY) && hasWindowFocus()))
+                    longPressHandler.removeCallbacksAndMessages(null)
         }
         return super.onInterceptTouchEvent(event)
     }
 
-    fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
+    inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
         val threshold = 32 * resources.displayMetrics.density
         return abs(startX - endX) < threshold && abs(startY - endY) < threshold
     }

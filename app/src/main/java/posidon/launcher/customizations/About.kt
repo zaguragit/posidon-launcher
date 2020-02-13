@@ -35,9 +35,8 @@ class About : Activity() {
                 else if (line.startsWith("SajidShaik: "))
                     sajidShaikLink = line.substring(12)
             }
-            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-            leoLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }).execute() } ?: Toast.makeText(this, "problemmmooww", Toast.LENGTH_LONG).show()
-            sajidShaikLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }).execute() } ?: Toast.makeText(this, "problemmmoowwAgain", Toast.LENGTH_LONG).show()
+            leoLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }).execute() }
+            sajidShaikLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }).execute() }
         }.execute()
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {

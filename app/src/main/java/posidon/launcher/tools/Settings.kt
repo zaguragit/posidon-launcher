@@ -25,76 +25,75 @@ object Settings {
     private lateinit var lists: HashMap<String, String>
     private lateinit var context: Context
 
-    @JvmStatic inline operator fun set(key: String, value: Int) {
+    inline operator fun set(key: String, value: Int) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: Float) {
+    inline operator fun set(key: String, value: Float) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: Boolean) {
+    inline operator fun set(key: String, value: Boolean) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: String?) {
+    inline operator fun set(key: String, value: String?) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: Array<Int>) {
+    inline operator fun set(key: String, value: Array<Int>) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: Array<Float>) {
+    inline operator fun set(key: String, value: Array<Float>) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic inline operator fun set(key: String, value: Array<Boolean>) {
+    inline operator fun set(key: String, value: Array<Boolean>) {
         putNotSave(key, value)
         apply()
     }
 
-    @JvmStatic fun putNotSave(key: String, value: Int) { ints[key] = value }
-    @JvmStatic fun putNotSave(key: String, value: Float) { floats[key] = value }
-    @JvmStatic fun putNotSave(key: String, value: Boolean) { bools[key] = value }
-    @JvmStatic fun putNotSave(key: String, value: String?) {
+    fun putNotSave(key: String, value: Int) { ints[key] = value }
+    fun putNotSave(key: String, value: Float) { floats[key] = value }
+    fun putNotSave(key: String, value: Boolean) { bools[key] = value }
+    fun putNotSave(key: String, value: String?) {
         if (value == null) strings.keys.remove(key)
         else strings[key] = value
     }
 
-    @JvmStatic fun putNotSave(key: String, value: Array<Int>) {
+    fun putNotSave(key: String, value: Array<Int>) {
         val stringBuilder = StringBuilder(Type.INT.string)
         for (i in value) stringBuilder.append(' ').append(i)
         lists[key] = stringBuilder.toString()
     }
 
-    @JvmStatic fun putNotSave(key: String, value: Array<Float>) {
+    fun putNotSave(key: String, value: Array<Float>) {
         val stringBuilder = StringBuilder(Type.FLOAT.string)
         for (i in value) stringBuilder.append(' ').append(i)
         lists[key] = stringBuilder.toString()
     }
 
-    @JvmStatic fun putNotSave(key: String, value: Array<Boolean>) {
+    fun putNotSave(key: String, value: Array<Boolean>) {
         val stringBuilder = StringBuilder(Type.BOOL.string)
         for (i in value) stringBuilder.append(' ').append(if (i) '1' else '0')
         lists[key] = stringBuilder.toString()
     }
 
-    @JvmStatic fun apply() = PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
+    fun apply() = PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
 
-    @JvmStatic operator fun get(key: String, default: Int) = ints[key] ?: default
-    @JvmStatic operator fun get(key: String, default: Float) = floats[key] ?: default
-    @JvmStatic operator fun get(key: String, default: Boolean) = bools[key] ?: default
-    @JvmStatic operator fun get(key: String, default: String) = getString(key) ?: default
-    @JvmStatic fun getString(key: String) = strings[key]
+    operator fun get(key: String, default: Int) = ints[key] ?: default
+    operator fun get(key: String, default: Float) = floats[key] ?: default
+    operator fun get(key: String, default: Boolean) = bools[key] ?: default
+    operator fun get(key: String, default: String) = getString(key) ?: default
+    fun getString(key: String) = strings[key]
 
-    @JvmStatic
     fun getInts(key: String, default: Array<Int>): Array<Int> {
         if (lists[key] == null) return default
         val stringList = lists[key]!!.split(' ')
@@ -102,7 +101,6 @@ object Settings {
         return Array(stringList.size - 1) { stringList[it].toInt() }
     }
 
-    @JvmStatic
     fun getFloats(key: String, default: Array<Float>): Array<Float> {
         if (lists[key] == null) return default
         val stringList = lists[key]!!.split(' ')
@@ -110,7 +108,6 @@ object Settings {
         return Array(stringList.size - 1) { stringList[it].toFloat() }
     }
 
-    @JvmStatic
     fun getBools(key: String, default: Array<Boolean>): Array<Boolean> {
         if (lists[key] == null) return default
         val stringList = lists[key]!!.split(' ')
@@ -118,7 +115,7 @@ object Settings {
         return Array(stringList.size - 1) { stringList[it] != "0" }
     }
 
-    @JvmStatic
+
     fun init(context: Context) {
         Settings.context = context
         PrivateStorage.readAny(context, "settings").let {

@@ -6,22 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.SectionIndexer
 import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 
-class DrawerAdapter(private val context: Context, private val apps: Array<App?>) : BaseAdapter() {
-    override fun getCount(): Int {
-        return apps.size
-    }
+class DrawerAdapter(private val context: Context, private val apps: Array<App?>) : BaseAdapter(), SectionIndexer {
 
-    override fun getItem(position: Int): Any? {
-        return null
-    }
-
-    override fun getItemId(position: Int): Long {
-        return 0
-    }
+    override fun getCount(): Int = apps.size
+    override fun getItem(position: Int) = null
+    override fun getItemId(position: Int): Long = 0
 
     internal class ViewHolder {
         var icon: ImageView? = null
@@ -57,41 +51,24 @@ class DrawerAdapter(private val context: Context, private val apps: Array<App?>)
         viewHolder.icon!!.layoutParams.height = appSize
         viewHolder.icon!!.layoutParams.width = appSize
         return convertView
+    }
 
-        /*
-
-        final ViewHolder viewHolder;
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (convertView == null) {
-            if (Settings.getInt("drawer:columns", 4) > 2) convertView = li.inflate(R.layout.drawer_item, null);
-            else {
-                convertView = li.inflate(R.layout.list_item, null);
-                if (Settings.getInt("drawer:columns", 4) == 2) ((TextView)convertView.findViewById(R.id.icontxt)).setTextSize(18);
-            }
-            viewHolder = new ViewHolder();
-            viewHolder.icon = convertView.findViewById(R.id.iconimg);
-            viewHolder.text = convertView.findViewById(R.id.icontxt);
-            convertView.setTag(viewHolder);
-        } else viewHolder = (ViewHolder)convertView.getTag();
-
-        viewHolder.icon.setImageDrawable(apps[position].icon);
-        if (Settings.getBool("labelsenabled", false)) {
-            viewHolder.text.setText(apps[position].label);
-            viewHolder.text.setVisibility(View.VISIBLE);
-            viewHolder.text.setTextColor(Settings.getInt("labelColor", 0xeeeeeeee));
-        } else viewHolder.text.setVisibility(View.INVISIBLE);
-        int appsize = 0;
-        switch (Settings.getInt("icsize", 1)) {
-            case 0: appsize = (int) (context.getResources().getDisplayMetrics().density * 64); break;
-            case 1: appsize = (int) (context.getResources().getDisplayMetrics().density * 74); break;
-            case 2: appsize = (int) (context.getResources().getDisplayMetrics().density * 84); break;
+    private val savedSections = ArrayList<Char>().apply {
+        for (i in apps.indices) {
+            val char = apps[i]!!.label!![0].toUpperCase()
+            if (i == 0 || apps[i - 1]!!.label!![0].toUpperCase() != char) add(char)
         }
-        viewHolder.icon.getLayoutParams().height = appsize;
-        viewHolder.icon.getLayoutParams().width = appsize;
-        return convertView;
+    }.toTypedArray()
 
-        */
+    override fun getSections(): Array<Char> = savedSections
+
+    override fun getSectionForPosition(i: Int): Int =
+            savedSections.indexOf(apps[i]!!.label!![0].toUpperCase())
+
+    override fun getPositionForSection(i: Int): Int {
+        val char = savedSections[i]
+        for (j in apps.indices) if (apps[j]!!.label!![0].toUpperCase() == char) return j
+        return 0
     }
 
 }

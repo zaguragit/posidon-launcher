@@ -30,7 +30,6 @@ import kotlin.math.roundToInt
 
 object Tools {
 
-    @JvmStatic
 	fun getResizedBitmap(bm: Bitmap, newHeight: Int, newWidth: Int): Bitmap {
         val width = bm.width
         val height = bm.height
@@ -41,7 +40,6 @@ object Tools {
         return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true)
     }
 
-    @JvmStatic
 	fun getResizedMatrix(bm: Bitmap, newHeight: Int, newWidth: Int): Matrix {
         val width = bm.width
         val height = bm.height
@@ -52,7 +50,6 @@ object Tools {
         return matrix
     }
 
-    @JvmStatic
 	fun animate(d: Drawable): Drawable {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> {
@@ -72,7 +69,6 @@ object Tools {
         return d
     }
 
-    @JvmStatic
 	fun clearAnimation(d: Drawable?) { when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 ->
             d.clearAnimationCallbacks()
@@ -80,7 +76,6 @@ object Tools {
         d is Animatable -> d.stop()
     }}
 
-    @JvmStatic
 	inline fun isInstalled(packageName: String?, packageManager: PackageManager): Boolean {
         var found = true
         try { packageManager.getPackageInfo(packageName, 0) }
@@ -88,22 +83,21 @@ object Tools {
         return found
     }
 
-    @JvmStatic
 	inline fun getDisplayWidth(c: Context) = c.resources.displayMetrics.widthPixels
+    inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
+    inline fun getDensity(c: Context) = c.resources.displayMetrics.density
 
-    @JvmStatic
-	inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
+    inline fun <T : Number> dp(c: Context, number: T) = c.resources.displayMetrics.density * number.toFloat()
 
-    /*try {
-		Object sbs = getSystemService("statusbar");
-		Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
-		Method showsb = statusbarManager.getMethod("expandNotificationsPanel");
-		showsb.invoke(sbs);
-	}
-	catch (ClassNotFoundException e) {}
-	catch (NoSuchMethodException e) {}
-	catch (IllegalAccessException e) {}
-	catch (InvocationTargetException e) {} */
+    fun pullStatusbar(context: Context) {
+        try {
+            @SuppressLint("WrongConstant")
+            val sbs = context.getSystemService("statusbar")
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandNotificationsPanel")(sbs)
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
     fun blurBitmap(context: Context?, bitmap: Bitmap, radius: Float): Bitmap {
         var r = radius
         if (r > 0) {
@@ -327,7 +321,6 @@ object Tools {
         return bitmap
     }
 
-    @JvmOverloads
     fun drawable2bitmap(drawable: Drawable, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
         if (drawable is BitmapDrawable) {
             if (drawable.bitmap != null) {
@@ -344,12 +337,10 @@ object Tools {
         return bitmap
     }
 
-    @JvmStatic
 	inline fun canBlurWall(context: Context?): Boolean {
         return Settings["blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
-    @JvmStatic
 	fun blurredWall(context: Context, radius: Float): Bitmap? {
         try {
             @SuppressLint("MissingPermission") var bitmap: Bitmap? = drawable2bitmap(WallpaperManager.getInstance(context).peekFastDrawable())
@@ -391,7 +382,6 @@ object Tools {
         return null
     }
 
-    @JvmStatic
 	fun centerCropWallpaper(context: Context, wallpaper: Bitmap): Bitmap {
         val scaledWidth = context.resources.displayMetrics.heightPixels * wallpaper.width / wallpaper.height
         var scaledWallpaper = Bitmap.createScaledBitmap(
@@ -420,10 +410,9 @@ object Tools {
 		}
 		return 0;
 	}*/
-	@JvmField
+
 	var navbarHeight = 0
 
-    @JvmStatic
 	fun updateNavbarHeight(activity: Activity) {
         val metrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(metrics)
@@ -433,13 +422,11 @@ object Tools {
         navbarHeight = if (realHeight > usableHeight) realHeight - usableHeight else 0
     }
 
-    @JvmStatic
 	inline fun getStatusBarHeight(c: Context): Int {
         val resourceId = c.resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (resourceId > 0) c.resources.getDimensionPixelSize(resourceId) else 0
     }
 
-    @JvmStatic
 	inline fun isTablet(c: Context): Boolean {
         return c.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
@@ -458,7 +445,6 @@ object Tools {
         return android.provider.Settings.System.getInt(context.contentResolver, android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0
     }
 
-    @JvmStatic
 	@RequiresApi(api = Build.VERSION_CODES.O)
     fun adaptic(context: Context, drawable: Drawable): Drawable {
         val icShape = Settings["icshape", 4]
@@ -516,7 +502,6 @@ object Tools {
         } else drawable
     }
 
-    @JvmStatic
 	inline fun applyFontSetting(activity: Activity) {
         when (Settings["font", "lexendDeca"]) {
             "sansserif" -> activity.theme.applyStyle(R.style.font_sans_serif, true)

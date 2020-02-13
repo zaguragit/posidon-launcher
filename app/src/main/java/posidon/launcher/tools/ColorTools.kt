@@ -191,7 +191,6 @@ object ColorTools {
         d.show()
     }
 
-    @JvmStatic
 	fun pickWallColor(context: Context) {
         val d = BottomSheetDialog(context, R.style.bottomsheet)
         d.setContentView(R.layout.color_picker)

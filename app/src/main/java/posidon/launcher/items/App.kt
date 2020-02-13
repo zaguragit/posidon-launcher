@@ -23,9 +23,7 @@ import posidon.launcher.tools.Tools
 import java.util.*
 
 class App : LauncherItem() {
-    @JvmField
     var name: String? = null
-    @JvmField
     var packageName: String? = null
     fun open(context: Context, view: View) {
         try {
@@ -83,16 +81,7 @@ class App : LauncherItem() {
             uninstallIntent.data = Uri.parse("package:$packageName")
             context.startActivity(uninstallIntent)
         }
-        /*context.findViewById(R.id.drawergrid).animate().scaleX(0.9f).scaleY(0.9f).setInterpolator(new PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).setDuration(300L);
-        context.findViewById(R.id.desktop).animate().scaleX(0.9f).scaleY(0.9f).setInterpolator(new PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).setDuration(300L);
-        d.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                context.findViewById(R.id.drawergrid).animate().scaleX(1).scaleY(1).setDuration(300L);
-                context.findViewById(R.id.desktop).animate().scaleX(1).scaleY(1).setDuration(300L);
-                context.getWindow().setNavigationBarColor(0x0);
-            }
-        });*/d.show()
+        d.show()
     }
 
     override fun toString(): String {
@@ -102,26 +91,21 @@ class App : LauncherItem() {
     companion object {
         private var appsByName = HashMap<String, App>()
         private var appsByName2 = HashMap<String, App>()
-        @JvmField
         val hidden = ArrayList<App>()
-        @JvmStatic
         operator fun get(component: String?): App? {
             return appsByName[component]
         }
 
-        @JvmStatic
         fun putInSecondMap(component: String, app: App) {
             appsByName2[component] = app
         }
 
-        @JvmStatic
         fun swapMaps() {
             val tmp = appsByName
             appsByName = appsByName2
             appsByName2 = tmp
         }
 
-        @JvmStatic
         fun clearSecondMap() {
             appsByName2.clear()
         }

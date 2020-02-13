@@ -26,13 +26,15 @@ import android.widget.AdapterView.OnItemClickListener
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import posidon.launcher.LauncherMenu.PinchListener
+import posidon.launcher.external.WidgetManager.REQUEST_BIND_WIDGET
+import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
+import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -69,6 +71,8 @@ import posidon.launcher.tools.Tools.isInstalled
 import posidon.launcher.tools.Tools.isTablet
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
+import posidon.launcher.view.AlphabetScrollbar
+import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
@@ -77,7 +81,9 @@ import kotlin.math.abs
 import kotlin.math.min
 
 class Main : AppCompatActivity() {
+
     private lateinit var drawerGrid: GridView
+    private lateinit var drawerScrollBar: AlphabetScrollbar
     private lateinit var searchBar: View
     private var powerManager: PowerManager? = null
     private lateinit var desktop: NestedScrollView
@@ -91,6 +97,7 @@ class Main : AppCompatActivity() {
     private var dockHeight = 0
     private lateinit var behavior: BottomSheetBehavior<*>
     private lateinit var batteryBar: ProgressBar
+
     private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             batteryBar.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
@@ -265,7 +272,11 @@ class Main : AppCompatActivity() {
                     (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, (dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18) * resources.displayMetrics.density).toInt())
                     findViewById<View>(R.id.desktopContent).setPadding(0, (6 * resources.displayMetrics.density).toInt(), 0, (24 * resources.displayMetrics.density).toInt())
                 }
-                //desktop.setPadding(0, dockHeight, 0, (int) (dockHeight + Tools.navbarHeight + (Settings.getInt("dockbottompadding", 10) - 18) * getResources().getDisplayMetrics().density));
+                if (Settings["dock:background_type", 0] == 1) {
+                    val bg = findViewById<View>(R.id.drawer).background as LayerDrawable
+                    bg.setLayerInset(0, 0, 0, 0, getDisplayHeight(this@Main) - (Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt())
+                    bg.setLayerInset(1, 0, behavior.peekHeight, 0, 0)
+                }
                 (findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
                 window.decorView.findViewById<View>(android.R.id.content).setOnDragListener(object : OnDragListener {
                     override fun onDrag(v: View, event: DragEvent): Boolean {
@@ -354,157 +365,176 @@ class Main : AppCompatActivity() {
                     }
                 })
             }
+        }
 
-            override fun setCustomizations() {
-                applyFontSetting(this@Main)
-                if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                if (Settings["drawersearchbarenabled", true]) {
-                    drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (56 * resources.displayMetrics.density).toInt())
-                    searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
-                    searchBar.visibility = VISIBLE
-                    val bg = ShapeDrawable()
-                    val tr = Settings["searchradius", 0] * resources.displayMetrics.density
-                    bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    bg.paint.color = Settings["searchcolor", 0x33000000]
-                    searchBar.background = bg
-                    val t = findViewById<TextView>(R.id.searchTxt)
-                    t.setTextColor(Settings["searchhintcolor", -0x1])
-                    t.text = Settings["searchhinttxt", "Search.."]
-                    (findViewById<View>(R.id.searchIcon) as ImageView).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-                } else {
-                    searchBar.visibility = GONE
-                    drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (12 * resources.displayMetrics.density).toInt())
-                }
-                if (Settings["docksearchbarenabled", false]) {
-                    findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
-                    findViewById<View>(R.id.battery).visibility = VISIBLE
-                    val bg = ShapeDrawable()
-                    val tr = Settings["docksearchradius", 30] * resources.displayMetrics.density
-                    bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-                    bg.paint.color = Settings["docksearchcolor", -0x22000001]
-                    findViewById<View>(R.id.docksearchbar).background = bg
-                    val t = findViewById<TextView>(R.id.docksearchtxt)
-                    t.setTextColor(Settings["docksearchtxtcolor", -0x1000000])
-                    t.text = Settings["searchhinttxt", "Search.."]
-                    (findViewById<View>(R.id.docksearchic) as ImageView).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                    (findViewById<View>(R.id.docksearchic) as ImageView).imageTintMode = PorterDuff.Mode.MULTIPLY
-                    (findViewById<View>(R.id.battery) as ProgressBar).progressTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                    (findViewById<View>(R.id.battery) as ProgressBar).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-                    (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                    (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-                    ((findViewById<View>(R.id.battery) as ProgressBar).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(Settings["docksearchtxtcolor", -0x1000000])) -0x23000000 else -0x11000001)
-                } else {
-                    findViewById<View>(R.id.docksearchbar).visibility = GONE
-                    findViewById<View>(R.id.battery).visibility = GONE
-                }
-                drawerGrid.numColumns = Settings["drawer:columns", 4]
-                drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
-                feedRecycler.visibility = if (Settings["feedenabled", true]) VISIBLE else GONE
-                val marginX = (Settings["feed:card_margin_x", 16] * resources.displayMetrics.density).toInt()
-                (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
-                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
-                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
-                if (Settings["hidefeed", false]) {
-                    feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                    feedRecycler.alpha = 0f
-                    desktop.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
-                        val a = 6 * resources.displayMetrics.density
-                        if (y > a) {
-                            feedRecycler.translationX = 0f
-                            feedRecycler.alpha = 1f
-                        } else if (y < a && oldY >= a) {
-                            feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                            feedRecycler.alpha = 0f
-                        }
-                        if (!LauncherMenu.isActive) {
-                            if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
-                                val distance = oldY - y
-                                if ((y < a || distance > a) && behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                                    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                    behavior.setHideable(false)
-                                } else if (distance < -a && behavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                                    behavior.isHideable = true
-                                    behavior.state = BottomSheetBehavior.STATE_HIDDEN
-                                }
-                            } else if (behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+        setCustomizations = {
+            applyFontSetting(this@Main)
+            if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            if (Settings["drawersearchbarenabled", true]) {
+                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (56 * resources.displayMetrics.density).toInt())
+                searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
+                searchBar.visibility = VISIBLE
+                val bg = ShapeDrawable()
+                val tr = Settings["searchradius", 0] * resources.displayMetrics.density
+                bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                bg.paint.color = Settings["searchcolor", 0x33000000]
+                searchBar.background = bg
+                val t = findViewById<TextView>(R.id.searchTxt)
+                t.setTextColor(Settings["searchhintcolor", -0x1])
+                t.text = Settings["searchhinttxt", "Search.."]
+                (findViewById<View>(R.id.searchIcon) as ImageView).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
+                (findViewById<View>(R.id.searchIcon) as ImageView).imageTintMode = PorterDuff.Mode.MULTIPLY
+            } else {
+                searchBar.visibility = GONE
+                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (12 * resources.displayMetrics.density).toInt())
+            }
+            if (Settings["docksearchbarenabled", false]) {
+                findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
+                findViewById<View>(R.id.battery).visibility = VISIBLE
+                val bg = ShapeDrawable()
+                val tr = Settings["docksearchradius", 30] * resources.displayMetrics.density
+                bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
+                bg.paint.color = Settings["docksearchcolor", -0x22000001]
+                findViewById<View>(R.id.docksearchbar).background = bg
+                val t = findViewById<TextView>(R.id.docksearchtxt)
+                t.setTextColor(Settings["docksearchtxtcolor", -0x1000000])
+                t.text = Settings["searchhinttxt", "Search.."]
+                (findViewById<View>(R.id.docksearchic) as ImageView).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
+                (findViewById<View>(R.id.docksearchic) as ImageView).imageTintMode = PorterDuff.Mode.MULTIPLY
+                (findViewById<View>(R.id.battery) as ProgressBar).progressTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
+                (findViewById<View>(R.id.battery) as ProgressBar).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+                (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
+                (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
+                ((findViewById<View>(R.id.battery) as ProgressBar).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(Settings["docksearchtxtcolor", -0x1000000])) -0x23000000 else -0x11000001)
+            } else {
+                findViewById<View>(R.id.docksearchbar).visibility = GONE
+                findViewById<View>(R.id.battery).visibility = GONE
+            }
+            drawerGrid.numColumns = Settings["drawer:columns", 4]
+            drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
+            feedRecycler.visibility = if (Settings["feedenabled", true]) VISIBLE else GONE
+            val marginX = (Settings["feed:card_margin_x", 16] * resources.displayMetrics.density).toInt()
+            (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
+            (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
+            (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
+            if (Settings["hidefeed", false]) {
+                feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                feedRecycler.alpha = 0f
+                feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
+                    val a = 6 * resources.displayMetrics.density
+                    if (y > a) {
+                        feedRecycler.translationX = 0f
+                        feedRecycler.alpha = 1f
+                    } else if (y < a && oldY >= a) {
+                        feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                        feedRecycler.alpha = 0f
+                    }
+                    if (!LauncherMenu.isActive) {
+                        if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
+                            val distance = oldY - y
+                            if ((y < a || distance > a) && behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
                                 behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.isHideable = false
+                                behavior.setHideable(false)
+                            } else if (distance < -a && behavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                                behavior.isHideable = true
+                                behavior.state = BottomSheetBehavior.STATE_HIDDEN
                             }
+                        } else if (behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                            behavior.isHideable = false
                         }
-                    })
-                } else {
-                    feedRecycler.translationX = 0f
-                    feedRecycler.alpha = 1f
-                    desktop.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
-                        if (!LauncherMenu.isActive) {
-                            if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
-                                val a = 6 * resources.displayMetrics.density
-                                val distance = oldY - y
-                                if ((y < a || distance > a) && behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                                    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                    behavior.setHideable(false)
-                                } else if (distance < -a && behavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                                    behavior.isHideable = true
-                                    behavior.state = BottomSheetBehavior.STATE_HIDDEN
-                                }
-                            } else if (behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                    }
+                })
+            } else {
+                feedRecycler.translationX = 0f
+                feedRecycler.alpha = 1f
+                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
+                    if (!LauncherMenu.isActive) {
+                        if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
+                            val a = 6 * resources.displayMetrics.density
+                            val distance = oldY - y
+                            if ((y < a || distance > a) && behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
                                 behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.isHideable = false
+                                behavior.setHideable(false)
+                            } else if (distance < -a && behavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                                behavior.isHideable = true
+                                behavior.state = BottomSheetBehavior.STATE_HIDDEN
                             }
+                        } else if (behavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                            behavior.isHideable = false
                         }
-                    })
-                }
-                if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight(this@Main) - 12 * resources.displayMetrics.density).toInt(), 0, 0)
-                if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
-                    drawerGrid.adapter = DrawerAdapter(this@Main, apps)
-                    setDock()
-                }
-                shouldSetApps = false
-                customized = false
-                when (Settings["dock:background_type", 0]) {
-                    0 -> {
-                        val bg = ShapeDrawable()
+                    }
+                })
+            }
+            if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight(this@Main) - 12 * resources.displayMetrics.density).toInt(), 0, 0)
+
+            when (Settings["dock:background_type", 0]) {
+                0 -> {
+                    findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
                         val tr = Settings["dockradius", 30] * resources.displayMetrics.density
-                        bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                        bg.paint.color = Settings["dock:background_color", -0x78000000]
-                        findViewById<View>(R.id.drawer).background = bg
-                    }
-                    1 -> {
-                        val bg = GradientDrawable()
-                        bg.setColors(intArrayOf(
-                                Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                                Settings["dock:background_color", -0x78000000],
-                                Settings["drawer:background_color", -0x78000000]
-                        ), floatArrayOf(0f, dockHeight.toFloat() / (getDisplayHeight(this@Main) + dockHeight), 1f))
-                        findViewById<View>(R.id.drawer).background = bg
+                        shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                        paint.color = Settings["dock:background_color", -0x78000000]
                     }
                 }
-                val notificationBackground = ShapeDrawable()
-                val r = resources.displayMetrics.density * Settings["feed:card_radius", 15]
-                notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
-                findViewById<View>(R.id.parentNotification).background = notificationBackground
-                val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
-                parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-                val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
-                parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
-                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
-                parentNotificationBtn.imageTintList = ColorStateList.valueOf(accentColor)
-                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor and 0x00ffffff or 0x33000000)
-                if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
-                    notifications.visibility = GONE
-                    findViewById<View>(R.id.arrowUp).visibility = GONE
-                    findViewById<View>(R.id.parentNotification).visibility = VISIBLE
-                    findViewById<View>(R.id.parentNotification).background.alpha = 255
-                } else {
-                    notifications.visibility = VISIBLE
-                    findViewById<View>(R.id.parentNotification).visibility = GONE
+                1 -> {
+                    findViewById<View>(R.id.drawer).background = LayerDrawable(arrayOf(
+                            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                                    Settings["dock:background_color", -0x78000000] and 0x00ffffff,
+                                    Settings["dock:background_color", -0x78000000])),
+                            GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                                    Settings["dock:background_color", -0x78000000],
+                                    Settings["drawer:background_color", -0x78000000]))
+                    ))
                 }
             }
+
+            if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
+                drawerGrid.adapter = DrawerAdapter(this@Main, apps)
+                methods.setDock()
+            }
+
+            shouldSetApps = false
+            customized = false
+            val notificationBackground = ShapeDrawable()
+            val r = resources.displayMetrics.density * Settings["feed:card_radius", 15]
+            notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+            notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
+            findViewById<View>(R.id.parentNotification).background = notificationBackground
+            val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
+            parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
+            val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
+            parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
+            parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
+            parentNotificationBtn.imageTintList = ColorStateList.valueOf(accentColor)
+            parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor and 0x00ffffff or 0x33000000)
+            if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
+                notifications.visibility = GONE
+                findViewById<View>(R.id.arrowUp).visibility = GONE
+                findViewById<View>(R.id.parentNotification).visibility = VISIBLE
+                findViewById<View>(R.id.parentNotification).background.alpha = 255
+            } else {
+                notifications.visibility = VISIBLE
+                findViewById<View>(R.id.parentNotification).visibility = GONE
+            }
+
+            if (Settings["drawer:scrollbar_enabled", false]) {
+                drawerScrollBar.visibility = VISIBLE
+                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = (24 * Tools.getDensity(this@Main)).toInt()
+                drawerGrid.layoutParams = drawerGrid.layoutParams
+                drawerScrollBar.update()
+            } else  {
+                drawerScrollBar.visibility = GONE
+                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
+                drawerGrid.layoutParams = drawerGrid.layoutParams
+            }
         }
+
         desktop = findViewById(R.id.desktop)
         desktop.isNestedScrollingEnabled = false
         desktop.isSmoothScrollingEnabled = false
+        desktop.onTopOverScroll = { if (!LauncherMenu.isActive) Tools.pullStatusbar(this) }
         updateNavbarHeight(this@Main)
         drawerGrid = findViewById(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
@@ -515,13 +545,21 @@ class Main : AppCompatActivity() {
         behavior = BottomSheetBehavior.from(findViewById<View>(R.id.drawer))
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         behavior.isHideable = false
-        val things = IntArray(5)
-        val radii = FloatArray(8)
-        val colors = IntArray(3)
-        val floats = FloatArray(1)
         behavior.setBottomSheetCallback(object : BottomSheetCallback() {
+
+            val things = IntArray(5)
+            val radii = FloatArray(8)
+            val colors = IntArray(3)
+            val floats = FloatArray(1)
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
+                    colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
+                    colors[1] = Settings["dock:background_color", -0x78000000]
+                }
+                colors[2] = Settings["drawer:background_color", -0x78000000]
+                floats[0] = dockHeight.toFloat() / (getDisplayHeight(this@Main) + dockHeight)
                 things[0] = Settings["blurLayers", 1]
                 things[1] = Settings["dockradius", 30]
                 things[2] = Settings["dock:background_type", 0]
@@ -532,30 +570,30 @@ class Main : AppCompatActivity() {
                 radii[1] = tr
                 radii[2] = tr
                 radii[3] = tr
-                colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
-                colors[1] = Settings["dock:background_color", -0x78000000]
-                colors[2] = Settings["drawer:background_color", -0x78000000]
-                floats[0] = dockHeight.toFloat() / (getDisplayHeight(this@Main) + dockHeight)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val inverseOffset = 1 - slideOffset
                 drawerGrid.alpha = slideOffset
+                drawerScrollBar.alpha = slideOffset
                 desktop.alpha = inverseOffset
                 if (slideOffset >= 0) {
-                    if (things[2] == 0) {
-                        val bg = findViewById<View>(R.id.drawer).background as ShapeDrawable
-                        bg.paint.color = ColorTools.blendColors(colors[2], things[3], slideOffset)
-                        bg.shape = RoundRectShape(radii, null, null)
-                    } else if (things[2] == 1) {
-                        val bg = findViewById<View>(R.id.drawer).background as GradientDrawable
-                        val invSquaredOffset = 1 - slideOffset * slideOffset
-                        bg.setColors(colors, floatArrayOf(0f, floats[0] * invSquaredOffset, invSquaredOffset))
-                    }
-                    if (things[4] == 1) {
-                        val repetitive = (slideOffset * 255).toInt() * things[0]
-                        for (i in 0 until things[0]) blurBg.getDrawable(i).alpha = Math.min(repetitive - (i shl 8) + i, 255)
-                    }
+                    try {
+                        if (things[2] == 0) {
+                            val bg = findViewById<View>(R.id.drawer).background as ShapeDrawable
+                            bg.paint.color = ColorTools.blendColors(colors[2], things[3], slideOffset)
+                            bg.shape = RoundRectShape(radii, null, null)
+                        } else if (things[2] == 1) {
+                            val bg = findViewById<View>(R.id.drawer).background as LayerDrawable
+                            colors[1] = ColorTools.blendColors(colors[2], things[3], slideOffset)
+                            (bg.getDrawable(0) as GradientDrawable).colors = intArrayOf(colors[0], colors[1])
+                            (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(colors[1], colors[2])
+                        }
+                        if (things[4] == 1) {
+                            val repetitive = (slideOffset * 255).toInt() * things[0]
+                            for (i in 0 until things[0]) blurBg.getDrawable(i).alpha = min(repetitive - (i shl 8) + i, 255)
+                        }
+                    } catch (e: Exception) {}
                     desktop.translationY = -200 * slideOffset
                 } else if (!Settings["feed:show_behind_dock", false]) {
                     (desktop.layoutParams as CoordinatorLayout.LayoutParams).bottomMargin = ((1 + slideOffset) * (dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18) *
@@ -576,12 +614,13 @@ class Main : AppCompatActivity() {
             }).execute()
             feedRecycler.visibility = VISIBLE
         } else feedRecycler.visibility = GONE
+
         NotificationService.contextReference = WeakReference(this)
         notifications = findViewById(R.id.notifications)
         notifications.isNestedScrollingEnabled = false
         notifications.layoutManager = LinearLayoutManager(this)
-        val touchHelper = ItemTouchHelper(SwipeToDeleteCallback())
-        touchHelper.attachToRecyclerView(notifications)
+        ItemTouchHelper(SwipeToDeleteCallback()).attachToRecyclerView(notifications)
+
         val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
         findViewById<View>(R.id.parentNotification).setOnLongClickListener(LauncherMenu(this@Main, window))
         findViewById<View>(R.id.parentNotification).setOnClickListener {
@@ -596,6 +635,7 @@ class Main : AppCompatActivity() {
                 findViewById<View>(R.id.arrowUp).visibility = VISIBLE
             }
         }
+
         try {
             NotificationService.listener = object : NotificationService.Listener {
                 override fun onUpdate() {
@@ -622,9 +662,7 @@ class Main : AppCompatActivity() {
                             }
                             notifications.adapter = NotificationAdapter(this@Main, window)
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
             }
             startService(Intent(this, NotificationService::class.java))
@@ -657,9 +695,11 @@ class Main : AppCompatActivity() {
             )
             false
         }
-        findViewById<View>(R.id.desktop).setOnTouchListener { _, event ->
-            scaleGestureDetector.onTouchEvent(event)
-            false
+        desktop.setOnTouchListener { _, event ->
+            if (hasWindowFocus()) {
+                scaleGestureDetector.onTouchEvent(event)
+                false
+            } else true
         }
         if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
@@ -674,7 +714,17 @@ class Main : AppCompatActivity() {
             list.add(Rect(0, 0, getDisplayWidth(this), getDisplayHeight(this)))
             findViewById<View>(R.id.homeView).systemGestureExclusionRects = list
         }
-        methods.setCustomizations()
+
+        drawerScrollBar = AlphabetScrollbar(drawerGrid)
+        findViewById<FrameLayout>(R.id.drawercontent).addView(drawerScrollBar)
+        (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
+            width = Tools.dp(this@Main, 24).toInt()
+            gravity = Gravity.END
+        }
+        drawerScrollBar.bringToFront()
+
+        setCustomizations()
+
         blurBg = LayerDrawable(arrayOf<Drawable>(
                 ColorDrawable(0x0),
                 ColorDrawable(0x0),
@@ -682,6 +732,7 @@ class Main : AppCompatActivity() {
                 ColorDrawable(0x0)
         ))
         (findViewById<View>(R.id.blur) as ImageView).setImageDrawable(blurBg)
+
         System.gc()
     }
 
@@ -736,13 +787,7 @@ class Main : AppCompatActivity() {
             val id = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             val providerInfo = widgetManager.getAppWidgetInfo(id)
             hostView = widgetHost.createView(applicationContext, id, providerInfo)
-            hostView.isLongClickable = false
             widgetLayout.addView(hostView)
-            val onLongClickListener = OnLongClickListener {
-                widgetLayout.performLongClick()
-                true
-            }
-            for (i in 0 until hostView.childCount) hostView.getChildAt(i).setOnLongClickListener(onLongClickListener)
             if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo.provider)) {
                 val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
@@ -790,11 +835,6 @@ class Main : AppCompatActivity() {
             hostView = widgetHost.createView(applicationContext, id, providerInfo)
             hostView.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
-            val onLongClickListener = OnLongClickListener {
-                widgetLayout.performLongClick()
-                true
-            }
-            for (i in 0 until hostView.childCount) hostView.getChildAt(i).setOnLongClickListener(onLongClickListener)
         } else widgetLayout.visibility = GONE
     }
 
@@ -836,7 +876,7 @@ class Main : AppCompatActivity() {
             }).start()
         }
         if (tmp != Tools.navbarHeight || customized) {
-            methods.setCustomizations()
+            setCustomizations()
             try { notifications.adapter!!.notifyDataSetChanged() }
             catch (e: Exception) { e.printStackTrace() }
         } else if (powerManager?.isPowerSaveMode == false && Settings["animatedicons", true]) for (app in apps) animate(app!!.icon!!)
@@ -878,7 +918,7 @@ class Main : AppCompatActivity() {
             if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     SYSTEM_UI_FLAG_LOW_PROFILE
-            if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() //setApps(drawerGrid);
+            if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute()
         } else window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }
 
@@ -900,7 +940,6 @@ class Main : AppCompatActivity() {
 
     interface Methods {
         fun setDock()
-        fun setCustomizations()
     }
 
     private class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Void?, Void?, Void?>() {
@@ -1035,20 +1074,22 @@ class Main : AppCompatActivity() {
 
     private val onAppLoaderEnd = {
         drawerGrid.adapter = DrawerAdapter(this@Main, apps)
-        drawerGrid.onItemLongClickListener = drawer(this@Main)
         drawerGrid.onItemClickListener = OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
+        drawerGrid.onItemLongClickListener = drawer(this@Main)
+        drawerScrollBar.updateAdapter()
         methods.setDock()
     }
 
     companion object {
-        const val REQUEST_PICK_APPWIDGET = 0
-        const val REQUEST_CREATE_APPWIDGET = 1
-        const val REQUEST_BIND_WIDGET = 2
         var shouldSetApps = true
         var customized = false
         var apps: Array<App?> = emptyArray()
         var accentColor = -0xeeaa01
         var receiver: AppChangeReceiver? = null
+
+        var setCustomizations = {}
+        var setDock = {}
+
         lateinit var methods: Methods
         @RequiresApi(api = Build.VERSION_CODES.M)
         lateinit var launcherApps: LauncherApps

@@ -5,7 +5,7 @@ import androidx.palette.graphics.Palette
 import posidon.launcher.items.App
 
 object Sort {
-    @JvmStatic
+
     fun labelSort(apps: Array<App?>) {
         var i = 0
         var j: Int
@@ -24,7 +24,6 @@ object Sort {
         }
     }
 
-    @JvmStatic
     fun colorSort(apps: Array<App?>) {
         var i = 0
         var j: Int
