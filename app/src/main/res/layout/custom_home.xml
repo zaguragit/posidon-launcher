@@ -395,6 +395,24 @@
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/grouping"/>
+                    <Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/notificationGrouping"
+                        android:layout_width="wrap_content"
+                        android:entries="@array/notificationGrouping"
+                        android:spinnerMode="dropdown"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

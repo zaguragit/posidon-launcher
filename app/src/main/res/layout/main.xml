@@ -14,13 +14,14 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-    <androidx.core.widget.NestedScrollView
+    <posidon.launcher.view.NestedScrollView
         android:id="@+id/desktop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadingEdge="vertical"
         android:fadingEdgeLength="18dp"
-        android:requiresFadingEdge="vertical">
+        android:requiresFadingEdge="vertical"
+        android:overScrollMode="always">
         <LinearLayout
             android:id="@+id/desktopContent"
             android:layout_width="match_parent"
@@ -72,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </posidon.launcher.view.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/drawer"
@@ -81,14 +82,14 @@
         android:orientation="vertical"
         app:layout_behavior="@string/bottom_sheet_behavior"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="102dp">
+        app:behavior_peekHeight="0dp">
         <include layout="@layout/dock"/>
         <FrameLayout
             android:id="@+id/drawercontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <GridView
+            <posidon.launcher.view.GridView
                 android:id="@+id/drawergrid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

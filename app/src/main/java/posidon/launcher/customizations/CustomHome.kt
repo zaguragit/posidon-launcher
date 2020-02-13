@@ -118,6 +118,11 @@ class CustomHome : AppCompatActivity() {
         findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked = Settings["collapseNotifications", false]
         findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", 0x88e0e0e0.toInt()])
         findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", -0xdad9d9])
+
+        findViewById<Spinner>(R.id.notificationGrouping).setSelection(when (Settings["notifications:groupingType", "os"]) {
+            "os" -> 0; "byApp" -> 1; else -> 2
+        })
+
         Main.customized = true
     }
 
@@ -163,6 +168,9 @@ class CustomHome : AppCompatActivity() {
             putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
             putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
+            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectedItemPosition) {
+                0 -> "os"; 1 -> "byApp"; else -> "none"
+            })
             apply()
         }
         super.onPause()

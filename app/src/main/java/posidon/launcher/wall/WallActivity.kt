@@ -44,16 +44,14 @@ class WallActivity : AppCompatActivity() {
         } else {
             animate(loading!!.drawable)
             index = extras.getInt("index")
-            bitmap(Gallery.walls[index].url, {
-                var img = it!!
-                if (img.height / img.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, img)
-                //else img = Bitmap.createBitmap(img, 0, 0, getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().widthPixels/img.getWidth()*img.getHeight());
+            bitmap(Gallery.walls[index].url!!, {
+                img = it
+                if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, it)
                 findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
-                WallActivity.img = img
                 Tools.clearAnimation(loading!!.drawable)
                 loading!!.visibility = View.GONE
             }).execute()
-            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img, Gallery.walls[index].name) }
+            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img, Gallery.walls[index].name!!) }
             findViewById<View>(R.id.downloadbtn).background = btnBG()
             try {
                 findViewById<TextView>(R.id.nametxt).text = Gallery.walls[index].name
@@ -130,11 +128,10 @@ class WallActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) saveBitmap(img, Gallery.walls[index].name)
+        if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) saveBitmap(img, Gallery.walls[index].name!!)
     }
 
     companion object {
-        @JvmField
         var img: Bitmap? = null
     }
 }

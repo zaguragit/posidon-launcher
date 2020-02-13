@@ -37,8 +37,8 @@ class LauncherMenu(private val context: Context, private val window: Window) : O
     }
 
     companion object {
-        @JvmField var isActive = false
-        @JvmField var dialog: Dialog? = null
+        var isActive = false
+        var dialog: Dialog? = null
         private fun menu(context: Context, window: Window) {
             isActive = true
             Tools.vibrate(context)

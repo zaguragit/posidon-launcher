@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.math.min
 
 class Folder(context: Context, string: String) : LauncherItem() {
-    @JvmField
+
     val apps: MutableList<App?> = ArrayList()
 
     override fun toString(): String {

@@ -136,6 +136,8 @@
     <string name="grant">Grant</string>
     <string name="background_type">Background type</string>
     <string name="max_image_width">Max Image Width</string>
+    <string name="scrollbar">Scrollbar</string>
+    <string name="grouping">Grouping</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -151,5 +153,11 @@
     <array name="bgModes">
         <item>solid</item>
         <item>bottom glow</item>
+    </array>
+
+    <array name="notificationGrouping">
+        <item>Follow the OS</item>
+        <item>Group by app</item>
+        <item>Don\'t group</item>
     </array>
 </resources>

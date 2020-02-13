@@ -136,6 +136,8 @@
     <string name="grant">Разрешить</string>
     <string name="background_type">Тип фона</string>
     <string name="max_image_width">Max Ширина Изображения</string>
+    <string name="scrollbar">Scrollbar</string>
+    <string name="grouping">Grouping</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -151,5 +153,11 @@
     <array name="bgModes">
         <item>простой</item>
         <item>нижнее свечение</item>
+    </array>
+
+    <array name="notificationGrouping">
+        <item>Follow the OS</item>
+        <item>Group by app</item>
+        <item>Don\'t group</item>
     </array>
 </resources>

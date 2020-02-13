@@ -17,7 +17,6 @@ class SwipeToDeleteCallback : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.
     }
 
     companion object {
-        @JvmField
         var swipeListener: SwipeListener? = null
     }
 

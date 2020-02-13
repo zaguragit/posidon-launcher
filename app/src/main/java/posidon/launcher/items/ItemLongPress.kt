@@ -131,7 +131,6 @@ object ItemLongPress {
         }
     }
 
-    @JvmStatic
 	fun dock(context: Context, app: App, i: Int): OnLongClickListener {
         return OnLongClickListener { view ->
             if (currentPopup == null) {
@@ -167,7 +166,6 @@ object ItemLongPress {
         }
     }
 
-    @JvmStatic
 	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow): OnLongClickListener {
         return OnLongClickListener { view ->
             if (currentPopup == null) {
@@ -193,7 +191,6 @@ object ItemLongPress {
         }
     }
 
-    @JvmStatic
 	fun drawer(context: Context): OnItemLongClickListener {
         return OnItemLongClickListener { _, view, position, _ ->
             if (currentPopup == null) try {
@@ -220,7 +217,6 @@ object ItemLongPress {
         }
     }
 
-    @JvmStatic
 	fun folder(context: Context, folder: Folder, i: Int): OnLongClickListener {
         return OnLongClickListener { view ->
             if (currentPopup == null) {

@@ -137,6 +137,8 @@
     <string name="grant">Permitir</string>
     <string name="background_type">Tipo de fondo</string>
     <string name="max_image_width">Max resolución de imagen</string>
+    <string name="scrollbar">Scrollbar</string>
+    <string name="grouping">Grouping</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -152,5 +154,11 @@
     <array name="bgModes">
         <item>solido</item>
         <item>brillo inferior</item>
+    </array>
+
+    <array name="notificationGrouping">
+        <item>Seguir el sistema</item>
+        <item>Agrupar por app</item>
+        <item>No agrupar</item>
     </array>
 </resources>

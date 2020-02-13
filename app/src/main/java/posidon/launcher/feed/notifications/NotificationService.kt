@@ -38,10 +38,10 @@ class NotificationService : NotificationListenerService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onNotificationPosted(s: StatusBarNotification) { onUpdate() }
-    override fun onNotificationRemoved(s: StatusBarNotification) { onUpdate() }
-    override fun onNotificationRemoved(s: StatusBarNotification, rm: RankingMap, reason: Int) { onUpdate() }
-    override fun onNotificationRankingUpdate(rm: RankingMap) { onUpdate() }
+    override fun onNotificationPosted(s: StatusBarNotification) = onUpdate()
+    override fun onNotificationRemoved(s: StatusBarNotification) = onUpdate()
+    override fun onNotificationRemoved(s: StatusBarNotification, rm: RankingMap, reason: Int) = onUpdate()
+    override fun onNotificationRankingUpdate(rm: RankingMap) = onUpdate()
     override fun onNotificationChannelModified(pkg: String, u: UserHandle, c: NotificationChannel, modifType: Int) {
         onUpdate()
     }
@@ -64,7 +64,7 @@ class NotificationService : NotificationListenerService() {
             var notificationsAmount2 = 0
             try {
                 if (notifications != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
                         while (i < notifications.size) {
                             val group = ArrayList<Notification>()
                             if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
@@ -86,6 +86,26 @@ class NotificationService : NotificationListenerService() {
                             } else {
                                 group.add(formatNotification(notifications[i]))
                                 notificationsAmount2++
+                                i++
+                            }
+                            groups.add(group)
+                        }
+                    } else if (Settings["notifications:groupingType", "os"] == "byApp") {
+                        while (i < notifications.size) {
+                            val group = ArrayList<Notification>()
+                            val packageName = notifications[i].packageName
+                            var last: Bundle? = null
+                            var extras: Bundle
+                            while (i < notifications.size && notifications[i].packageName == packageName) {
+                                extras = notifications[i].notification.extras
+                                if (last == null || extras.getCharSequence(android.app.Notification.EXTRA_TITLE) !=
+                                        last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
+                                        last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
+                                        last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
+                                    group.add(formatNotification(notifications[i]))
+                                    if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
+                                }
+                                last = extras
                                 i++
                             }
                             groups.add(group)
@@ -148,11 +168,8 @@ class NotificationService : NotificationListenerService() {
 
     companion object {
         private var notificationGroups = ArrayList<ArrayList<Notification>>()
-        @JvmField
 		var listener: Listener? = null
-        @JvmField
 		var contextReference: WeakReference<Context>? = null
-        @JvmField
 		var notificationsAmount = 0
         private var updating = false
         fun groups(): ArrayList<ArrayList<Notification>> = notificationGroups
