@@ -9,7 +9,7 @@ import posidon.launcher.tools.Settings
 
 class BigWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        Settings.init(context)
+        if (!Settings.isInitialized) Settings.init(context)
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.widget_big)
             views.setTextColor(R.id.time, Settings["clockcolor", -0x1])

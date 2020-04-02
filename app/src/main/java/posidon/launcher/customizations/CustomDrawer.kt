@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
-import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +18,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.view.Spinner
 
 
 class CustomDrawer : AppCompatActivity() {
@@ -66,7 +66,8 @@ class CustomDrawer : AppCompatActivity() {
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["drawer:background_color", -0x78000000])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
-        findViewById<Spinner>(R.id.sortingOptions).setSelection(Settings["sortAlgorithm", 1])
+        findViewById<Spinner>(R.id.sortingOptions).data = resources.getStringArray(R.array.sortingAlgorithms)
+        findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["sortAlgorithm", 1]
 
         findViewById<Switch>(R.id.blurswitch).isChecked = Settings["blur", true]
         val blurSlider = findViewById<SeekBar>(R.id.blurSlider)
@@ -102,12 +103,13 @@ class CustomDrawer : AppCompatActivity() {
     fun pickLabelColor(v: View) { ColorTools.pickColor(this, "labelColor", 0xeeeeeeee.toInt()) }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
             putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
-            if (get("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition) {
-                putNotSave("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectedItemPosition)
+            if (get("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
+                putNotSave("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectionI)
                 Main.shouldSetApps = true
             }
             putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)

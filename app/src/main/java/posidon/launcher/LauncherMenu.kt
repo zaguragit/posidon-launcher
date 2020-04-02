@@ -17,6 +17,7 @@ import android.view.Window
 import android.view.animation.PathInterpolator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.launcher.customizations.Customizations
+import posidon.launcher.external.WidgetManager
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.wall.Gallery
@@ -64,7 +65,7 @@ class LauncherMenu(private val context: Context, private val window: Window) : O
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                (context as Main).selectWidget()
+                WidgetManager.selectWidget()
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)

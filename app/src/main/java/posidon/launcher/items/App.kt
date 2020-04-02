@@ -23,9 +23,11 @@ import posidon.launcher.tools.Tools
 import java.util.*
 
 class App : LauncherItem() {
+
     var name: String? = null
     var packageName: String? = null
-    fun open(context: Context, view: View) {
+
+    inline fun open(context: Context, view: View) {
         try {
             val launchintent = Intent(Intent.ACTION_MAIN)
             launchintent.component = ComponentName(packageName!!, name!!)
@@ -39,7 +41,7 @@ class App : LauncherItem() {
                 }
                 else -> context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
             }
-        } catch (ignore: Exception) {}
+        } catch (e: Exception) { e.printStackTrace() }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
@@ -48,7 +50,7 @@ class App : LauncherItem() {
         shortcutQuery.setQueryFlags(ShortcutQuery.FLAG_MATCH_DYNAMIC or ShortcutQuery.FLAG_MATCH_MANIFEST or ShortcutQuery.FLAG_MATCH_PINNED)
         shortcutQuery.setPackage(packageName)
         return try {
-            (Objects.requireNonNull(context.getSystemService(Context.LAUNCHER_APPS_SERVICE)) as LauncherApps).getShortcuts(shortcutQuery, Process.myUserHandle())
+            (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getShortcuts(shortcutQuery, Process.myUserHandle())
         } catch (e: Exception) { emptyList() }
     }
 
@@ -63,7 +65,7 @@ class App : LauncherItem() {
         try {
             d.findViewById<TextView>(R.id.version)!!.text = context.packageManager.getPackageInfo(packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {}
-        if (Settings["showcomponent", false]) {
+        if (Settings["dev:show_app_component", false]) {
             d.findViewById<TextView>(R.id.componentname)!!.text = "$packageName/$name"
             d.findViewById<View>(R.id.component)!!.visibility = View.VISIBLE
         }
@@ -84,17 +86,14 @@ class App : LauncherItem() {
         d.show()
     }
 
-    override fun toString(): String {
-        return "$packageName/$name"
-    }
+    override fun toString() = "$packageName/$name"
 
     companion object {
         private var appsByName = HashMap<String, App>()
         private var appsByName2 = HashMap<String, App>()
         val hidden = ArrayList<App>()
-        operator fun get(component: String?): App? {
-            return appsByName[component]
-        }
+
+        operator fun get(component: String?) = appsByName[component]
 
         fun putInSecondMap(component: String, app: App) {
             appsByName2[component] = app
@@ -106,8 +105,6 @@ class App : LauncherItem() {
             appsByName2 = tmp
         }
 
-        fun clearSecondMap() {
-            appsByName2.clear()
-        }
+        fun clearSecondMap() = appsByName2.clear()
     }
 }

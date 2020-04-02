@@ -31,6 +31,13 @@
                 android:id="@+id/widgets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+            <include
+                android:id="@+id/musicCard"
+                android:visibility="gone"
+                layout="@layout/music_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="9dp"/>
             <LinearLayout
                 android:id="@+id/parentNotification"
                 android:layout_width="match_parent"

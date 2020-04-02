@@ -57,12 +57,10 @@
                         android:drawableStart="@drawable/ic_apps"
                         android:layout_weight="1"
                         android:text="@string/background_type"/>
-                    <Spinner
+                    <posidon.launcher.view.Spinner
                         style="@style/settingsbtn"
                         android:id="@+id/animationOptions"
-                        android:layout_width="wrap_content"
-                        android:entries="@array/bgModes"
-                        android:spinnerMode="dropdown"/>
+                        android:layout_width="wrap_content"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

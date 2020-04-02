@@ -20,6 +20,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.view.Spinner
 
 
 class CustomTheme : AppCompatActivity() {
@@ -92,23 +93,50 @@ class CustomTheme : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings["accent", 0x1155ff] or -0x1000000)
+        findViewById<View>(R.id.iconBackground).background = ColorTools.colorcircle(Settings["icon:background", -0x1])
 
-        (findViewById<View>(R.id.animatedicons) as Switch).isChecked = Settings["animatedicons", true]
-        (findViewById<View>(R.id.reshapeicons) as Switch).isChecked = Settings["reshapeicons", false]
+        findViewById<Switch>(R.id.animatedicons).isChecked = Settings["animatedicons", true]
+        findViewById<Switch>(R.id.reshapeicons).isChecked = Settings["reshapeicons", false]
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) findViewById<View>(R.id.icshapesettings).visibility = View.GONE
-        else icShapeViews!![Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
+        findViewById<Spinner>(R.id.iconBackgrounds).data = resources.getStringArray(R.array.iconBackgrounds)
+        findViewById<Spinner>(R.id.iconBackgrounds).selectionI = when(Settings["icon:background_type", "dominant"]) {
+            "dominant" -> 0
+            "lv" -> 1
+            "dv" -> 2
+            "lm" -> 3
+            "dm" -> 4
+            else -> 5
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            findViewById<View>(R.id.icshapesettings).visibility = View.GONE
+            findViewById<View>(R.id.recolorWhiteBGs).visibility = View.GONE
+        } else {
+            icShapeViews!![Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
+            findViewById<Switch>(R.id.recolorWhiteBGsSwitch).isChecked = Settings["icon:tint_white_bg", true]
+        }
         Main.shouldSetApps = true
         Main.customized = true
     }
 
     fun pickAccentColor(v: View) { ColorTools.pickColorNoAlpha(this, "accent", 0x1155ff) }
+    fun pickIconBGColor(v: View) { ColorTools.pickColor(this, "icon:background", -0x1) }
     fun iconPackSelector(v: View) { startActivity(Intent(this, IconPackPicker::class.java)) }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
-            putNotSave("animatedicons", (findViewById<View>(R.id.animatedicons) as Switch).isChecked)
-            putNotSave("reshapeicons", (findViewById<View>(R.id.reshapeicons) as Switch).isChecked)
+            putNotSave("animatedicons", findViewById<Switch>(R.id.animatedicons).isChecked)
+            putNotSave("reshapeicons", findViewById<Switch>(R.id.reshapeicons).isChecked)
+            putNotSave("icon:tint_white_bg", findViewById<Switch>(R.id.recolorWhiteBGsSwitch).isChecked)
+            putNotSave("icon:background_type", when(findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
+                0 -> "dominant"
+                1 -> "lv"
+                2 -> "dv"
+                3 -> "lm"
+                4 -> "dm"
+                else -> "custom"
+            })
             Main.accentColor = Settings["accent", 0x1155ff] or -0x1000000
             apply()
         }

@@ -8,19 +8,19 @@
     android:gravity="center">
     <TextClock
         android:id="@+id/time"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="128dp"
-        android:gravity="bottom"
-        android:fontFamily="@font/clear_font"
+        android:gravity="bottom|center_horizontal"
+        android:fontFamily="@font/lexend_deca"
         android:textColor="#ffffff"
-        android:textSize="85sp"
+        android:textSize="72sp"
         android:paddingBottom="10dp"
         android:format12Hour="HH:mm"
         android:format24Hour="HH:mm"
         android:shadowRadius="24"
         android:shadowColor="#33000000"
         android:shadowDx="0"
-        android:shadowDy="0"/>
+        android:shadowDy="10"/>
     <TextClock
         android:id="@+id/date"
         android:layout_width="wrap_content"

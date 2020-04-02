@@ -52,6 +52,7 @@ class CustomFolders : AppCompatActivity() {
     fun pickLabelColor(v: View) { ColorTools.pickColor(this, "folder:label_color", -0x22000001) }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
             putNotSave("folderLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
             putNotSave("folderCornerRadius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)

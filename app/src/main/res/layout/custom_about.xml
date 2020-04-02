@@ -35,14 +35,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:textColor="#ffffff"
+                    android:textColor="#ddeeff"
                     android:text="@string/app_name"
                     android:layout_marginBottom="42dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:textColor="#ffffff"
+                    android:textColor="#ddeeff"
                     android:text="@string/slogan"
                     android:layout_marginBottom="18dp"/>
             </androidx.cardview.widget.CardView>
@@ -64,8 +64,8 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="18dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="24dp"
                         android:onClick="openTwitter">
                         <ImageView
                             android:layout_width="36dp"
@@ -75,6 +75,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
                             android:text="@string/twitter"
                             android:textColor="#ffffff"
                             android:textSize="18sp"/>
@@ -90,8 +91,8 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="18dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="24dp"
                         android:onClick="openTelegram">
                         <ImageView
                             android:layout_width="36dp"
@@ -101,6 +102,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
                             android:text="@string/telegram"
                             android:textColor="#ffffff"
                             android:textSize="18sp"/>
@@ -111,13 +113,13 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:background="@drawable/button_bg_round"
-                        android:backgroundTint="#1BCF60"
+                        android:backgroundTint="#17C25B"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="18dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="24dp"
                         android:onClick="openWebsite">
                         <ImageView
                             android:layout_width="36dp"
@@ -127,6 +129,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
                             android:text="@string/website"
                             android:textColor="#ffffff"
                             android:textSize="18sp"/>

@@ -4,9 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="6dp"
-    app:cardUseCompatPadding="true">
+    app:cardCornerRadius="20dp">
     <ImageView
         android:id="@+id/pic"
         android:layout_width="match_parent"
@@ -19,5 +17,6 @@
         android:layout_gravity="bottom"
         android:gravity="center_horizontal"
         android:textColor="#ffffff"
-        android:padding="16dp"/>
+        android:textSize="15sp"
+        android:padding="12dp"/>
 </androidx.cardview.widget.CardView>

@@ -12,13 +12,10 @@ class Notification(
         val icon: Drawable?,
         val actions: Array<Notification.Action>?,
         private val contentIntent: PendingIntent?,
-        style: CharSequence?,
         val key: String
 ) {
-    val style: CharSequence? = style?.subSequence(25, style.length)
     fun open() {
         try { contentIntent?.send() }
         catch (ignore: Exception) {}
     }
-
 }

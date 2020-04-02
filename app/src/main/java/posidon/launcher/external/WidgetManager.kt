@@ -4,10 +4,13 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
-import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import android.view.View
+import posidon.launcher.Main
 import posidon.launcher.tools.Settings
+import posidon.launcher.tools.Tools
+import posidon.launcher.view.ResizableLayout
 
 object WidgetManager {
 
@@ -15,45 +18,44 @@ object WidgetManager {
     const val REQUEST_CREATE_APPWIDGET = 1
     const val REQUEST_BIND_WIDGET = 2
 
-    private lateinit var hostView: AppWidgetHostView
-    private lateinit var widgetHost: AppWidgetHost
-    private lateinit var context: Context
+    private var hostView: AppWidgetHostView? = null
+    lateinit var host: AppWidgetHost
+        private set
 
-    fun init(context: Context) {
-        widgetHost = AppWidgetHost(context, 0xe1d9e15)
-        this.context = context
+    fun init() {
+        host = AppWidgetHost(Tools.publicContext, 0xe1d9e15)
     }
 
-    fun fromIntent(data: Intent?): AppWidgetHostView? {
-        val widgetManager = AppWidgetManager.getInstance(context)
+    fun fromIntent(widgetLayout: ResizableLayout, data: Intent?) {
+        widgetLayout.visibility = View.VISIBLE
+        val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
         try {
-            widgetHost.deleteAppWidgetId(hostView.appWidgetId)
+            host.deleteAppWidgetId(hostView!!.appWidgetId)
+            widgetLayout.removeView(hostView)
         } catch (e: Exception) { e.printStackTrace() }
         try {
             val id = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             val providerInfo = widgetManager.getAppWidgetInfo(id)
-            val hostView = widgetHost.createView(context.applicationContext, id, providerInfo)
-            hostView.isLongClickable = false
+            hostView = host.createView(Tools.publicContext.applicationContext, id, providerInfo)
+            widgetLayout.addView(hostView)
             if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo.provider)) {
                 val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-                //startActivityForResult(intent, REQUEST_BIND_WIDGET)
+                Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
             }
             Settings["widget"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
-            return hostView
+            widgetLayout.addView(hostView)
         } catch (e: Exception) { e.printStackTrace() }
-        return null
     }
 
-    fun fromSettings(): AppWidgetHostView? {
-        val widgetManager = AppWidgetManager.getInstance(context)
-        val str = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
-        if (str != "") {
+    fun fromSettings(widgetLayout: ResizableLayout) {
+        val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
+        val str = Settings["widget", "posidon.launcher/ClockWidget"]
+        if (str.isNotEmpty()) {
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
-            val className: String = try { s[1] }
-                        catch (ignore: ArrayIndexOutOfBoundsException) { return null }
+            val className: String = try { s[1] } catch (ignore: ArrayIndexOutOfBoundsException) { return }
             var providerInfo: AppWidgetProviderInfo? = null
             val appWidgetInfos = widgetManager.installedProviders
             var widgetIsFound = false
@@ -64,39 +66,40 @@ object WidgetManager {
                     break
                 }
             }
-            if (!widgetIsFound) return null
+            if (!widgetIsFound) return
             var id: Int
-            try {
-                id = s[2].toInt()
-            } catch (e: ArrayIndexOutOfBoundsException) {
-                id = widgetHost.allocateAppWidgetId()
+            try { id = s[2].toInt() }
+            catch (e: ArrayIndexOutOfBoundsException) {
+                id = host.allocateAppWidgetId()
                 if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo!!.provider)) { // Request permission - https://stackoverflow.com/a/44351320/1816603
                     val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-                    //startActivityForResult(intent, REQUEST_BIND_WIDGET)
+                    Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
             }
-            val hostView = widgetHost.createView(context.applicationContext, id, providerInfo)
-            hostView.setAppWidget(id, providerInfo)
-            return hostView
-        }
-        return null
+            hostView = host.createView(Tools.publicContext.applicationContext, id, providerInfo)
+            hostView!!.setAppWidget(id, providerInfo)
+            widgetLayout.addView(hostView)
+        } else widgetLayout.visibility = View.GONE
     }
 
     fun selectWidget() {
-        val appWidgetId = widgetHost.allocateAppWidgetId()
+        val appWidgetId = host.allocateAppWidgetId()
         val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
         pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         val customInfo: ArrayList<out Parcelable?> = ArrayList()
         pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo)
         val customExtras: ArrayList<out Parcelable?> = ArrayList()
         pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
-        //startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
+        Main.instance.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
     }
 
-    fun deleteWidget() {
-        widgetHost.deleteAppWidgetId(hostView.appWidgetId)
+    fun deleteWidget(widgetLayout: ResizableLayout) {
+        host.deleteAppWidgetId(hostView!!.appWidgetId)
+        widgetLayout.removeView(hostView)
+        hostView = null
+        widgetLayout.visibility = View.GONE
         Settings["widget"] = ""
     }
 }

@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
-import android.widget.Spinner
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +20,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.view.Spinner
 import java.io.FileNotFoundException
 import kotlin.system.exitProcess
 
@@ -45,19 +45,21 @@ class CustomOther : AppCompatActivity() {
                 Tools.vibrate(this@CustomOther)
             }
         })
-        findViewById<Spinner>(R.id.animationOptions).setSelection(when(Settings["anim:app_open", "posidon"]) {
+        findViewById<Spinner>(R.id.animationOptions).data = resources.getStringArray(R.array.animationNames)
+        findViewById<Spinner>(R.id.animationOptions).selectionI = when(Settings["anim:app_open", "posidon"]) {
             "scale_up" -> 2
             "clip_reveal" -> 1
             else -> 0
-        })
+        }
         Main.customized = true
     }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
             putNotSave("hidestatus", (findViewById<View>(R.id.hidestatus) as Switch).isChecked)
             putNotSave("mnmlstatus", (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked)
-            putNotSave("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectedItemPosition) {
+            putNotSave("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectionI) {
                 2 -> "scale_up"
                 1 -> "clip_reveal"
                 else -> "posidon"

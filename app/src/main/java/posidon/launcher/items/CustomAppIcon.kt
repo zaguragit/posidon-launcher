@@ -188,7 +188,6 @@ class CustomAppIcon : AppCompatActivity() {
             viewHolder.icon!!.layoutParams.height = appSize
             viewHolder.icon!!.layoutParams.width = appSize
             viewHolder.icon!!.setOnClickListener {
-                println("ref:$iconPack|${searchResults[i]}")
                 Settings["app:$app:icon"] = "ref:$iconPack|${searchResults[i]}"
                 Main.shouldSetApps = true
                 finish()

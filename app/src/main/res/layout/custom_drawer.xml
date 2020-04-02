@@ -151,12 +151,10 @@
                         android:drawableStart="@drawable/ic_apps"
                         android:layout_weight="1"
                         android:text="@string/sorting"/>
-                    <Spinner
+                    <posidon.launcher.view.Spinner
                         style="@style/settingsbtn"
                         android:id="@+id/sortingOptions"
-                        android:layout_width="wrap_content"
-                        android:entries="@array/sortingAlgorithms"
-                        android:spinnerMode="dropdown"/>
+                        android:layout_width="wrap_content"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -183,10 +181,11 @@
                 android:orientation="vertical">
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp">
                     <TextView
                         style="@style/customcardtitle"
-                        android:text="@string/blur" />
+                        android:text="@string/blur"/>
                     <posidon.launcher.view.Switch
                         android:id="@+id/blurswitch"
                         android:layout_width="wrap_content"
@@ -194,6 +193,11 @@
                         android:layout_gravity="center_vertical|end"
                         android:padding="12dp"/>
                 </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -229,7 +233,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="wrap_content"
-                        android:text="@string/layers" />
+                        android:text="@string/blur_layers" />
                     <posidon.launcher.view.Seekbar
                         android:id="@+id/blurLayerSlider"
                         android:layout_width="0dp"

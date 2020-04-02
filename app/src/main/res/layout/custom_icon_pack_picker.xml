@@ -45,8 +45,8 @@
                     android:textColor="@color/cardtxt"
                     android:layout_marginStart="12dp"/>
             </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/cardSeparator" android:layout_margin="12dp"/>
-            <GridView
+            <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/cardSeparator" android:layout_margin="12dp"/>
+            <posidon.launcher.view.GridView
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -54,7 +54,7 @@
                 android:fadingEdge="vertical"
                 android:fadingEdgeLength="96dp"
                 android:requiresFadingEdge="vertical">
-            </GridView>
+            </posidon.launcher.view.GridView>
         </LinearLayout>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

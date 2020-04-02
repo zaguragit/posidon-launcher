@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import posidon.launcher.R
-import posidon.launcher.wall.WallActivity
 
 internal class GalleryItemClickListener(private val context: Context) : OnItemClickListener {
     override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
