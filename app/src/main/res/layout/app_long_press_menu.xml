@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:minWidth="192dp"
-    android:paddingTop="16dp"
+    android:paddingTop="14dp"
     android:id="@+id/bg">
     <TextView
         android:id="@+id/title"
@@ -14,8 +14,8 @@
         android:singleLine="true"
         android:textColor="@color/cardtitle"
         android:textSize="20sp"
-        android:paddingStart="18dp"
-        android:paddingEnd="20dp"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
         android:paddingBottom="14dp"/>
     <TextView
         android:id="@+id/removeBtn"

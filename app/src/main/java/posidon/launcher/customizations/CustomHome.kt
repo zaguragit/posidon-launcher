@@ -11,7 +11,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextClock
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
@@ -20,6 +23,8 @@ import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.view.Spinner
+import posidon.launcher.view.Switch
 
 class CustomHome : AppCompatActivity() {
 
@@ -32,10 +37,10 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings["clockcolor", -0x1])
 
-        val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+        val widget = Settings["widget", "posidon.launcher/ClockWidget"]
         when {
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
+            widget.startsWith("posidon.launcher/ClockWidget") -> {}
+            widget.startsWith("posidon.launcher/BigWidget") -> {}
             else -> findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
         }
 
@@ -119,9 +124,10 @@ class CustomHome : AppCompatActivity() {
         findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", 0x88e0e0e0.toInt()])
         findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", -0xdad9d9])
 
-        findViewById<Spinner>(R.id.notificationGrouping).setSelection(when (Settings["notifications:groupingType", "os"]) {
+        findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
+        findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) {
             "os" -> 0; "byApp" -> 1; else -> 2
-        })
+        }
 
         Main.customized = true
     }
@@ -159,6 +165,7 @@ class CustomHome : AppCompatActivity() {
     }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             putNotSave("feedenabled", findViewById<Switch>(R.id.feedenabled).isChecked)
@@ -168,7 +175,7 @@ class CustomHome : AppCompatActivity() {
             putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
             putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
-            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectedItemPosition) {
+            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) {
                 0 -> "os"; 1 -> "byApp"; else -> "none"
             })
             apply()

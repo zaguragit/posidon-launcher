@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -13,20 +14,14 @@ import android.media.AudioAttributes
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.util.DisplayMetrics
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.R
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
+import kotlin.math.*
 
 object Tools {
 
@@ -50,7 +45,7 @@ object Tools {
         return matrix
     }
 
-	fun animate(d: Drawable): Drawable {
+	inline fun animate(d: Drawable): Drawable {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> {
                 d.registerAnimationCallback(object : Animatable2.AnimationCallback() {
@@ -69,17 +64,17 @@ object Tools {
         return d
     }
 
-	fun clearAnimation(d: Drawable?) { when {
+	inline fun clearAnimation(d: Drawable?) { when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 ->
             d.clearAnimationCallbacks()
         d is Animatable2Compat -> d.clearAnimationCallbacks()
         d is Animatable -> d.stop()
     }}
 
-	inline fun isInstalled(packageName: String?, packageManager: PackageManager): Boolean {
+	inline fun isInstalled(packageName: String, packageManager: PackageManager): Boolean {
         var found = true
         try { packageManager.getPackageInfo(packageName, 0) }
-        catch (e: PackageManager.NameNotFoundException) { found = false }
+        catch (e: Exception) { found = false }
         return found
     }
 
@@ -89,7 +84,7 @@ object Tools {
 
     inline fun <T : Number> dp(c: Context, number: T) = c.resources.displayMetrics.density * number.toFloat()
 
-    fun pullStatusbar(context: Context) {
+    inline fun pullStatusbar(context: Context) {
         try {
             @SuppressLint("WrongConstant")
             val sbs = context.getSystemService("statusbar")
@@ -98,26 +93,7 @@ object Tools {
         } catch (e: Exception) { e.printStackTrace() }
     }
 
-    fun blurBitmap(context: Context?, bitmap: Bitmap, radius: Float): Bitmap {
-        var r = radius
-        if (r > 0) {
-            if (r > 25) r = 25f
-            val rs = RenderScript.create(context)
-            val allocation = Allocation.createFromBitmap(rs, bitmap)
-            val t = allocation.type
-            val blurredAllocation = Allocation.createTyped(rs, t)
-            val blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
-            blurScript.setRadius(r)
-            blurScript.setInput(allocation)
-            blurScript.forEach(blurredAllocation)
-            blurredAllocation.copyTo(bitmap)
-            allocation.destroy()
-            blurredAllocation.destroy()
-            blurScript.destroy()
-            rs.destroy()
-        }
-        return bitmap
-    }
+    lateinit var publicContext: Context
 
     fun fastBlur(bitmap: Bitmap?, radius: Int): Bitmap? {
         var bitmap = bitmap
@@ -321,7 +297,7 @@ object Tools {
         return bitmap
     }
 
-    fun drawable2bitmap(drawable: Drawable, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
+    inline fun drawable2bitmap(drawable: Drawable, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
         if (drawable is BitmapDrawable) {
             if (drawable.bitmap != null) {
                 return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(drawable.bitmap)
@@ -431,6 +407,11 @@ object Tools {
         return c.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
 
+    inline fun hasNavbar(c: Context): Boolean {
+        val id: Int = c.resources.getIdentifier("config_showNavigationBar", "bool", "android")
+        return id != 0 && c.resources.getBoolean(id)
+    }
+
     inline fun vibrate(context: Context) {
         val duration = Settings["hapticfeedback", 14]
         if (duration != 0) {
@@ -451,17 +432,46 @@ object Tools {
         return if (icShape == 0) drawable else if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val drr = arrayOfNulls<Drawable>(2)
             if (drawable is AdaptiveIconDrawable) {
-                val aid = drawable
-                drr[0] = aid.background
-                drr[1] = aid.foreground
+                drr[0] = drawable.background
+                drr[1] = drawable.foreground
+                if (Settings["icon:tint_white_bg", true]) {
+                    val bg = drr[0]
+                    if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
+                            (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)!!.apply {
+                                val tmp = bg!!.bounds
+                                bg.bounds = Rect(0, 0, 1, 1)
+                                bg.draw(Canvas(this))
+                                bg.bounds = tmp
+                            }.getPixel(0, 0) and 0xffffff).let {
+                                Color.red(it) > 0xdd &&
+                                Color.green(it) > 0xdd &&
+                                Color.blue(it) > 0xdd
+                            }) {
+                        drr[0] = ColorDrawable(when(Settings["icon:background_type", "dominant"]) {
+                            "dominant" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDominantColor(Settings["icon:background", -0x1])
+                            "lv" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getLightVibrantColor(Settings["icon:background", -0x1])
+                            "dv" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
+                            "lm" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getLightMutedColor(Settings["icon:background", -0x1])
+                            "dm" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDarkMutedColor(Settings["icon:background", -0x1])
+                            else -> Settings["icon:background", -0x1]
+                        })
+                    }
+                }
             } else {
-                drr[0] = ColorDrawable(-0x1)
                 val d = drawable as BitmapDrawable
                 val b = Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val c = Canvas(b)
                 d.setBounds(c.width / 4, c.height / 4, c.width / 4 * 3, c.height / 4 * 3)
                 drawable.draw(c)
                 drr[1] = BitmapDrawable(context.resources, b)
+                drr[0] = ColorDrawable(when(Settings["icon:background_type", "dominant"]) {
+                    "dominant" -> Palette.from(b).generate().getDominantColor(Settings["icon:background", -0x1])
+                    "lv" -> Palette.from(b).generate().getLightVibrantColor(Settings["icon:background", -0x1])
+                    "dv" -> Palette.from(b).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
+                    "lm" -> Palette.from(b).generate().getLightMutedColor(Settings["icon:background", -0x1])
+                    "dm" -> Palette.from(b).generate().getDarkMutedColor(Settings["icon:background", -0x1])
+                    else -> Settings["icon:background", -0x1]
+                })
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
@@ -512,4 +522,12 @@ object Tools {
             "openDyslexic" -> activity.theme.applyStyle(R.style.font_open_dyslexic, true)
         }
     }
+
+    fun isDefaultLauncher(): Boolean {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        return publicContext.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+    }
+
+    inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.075f))).toFloat()
 }

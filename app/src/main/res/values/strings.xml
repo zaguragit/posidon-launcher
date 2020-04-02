@@ -35,6 +35,7 @@
     <string name="ok">OK</string>
     <string name="notification_access">Notification access</string>
     <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
+    <string name="permission_notifications_short_description">Display notifications on your homescreen</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -108,7 +109,7 @@
     <string name="telegram">Telegram</string>
     <string name="action_buttons">Action buttons</string>
     <string name="sorting">Sorting</string>
-    <string name="layers">Layers</string>
+    <string name="blur_layers">Transition layers</string>
     <string name="start">Start</string>
     <string name="remove">Remove</string>
     <string name="labelColor">Label color</string>
@@ -138,6 +139,11 @@
     <string name="max_image_width">Max Image Width</string>
     <string name="scrollbar">Scrollbar</string>
     <string name="grouping">Grouping</string>
+    <string name="recolor_white_bgs">Tint white backgrounds</string>
+    <string name="oops">Oops!</string>
+    <string name="posidon_launcher_crashed">posidon launcher crashed</string>
+    <string name="send_bug_report">Send bug report</string>
+    <string name="settings_title_quickstep">QuickStep</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -159,5 +165,14 @@
         <item>Follow the OS</item>
         <item>Group by app</item>
         <item>Don\'t group</item>
+    </array>
+
+    <array name="iconBackgrounds">
+        <item>Dominant color</item>
+        <item>Light vibrant color</item>
+        <item>Dark vibrant color</item>
+        <item>Light muted color</item>
+        <item>Dark muted color</item>
+        <item>Custom</item>
     </array>
 </resources>

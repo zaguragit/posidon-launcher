@@ -50,6 +50,7 @@ class CustomSearch : AppCompatActivity() {
     fun pickSearchUiBgColor(v: View) { ColorTools.pickColor(this, "searchUiBg", -0x78000000) }
 
     override fun onPause() {
+        Main.customized = true
         Settings.apply {
             putNotSave("searchhinttxt", findViewById<TextView>(R.id.hinttxt).text.toString())
             putNotSave("searchradius", findViewById<SeekBar>(R.id.searchradiusslider).progress)

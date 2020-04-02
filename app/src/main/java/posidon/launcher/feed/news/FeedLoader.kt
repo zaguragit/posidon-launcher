@@ -12,16 +12,15 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 
-class FeedLoader(private val listener: Listener) : AsyncTask<Void, Void, Boolean>() {
+class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean>() {
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
     private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
 
-    override fun doInBackground(vararg voids: Void): Boolean? {
+    override fun doInBackground(vararg Units: Unit): Boolean? {
         for (u: String in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
             if (!TextUtils.isEmpty(u)) {
                 var url = if (!u.startsWith("http://") && !u.startsWith("https://")) "https://$u" else u
-
                 if (!url.endsWith("/")) url += "/"
                 var searching = true
                 var i = 0

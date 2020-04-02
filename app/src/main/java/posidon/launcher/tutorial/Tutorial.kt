@@ -32,6 +32,7 @@ class Tutorial : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial1)
+        Settings.init(this)
         for (i in styleButtons.indices) {
             findViewById<View>(styleButtons[i]).setOnClickListener {
                 if (selectedStyle != -1)
@@ -65,8 +66,7 @@ class Tutorial : AppCompatActivity() {
         if (!NotificationManagerCompat.getEnabledListenerPackages(applicationContext).contains(applicationContext.packageName)) {
             applicationContext.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             checkDone()
-        } else
-            Toast.makeText(this, "Notification access already granted", Toast.LENGTH_LONG).show()
+        } else Toast.makeText(this, "Notification access already granted", Toast.LENGTH_LONG).show()
     }
 
     fun grantStorageAccess(v: View) {
@@ -224,7 +224,7 @@ class Tutorial : AppCompatActivity() {
 
     fun done4(v: View) {
         Settings["init"] = false
-        if (!isDefaultLauncher()) chooseLauncher()
+        if (!Tools.isDefaultLauncher()) chooseLauncher()
         startActivity(Intent(this, Main::class.java))
         finish()
     }
@@ -251,11 +251,5 @@ class Tutorial : AppCompatActivity() {
         selector.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(selector)
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP)
-    }
-
-    private fun isDefaultLauncher(): Boolean {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        return packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
     }
 }

@@ -25,7 +25,7 @@
             android:textSize="26sp"
             android:padding="20dp"/>
     </LinearLayout>
-    <GridView
+    <posidon.launcher.view.GridView
         android:id="@+id/searchgrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -109,6 +109,13 @@
                 android:onClick="openTheme"
                 android:text="@string/settings_title_ui" />
             <TextView
+                android:id="@+id/quickStepOptions"
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_quickstep"
+                android:onClick="openQStep"
+                android:text="@string/settings_title_quickstep"
+                android:visibility="gone" />
+            <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_other"
                 android:onClick="openOther"

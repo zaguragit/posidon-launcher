@@ -18,6 +18,8 @@ object Settings {
         LIST("list"),
     }
 
+    var isInitialized: Boolean = false
+        private set
     private lateinit var ints: HashMap<String, Int>
     private lateinit var floats: HashMap<String, Float>
     private lateinit var bools: HashMap<String, Boolean>
@@ -115,9 +117,8 @@ object Settings {
         return Array(stringList.size - 1) { stringList[it] != "0" }
     }
 
-
     fun init(context: Context) {
-        Settings.context = context
+        this.context = context
         PrivateStorage.readAny(context, "settings").let {
             if (it != null) {
                 if (it is SettingsFile) {

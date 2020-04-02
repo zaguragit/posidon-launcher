@@ -46,7 +46,6 @@ internal object PrivateStorage {
             val oos = ObjectOutputStream(fos)
             oos.writeObject(data)
             oos.close()
-            println("bananaaaaa: $data")
         } catch (e: IOException) { e.printStackTrace() }
     }
 }

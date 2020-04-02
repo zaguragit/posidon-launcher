@@ -27,9 +27,9 @@ class Loader {
         override fun onPostExecute(string: String?) { string?.let { onFinished(it) }}
     }
 
-    class bitmap(private val url: String, private val onFinished: (string: Bitmap) -> Unit, private var width: Int = AUTO, private var height: Int = AUTO, private val scaleIfSmaller: Boolean = true) : AsyncTask<Void?, Void?, Void?>() {
+    class bitmap(private val url: String, private val onFinished: (string: Bitmap) -> Unit, private var width: Int = AUTO, private var height: Int = AUTO, private val scaleIfSmaller: Boolean = true) : AsyncTask<Unit?, Unit?, Unit?>() {
         private var img: Bitmap? = null
-        override fun doInBackground(vararg voids: Void?): Void? {
+        override fun doInBackground(vararg params: Unit?): Unit? {
             try {
                 val input = URL(url).openConnection().getInputStream()
                 val tmp = BitmapFactory.decodeStream(input)
@@ -53,7 +53,7 @@ class Loader {
             return null
         }
 
-        override fun onPostExecute(aVoid: Void?) { img?.let { onFinished(it) } }
+        override fun onPostExecute(aUnit: Unit?) { img?.let { onFinished(it) } }
 
         companion object {
             const val AUTO = -1

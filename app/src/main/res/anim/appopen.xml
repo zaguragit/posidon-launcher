@@ -2,7 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android" android:startOffset="0">
     <scale
         android:interpolator="@android:interpolator/decelerate_cubic"
-        android:startOffset="10"
+        android:startOffset="20"
         android:duration="140"
         android:pivotX="50%"
         android:pivotY="50%"
@@ -12,12 +12,12 @@
         android:toYScale="1"/>
     <translate
         android:interpolator="@android:interpolator/decelerate_cubic"
-        android:duration="120"
-        android:fromYDelta="20%"
+        android:duration="110"
+        android:fromYDelta="30%"
         android:toYDelta="0%"/>
     <alpha
         android:interpolator="@android:interpolator/accelerate_cubic"
-        android:duration="70"
+        android:duration="60"
         android:fromAlpha="0"
         android:toAlpha="1"/>
 </set>

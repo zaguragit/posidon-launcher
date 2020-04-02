@@ -26,7 +26,7 @@ class Folder(context: Context, string: String) : LauncherItem() {
         try {
             val previewApps = min(apps.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
-            drr[0] = ColorDrawable(Settings.get("folderBG", -0x22eeeded))
+            drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
             for (i in 0 until previewApps) {
                 drr[i + 1] = BitmapDrawable(context.resources, Tools.drawable2bitmap(apps[i]!!.icon!!))
             }
@@ -114,5 +114,9 @@ class Folder(context: Context, string: String) : LauncherItem() {
             if (app != null) apps.add(app)
         }
         icon = BitmapDrawable(context.resources, icon(context))
+    }
+
+    companion object {
+        var currentlyOpen = false
     }
 }

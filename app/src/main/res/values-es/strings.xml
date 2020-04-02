@@ -35,7 +35,8 @@
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="ok">OK</string>
     <string name="notification_access">Acceso a notificaciones</string>
-    <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
+    <string name="permission_notifications_description">Para mostrar notificaciones en la pantalla de inicio</string>
+    <string name="permission_notifications_short_description">Mostrar notificaciones en la pantalla de inicio</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -109,7 +110,7 @@
     <string name="telegram">Telegram</string>
     <string name="action_buttons">Botones de acciones</string>
     <string name="sorting">Orden</string>
-    <string name="layers">Capas</string>
+    <string name="blur_layers">Capas de transicion</string>
     <string name="start">Empezar</string>
     <string name="remove">Quitar</string>
     <string name="labelColor">Color de etiquetas</string>
@@ -139,6 +140,11 @@
     <string name="max_image_width">Max resolución de imagen</string>
     <string name="scrollbar">Scrollbar</string>
     <string name="grouping">Grouping</string>
+    <string name="recolor_white_bgs">Tint white backgrounds</string>
+    <string name="oops">Oops!</string>
+    <string name="posidon_launcher_crashed">posidon launcher crashed</string>
+    <string name="send_bug_report">Send bug report</string>
+    <string name="settings_title_quickstep">QuickStep</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -160,5 +166,14 @@
         <item>Seguir el sistema</item>
         <item>Agrupar por app</item>
         <item>No agrupar</item>
+    </array>
+
+    <array name="iconBackgrounds">
+        <item>Color dominante</item>
+        <item>Color claro intenso</item>
+        <item>Color oscuro intenso</item>
+        <item>Color claro</item>
+        <item>Color oscuro</item>
+        <item>Escoger</item>
     </array>
 </resources>

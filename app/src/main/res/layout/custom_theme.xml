@@ -74,7 +74,13 @@
                 android:orientation="vertical">
                 <TextView
                     style="@style/customcardtitle"
-                    android:text="@string/settings_title_icons" />
+                    android:text="@string/settings_title_icons"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -120,6 +126,53 @@
                         android:text="@string/generate_adaptive_icons"/>
                     <posidon.launcher.view.Switch
                         android:id="@+id/reshapeicons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/background_type"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/iconBackgrounds"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="pickIconBGColor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/background"/>
+                    <View
+                        android:id="@+id/iconBackground"
+                        style="@style/colorPreview"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/recolorWhiteBGs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/recolor_white_bgs"/>
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/recolorWhiteBGsSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="12dp"/>

@@ -33,7 +33,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView style="@style/customcardtitle" android:text="@string/settings_title_clock_format" />
+                <TextView
+                    style="@style/customcardtitle"
+                    android:text="@string/settings_title_clock_format"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +92,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView style="@style/customcardtitle" android:text="@string/settings_title_feed" />
+                <TextView
+                    style="@style/customcardtitle"
+                    android:text="@string/settings_title_feed"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -156,7 +172,10 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView style="@style/customcardtitle" android:text="@string/settings_title_news" />
+                    <TextView
+                        style="@style/customcardtitle"
+                        android:text="@string/settings_title_news"
+                        android:layout_marginTop="-12dp"/>
                     <posidon.launcher.view.Switch
                         android:id="@+id/feedenabled"
                         android:layout_width="wrap_content"
@@ -164,6 +183,11 @@
                         android:layout_gravity="center_vertical|end"
                         android:padding="12dp"/>
                 </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <TextView
                     style="@style/settingsbtn"
                     android:layout_width="match_parent"
@@ -283,7 +307,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView style="@style/customcardtitle" android:text="@string/notifications" />
+                <TextView
+                    style="@style/customcardtitle"
+                    android:text="@string/notifications"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -406,12 +438,10 @@
                         android:drawableStart="@drawable/ic_apps"
                         android:layout_weight="1"
                         android:text="@string/grouping"/>
-                    <Spinner
+                    <posidon.launcher.view.Spinner
                         style="@style/settingsbtn"
                         android:id="@+id/notificationGrouping"
-                        android:layout_width="wrap_content"
-                        android:entries="@array/notificationGrouping"
-                        android:spinnerMode="dropdown"/>
+                        android:layout_width="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

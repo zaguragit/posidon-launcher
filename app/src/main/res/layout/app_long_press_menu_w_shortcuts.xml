@@ -6,13 +6,6 @@
     android:orientation="vertical"
     android:minWidth="192dp"
     android:id="@+id/bg">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/shortcuts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,4 +41,11 @@
             android:padding="5dp"
             android:src="@drawable/ic_edit"/>
     </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shortcuts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 </LinearLayout>

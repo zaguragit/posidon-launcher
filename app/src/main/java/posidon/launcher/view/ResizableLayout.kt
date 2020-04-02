@@ -16,11 +16,12 @@ import posidon.launcher.tools.Tools
 import kotlin.math.abs
 
 class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+
     private var dragHandle: View
     private var crossButton: View
     var stopResizingOnFingerLift = true
     var onResizeListener: OnResizeListener? = null
-    val MAX_HEIGHT = Tools.getDisplayHeight(context)
+    private val maxHeight get() = Tools.getDisplayHeight(context) / 3 * 2
 
     var resizing = false
         set(value) {
@@ -63,7 +64,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                 MotionEvent.ACTION_MOVE -> {
                     val location = intArrayOf(0, 0)
                     getLocationOnScreen(location)
-                    if (location[1] + event.rawY >= MIN_HEIGHT * resources.displayMetrics.density && location[1] + event.rawY <= MAX_HEIGHT - 96 * resources.displayMetrics.density) {
+                    if (location[1] + event.rawY >= MIN_HEIGHT * resources.displayMetrics.density && location[1] + event.rawY <= maxHeight - 96 * resources.displayMetrics.density) {
                         layoutParams.height = (event.rawY - y).toInt()
                         layoutParams = layoutParams
                         onResizeListener?.onUpdate(layoutParams.height)
@@ -119,7 +120,9 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                     return true
                 longPressHandler.removeCallbacksAndMessages(null)
             }
-            MotionEvent.ACTION_CANCEL -> longPressHandler.removeCallbacksAndMessages(null)
+            MotionEvent.ACTION_CANCEL -> {
+                longPressHandler.removeCallbacksAndMessages(null)
+            }
             MotionEvent.ACTION_MOVE ->
                 if (!(isAClick(startX, event.x, startY, event.y) && isAClick(startRawX, event.rawX, startRawY, event.rawY) && hasWindowFocus()))
                     longPressHandler.removeCallbacksAndMessages(null)

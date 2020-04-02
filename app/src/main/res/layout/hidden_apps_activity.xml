@@ -13,7 +13,7 @@
         android:textSize="18sp"
         android:textColor="#ddffffff"
         android:text="@string/hidden_apps"/>
-    <GridView
+    <posidon.launcher.view.GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

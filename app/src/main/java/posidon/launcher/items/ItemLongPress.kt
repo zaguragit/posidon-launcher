@@ -1,5 +1,6 @@
 package posidon.launcher.items
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -38,17 +39,16 @@ object ItemLongPress {
         var color: Int
         val txtColor: Int
         return if (item is App) {
-            val app = item
-            color = Palette.from(Tools.drawable2bitmap(app.icon!!)).generate().getDominantColor(-0xdad9d9)
+            color = Palette.from(Tools.drawable2bitmap(item.icon!!)).generate().getDominantColor(-0xdad9d9)
             val hsv = FloatArray(3)
             Color.colorToHSV(color, hsv)
             if (hsv[1] < 0.2f) {
-                color = Palette.from(Tools.drawable2bitmap(app.icon!!)).generate().getVibrantColor(-0xdad9d9)
+                color = Palette.from(Tools.drawable2bitmap(item.icon!!)).generate().getVibrantColor(-0xdad9d9)
                 Color.colorToHSV(color, hsv)
             }
             txtColor = if (ColorTools.useDarkText(color)) -0xeeeded else -0x1
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && app.getShortcuts(context)!!.isNotEmpty()) {
-                val shortcuts = app.getShortcuts(context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && item.getShortcuts(context)!!.isNotEmpty()) {
+                val shortcuts = item.getShortcuts(context)
                 content = LayoutInflater.from(context).inflate(R.layout.app_long_press_menu_w_shortcuts, null)
                 val recyclerView: RecyclerView = content.findViewById(R.id.shortcuts)
                 recyclerView.isNestedScrollingEnabled = false
@@ -56,7 +56,7 @@ object ItemLongPress {
                 recyclerView.adapter = ShortcutAdapter(context, shortcuts!!, txtColor)
                 val bg = ShapeDrawable()
                 val r = 18 * context.resources.displayMetrics.density
-                bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
+                bg.shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
                 bg.paint.color = 0x33000000
                 recyclerView.background = bg
             } else content = LayoutInflater.from(context).inflate(R.layout.app_long_press_menu, null)
@@ -67,7 +67,7 @@ object ItemLongPress {
             val appinfobtn = content.findViewById<View>(R.id.appinfobtn)
             appinfobtn.setOnClickListener {
                 window.dismiss()
-                app.showProperties(context, Color.HSVToColor(floatArrayOf(hsv[0], hsv[1], if (hsv[2] > 0.5f) 0.5f else hsv[2])))
+                item.showProperties(context, Color.HSVToColor(floatArrayOf(hsv[0], hsv[1], if (hsv[2] > 0.5f) 0.5f else hsv[2])))
             }
             val title = content.findViewById<TextView>(R.id.title)
             val removeBtn = content.findViewById<View>(R.id.removeBtn)
@@ -81,11 +81,13 @@ object ItemLongPress {
             title.setTextColor(txtColor)
             if (removeBtn is TextView) {
                 removeBtn.setTextColor(txtColor)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) removeBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
                 (appinfobtn as TextView).setTextColor(txtColor)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) appinfobtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
                 (editBtn as TextView).setTextColor(txtColor)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) editBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    removeBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                    appinfobtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                    editBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                }
             } else {
                 (removeBtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
                 (appinfobtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
@@ -145,7 +147,7 @@ object ItemLongPress {
                         if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                         data[i] = ""
                         Settings["dock"] = TextUtils.join("\n", data)
-                        Main.methods.setDock()
+                        Main.setDock()
                     }
                     override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
                 }, true, app)
@@ -182,7 +184,7 @@ object ItemLongPress {
                         f.apps.removeAt(folderIndex)
                         data[i] = if (f.apps.size == 1) f.apps[0]!!.packageName + "/" + f.apps[0]!!.name else f.toString()
                         Settings["dock"] = TextUtils.join("\n", data)
-                        Main.methods.setDock()
+                        Main.setDock()
                     }
                     override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
                 }, true, app).showAtLocation(v, Gravity.BOTTOM or gravity, x, Tools.getDisplayHeight(context) - location[1] + Tools.navbarHeight)
@@ -191,7 +193,7 @@ object ItemLongPress {
         }
     }
 
-	fun drawer(context: Context): OnItemLongClickListener {
+    fun olddrawer(context: Context): OnItemLongClickListener {
         return OnItemLongClickListener { _, view, position, _ ->
             if (currentPopup == null) try {
                 val app = Main.apps[position]
@@ -217,6 +219,64 @@ object ItemLongPress {
         }
     }
 
+    fun drawer(context: Context, position: Int): OnLongClickListener {
+        return OnLongClickListener {
+            if (currentPopup == null) try {
+                val app = Main.apps[position]
+                val icon = it.findViewById<View>(R.id.iconimg)
+                val location = IntArray(2)
+                val popupWindow = popupWindow(context, object : Methods {
+                    override fun onRemove(v: View) {}
+                    override fun onEdit(v: View) { showAppEditDialog(context, app!!, v) }
+                }, false, app!!)
+                popupWindow.isFocusable = false
+                icon.getLocationInWindow(location)
+                val myShadow = DragShadowBuilder(icon)
+                val data = ClipData.newPlainText("", "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
+                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
+                if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
+                        icon, Gravity.BOTTOM or gravity, x,
+                        context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+                )
+            } catch (ignore: Exception) {}
+            true
+        }
+    }
+
+    fun search(activity: Activity, apps: Array<App?>): OnItemLongClickListener {
+        return OnItemLongClickListener { _, view, position, _ ->
+            if (currentPopup == null) try {
+                val app = apps[position]!!
+                val icon = view.findViewById<View>(R.id.iconimg)
+                val location = IntArray(2)
+                val popupWindow = popupWindow(activity, object : Methods {
+                    override fun onRemove(v: View) {}
+                    override fun onEdit(v: View) {
+                        showAppEditDialog(activity, app, v)
+                    }
+                }, false, app)
+                //popupWindow.isFocusable = false
+                icon.getLocationInWindow(location)
+                /*val myShadow = DragShadowBuilder(icon)
+                val data = ClipData.newPlainText("", "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0)
+                else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)*/
+                val gravity = if (location[0] > Tools.getDisplayWidth(activity) / 2) Gravity.END else Gravity.START
+                val x = if (location[0] > Tools.getDisplayWidth(activity) / 2) Tools.getDisplayWidth(activity) - location[0] - icon.measuredWidth else location[0]
+                if (location[1] < Tools.getDisplayHeight(activity) / 2f) popupWindow.showAtLocation(
+                            icon, Gravity.TOP or gravity, x,
+                            location[1] + icon.measuredHeight
+                ) else popupWindow.showAtLocation(
+                        icon, Gravity.BOTTOM or gravity, x,
+                        Tools.getDisplayHeight(activity) - location[1] + (4 * activity.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+                )
+            } catch (e: Exception) { e.printStackTrace() }
+            true
+        }
+    }
+
 	fun folder(context: Context, folder: Folder, i: Int): OnLongClickListener {
         return OnLongClickListener { view ->
             if (currentPopup == null) {
@@ -231,7 +291,7 @@ object ItemLongPress {
                         if (data.size <= i) data = Arrays.copyOf(data, i + 1)
                         data[i] = ""
                         Settings["dock"] = TextUtils.join("\n", data)
-                        Main.methods.setDock()
+                        Main.setDock()
                     }
 
                     override fun onEdit(v: View) {
@@ -245,7 +305,7 @@ object ItemLongPress {
                             val data = Settings["dock", ""].split("\n").toTypedArray()
                             data[i] = folder.toString()
                             Settings["dock"] = TextUtils.join("\n", data)
-                            Main.methods.setDock()
+                            Main.setDock()
                         }
                         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
                     }
@@ -281,7 +341,7 @@ object ItemLongPress {
         editWindow.setOnDismissListener {
             Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
             Main.shouldSetApps = true
-            Main.methods.setDock()
+            Main.setDock()
         }
         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
     }
