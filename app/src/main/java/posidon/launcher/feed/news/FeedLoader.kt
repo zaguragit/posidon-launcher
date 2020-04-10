@@ -18,16 +18,25 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
     private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
 
     override fun doInBackground(vararg Units: Unit): Boolean? {
-        for (u: String in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
+        for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
             if (!TextUtils.isEmpty(u)) {
-                var url = if (!u.startsWith("http://") && !u.startsWith("https://")) "https://$u" else u
+                val domain: String
+                var url = if (!u.startsWith("http://") && !u.startsWith("https://")) {
+                    val slashI = u.indexOf('/')
+                    domain = "https://" + if (slashI != -1) u.substring(0, slashI) else u
+                    "https://$u"
+                } else {
+                    val slashI = u.indexOf('/', 8)
+                    domain = if (slashI != -1) u.substring(0, slashI) else u
+                    u
+                }
                 if (!url.endsWith("/")) url += "/"
                 var searching = true
                 var i = 0
                 while (searching && i < endStrings.size) {
                     try {
                         val newUrl = url + endStrings[i]
-                        parseFeed(URL(newUrl).openConnection().getInputStream(), Source(urlToName(url), url))
+                        parseFeed(URL(newUrl).openConnection().getInputStream(), Source(urlToName(url), url, domain))
                         searching = false
                     }
                     catch (e: Exception) {}
@@ -94,7 +103,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                     if (name.equals("item", ignoreCase = true) || name.equals("entry", ignoreCase = true)) {
                         isItem = 0
                         if (title != null && link != null)
-                            feedModels.add(FeedItem(title, link, img, date, source))
+                            feedModels.add(FeedItem(title!!, link!!, img, date, source))
                         title = null
                         link = null
                         img = null

@@ -12,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 
 class AlphabetScrollbar(
         val listView: AbsListView, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -43,13 +44,13 @@ class AlphabetScrollbar(
 
     fun update() {
         fg = Settings["labelColor", -0x11111112]
-        topPadding = listView.paddingTop + Tools.getStatusBarHeight(context) + Tools.dp(context, Settings["dockbottompadding", 10])
+        topPadding = listView.paddingTop + Tools.getStatusBarHeight(context) + Settings["dockbottompadding", 10].dp(context)
         paint.apply {
             color = fg
             alpha = 180
             isAntiAlias = true
             typeface = ResourcesCompat.getFont(context, R.font.posidon_sans)
-            textSize = Tools.dp(context, 16)
+            textSize = 16.dp(context)
         }
         invalidate()
     }
@@ -81,10 +82,13 @@ class AlphabetScrollbar(
                 sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 -> listView.smoothScrollToPositionFromTop(it1, topPadding.toInt()) }
                 invalidate()
             }
-            MotionEvent.ACTION_DOWN -> listView.adapter.let {
-                if (it is SectionIndexer && it.sections.isArrayOf<Char>()) sectionIndexer = it
-                sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 -> listView.smoothScrollToPosition(it1, topPadding.toInt()) }
-                invalidate()
+            MotionEvent.ACTION_DOWN -> {
+                parent.requestDisallowInterceptTouchEvent(true)
+                listView.adapter.let {
+                    if (it is SectionIndexer && it.sections.isArrayOf<Char>()) sectionIndexer = it
+                    sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 -> listView.smoothScrollToPosition(it1, topPadding.toInt()) }
+                    invalidate()
+                }
             }
         }
         return true

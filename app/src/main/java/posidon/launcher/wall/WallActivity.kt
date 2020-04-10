@@ -1,6 +1,7 @@
 package posidon.launcher.wall
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.ShapeDrawable
@@ -8,6 +9,8 @@ import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -17,11 +20,12 @@ import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.R
-import posidon.launcher.tools.Loader.bitmap
+import posidon.launcher.tools.Loader
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.applyFontSetting
 import posidon.launcher.tools.Tools.centerCropWallpaper
+import posidon.launcher.tools.toBitmap
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
@@ -44,14 +48,40 @@ class WallActivity : AppCompatActivity() {
         } else {
             animate(loading!!.drawable)
             index = extras.getInt("index")
-            bitmap(Gallery.walls[index].url!!, {
-                img = it
-                if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, it)
-                findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+            if (Gallery.walls[index].type == Wall.Type.SVG) {
+                Loader.nullableSvg(Gallery.walls[index].url!!) {
+                    Tools.clearAnimation(loading!!.drawable)
+                    loading!!.visibility = View.GONE
+                    if (it != null) {
+                        val displayWidth = Tools.getDisplayWidth(this)
+                        val displayHeight = Tools.getDisplayHeight(this)
+                        val width: Int
+                        val height: Int
+                        if (it.intrinsicHeight / it.intrinsicWidth.toFloat() < displayHeight / displayWidth.toFloat()) {
+                            width = displayHeight * it.intrinsicWidth / it.intrinsicHeight
+                            height = displayHeight
+                        } else {
+                            width = displayWidth
+                            height = displayWidth * it.intrinsicHeight / it.intrinsicWidth
+                        }
+                        it.toBitmap(width, height).let {
+                            img = it
+                            if (it.height / it.width < Tools.getDisplayHeight(this) / Tools.getDisplayWidth(this))
+                                img = centerCropWallpaper(this@WallActivity, it)
+                        }
+                        findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+                    }
+                }.execute()
+            } else Loader.nullableBitmap(Gallery.walls[index].url!!) {
                 Tools.clearAnimation(loading!!.drawable)
                 loading!!.visibility = View.GONE
-            }).execute()
-            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img, Gallery.walls[index].name!!) }
+                if (it != null) {
+                    img = it
+                    if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, it)
+                    findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+                }
+            }.execute()
+            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img!!, Gallery.walls[index].name!!) }
             findViewById<View>(R.id.downloadbtn).background = btnBG()
             try {
                 findViewById<TextView>(R.id.nametxt).text = Gallery.walls[index].name
@@ -107,16 +137,34 @@ class WallActivity : AppCompatActivity() {
         return out
     }
 
-    private fun saveBitmap(bitmap: Bitmap?, name: String) {
+    private fun saveBitmap(bitmap: Bitmap, name: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/posidon walls/")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+
+            val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            val imageUri = contentResolver.insert(collection, values)!!
+
+            contentResolver.openOutputStream(imageUri).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+
+            values.clear()
+            values.put(MediaStore.Images.Media.IS_PENDING, 0)
+            contentResolver.update(imageUri, values, null, null)
+
+            Snackbar.make(findViewById(R.id.nametxt), "Saved: Pictures/posidon walls/$name", Snackbar.LENGTH_SHORT).show()
         } else {
             val direct = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getExternalFilesDir("Wallpapers") else File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/Wallpapers")
             if (direct != null && (direct.exists() || direct.mkdirs())) {
                 val file = File(direct, name.replace(' ', '_') + ".png")
                 if (file.exists()) Snackbar.make(findViewById(R.id.nametxt), "Already Saved: " + file.absolutePath, Snackbar.LENGTH_SHORT).show() else try {
                     val out = FileOutputStream(file)
-                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                     out.flush()
                     out.close()
                     Snackbar.make(findViewById(R.id.nametxt), "Saved: " + file.absolutePath, Snackbar.LENGTH_SHORT).show()
@@ -128,7 +176,7 @@ class WallActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) saveBitmap(img, Gallery.walls[index].name!!)
+        if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) saveBitmap(img!!, Gallery.walls[index].name!!)
     }
 
     companion object {

@@ -35,8 +35,8 @@ class About : Activity() {
                 else if (line.startsWith("SajidShaik: "))
                     sajidShaikLink = line.substring(12)
             }
-            leoLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }).execute() }
-            sajidShaikLink?.let { link -> Loader.bitmap(link, { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }).execute() }
+            leoLink?.let { link -> Loader.bitmap(link) { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }.execute() }
+            sajidShaikLink?.let { link -> Loader.bitmap(link) { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }.execute() }
         }.execute()
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {
@@ -54,7 +54,7 @@ class About : Activity() {
     }
 
     fun openTwitter(v: View) {
-        val uri = Uri.parse("https://mobile.twitter.com/lposidon")
+        val uri = Uri.parse("https://twitter.com/posidon")
         val i = Intent(Intent.ACTION_VIEW, uri)
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     }

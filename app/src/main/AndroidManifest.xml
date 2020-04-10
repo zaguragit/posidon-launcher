@@ -13,8 +13,10 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
+    <!--
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    -->
 
     <application
         android:allowBackup="true"
@@ -22,6 +24,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/hometheme">
+        <!--
         <service
             android:name="posidon.launcher.external.quickstep.QuickStepService"
             android:permission="android.permission.STATUS_BAR_SERVICE"
@@ -41,6 +44,7 @@
             android:screenOrientation="unspecified"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             tools:targetApi="q"/>
+        -->
 
         <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>

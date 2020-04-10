@@ -18,16 +18,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="start|center_vertical"
-            android:textColor="@color/cardtitle"
+            android:textColor="#ffffff"
             android:layout_marginStart="12dp"
-            android:textSize="32sp"/>
+            android:textSize="32sp"
+            android:includeFontPadding="false"/>
         <ImageView
             android:id="@+id/openinsettings"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
-            android:src="@drawable/customizations"
-            android:padding="12dp"
+            android:src="@drawable/ic_settings"
+            android:padding="8dp"
             android:tint="#ffffff"/>
     </FrameLayout>
     <LinearLayout
@@ -65,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/version"
                         android:textSize="18sp"
-                        android:textColor="@color/cardtitle"/>
+                        android:textColor="#ffffff"/>
                     <TextView
                         android:id="@+id/version"
                         android:layout_width="wrap_content"
@@ -90,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/uninstall"
                     android:textSize="18sp"
-                    android:textColor="@color/cardtitle"/>
+                    android:textColor="#ffffff"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -116,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/component"
                 android:textSize="18sp"
-                android:textColor="@color/cardtitle"/>
+                android:textColor="#ffffff"/>
             <TextView
                 android:id="@+id/componentname"
                 android:layout_width="wrap_content"

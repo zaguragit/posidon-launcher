@@ -28,7 +28,7 @@ class AppList : FragmentActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         gridView = findViewById(R.id.apps)
 
-        gridView.adapter = DrawerAdapter(this)
+        gridView.adapter = DrawerAdapter()
         gridView.setOnItemClickListener {
             _, view, i, _ -> Main.apps[i]!!.open(this@AppList, view)
             finish()

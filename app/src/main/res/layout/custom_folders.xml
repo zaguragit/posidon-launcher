@@ -103,6 +103,38 @@
                         android:id="@+id/labelColorPrev"
                         style="@style/colorPreview"/>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_label"
+                        android:layout_weight="1"
+                        android:text="@string/show_name" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/titleEnabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="pickTitleColor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/name_color"/>
+                    <View
+                        android:id="@+id/titleColorPrev"
+                        style="@style/colorPreview"/>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -65,8 +65,7 @@ object Tools {
     }
 
 	inline fun clearAnimation(d: Drawable?) { when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 ->
-            d.clearAnimationCallbacks()
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> d.clearAnimationCallbacks()
         d is Animatable2Compat -> d.clearAnimationCallbacks()
         d is Animatable -> d.stop()
     }}
@@ -82,14 +81,11 @@ object Tools {
     inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
     inline fun getDensity(c: Context) = c.resources.displayMetrics.density
 
-    inline fun <T : Number> dp(c: Context, number: T) = c.resources.displayMetrics.density * number.toFloat()
-
     inline fun pullStatusbar(context: Context) {
         try {
             @SuppressLint("WrongConstant")
             val sbs = context.getSystemService("statusbar")
-            Class.forName("android.app.StatusBarManager")
-                    .getMethod("expandNotificationsPanel")(sbs)
+            Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel")(sbs)
         } catch (e: Exception) { e.printStackTrace() }
     }
 
@@ -292,36 +288,17 @@ object Tools {
             }
             x++
         }
-        //Log.e("pix", w + " " + h + " " + pix.length);
         bitmap.setPixels(pix, 0, w, 0, 0, w, h)
         return bitmap
     }
 
-    inline fun drawable2bitmap(drawable: Drawable, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
-        if (drawable is BitmapDrawable) {
-            if (drawable.bitmap != null) {
-                return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(drawable.bitmap)
-                else drawable.bitmap
-            }
-        }
-        val bitmap: Bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Single color bitmap will be created of 1x1 pixel
-        else Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        try { drawable.draw(canvas) }
-        catch (ignore: Exception) {}
-        return bitmap
-    }
-
-	inline fun canBlurWall(context: Context?): Boolean {
-        return Settings["blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
+	inline fun canBlurWall(context: Context?) = Settings["blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 	fun blurredWall(context: Context, radius: Float): Bitmap? {
         try {
-            @SuppressLint("MissingPermission") var bitmap: Bitmap? = drawable2bitmap(WallpaperManager.getInstance(context).peekFastDrawable())
-            val displayWidth = context.resources.displayMetrics.widthPixels
-            val displayHeight = context.resources.displayMetrics.heightPixels + navbarHeight
+            @SuppressLint("MissingPermission") var bitmap: Bitmap? = WallpaperManager.getInstance(context).peekFastDrawable().toBitmap()
+            val displayWidth = getDisplayWidth(context)
+            val displayHeight = getDisplayHeight(context) + navbarHeight
             if (bitmap!!.width > radius && bitmap.height > radius) {
                 when {
                     bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
@@ -373,19 +350,6 @@ object Tools {
                 context.resources.displayMetrics.heightPixels)
         return scaledWallpaper
     }
-
-    /*public static int getNavbarHeight(Context c) {
-		int id = c.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
-		if(id > 0 && c.getResources().getBoolean(id) && !ViewConfiguration.get(c).hasPermanentMenuKey()) {
-			Resources resources = c.getResources();
-			int orientation = resources.getConfiguration().orientation;
-			int resourceId;
-			if (isTablet(c)) resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
-			else resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_width", "dimen", "android");
-			if (resourceId > 0) return resources.getDimensionPixelSize(resourceId);
-		}
-		return 0;
-	}*/
 
 	var navbarHeight = 0
 
@@ -448,11 +412,11 @@ object Tools {
                                 Color.blue(it) > 0xdd
                             }) {
                         drr[0] = ColorDrawable(when(Settings["icon:background_type", "dominant"]) {
-                            "dominant" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDominantColor(Settings["icon:background", -0x1])
-                            "lv" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getLightVibrantColor(Settings["icon:background", -0x1])
-                            "dv" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
-                            "lm" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getLightMutedColor(Settings["icon:background", -0x1])
-                            "dm" -> Palette.from(drawable2bitmap(drr[1]!!)).generate().getDarkMutedColor(Settings["icon:background", -0x1])
+                            "dominant" -> Palette.from(drr[1]!!.toBitmap()).generate().getDominantColor(Settings["icon:background", -0x1])
+                            "lv" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightVibrantColor(Settings["icon:background", -0x1])
+                            "dv" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
+                            "lm" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightMutedColor(Settings["icon:background", -0x1])
+                            "dm" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkMutedColor(Settings["icon:background", -0x1])
                             else -> Settings["icon:background", -0x1]
                         })
                     }
@@ -523,11 +487,37 @@ object Tools {
         }
     }
 
-    fun isDefaultLauncher(): Boolean {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        return publicContext.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
-    }
+    inline val isDefaultLauncher: Boolean
+        get() {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            return publicContext.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+        }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.075f))).toFloat()
 }
+
+inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
+    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
+    val bitmap: Bitmap = if (intrinsicWidth <= 0 || intrinsicHeight <= 0) Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    else Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    setBounds(0, 0, canvas.width, canvas.height)
+    try { draw(canvas) }
+    catch (e: Exception) {}
+    return bitmap
+}
+
+inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
+    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    setBounds(0, 0, canvas.width, canvas.height)
+    try { draw(canvas) }
+    catch (e: Exception) { e.printStackTrace() }
+    return bitmap
+}
+
+
+inline fun Number.dp(c: Context) = c.resources.displayMetrics.density * toFloat()
+inline val Number.dp get() = Tools.publicContext.resources.displayMetrics.density * toFloat()

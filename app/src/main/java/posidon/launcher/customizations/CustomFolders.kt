@@ -44,18 +44,22 @@ class CustomFolders : AppCompatActivity() {
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["folderBG", -0x22eeeded])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["folder:label_color", -0x22000001])
         findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings["folderLabelsEnabled", false]
+        findViewById<View>(R.id.titleColorPrev).background = ColorTools.colorcircle(Settings["folder:title_color", 0xffffffff.toInt()])
+        findViewById<Switch>(R.id.titleEnabled).isChecked = Settings["folder:show_title", true]
         findViewById<SeekBar>(R.id.radiusSlider).progress = Settings["folderCornerRadius", 18]
         Main.customized = true
     }
 
     fun pickColor(v: View) { ColorTools.pickColor(this, "folderBG", -0x22eeeded) }
     fun pickLabelColor(v: View) { ColorTools.pickColor(this, "folder:label_color", -0x22000001) }
+    fun pickTitleColor(v: View) { ColorTools.pickColor(this, "folder:title_color", 0xffffffff.toInt()) }
 
     override fun onPause() {
         Main.customized = true
         Settings.apply {
             putNotSave("folderLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
-            putNotSave("folderCornerRadius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
+            putNotSave("folder:show_title", findViewById<Switch>(R.id.titleEnabled).isChecked)
+            putNotSave("folderCornerRadius", findViewById<SeekBar>(R.id.radiusSlider).progress)
             apply()
         }
         super.onPause()

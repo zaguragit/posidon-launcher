@@ -63,11 +63,12 @@ class CustomDrawer : AppCompatActivity() {
 
         findViewById<Switch>(R.id.labelsenabled).isChecked = Settings["labelsenabled", false]
         findViewById<Switch>(R.id.scrollbarEnabled).isChecked = Settings["drawer:scrollbar_enabled", false]
+        findViewById<Switch>(R.id.sectionsEnabled).isChecked = Settings["drawer:sections_enabled", false]
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["drawer:background_color", -0x78000000])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
         findViewById<Spinner>(R.id.sortingOptions).data = resources.getStringArray(R.array.sortingAlgorithms)
-        findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["sortAlgorithm", 1]
+        findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["drawer:sorting", 1]
 
         findViewById<Switch>(R.id.blurswitch).isChecked = Settings["blur", true]
         val blurSlider = findViewById<SeekBar>(R.id.blurSlider)
@@ -96,6 +97,11 @@ class CustomDrawer : AppCompatActivity() {
                 Settings["blurLayers"] = progress + 1
             }
         })
+
+
+        findViewById<Spinner>(R.id.sectionLetter).data = resources.getStringArray(R.array.namePositions)
+        findViewById<Spinner>(R.id.sectionLetter).selectionI = Settings["drawer:sec_name_pos", 0]
+
         Main.customized = true
     }
 
@@ -108,8 +114,13 @@ class CustomDrawer : AppCompatActivity() {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
             putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
-            if (get("sortAlgorithm", 1) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
-                putNotSave("sortAlgorithm", findViewById<Spinner>(R.id.sortingOptions).selectionI)
+            putNotSave("drawer:sections_enabled", findViewById<Switch>(R.id.sectionsEnabled).isChecked)
+            if (get("drawer:sorting", 1) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
+                putNotSave("drawer:sorting", findViewById<Spinner>(R.id.sortingOptions).selectionI)
+                Main.shouldSetApps = true
+            }
+            if (get("drawer:sec_name_pos", 0) != findViewById<Spinner>(R.id.sectionLetter).selectionI) {
+                putNotSave("drawer:sec_name_pos", findViewById<Spinner>(R.id.sectionLetter).selectionI)
                 Main.shouldSetApps = true
             }
             putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)

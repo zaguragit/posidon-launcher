@@ -33,8 +33,8 @@ object Sort {
         while (i < apps.size - 1) {
             j = i + 1
             while (j < apps.size) {
-                Color.colorToHSV(Palette.from(Tools.drawable2bitmap(apps[i]!!.icon!!)).generate().getVibrantColor(0xff252627.toInt()), iHsv)
-                Color.colorToHSV(Palette.from(Tools.drawable2bitmap(apps[j]!!.icon!!)).generate().getVibrantColor(0xff252627.toInt()), jHsv)
+                Color.colorToHSV(Palette.from(apps[i]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
+                Color.colorToHSV(Palette.from(apps[j]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
                 if (iHsv[0] < jHsv[0]) {
                     temp = apps[i]!!
                     apps[i] = apps[j]

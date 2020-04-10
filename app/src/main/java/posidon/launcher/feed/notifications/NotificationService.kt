@@ -20,9 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.SwipeToDeleteCallback.SwipeListener
-import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -200,7 +198,7 @@ class NotificationService : NotificationListenerService() {
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
             } catch (e: Exception) { e.printStackTrace() }
-            val color = Palette.from(Tools.drawable2bitmap(icon!!, true)).generate().getDominantColor(Settings["notificationbgcolor", -0x1])
+            val color = Palette.from(icon!!.toBitmap(true)).generate().getDominantColor(Settings["notificationbgcolor", -0x1])
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
@@ -230,8 +228,8 @@ class NotificationService : NotificationListenerService() {
                         GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
                     val marginX = (Settings["feed:card_margin_x", 16] * contextReference!!.get()!!.resources.displayMetrics.density).toInt()
-                    setLayerInset(0, 0, 0, Tools.dp(contextReference!!.get()!!, 136).toInt(), 0)
-                    setLayerInset(1, Tools.getDisplayWidth(contextReference!!.get()!!) - Tools.dp(contextReference!!.get()!!, 136).toInt() - marginX * 2, 0, 0, 0)
+                    setLayerInset(0, 0, 0, 136.dp(contextReference!!.get()!!).toInt(), 0)
+                    setLayerInset(1, Tools.getDisplayWidth(contextReference!!.get()!!) - 136.dp(contextReference!!.get()!!).toInt() - marginX * 2, 0, 0, 0)
                 }
                 Main.instance.findViewById<ImageView>(R.id.musicPrev).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)

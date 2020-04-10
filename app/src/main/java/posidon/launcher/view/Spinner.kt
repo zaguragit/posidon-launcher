@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 
 class Spinner : AppCompatTextView {
 
@@ -26,7 +27,7 @@ class Spinner : AppCompatTextView {
             var popup: PopupWindow? = null
             popup = PopupWindow(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(Tools.dp(context, 8).toInt(), Tools.dp(context, 8).toInt(), Tools.dp(context, 8).toInt(), Tools.dp(context, 8).toInt())
+                setPadding(8.dp(context).toInt(), 8.dp(context).toInt(), 8.dp(context).toInt(), 8.dp(context).toInt())
                 for (i in data.indices) {
                     addView(TextView(context).apply {
                         text = data[i]
@@ -37,10 +38,10 @@ class Spinner : AppCompatTextView {
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())
                         setPadding(
-                                Tools.dp(context, 18).toInt(),
-                                Tools.dp(context, 9).toInt(),
-                                Tools.dp(context, 18).toInt(),
-                                Tools.dp(context, 9).toInt())
+                                18.dp(context).toInt(),
+                                9.dp(context).toInt(),
+                                18.dp(context).toInt(),
+                                9.dp(context).toInt())
                     })
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {
