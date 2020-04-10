@@ -144,6 +144,10 @@
     <string name="posidon_launcher_crashed">posidon launcher crashed</string>
     <string name="send_bug_report">Send bug report</string>
     <string name="settings_title_quickstep">QuickStep</string>
+    <string name="show_name">Show name</string>
+    <string name="name_color">Name color</string>
+    <string name="sections">Sections</string>
+    <string name="name_position">Name position</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -174,5 +178,11 @@
         <item>Light muted color</item>
         <item>Dark muted color</item>
         <item>Custom</item>
+    </array>
+
+    <array name="namePositions">
+        <item>Top</item>
+        <item>Left</item>
+        <item>Hide</item>
     </array>
 </resources>

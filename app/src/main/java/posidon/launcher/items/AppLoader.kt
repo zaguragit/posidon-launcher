@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference
 class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
 
     private lateinit var tmpApps: Array<App?>
+    private val tmpAppSections = ArrayList<ArrayList<App>>()
     private val context: WeakReference<Context> = WeakReference(context)
 
     override fun doInBackground(objects: Array<Unit?>): Unit? {
@@ -121,13 +122,41 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             } else tmpApps[i - skippedapps] = app
         }
         tmpApps = tmpApps.copyOf(tmpApps.size - skippedapps)
-        if (Settings["sortAlgorithm", 1] == 1) Sort.colorSort(tmpApps)
-        else Sort.labelSort(tmpApps)
+        if (Settings["drawer:sorting", 1] == 1) Sort.colorSort(tmpApps)
+        else {
+            var i = 0
+            var j: Int
+            var temp: App
+            while (i < tmpApps.size - 1) {
+                j = i + 1
+                while (j < tmpApps.size) {
+                    if (tmpApps[i]!!.label!!.compareTo(tmpApps[j]!!.label!!, ignoreCase = true) > 0) {
+                        temp = tmpApps[i]!!
+                        tmpApps[i] = tmpApps[j]
+                        tmpApps[j] = temp
+                    }
+                    j++
+                }
+                i++
+            }
+        }
+
+        var currentChar = tmpApps[0]!!.label!![0].toUpperCase()
+        var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
+        for (app in tmpApps) {
+            if (app!!.label!!.startsWith(currentChar, ignoreCase = true)) currentSection.add(app)
+            else currentSection = ArrayList<App>().apply {
+                add(app)
+                tmpAppSections.add(this)
+                currentChar = app.label!![0].toUpperCase()
+            }
+        }
         return null
     }
 
     override fun onPostExecute(v: Unit?) {
         Main.apps = tmpApps
+        Main.appSections = tmpAppSections
         App.swapMaps()
         App.clearSecondMap()
         onEnd()

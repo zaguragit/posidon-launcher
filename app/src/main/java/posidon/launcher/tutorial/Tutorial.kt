@@ -110,7 +110,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xff000000.toInt())
                     putNotSave("notificationtxtcolor", 0xff888888.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
-                    putNotSave("sortAlgorithm", 1)
+                    putNotSave("drawer:sorting", 1)
                     apply()
                 }
                 1 -> {
@@ -141,7 +141,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xff000000.toInt())
                     putNotSave("notificationtxtcolor", 0xff000000.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
-                    putNotSave("sortAlgorithm", 1)
+                    putNotSave("drawer:sorting", 1)
                     apply()
                 }
                 2 -> {
@@ -172,7 +172,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xdd000000.toInt())
                     putNotSave("notificationtxtcolor", 0x88000000.toInt())
                     putNotSave("notificationbgcolor", 0xa8eeeeee.toInt())
-                    putNotSave("sortAlgorithm", 1)
+                    putNotSave("drawer:sorting", 1)
                     apply()
                 }
             }
@@ -224,7 +224,7 @@ class Tutorial : AppCompatActivity() {
 
     fun done4(v: View) {
         Settings["init"] = false
-        if (!Tools.isDefaultLauncher()) chooseLauncher()
+        if (!Tools.isDefaultLauncher) chooseLauncher()
         startActivity(Intent(this, Main::class.java))
         finish()
     }

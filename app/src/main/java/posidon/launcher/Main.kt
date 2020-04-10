@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherApps
-import android.content.pm.VersionedPackage
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -28,7 +27,6 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,10 +44,7 @@ import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.feed.notifications.SwipeToDeleteCallback
 import posidon.launcher.items.*
 import posidon.launcher.search.SearchActivity
-import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Settings
-import posidon.launcher.tools.StackTraceActivity
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.applyFontSetting
 import posidon.launcher.tools.Tools.blurredWall
@@ -95,9 +90,15 @@ class Main : AppCompatActivity() {
     }
 
     private val onAppLoaderEnd = {
-        drawerGrid.adapter = DrawerAdapter(this@Main)
-        drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
-        drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        if (Settings["drawer:sections_enabled", false]) {
+            drawerGrid.adapter = SectionedDrawerAdapter()
+            drawerGrid.onItemClickListener = null
+            drawerGrid.onItemLongClickListener = null
+        } else {
+            drawerGrid.adapter = DrawerAdapter()
+            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
+            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        }
         drawerScrollBar.updateAdapter()
         setDock()
     }
@@ -176,6 +177,14 @@ class Main : AppCompatActivity() {
                         popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
                         val container = content.findViewById<GridLayout>(R.id.container)
                         container.columnCount = Settings["folderColumns", 3]
+                        if (Settings["folder:show_title", true]) {
+                            val title = content.findViewById<TextView>(R.id.title)
+                            title.setTextColor(Settings["folder:title_color", 0xffffffff.toInt()])
+                            title.text = folder.label
+                        } else {
+                            content.findViewById<View>(R.id.title).visibility = View.GONE
+                            content.findViewById<View>(R.id.separator).visibility = View.GONE
+                        }
                         val appList: List<App?> = folder.apps
                         var i1 = 0
                         val appListSize = appList.size
@@ -369,14 +378,38 @@ class Main : AppCompatActivity() {
         setCustomizations = {
             applyFontSetting(this@Main)
 
+            when (Settings["dock:background_type", 0]) {
+                0 -> { findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
+                    val tr = Settings["dockradius", 30] * resources.displayMetrics.density
+                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = Settings["dock:background_color", -0x78000000]
+                }}
+                1 -> { findViewById<View>(R.id.drawer).background = LayerDrawable(arrayOf(
+                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                                Settings["dock:background_color", -0x78000000] and 0x00ffffff,
+                                Settings["dock:background_color", -0x78000000])),
+                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                                Settings["dock:background_color", -0x78000000],
+                                Settings["drawer:background_color", -0x78000000]))
+                ))}
+            }
+
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
-                drawerGrid.adapter = DrawerAdapter(this@Main)
+                if (Settings["drawer:sections_enabled", false]) {
+                    drawerGrid.adapter = SectionedDrawerAdapter()
+                    drawerGrid.onItemClickListener = null
+                    drawerGrid.onItemLongClickListener = null
+                } else {
+                    drawerGrid.adapter = DrawerAdapter()
+                    drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
+                    drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+                }
                 setDock()
             }
 
             if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             if (Settings["drawersearchbarenabled", true]) {
-                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (56 * resources.displayMetrics.density).toInt())
+                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + 56.dp.toInt())
                 searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
                 searchBar.visibility = VISIBLE
                 val bg = ShapeDrawable()
@@ -391,7 +424,7 @@ class Main : AppCompatActivity() {
                 findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
             } else {
                 searchBar.visibility = GONE
-                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + (12 * resources.displayMetrics.density).toInt())
+                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + 12.dp.toInt())
             }
             if (Settings["docksearchbarenabled", false]) {
                 findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
@@ -415,8 +448,13 @@ class Main : AppCompatActivity() {
                 findViewById<View>(R.id.docksearchbar).visibility = GONE
                 findViewById<View>(R.id.battery).visibility = GONE
             }
-            drawerGrid.numColumns = Settings["drawer:columns", 4]
-            drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
+            if (Settings["drawer:sections_enabled", false]) {
+                drawerGrid.numColumns = 1
+                drawerGrid.verticalSpacing = 0
+            } else {
+                drawerGrid.numColumns = Settings["drawer:columns", 4]
+                drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
+            }
             feedRecycler.visibility = if (Settings["feed:enabled", true]) VISIBLE else GONE
             val marginX = (Settings["feed:card_margin_x", 16] * resources.displayMetrics.density).toInt()
             (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
@@ -476,22 +514,6 @@ class Main : AppCompatActivity() {
                 })
             }
             if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight(this@Main) - 12 * resources.displayMetrics.density).toInt(), 0, 0)
-
-            when (Settings["dock:background_type", 0]) {
-                0 -> { findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30] * resources.displayMetrics.density
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }}
-                1 -> { findViewById<View>(R.id.drawer).background = LayerDrawable(arrayOf(
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                            Settings["dock:background_color", -0x78000000])),
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000],
-                            Settings["drawer:background_color", -0x78000000]))
-                ))}
-            }
 
             shouldSetApps = false
             customized = false
@@ -602,6 +624,15 @@ class Main : AppCompatActivity() {
                 findViewById<View>(R.id.realdock).alpha = inverseOffset
             }
         })
+
+        drawerScrollBar = AlphabetScrollbar(drawerGrid)
+        findViewById<FrameLayout>(R.id.drawercontent).addView(drawerScrollBar)
+        (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
+            width = 24.dp(this@Main).toInt()
+            gravity = Gravity.END
+        }
+        drawerScrollBar.bringToFront()
+
         feedRecycler = findViewById(R.id.feedrecycler)
         feedRecycler.layoutManager = LinearLayoutManager(this@Main)
         feedRecycler.isNestedScrollingEnabled = false
@@ -626,6 +657,8 @@ class Main : AppCompatActivity() {
                 findViewById<View>(R.id.arrowUp).visibility = VISIBLE
             }
         }
+
+        setCustomizations()
 
         try {
             NotificationService.onUpdate = {
@@ -694,16 +727,6 @@ class Main : AppCompatActivity() {
             list.add(Rect(0, 0, getDisplayWidth(this), getDisplayHeight(this)))
             findViewById<View>(R.id.homeView).systemGestureExclusionRects = list
         }
-
-        drawerScrollBar = AlphabetScrollbar(drawerGrid)
-        findViewById<FrameLayout>(R.id.drawercontent).addView(drawerScrollBar)
-        (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
-            width = Tools.dp(this@Main, 24).toInt()
-            gravity = Gravity.END
-        }
-        drawerScrollBar.bringToFront()
-
-        setCustomizations()
 
         blurBg = LayerDrawable(arrayOf<Drawable>(
                 ColorDrawable(0x0),
@@ -775,7 +798,7 @@ class Main : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         WidgetManager.host.startListening()
-        val mngr: ActivityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        //val mngr: ActivityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         onUpdate()
     }
@@ -836,9 +859,15 @@ class Main : AppCompatActivity() {
         super.onStart()
         WidgetManager.host.startListening()
 
-        drawerGrid.adapter = DrawerAdapter(this@Main)
-        drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
-        drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        if (Settings["drawer:sections_enabled", false]) {
+            drawerGrid.adapter = SectionedDrawerAdapter()
+            drawerGrid.onItemClickListener = null
+            drawerGrid.onItemLongClickListener = null
+        } else {
+            drawerGrid.adapter = DrawerAdapter()
+            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
+            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        }
         drawerScrollBar.updateAdapter()
     }
 
@@ -883,6 +912,7 @@ class Main : AppCompatActivity() {
     )
 
     companion object {
+        var appSections = ArrayList<ArrayList<App>>()
         var shouldSetApps = true
         var customized = false
         var apps: Array<App?> = emptyArray()

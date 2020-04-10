@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.R
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.toBitmap
 import java.util.*
 
 class App : LauncherItem() {
@@ -61,7 +62,7 @@ class App : LauncherItem() {
         g.setColor(appcolor)
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).background = g
         d.findViewById<TextView>(R.id.appname)!!.text = label
-        d.findViewById<ImageView>(R.id.iconimg)!!.setImageBitmap(Tools.drawable2bitmap(icon!!))
+        d.findViewById<ImageView>(R.id.iconimg)!!.setImageBitmap(icon!!.toBitmap())
         try {
             d.findViewById<TextView>(R.id.version)!!.text = context.packageManager.getPackageInfo(packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {}

@@ -139,12 +139,16 @@
     <string name="background_type">Tipo de fondo</string>
     <string name="max_image_width">Max resolución de imagen</string>
     <string name="scrollbar">Scrollbar</string>
-    <string name="grouping">Grouping</string>
-    <string name="recolor_white_bgs">Tint white backgrounds</string>
+    <string name="grouping">Agrupacion</string>
+    <string name="recolor_white_bgs">Pintar fondos blancos</string>
     <string name="oops">Oops!</string>
     <string name="posidon_launcher_crashed">posidon launcher crashed</string>
-    <string name="send_bug_report">Send bug report</string>
+    <string name="send_bug_report">Enviar informe de error</string>
     <string name="settings_title_quickstep">QuickStep</string>
+    <string name="show_name">Mostrar nombre</string>
+    <string name="name_color">Color de nombre</string>
+    <string name="sections">Secciones</string>
+    <string name="name_position">Posicion de nombre</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -175,5 +179,11 @@
         <item>Color claro</item>
         <item>Color oscuro</item>
         <item>Escoger</item>
+    </array>
+
+    <array name="namePositions">
+        <item>Encima</item>
+        <item>Izquierda</item>
+        <item>Esconder</item>
     </array>
 </resources>

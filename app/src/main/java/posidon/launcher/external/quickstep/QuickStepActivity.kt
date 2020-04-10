@@ -14,6 +14,7 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 import kotlin.math.max
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -27,7 +28,7 @@ class QuickStepActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
 
-        (taskDescription.layoutParams as FrameLayout.LayoutParams).bottomMargin = max(Tools.navbarHeight, Tools.dp(this, 24).toInt()) + Tools.dp(this, 32).toInt()
+        (taskDescription.layoutParams as FrameLayout.LayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp(this).toInt()) + 32.dp(this).toInt()
 
         if (QuickStepService.recentTasks.isEmpty()) {
             taskDescription.visibility = GONE

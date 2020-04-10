@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.view.LayoutInflater
@@ -40,6 +41,7 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
     }
 
     override fun onBindViewHolder(holder: FeedModelViewHolder, position: Int) {
+
         val feedItem = FeedModels[position]
         holder.rssFeedView.findViewById<TextView>(R.id.title).text = feedItem.title
         holder.rssFeedView.findViewById<TextView>(R.id.title).setTextColor(Settings["feed:card_txt_color", -0x1])
@@ -55,18 +57,31 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
                     holder.rssFeedView.findViewById<View>(R.id.gradient).background = gradientDrawable
                 } else holder.rssFeedView.findViewById<View>(R.id.gradient).visibility = View.GONE
             } else {
-                Loader.bitmap(feedItem.img, { img ->
-                    if (img != null) try {
-                        images[feedItem.img] = img
+                fun onImageLoadEnd(img: Bitmap) {
+                    if (Settings["feed:card_text_shadow", true]) {
+                        val gradientDrawable = GradientDrawable()
+                        gradientDrawable.colors = intArrayOf(0x0, Palette.from(img).generate().getDarkMutedColor(-0x1000000))
+                        holder.rssFeedView.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        holder.rssFeedView.findViewById<View>(R.id.gradient).background = gradientDrawable
+                    } else holder.rssFeedView.findViewById<View>(R.id.gradient).visibility = View.GONE
+                }
+                Loader.nullableBitmap(feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {
+                    var worked = false
+                    if (it != null) try {
+                        images[feedItem.img] = it
                         holder.rssFeedView.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
-                        if (Settings["feed:card_text_shadow", true]) {
-                            val gradientDrawable = GradientDrawable()
-                            gradientDrawable.colors = intArrayOf(0x0, Palette.from(img).generate().getDarkMutedColor(-0x1000000))
-                            holder.rssFeedView.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
-                            holder.rssFeedView.findViewById<View>(R.id.gradient).background = gradientDrawable
-                        } else holder.rssFeedView.findViewById<View>(R.id.gradient).visibility = View.GONE
-                    } catch (ignore: Exception) {}
-                }, maxWidth, Loader.bitmap.AUTO, false).execute()
+                        onImageLoadEnd(it)
+                        worked = true
+                    } catch (e: Exception) { e.printStackTrace() }
+                    if (!worked) Loader.nullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {
+                        if (it != null) try {
+                            images[feedItem.img] = it
+                            holder.rssFeedView.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
+                            onImageLoadEnd(it)
+                            worked = true
+                        } catch (e: Exception) { e.printStackTrace() }
+                    }.execute()
+                }.execute()
             }
         } else {
             holder.rssFeedView.findViewById<View>(R.id.img).visibility = View.GONE
@@ -75,13 +90,14 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
             holder.rssFeedView.findViewById<View>(R.id.gradient).layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         }
         holder.rssFeedView.findViewById<View>(R.id.card).setOnClickListener {
-            try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link!!.trim { it <= ' ' })), ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle()) }
+            try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle()) }
             catch (e: Exception) { e.printStackTrace() }
         }
         holder.rssFeedView.findViewById<View>(R.id.card).setOnLongClickListener(LauncherMenu(context, window))
         holder.rssFeedView.findViewById<CardView>(R.id.card).radius = context.resources.displayMetrics.density * Settings.get("feed:card_radius", 15)
         holder.rssFeedView.findViewById<CardView>(R.id.card).setCardBackgroundColor(Settings.get("feed:card_bg", -0xdad9d9))
     }
+
 
     override fun getItemCount(): Int {
         return FeedModels.size

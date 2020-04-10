@@ -9,7 +9,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:paddingBottom="22dp">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="256dp"
@@ -37,7 +38,24 @@
             android:padding="12dp"
             android:textSize="24sp"
             android:hint="@string/colorpicker_hint"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            android:layout_marginBottom="25dp"/>
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/apply"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg_round"
+            android:backgroundTint="#33ffffff"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="22dp"
+            android:includeFontPadding="false"/>
     </androidx.cardview.widget.CardView>
     <posidon.launcher.view.Seekbar
         android:id="@+id/red"
@@ -75,13 +93,4 @@
         android:progressBackgroundTint="#88555555"
         android:padding="12dp"
         android:max="255"/>
-    <Button
-        android:id="@+id/ok"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/apply"
-        android:textSize="18sp"
-        android:background="@android:color/transparent"
-        android:paddingBottom="10dp"
-        android:gravity="center"/>
 </LinearLayout>

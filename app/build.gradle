@@ -8,8 +8,8 @@ android {
         applicationId "posidon.launcher"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 57
-        versionName "1.9"
+        versionCode 58
+        versionName "1.10"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -24,4 +24,5 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.pixplicity.sharp:library:1.1.0'
 }

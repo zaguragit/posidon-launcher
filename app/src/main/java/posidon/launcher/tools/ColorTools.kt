@@ -3,6 +3,7 @@ package posidon.launcher.tools
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -16,6 +17,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -55,20 +57,20 @@ object ColorTools {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                try {
-                    d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor(s.toString().toLong(16).toInt())
-                } catch (ignore: NumberFormatException) {}
+                try { d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor(s.toString().toLong(16).toInt()) }
+                catch (ignore: NumberFormatException) {}
             }
         })
+        val okBtn = d.findViewById<TextView>(R.id.ok)!!
         txt.setText(Integer.toHexString(Settings[settingskey!!, defaultcolor]))
-        txt.setTextColor(if (useDarkText(Settings[settingskey, defaultcolor])) -0xdad9d9 else -0x1)
-        d.findViewById<View>(R.id.ok)!!.setOnClickListener {
+        val txtColor = if (useDarkText(Settings[settingskey, defaultcolor])) -0xdad9d9 else -0x1
+        txt.setTextColor(txtColor)
+        okBtn.setTextColor(txtColor)
+        okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
+        okBtn.setOnClickListener {
             d.dismiss()
-            try {
-                Settings[settingskey] = txt.text.toString().toLong(16).toInt()
-            } catch (e: NumberFormatException) {
-                Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show()
-            }
+            try { Settings[settingskey] = txt.text.toString().toLong(16).toInt() }
+            catch (e: NumberFormatException) { Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show() }
         }
         val alpha = d.findViewById<SeekBar>(R.id.alpha)
         val red = d.findViewById<SeekBar>(R.id.red)
@@ -86,7 +88,10 @@ object ColorTools {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val color = progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + blue.progress
                 txt.setText(Integer.toHexString(color))
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         red.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -95,7 +100,10 @@ object ColorTools {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val color = alpha.progress * 256 * 256 * 256 + progress * 256 * 256 + green.progress * 256 + blue.progress
                 txt.setText(Integer.toHexString(color))
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         green.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -104,7 +112,10 @@ object ColorTools {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + progress * 256 + blue.progress
                 txt.setText(Integer.toHexString(color))
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         blue.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -113,7 +124,10 @@ object ColorTools {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + progress
                 txt.setText(Integer.toHexString(color))
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         System.gc()
@@ -130,20 +144,20 @@ object ColorTools {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                try {
-                    d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor("ff$s".toLong(16).toInt())
-                } catch (ignored: NumberFormatException) {}
+                try { d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor("ff$s".toLong(16).toInt()) }
+                catch (ignored: NumberFormatException) {}
             }
         })
+        val okBtn = d.findViewById<TextView>(R.id.ok)!!
         txt.setText(Integer.toHexString(Settings[settingskey!!, defaultcolor]))
-        txt.setTextColor(if (useDarkText(Settings[settingskey, defaultcolor])) -0xdad9d9 else -0x1)
-        d.findViewById<View>(R.id.ok)!!.setOnClickListener {
+        val txtColor = if (useDarkText(Settings[settingskey, defaultcolor])) -0xdad9d9 else -0x1
+        txt.setTextColor(txtColor)
+        okBtn.setTextColor(txtColor)
+        okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
+        okBtn.setOnClickListener {
             d.dismiss()
-            try {
-                Settings[settingskey] = txt.text.toString().toLong(16).toInt()
-            } catch (e: NumberFormatException) {
-                Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show()
-            }
+            try { Settings[settingskey] = txt.text.toString().toLong(16).toInt() }
+            catch (e: NumberFormatException) { Toast.makeText(context, "That's not a color.", Toast.LENGTH_SHORT).show() }
         }
         d.findViewById<View>(R.id.alpha)!!.visibility = View.GONE
         val red = d.findViewById<SeekBar>(R.id.red)
@@ -162,7 +176,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         green.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -173,7 +190,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         blue.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -184,7 +204,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         System.gc()
@@ -201,13 +224,13 @@ object ColorTools {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                try {
-                    d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor("ff$s".toLong(16).toInt())
-                } catch (ignore: NumberFormatException) {}
+                try { d.findViewById<View>(R.id.bgColorPrev)!!.setBackgroundColor("ff$s".toLong(16).toInt()) }
+                catch (ignore: NumberFormatException) {}
             }
         })
         txt.setText("000000")
-        d.findViewById<View>(R.id.ok)!!.setOnClickListener {
+        val okBtn = d.findViewById<TextView>(R.id.ok)!!
+        okBtn.setOnClickListener {
             d.dismiss()
             try {
                 val myWallpaperManager = WallpaperManager.getInstance(context)
@@ -239,7 +262,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         green!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -250,7 +276,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         blue!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -261,7 +290,10 @@ object ColorTools {
                 val hex = StringBuilder(Integer.toHexString(color))
                 while (hex.length != 6) hex.insert(0, 0)
                 txt.setText(hex.toString())
-                txt.setTextColor(if (useDarkText(color)) -0xdad9d9 else -0x1)
+                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                txt.setTextColor(txtColor)
+                okBtn.setTextColor(txtColor)
+                okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             }
         })
         System.gc()

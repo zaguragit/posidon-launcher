@@ -9,6 +9,7 @@ import android.graphics.drawable.LayerDrawable
 import posidon.launcher.items.App.Companion.get
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.toBitmap
 import java.util.*
 import kotlin.math.min
 
@@ -28,7 +29,7 @@ class Folder(context: Context, string: String) : LauncherItem() {
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
             drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
             for (i in 0 until previewApps) {
-                drr[i + 1] = BitmapDrawable(context.resources, Tools.drawable2bitmap(apps[i]!!.icon!!))
+                drr[i + 1] = BitmapDrawable(context.resources, apps[i]!!.icon!!.toBitmap())
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth

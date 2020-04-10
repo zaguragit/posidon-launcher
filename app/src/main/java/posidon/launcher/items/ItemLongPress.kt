@@ -29,6 +29,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.toBitmap
 import java.util.*
 
 object ItemLongPress {
@@ -39,11 +40,11 @@ object ItemLongPress {
         var color: Int
         val txtColor: Int
         return if (item is App) {
-            color = Palette.from(Tools.drawable2bitmap(item.icon!!)).generate().getDominantColor(-0xdad9d9)
+            color = Palette.from(item.icon!!.toBitmap()).generate().getDominantColor(-0xdad9d9)
             val hsv = FloatArray(3)
             Color.colorToHSV(color, hsv)
             if (hsv[1] < 0.2f) {
-                color = Palette.from(Tools.drawable2bitmap(item.icon!!)).generate().getVibrantColor(-0xdad9d9)
+                color = Palette.from(item.icon!!.toBitmap()).generate().getVibrantColor(-0xdad9d9)
                 Color.colorToHSV(color, hsv)
             }
             txtColor = if (ColorTools.useDarkText(color)) -0xeeeded else -0x1
@@ -111,7 +112,7 @@ object ItemLongPress {
             val window = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
             window.setBackgroundDrawable(ColorDrawable(0x0))
             content.findViewById<View>(R.id.appinfobtn).visibility = View.GONE
-            content.findViewById<View>(R.id.title).visibility = View.GONE
+            content.findViewById<TextView>(R.id.title).text = item.label
             val removeBtn = content.findViewById<View>(R.id.removeBtn)
             val editbtn = content.findViewById<View>(R.id.editbtn)
             val bg = ShapeDrawable()
@@ -133,197 +134,185 @@ object ItemLongPress {
         }
     }
 
-	fun dock(context: Context, app: App, i: Int): OnLongClickListener {
-        return OnLongClickListener { view ->
-            if (currentPopup == null) {
-                val location = IntArray(2)
-                val icon = view.findViewById<View>(R.id.iconimg)
-                icon.getLocationInWindow(location)
-                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
-                val popupWindow = popupWindow(context, object : Methods {
-                    override fun onRemove(v: View) {
-                        var data = Settings["dock", ""].split("\n").toTypedArray()
-                        if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                        data[i] = ""
+	fun dock(context: Context, app: App, i: Int) = OnLongClickListener { view ->
+        if (currentPopup == null) {
+            val location = IntArray(2)
+            val icon = view.findViewById<View>(R.id.iconimg)
+            icon.getLocationInWindow(location)
+            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            val popupWindow = popupWindow(context, object : Methods {
+                override fun onRemove(v: View) {
+                    var data = Settings["dock", ""].split("\n").toTypedArray()
+                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
+                    data[i] = ""
+                    Settings["dock"] = TextUtils.join("\n", data)
+                    Main.setDock()
+                }
+                override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
+            }, true, app)
+            popupWindow.isFocusable = false
+            val myShadow = DragShadowBuilder(icon)
+            val clipData = ClipData.newPlainText("", "")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
+            var data = Settings["dock", ""].split("\n").toTypedArray()
+            if (data.size <= i) data = Arrays.copyOf(data, i + 1)
+            data[i] = ""
+            Settings["dock"] = TextUtils.join("\n", data)
+            popupWindow.showAtLocation(
+                    view, Gravity.BOTTOM or gravity, x,
+                    (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
+            )
+        }
+        true
+    }
+
+	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow) = OnLongClickListener { view ->
+        if (currentPopup == null) {
+            val location = IntArray(2)
+            view.getLocationOnScreen(location)
+            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            popupWindow(context, object : Methods {
+                override fun onRemove(v: View) {
+                    folderWindow.dismiss()
+                    var data = Settings["dock", ""].split("\n").toTypedArray()
+                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
+                    val f = Folder(context, data[i])
+                    f.apps.removeAt(folderIndex)
+                    data[i] = if (f.apps.size == 1) f.apps[0]!!.packageName + "/" + f.apps[0]!!.name else f.toString()
+                    Settings["dock"] = TextUtils.join("\n", data)
+                    Main.setDock()
+                }
+                override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
+            }, true, app).showAtLocation(v, Gravity.BOTTOM or gravity, x, Tools.getDisplayHeight(context) - location[1] + Tools.navbarHeight)
+        }
+        true
+    }
+
+    fun olddrawer(context: Context) = OnItemLongClickListener { _, view, position, _ ->
+        if (currentPopup == null) try {
+            val app = Main.apps[position]
+            val icon = view.findViewById<View>(R.id.iconimg)
+            val location = IntArray(2)
+            val popupWindow = popupWindow(context, object : Methods {
+                override fun onRemove(v: View) {}
+                override fun onEdit(v: View) { showAppEditDialog(context, app!!, v) }
+            }, false, app!!)
+            popupWindow.isFocusable = false
+            icon.getLocationInWindow(location)
+            val myShadow = DragShadowBuilder(icon)
+            val data = ClipData.newPlainText("", "")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)
+            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
+                    icon, Gravity.BOTTOM or gravity, x,
+                    context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+            )
+        } catch (ignore: Exception) {}
+        true
+    }
+
+    fun drawer(context: Context, app: App) = OnLongClickListener {
+        if (currentPopup == null) try {
+            val icon = it.findViewById<View>(R.id.iconimg)
+            val location = IntArray(2)
+            val popupWindow = popupWindow(context, object : Methods {
+                override fun onRemove(v: View) {}
+                override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
+            }, false, app)
+            popupWindow.isFocusable = false
+            icon.getLocationInWindow(location)
+            val myShadow = DragShadowBuilder(icon)
+            val data = ClipData.newPlainText("", "")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
+            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
+                    icon, Gravity.BOTTOM or gravity, x,
+                    context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+            )
+        } catch (ignore: Exception) {}
+        true
+    }
+
+    fun search(activity: Activity, apps: Array<App?>) = OnItemLongClickListener { _, view, position, _ ->
+        if (currentPopup == null) try {
+            val app = apps[position]!!
+            val icon = view.findViewById<View>(R.id.iconimg)
+            val location = IntArray(2)
+            val popupWindow = popupWindow(activity, object : Methods {
+                override fun onRemove(v: View) {}
+                override fun onEdit(v: View) {
+                    showAppEditDialog(activity, app, v)
+                }
+            }, false, app)
+            //popupWindow.isFocusable = false
+            icon.getLocationInWindow(location)
+            /*val myShadow = DragShadowBuilder(icon)
+            val data = ClipData.newPlainText("", "")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0)
+            else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)*/
+            val gravity = if (location[0] > Tools.getDisplayWidth(activity) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(activity) / 2) Tools.getDisplayWidth(activity) - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Tools.getDisplayHeight(activity) / 2f) popupWindow.showAtLocation(
+                        icon, Gravity.TOP or gravity, x,
+                        location[1] + icon.measuredHeight
+            ) else popupWindow.showAtLocation(
+                    icon, Gravity.BOTTOM or gravity, x,
+                    Tools.getDisplayHeight(activity) - location[1] + (4 * activity.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+            )
+        } catch (e: Exception) { e.printStackTrace() }
+        true
+    }
+
+	fun folder(context: Context, folder: Folder, i: Int) = OnLongClickListener { view ->
+        if (currentPopup == null) {
+            val location = IntArray(2)
+            val icon = view.findViewById<View>(R.id.iconimg)
+            icon.getLocationInWindow(location)
+            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            val popupWindow = popupWindow(context, object : Methods {
+                override fun onRemove(v: View) {
+                    var data = Settings["dock", ""].split("\n").toTypedArray()
+                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
+                    data[i] = ""
+                    Settings["dock"] = TextUtils.join("\n", data)
+                    Main.setDock()
+                }
+
+                override fun onEdit(v: View) {
+                    val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
+                    val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+                    val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
+                    editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(folder.icon)
+                    editContent.findViewById<View>(R.id.edit).visibility = GONE
+                    editLabel.setText(folder.label)
+                    editWindow.setOnDismissListener {
+                        folder.label = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
+                        val data = Settings["dock", ""].split("\n").toTypedArray()
+                        data[i] = folder.toString()
                         Settings["dock"] = TextUtils.join("\n", data)
                         Main.setDock()
                     }
-                    override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
-                }, true, app)
-                popupWindow.isFocusable = false
-                val myShadow = DragShadowBuilder(icon)
-                val clipData = ClipData.newPlainText("", "")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
-                var data = Settings["dock", ""].split("\n").toTypedArray()
-                if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                data[i] = ""
-                Settings["dock"] = TextUtils.join("\n", data)
-                popupWindow.showAtLocation(
-                        view, Gravity.BOTTOM or gravity, x,
-                        (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
-                )
-            }
-            true
+                    editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
+                }
+            }, true, folder)
+            val myShadow = DragShadowBuilder(icon)
+            val clipData = ClipData.newPlainText("", "")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(folder, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
+            var data = Settings["dock", ""].split("\n").toTypedArray()
+            if (data.size <= i) data = Arrays.copyOf(data, i + 1)
+            data[i] = ""
+            Settings["dock"] = TextUtils.join("\n", data)
+            popupWindow.showAtLocation(
+                    view, Gravity.BOTTOM or gravity, x,
+                    (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
+            )
         }
-    }
-
-	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow): OnLongClickListener {
-        return OnLongClickListener { view ->
-            if (currentPopup == null) {
-                val location = IntArray(2)
-                view.getLocationOnScreen(location)
-                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
-                popupWindow(context, object : Methods {
-                    override fun onRemove(v: View) {
-                        folderWindow.dismiss()
-                        var data = Settings["dock", ""].split("\n").toTypedArray()
-                        if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                        val f = Folder(context, data[i])
-                        f.apps.removeAt(folderIndex)
-                        data[i] = if (f.apps.size == 1) f.apps[0]!!.packageName + "/" + f.apps[0]!!.name else f.toString()
-                        Settings["dock"] = TextUtils.join("\n", data)
-                        Main.setDock()
-                    }
-                    override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
-                }, true, app).showAtLocation(v, Gravity.BOTTOM or gravity, x, Tools.getDisplayHeight(context) - location[1] + Tools.navbarHeight)
-            }
-            true
-        }
-    }
-
-    fun olddrawer(context: Context): OnItemLongClickListener {
-        return OnItemLongClickListener { _, view, position, _ ->
-            if (currentPopup == null) try {
-                val app = Main.apps[position]
-                val icon = view.findViewById<View>(R.id.iconimg)
-                val location = IntArray(2)
-                val popupWindow = popupWindow(context, object : Methods {
-                    override fun onRemove(v: View) {}
-                    override fun onEdit(v: View) { showAppEditDialog(context, app!!, v) }
-                }, false, app!!)
-                popupWindow.isFocusable = false
-                icon.getLocationInWindow(location)
-                val myShadow = DragShadowBuilder(icon)
-                val data = ClipData.newPlainText("", "")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)
-                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
-                if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
-                        icon, Gravity.BOTTOM or gravity, x,
-                        context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
-                )
-            } catch (ignore: Exception) {}
-            true
-        }
-    }
-
-    fun drawer(context: Context, position: Int): OnLongClickListener {
-        return OnLongClickListener {
-            if (currentPopup == null) try {
-                val app = Main.apps[position]
-                val icon = it.findViewById<View>(R.id.iconimg)
-                val location = IntArray(2)
-                val popupWindow = popupWindow(context, object : Methods {
-                    override fun onRemove(v: View) {}
-                    override fun onEdit(v: View) { showAppEditDialog(context, app!!, v) }
-                }, false, app!!)
-                popupWindow.isFocusable = false
-                icon.getLocationInWindow(location)
-                val myShadow = DragShadowBuilder(icon)
-                val data = ClipData.newPlainText("", "")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
-                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
-                if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
-                        icon, Gravity.BOTTOM or gravity, x,
-                        context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
-                )
-            } catch (ignore: Exception) {}
-            true
-        }
-    }
-
-    fun search(activity: Activity, apps: Array<App?>): OnItemLongClickListener {
-        return OnItemLongClickListener { _, view, position, _ ->
-            if (currentPopup == null) try {
-                val app = apps[position]!!
-                val icon = view.findViewById<View>(R.id.iconimg)
-                val location = IntArray(2)
-                val popupWindow = popupWindow(activity, object : Methods {
-                    override fun onRemove(v: View) {}
-                    override fun onEdit(v: View) {
-                        showAppEditDialog(activity, app, v)
-                    }
-                }, false, app)
-                //popupWindow.isFocusable = false
-                icon.getLocationInWindow(location)
-                /*val myShadow = DragShadowBuilder(icon)
-                val data = ClipData.newPlainText("", "")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0)
-                else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)*/
-                val gravity = if (location[0] > Tools.getDisplayWidth(activity) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(activity) / 2) Tools.getDisplayWidth(activity) - location[0] - icon.measuredWidth else location[0]
-                if (location[1] < Tools.getDisplayHeight(activity) / 2f) popupWindow.showAtLocation(
-                            icon, Gravity.TOP or gravity, x,
-                            location[1] + icon.measuredHeight
-                ) else popupWindow.showAtLocation(
-                        icon, Gravity.BOTTOM or gravity, x,
-                        Tools.getDisplayHeight(activity) - location[1] + (4 * activity.resources.displayMetrics.density).toInt() + Tools.navbarHeight
-                )
-            } catch (e: Exception) { e.printStackTrace() }
-            true
-        }
-    }
-
-	fun folder(context: Context, folder: Folder, i: Int): OnLongClickListener {
-        return OnLongClickListener { view ->
-            if (currentPopup == null) {
-                val location = IntArray(2)
-                val icon = view.findViewById<View>(R.id.iconimg)
-                icon.getLocationInWindow(location)
-                val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-                val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
-                val popupWindow = popupWindow(context, object : Methods {
-                    override fun onRemove(v: View) {
-                        var data = Settings["dock", ""].split("\n").toTypedArray()
-                        if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                        data[i] = ""
-                        Settings["dock"] = TextUtils.join("\n", data)
-                        Main.setDock()
-                    }
-
-                    override fun onEdit(v: View) {
-                        val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
-                        val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
-                        val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
-                        editContent.findViewById<View>(R.id.iconimg).visibility = GONE
-                        editLabel.setText(folder.label)
-                        editWindow.setOnDismissListener {
-                            folder.label = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
-                            val data = Settings["dock", ""].split("\n").toTypedArray()
-                            data[i] = folder.toString()
-                            Settings["dock"] = TextUtils.join("\n", data)
-                            Main.setDock()
-                        }
-                        editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
-                    }
-                }, true, folder)
-                val myShadow = DragShadowBuilder(icon)
-                val clipData = ClipData.newPlainText("", "")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(folder, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
-                var data = Settings["dock", ""].split("\n").toTypedArray()
-                if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                data[i] = ""
-                Settings["dock"] = TextUtils.join("\n", data)
-                popupWindow.showAtLocation(
-                        view, Gravity.BOTTOM or gravity, x,
-                        (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
-                )
-            }
-            true
-        }
+        true
     }
 
     private fun showAppEditDialog(context: Context, app: App, v: View) {
@@ -331,6 +320,7 @@ object ItemLongPress {
         val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
         val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
         editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(app.icon)
+        editContent.findViewById<View>(R.id.edit).backgroundTintList = ColorStateList.valueOf(Palette.from(app.icon!!.toBitmap()).generate().let { it.getDarkVibrantColor(it.getDarkMutedColor(0xff1155ff.toInt())) })
         editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
             val intent = Intent(context, CustomAppIcon::class.java)
             intent.putExtra("packageName", app.packageName)

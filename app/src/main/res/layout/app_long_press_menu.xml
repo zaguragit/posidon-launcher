@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:textColor="@color/cardtitle"
+        android:textColor="#ffffff"
         android:textSize="20sp"
         android:paddingLeft="18dp"
         android:paddingRight="18dp"

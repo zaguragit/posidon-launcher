@@ -37,8 +37,7 @@ object ThemeTools {
                         try {
                             val s = xpp.name
                             if (s == "scale") scaleFactor = xpp.getAttributeValue(0).toFloat()
-                        } catch (ignore: Exception) {
-                        }
+                        } catch (ignore: Exception) {}
                     }
                     xpp.next()
                 }
