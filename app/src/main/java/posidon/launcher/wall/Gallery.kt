@@ -17,15 +17,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
 import posidon.launcher.R
+import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickWallColor
-import posidon.launcher.tools.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.applyFontSetting
 import posidon.launcher.tools.Tools.clearAnimation
 import posidon.launcher.tools.Tools.getStatusBarHeight
-import posidon.launcher.tools.dp
-import posidon.launcher.tools.toBitmap
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
