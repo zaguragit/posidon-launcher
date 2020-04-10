@@ -541,7 +541,9 @@ class Main : AppCompatActivity() {
 
             if (Settings["drawer:scrollbar_enabled", false]) {
                 drawerScrollBar.visibility = VISIBLE
-                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = (24 * Tools.getDensity(this@Main)).toInt()
+                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
+                        if (Settings["drawer:sections_enabled", false]) 0
+                        else (24 * Tools.getDensity(this@Main)).toInt()
                 drawerGrid.layoutParams = drawerGrid.layoutParams
                 drawerScrollBar.update()
             } else  {

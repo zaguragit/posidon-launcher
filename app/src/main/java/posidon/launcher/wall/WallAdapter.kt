@@ -34,17 +34,13 @@ internal class WallAdapter(private val context: Context) : BaseAdapter() {
             viewHolder.label = convertView.findViewById(R.id.label)
             convertView.tag = viewHolder
         } else viewHolder = convertView.tag as ViewHolder
-        val wall: Wall = Gallery.walls!![position]
+        val wall: Wall = Gallery.walls[position]
         viewHolder.pic!!.setImageBitmap(wall.img)
         val btnbg = ShapeDrawable(RectShape())
-        try {
-            btnbg.paint.color = 0x00FFFFFF and Palette.from(wall.img!!).generate().getDarkMutedColor(context.resources.getColor(R.color.walllabelbg)) or -0x56000000
-        } catch (e: Exception) {
-            btnbg.paint.color = context.resources.getColor(R.color.walllabelbg)
-        }
+        try { btnbg.paint.color = 0x00FFFFFF and Palette.from(wall.img!!).generate().getDarkMutedColor(context.resources.getColor(R.color.walllabelbg)) or -0x56000000 }
+        catch (e: Exception) { btnbg.paint.color = context.resources.getColor(R.color.walllabelbg) }
         viewHolder.label!!.background = btnbg
         viewHolder.label!!.text = wall.name
         return convertView
     }
-
 }
