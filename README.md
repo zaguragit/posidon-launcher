@@ -1,4 +1,6 @@
 # posidon launcher
+![license](https://img.shields.io/github/license/leoxshn/posidonLauncher)
+
 
 this is a one-page launcher with an rss feed
 
