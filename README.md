@@ -3,11 +3,11 @@
 ![andorid_min_version](https://img.shields.io/badge/minSdk-21-3DDC84)
 ![license](https://img.shields.io/github/license/leoxshn/posidonLauncher?color=ff8800)
 
-![icon](/app/src/main/res/mipmap-xxxhdpi/ic.png)
-
 This is a one-page launcher with an rss feed.
 
 Feel free to fork, contribute or use parts of the code in your own projects.
+
+![icon](/app/src/main/res/mipmap-xxxhdpi/ic.png)
 
 <a href="https://play.google.com/store/apps/details?id=posidon.launcher">
 <img height="72" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" /></a>
