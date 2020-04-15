@@ -1,8 +1,8 @@
 package posidon.launcher
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -21,6 +21,7 @@ import android.media.AudioManager
 import android.os.*
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.*
@@ -44,6 +45,7 @@ import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.feed.notifications.SwipeToDeleteCallback
 import posidon.launcher.items.*
 import posidon.launcher.search.SearchActivity
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.applyFontSetting
@@ -73,7 +75,7 @@ class Main : AppCompatActivity() {
     private lateinit var drawerGrid: GridView
     private lateinit var drawerScrollBar: AlphabetScrollbar
     private lateinit var searchBar: View
-    private var powerManager: PowerManager? = null
+    private lateinit var powerManager: PowerManager
     private lateinit var desktop: NestedScrollView
     private lateinit var feedRecycler: RecyclerView
     private lateinit var notifications: RecyclerView
@@ -119,7 +121,7 @@ class Main : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            throwable.printStackTrace(System.err)
+            Log.e("posidonLauncher", "uncaught exception", throwable)
             startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
             Process.killProcess(Process.myPid());
             exitProcess(0);
@@ -465,15 +467,24 @@ class Main : AppCompatActivity() {
             if (Settings["hidefeed", false]) {
                 feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
                 feedRecycler.alpha = 0f
-                feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
-                    val a = 6 * resources.displayMetrics.density
-                    if (y > a) {
-                        feedRecycler.translationX = 0f
-                        feedRecycler.alpha = 1f
-                    } else if (y < a && oldY >= a) {
+                var wasHiddenLastTime = true
+                val fadeOutAnimListener = object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                    override fun onAnimationEnd(animation: Animator?) {
                         feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                        feedRecycler.alpha = 0f
+                    }
+                }
+                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
+                    val a = 6.dp
+                    if (wasHiddenLastTime && y > a) {
+                        feedRecycler.translationX = 0f
+                        feedRecycler.animate().alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.setListener(null).duration = 200L
+                        wasHiddenLastTime = false
+                    } else if (!wasHiddenLastTime && y < a && oldY >= a) {
+                        feedRecycler.animate().alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.setListener(fadeOutAnimListener).duration = 180L
+                        wasHiddenLastTime = true
                     }
                     if (!LauncherMenu.isActive) {
                         if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
@@ -834,7 +845,7 @@ class Main : AppCompatActivity() {
             setCustomizations()
             try { notifications.adapter!!.notifyDataSetChanged() }
             catch (e: Exception) { e.printStackTrace() }
-        } else if (powerManager?.isPowerSaveMode == false && Settings["animatedicons", true]) for (app in apps) animate(app!!.icon!!)
+        } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) for (app in apps) animate(app!!.icon!!)
         System.gc()
     }
 

@@ -7,8 +7,7 @@ import java.util.*
 class FeedItem(val title: String, val link: String, val img: String?, timeString: String?, val source: Source) {
     val time: Date
     init {
-        val format = SimpleDateFormat("ccc, dd MMM yyyy HH:mm:ss Z")
-        time = try { format.parse(timeString!!)!! } catch (e: Exception) { e.printStackTrace(); Date(0) }
-        //Log.d("aaaaaaa", format.format(Calendar.getInstance().time))
+        val format = SimpleDateFormat("ccc, dd MMM yyyy HH:mm:ss Z", Locale.ROOT)
+        time = try { format.parse(timeString!!.trim().replace("GMT", "+0000"))!! } catch (e: Exception) { Date(0) }
     }
 }

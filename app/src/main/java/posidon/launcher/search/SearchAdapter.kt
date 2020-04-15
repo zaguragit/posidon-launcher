@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 internal class SearchAdapter(private val context: Context, private val results: Array<App?>) : BaseAdapter() {
 

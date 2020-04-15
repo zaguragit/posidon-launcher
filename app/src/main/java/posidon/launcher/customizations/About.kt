@@ -13,7 +13,7 @@ import android.widget.Toast
 import posidon.launcher.BuildConfig
 import posidon.launcher.R
 import posidon.launcher.tools.Loader
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 class About : Activity() {

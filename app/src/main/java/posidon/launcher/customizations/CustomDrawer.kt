@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.Spinner
 
@@ -63,7 +63,6 @@ class CustomDrawer : AppCompatActivity() {
 
         findViewById<Switch>(R.id.labelsenabled).isChecked = Settings["labelsenabled", false]
         findViewById<Switch>(R.id.scrollbarEnabled).isChecked = Settings["drawer:scrollbar_enabled", false]
-        findViewById<Switch>(R.id.sectionsEnabled).isChecked = Settings["drawer:sections_enabled", false]
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["drawer:background_color", -0x78000000])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
@@ -98,9 +97,10 @@ class CustomDrawer : AppCompatActivity() {
             }
         })
 
-
         findViewById<Spinner>(R.id.sectionLetter).data = resources.getStringArray(R.array.namePositions)
         findViewById<Spinner>(R.id.sectionLetter).selectionI = Settings["drawer:sec_name_pos", 0]
+
+        findViewById<Switch>(R.id.sectionsEnabled).isChecked = Settings["drawer:sections_enabled", false]
 
         Main.customized = true
     }
@@ -114,13 +114,16 @@ class CustomDrawer : AppCompatActivity() {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
             putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
-            putNotSave("drawer:sections_enabled", findViewById<Switch>(R.id.sectionsEnabled).isChecked)
             if (get("drawer:sorting", 1) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
                 putNotSave("drawer:sorting", findViewById<Spinner>(R.id.sortingOptions).selectionI)
                 Main.shouldSetApps = true
             }
             if (get("drawer:sec_name_pos", 0) != findViewById<Spinner>(R.id.sectionLetter).selectionI) {
                 putNotSave("drawer:sec_name_pos", findViewById<Spinner>(R.id.sectionLetter).selectionI)
+                Main.shouldSetApps = true
+            }
+            if (get("drawer:sections_enabled", false) != findViewById<Switch>(R.id.sectionsEnabled).isChecked) {
+                putNotSave("drawer:sections_enabled", findViewById<Switch>(R.id.sectionsEnabled).isChecked)
                 Main.shouldSetApps = true
             }
             putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)

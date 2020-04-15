@@ -24,7 +24,7 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
 import posidon.launcher.tools.Loader
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import java.util.*
 import kotlin.math.abs

@@ -8,13 +8,10 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Region
 import android.os.*
 import android.util.Log
-import android.view.InputEvent
-import android.view.MotionEvent
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 @TargetApi(Build.VERSION_CODES.Q)

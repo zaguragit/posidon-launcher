@@ -10,7 +10,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.PowerManager
 import posidon.launcher.Main
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Sort
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
@@ -30,19 +30,14 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         val ICONSIZE = (65 * context.get()!!.resources.displayMetrics.density).toInt()
         var themeRes: Resources? = null
         val iconpackName = Settings["iconpack", "system"]
-        var iconResource: String?
-        var intres: Int
         var intresiconback = 0
         var intresiconfront = 0
         var intresiconmask = 0
-        val scaleFactor: Float
-        val p = Paint(Paint.FILTER_BITMAP_FLAG)
-        p.isAntiAlias = true
-        val origP = Paint(Paint.FILTER_BITMAP_FLAG)
-        origP.isAntiAlias = true
-        val maskp = Paint(Paint.FILTER_BITMAP_FLAG)
-        maskp.isAntiAlias = true
-        maskp.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+        val p = Paint(Paint.FILTER_BITMAP_FLAG).apply { isAntiAlias = true }
+        val maskp = Paint(Paint.FILTER_BITMAP_FLAG).apply {
+            isAntiAlias = true
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+        }
         if (iconpackName.compareTo("") != 0) {
             try { themeRes = packageManager.getResourcesForApplication(iconpackName) }
             catch (ignore: Exception) {}
@@ -55,15 +50,10 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         }
         val uniformOptions = BitmapFactory.Options()
         uniformOptions.inScaled = false
-        var origCanv: Canvas
-        var canvas: Canvas
-        scaleFactor = ThemeTools.getScaleFactor(themeRes, iconpackName)
+        val scaleFactor = ThemeTools.getScaleFactor(themeRes, iconpackName)
         var back: Bitmap? = null
         var mask: Bitmap? = null
         var front: Bitmap? = null
-        var scaledBitmap: Bitmap?
-        var scaledOrig: Bitmap
-        var orig: Bitmap
         if (iconpackName.compareTo("") != 0 && themeRes != null) {
             if (intresiconback != 0) back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
             if (intresiconmask != 0) mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
@@ -84,25 +74,25 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             app.packageName = pacslist[i].activityInfo.packageName
             app.name = pacslist[i].activityInfo.name
             app.label = Settings[app.packageName + "/" + app.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
-            intres = 0
-            iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + app.packageName + "/" + app.name + "}")
+            var intres = 0
+            val iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + app.packageName + "/" + app.name + "}")
             if (iconResource != null) intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
             if (intres != 0) try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get()!!, themeRes!!.getDrawable(intres)!!)
                 else app.icon = themeRes!!.getDrawable(intres)
             } catch (e: Exception) { e.printStackTrace() } else try {
-                orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
                 app.icon!!.draw(Canvas(orig))
-                scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                canvas = Canvas(scaledBitmap)
+                val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(scaledBitmap)
                 if (back != null) canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
-                origCanv = Canvas(scaledOrig)
+                val origCanv = Canvas(scaledOrig)
                 orig = Tools.getResizedBitmap(orig, (ICONSIZE * scaleFactor).toInt(), (ICONSIZE * scaleFactor).toInt())
-                origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, origP)
+                origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
                 if (mask != null) origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
-                if (back != null) canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p) else canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
+                canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
                 if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
                 app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
             } catch (e: Exception) { e.printStackTrace() }
@@ -141,14 +131,16 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             }
         }
 
-        var currentChar = tmpApps[0]!!.label!![0].toUpperCase()
-        var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
-        for (app in tmpApps) {
-            if (app!!.label!!.startsWith(currentChar, ignoreCase = true)) currentSection.add(app)
-            else currentSection = ArrayList<App>().apply {
-                add(app)
-                tmpAppSections.add(this)
-                currentChar = app.label!![0].toUpperCase()
+        if (Settings["drawer:sections_enabled", false]) {
+            var currentChar = tmpApps[0]!!.label!![0].toUpperCase()
+            var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
+            for (app in tmpApps) {
+                if (app!!.label!!.startsWith(currentChar, ignoreCase = true)) currentSection.add(app)
+                else currentSection = ArrayList<App>().apply {
+                    add(app)
+                    tmpAppSections.add(this)
+                    currentChar = app.label!![0].toUpperCase()
+                }
             }
         }
         return null

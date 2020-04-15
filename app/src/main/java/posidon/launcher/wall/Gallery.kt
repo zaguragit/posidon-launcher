@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
 import posidon.launcher.R
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickWallColor
 import posidon.launcher.tools.Tools.animate

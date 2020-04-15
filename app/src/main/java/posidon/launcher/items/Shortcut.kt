@@ -9,7 +9,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import posidon.launcher.Main.Companion.launcherApps
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 @RequiresApi(Build.VERSION_CODES.O)
 class Shortcut : LauncherItem {

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.AppsAdapter
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 class HiddenAppsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

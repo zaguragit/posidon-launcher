@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 class FeedChooserAdapter(internal val context: Context, private val feedUrls: ArrayList<String>) : RecyclerView.Adapter<FeedChooserAdapter.ViewHolder>() {

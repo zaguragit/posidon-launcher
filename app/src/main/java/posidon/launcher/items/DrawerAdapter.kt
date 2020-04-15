@@ -10,7 +10,7 @@ import android.widget.SectionIndexer
 import android.widget.TextView
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer {

@@ -12,7 +12,8 @@ class Notification(
         val icon: Drawable?,
         val actions: Array<Notification.Action>?,
         private val contentIntent: PendingIntent?,
-        val key: String
+        val key: String,
+        val progress: Int
 ) {
     fun open() {
         try { contentIntent?.send() }

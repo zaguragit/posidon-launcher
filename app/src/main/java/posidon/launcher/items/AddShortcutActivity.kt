@@ -19,7 +19,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Dock
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import kotlin.math.min
 

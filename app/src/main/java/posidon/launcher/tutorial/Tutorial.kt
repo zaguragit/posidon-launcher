@@ -19,7 +19,7 @@ import posidon.launcher.R
 import posidon.launcher.customizations.FakeLauncherActivity
 import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 

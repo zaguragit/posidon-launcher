@@ -10,7 +10,7 @@ import android.widget.AbsListView
 import android.widget.SectionIndexer
 import androidx.core.content.res.ResourcesCompat
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 

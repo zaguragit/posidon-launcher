@@ -7,9 +7,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.*
-import android.os.Build
-import android.os.Bundle
-import android.os.UserHandle
+import android.os.*
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
@@ -20,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.SwipeToDeleteCallback.SwipeListener
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
 import java.util.*
@@ -163,6 +162,23 @@ class NotificationService : NotificationListenerService() {
             } catch (e: Exception) { e.printStackTrace() }
             var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
             if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
+                if (messages != null) text = StringBuilder().apply {
+                    messages.forEach {
+                        val bundle = it as Bundle
+                        appendln(bundle.getCharSequence("text"))
+                    }
+                    delete(lastIndex, length)
+                }
+            }
+
+            //val progress = extras.getInt(android.app.Notification.EXTRA_PROGRESS, -1)
+            //println("PROGRESSSSSSSS: --->>>>>$progress")
+            //println("MAXXXX PROGRES: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX, -1))
+            //println("INTETERMINATTE: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, -1))
+
             var bigPic: Drawable? = null
             val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
             if (b != null) {
@@ -173,7 +189,7 @@ class NotificationService : NotificationListenerService() {
                 title, text, isSummary, bigPic, icon,
                 notification.notification.actions,
                 notification.notification.contentIntent,
-                notification.key
+                notification.key, -1
             )
         }
     }

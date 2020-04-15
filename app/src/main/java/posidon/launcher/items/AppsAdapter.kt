@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 class AppsAdapter(private val context: Context, private val apps: Array<App>) : BaseAdapter(), SectionIndexer {
 

@@ -37,10 +37,37 @@
             android:padding="12dp"
             android:textSize="24sp"
             android:hint="@string/colorpicker_hint"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            android:layout_marginBottom="48dp"/>
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/apply"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_bg_round"
+            android:backgroundTint="#33ffffff"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="92dp"
+            android:includeFontPadding="false"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:fadingEdge="horizontal"
+            android:requiresFadingEdge="horizontal"
+            android:fadingEdgeLength="48dp"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="bottom"/>
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
+        android:id="@+id/seekbarContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -82,14 +109,5 @@
             android:progressBackgroundTint="#88555555"
             android:padding="24dp"
             android:max="255"/>
-        <Button
-            android:id="@+id/ok"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/apply"
-            android:textSize="18sp"
-            android:background="@android:color/transparent"
-            android:padding="24dp"
-            android:gravity="center"/>
     </LinearLayout>
 </LinearLayout>
