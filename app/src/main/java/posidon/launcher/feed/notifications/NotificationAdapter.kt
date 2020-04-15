@@ -15,7 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 class NotificationAdapter(private val context: Context, private val window: Window) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 

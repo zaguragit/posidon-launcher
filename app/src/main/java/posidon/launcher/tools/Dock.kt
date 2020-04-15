@@ -7,6 +7,7 @@ import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.Shortcut
+import posidon.launcher.storage.Settings
 
 object Dock {
 

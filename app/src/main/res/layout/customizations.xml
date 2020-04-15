@@ -14,12 +14,11 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="320dp"
             android:gravity="center"
             android:textSize="36sp"
             android:textColor="#ffffff"
-            android:text="@string/settings_title"
-            android:fontFamily="@font/posidon_sans"/>
+            android:text="@string/settings_title"/>
         <LinearLayout
             android:id="@+id/catlist"
             android:layout_width="match_parent"

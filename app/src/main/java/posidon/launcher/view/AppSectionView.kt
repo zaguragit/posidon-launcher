@@ -2,14 +2,12 @@ package posidon.launcher.view
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 

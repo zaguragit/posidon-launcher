@@ -7,7 +7,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.news.chooser.Source
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL

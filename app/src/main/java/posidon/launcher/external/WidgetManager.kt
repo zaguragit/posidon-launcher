@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Parcelable
 import android.view.View
 import posidon.launcher.Main
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.ResizableLayout
 
@@ -51,7 +51,7 @@ object WidgetManager {
 
     fun fromSettings(widgetLayout: ResizableLayout) {
         val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
-        val str = Settings["widget", "posidon.launcher/ClockWidget"]
+        val str = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         if (str.isNotEmpty()) {
             val s = str.split("/").toTypedArray()
             val packageName = s[0]

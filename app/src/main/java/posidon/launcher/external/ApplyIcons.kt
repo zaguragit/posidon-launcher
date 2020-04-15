@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 
 class ApplyIcons : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

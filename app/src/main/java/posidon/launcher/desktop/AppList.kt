@@ -13,7 +13,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.DrawerAdapter
 import posidon.launcher.search.SearchActivity
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 class AppList : FragmentActivity() {

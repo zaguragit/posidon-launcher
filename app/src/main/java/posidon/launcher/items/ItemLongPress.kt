@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import java.util.*

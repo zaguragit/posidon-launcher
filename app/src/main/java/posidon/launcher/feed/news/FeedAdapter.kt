@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.view.LayoutInflater
@@ -21,7 +20,7 @@ import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
 import posidon.launcher.tools.Loader
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import java.util.*
 
@@ -32,7 +31,7 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
     private val maxWidth = Settings.get("feed:max_img_width", Tools.getDisplayWidth(context))
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): FeedModelViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(when(Settings.get("feed:card_layout", 0)) {
+        val v = LayoutInflater.from(parent.context).inflate(when(Settings["feed:card_layout", 0]) {
             1 -> R.layout.feed_card1
             2 -> R.layout.feed_card2
             else -> R.layout.feed_card0
@@ -45,7 +44,7 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
         val feedItem = FeedModels[position]
         holder.rssFeedView.findViewById<TextView>(R.id.title).text = feedItem.title
         holder.rssFeedView.findViewById<TextView>(R.id.title).setTextColor(Settings["feed:card_txt_color", -0x1])
-        if (feedItem.source.name != null) holder.rssFeedView.findViewById<TextView>(R.id.source).text = feedItem.source.name
+        holder.rssFeedView.findViewById<TextView>(R.id.source).text = feedItem.source.name
         holder.rssFeedView.findViewById<TextView>(R.id.source).setTextColor(Settings["feed:card_txt_color", -0x1])
         if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {
             if (images.containsKey(feedItem.img)) {
@@ -99,9 +98,7 @@ class FeedAdapter(private val FeedModels: List<FeedItem>, private val context: A
     }
 
 
-    override fun getItemCount(): Int {
-        return FeedModels.size
-    }
+    override fun getItemCount() = FeedModels.size
 
     companion object {
         private val images: MutableMap<String?, Bitmap?> = HashMap()

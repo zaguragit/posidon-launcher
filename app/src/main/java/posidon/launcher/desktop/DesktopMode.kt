@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import posidon.launcher.R
 import posidon.launcher.items.AppLoader
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 class DesktopMode : FragmentActivity() {

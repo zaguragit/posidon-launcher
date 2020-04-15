@@ -21,7 +21,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.Spinner
 import posidon.launcher.view.Switch
@@ -37,10 +37,10 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings["clockcolor", -0x1])
 
-        val widget = Settings["widget", "posidon.launcher/ClockWidget"]
+        val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         when {
-            widget.startsWith("posidon.launcher/ClockWidget") -> {}
-            widget.startsWith("posidon.launcher/BigWidget") -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
+            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
             else -> findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
         }
 
@@ -63,7 +63,7 @@ class CustomHome : AppCompatActivity() {
         showBehindDock.isChecked = Settings["feed:show_behind_dock", false]
 
         val feedswitch = findViewById<Switch>(R.id.feedenabled)
-        feedswitch.isChecked = Settings["feedenabled", true]
+        feedswitch.isChecked = Settings["feed:enabled", true]
 
         val hidefeedswitch = findViewById<Switch>(R.id.hidefeed)
         hidefeedswitch.isChecked = Settings["hidefeed", false]
@@ -168,7 +168,7 @@ class CustomHome : AppCompatActivity() {
         Main.customized = true
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
-            putNotSave("feedenabled", findViewById<Switch>(R.id.feedenabled).isChecked)
+            putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
             putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)

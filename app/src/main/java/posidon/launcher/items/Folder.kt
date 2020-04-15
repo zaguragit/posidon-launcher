@@ -7,8 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import posidon.launcher.items.App.Companion.get
-import posidon.launcher.tools.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.toBitmap
 import java.util.*
 import kotlin.math.min

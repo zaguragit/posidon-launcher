@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.R
+import posidon.launcher.storage.Settings
 import kotlin.math.*
 
 object Tools {
@@ -360,6 +361,9 @@ object Tools {
         activity.windowManager.defaultDisplay.getRealMetrics(metrics)
         val realHeight = metrics.heightPixels
         navbarHeight = if (realHeight > usableHeight) realHeight - usableHeight else 0
+        val resources = activity.resources
+        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        navbarHeight = min(if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0, navbarHeight)
     }
 
 	inline fun getStatusBarHeight(c: Context): Int {

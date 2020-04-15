@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.quickstep.*
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.tools.Settings
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import kotlin.math.max

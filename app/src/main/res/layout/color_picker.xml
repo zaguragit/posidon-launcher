@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="256dp"
         app:cardElevation="0dp"
-        app:cardCornerRadius="25dp"
-        android:layout_marginBottom="12dp">
+        app:cardCornerRadius="25dp">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -57,40 +56,55 @@
             android:layout_marginBottom="22dp"
             android:includeFontPadding="false"/>
     </androidx.cardview.widget.CardView>
-    <posidon.launcher.view.Seekbar
-        android:id="@+id/red"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:fadingEdge="horizontal"
+        android:requiresFadingEdge="horizontal"
+        android:fadingEdgeLength="48dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"/>
+    <LinearLayout
+        android:id="@+id/seekbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:thumbTint="#ff0000"
-        android:progressTint="#dddd0000"
-        android:progressBackgroundTint="#88550000"
-        android:padding="12dp"
-        android:max="255"/>
-    <posidon.launcher.view.Seekbar
-        android:id="@+id/green"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:thumbTint="#00ff00"
-        android:progressTint="#dd00dd00"
-        android:progressBackgroundTint="#88005500"
-        android:padding="12dp"
-        android:max="255"/>
-    <posidon.launcher.view.Seekbar
-        android:id="@+id/blue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:thumbTint="#0000ff"
-        android:progressTint="#dd0000dd"
-        android:progressBackgroundTint="#88000088"
-        android:padding="12dp"
-        android:max="255"/>
-    <posidon.launcher.view.Seekbar
-        android:id="@+id/alpha"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:thumbTint="#ffffff"
-        android:progressTint="#dddddddd"
-        android:progressBackgroundTint="#88555555"
-        android:padding="12dp"
-        android:max="255"/>
+        android:orientation="vertical">
+        <posidon.launcher.view.Seekbar
+            android:id="@+id/red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:thumbTint="#ff0000"
+            android:progressTint="#dddd0000"
+            android:progressBackgroundTint="#88550000"
+            android:padding="12dp"
+            android:max="255"/>
+        <posidon.launcher.view.Seekbar
+            android:id="@+id/green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:thumbTint="#00ff00"
+            android:progressTint="#dd00dd00"
+            android:progressBackgroundTint="#88005500"
+            android:padding="12dp"
+            android:max="255"/>
+        <posidon.launcher.view.Seekbar
+            android:id="@+id/blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:thumbTint="#0000ff"
+            android:progressTint="#dd0000dd"
+            android:progressBackgroundTint="#88000088"
+            android:padding="12dp"
+            android:max="255"/>
+        <posidon.launcher.view.Seekbar
+            android:id="@+id/alpha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:thumbTint="#ffffff"
+            android:progressTint="#dddddddd"
+            android:progressBackgroundTint="#88555555"
+            android:padding="12dp"
+            android:max="255"/>
+    </LinearLayout>
 </LinearLayout>
