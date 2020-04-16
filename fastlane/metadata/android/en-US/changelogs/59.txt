@@ -1,0 +1,9 @@
+
+* Added app drawer sections
+* Added color recommendations to color picker
+* Added svg support to feed and wallpaper gallery
+* Improved some ui elements
+
+Fixed bugs:
+  * News date not being properly detected
+  * Message notifications not showing full content
