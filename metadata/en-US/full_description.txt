@@ -1,0 +1,18 @@
+This is not your tipical pixel launcher. posidon launcher was built from scratch, to be a different experience. The ui was heavily inspired by One UI. Being designed from scratch allows this launcher to be easily optimized for big screens.
+
+Minimal: There are constant improvements and optimizations in the ux, to make all of the settings as easy to understand as possible.
+
+Feature-rich:
+- Dock supports up to 7 columns and 3 rows of icons
+- News & Notifications feed
+- Vector and animated iconpack support
+- App search
+- Wallpaper gallery (all wallpapers are exclusive)
+- 6 Font options
+- Blur behind app drawer
+- Experimental desktop mode for Android 10
+- A lot more
+
+Different: This launcher doesn't have pages, it has a scrollable feed. It's UI was heavily inspired by One UI.
+
+posidon launcher is a nonprofit project, so I wont always be able to fix everything by myself, if you want to help posidon launcher become better, please report any bugs or glitches at t.me/posidonlauncher.
