@@ -22,34 +22,8 @@
             android:fontFamily="Sans Serif"
             android:textSize="24sp"
             android:textColor="@color/cardtxt"
-            android:text="@string/sans_serif"/>
-        <TextView
-            android:id="@+id/posidonsans"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:fontFamily="@font/posidon_sans"
-            android:textSize="24sp"
-            android:textColor="@color/cardtxt"
-            android:text="@string/posidon_sans"/>
-        <TextView
-            android:id="@+id/monospace"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu_mono"
-            android:padding="10dp"
-            android:text="@string/monospace"
-            android:textColor="@color/cardtxt"
-            android:textSize="24sp" />
-        <TextView
-            android:id="@+id/ubuntu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntu_medium"
-            android:padding="10dp"
-            android:text="@string/ubuntu"
-            android:textColor="@color/cardtxt"
-            android:textSize="24sp" />
+            android:text="@string/sans_serif"
+            android:includeFontPadding="false"/>
         <TextView
             android:id="@+id/lexendDeca"
             android:layout_width="wrap_content"
@@ -58,7 +32,18 @@
             android:padding="10dp"
             android:text="@string/lexend_deca"
             android:textColor="@color/cardtxt"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:includeFontPadding="false"/>
+        <TextView
+            android:id="@+id/monospace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_mono"
+            android:padding="10dp"
+            android:text="@string/monospace"
+            android:textColor="@color/cardtxt"
+            android:textSize="25sp"
+            android:includeFontPadding="false"/>
         <TextView
             android:id="@+id/open_dyslexic"
             android:layout_width="wrap_content"
@@ -68,6 +53,26 @@
             android:text="@string/open_dyslexic"
             android:textColor="@color/cardtxt"
             android:textSize="20sp"
+            android:includeFontPadding="false"/>
+        <TextView
+            android:id="@+id/posidonsans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:fontFamily="@font/posidon_sans"
+            android:textSize="24sp"
+            android:textColor="@color/cardtxt"
+            android:text="@string/posidon_sans"
+            android:includeFontPadding="false"/>
+        <TextView
+            android:id="@+id/ubuntu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_medium"
+            android:padding="10dp"
+            android:text="@string/ubuntu"
+            android:textColor="@color/cardtxt"
+            android:textSize="24sp"
             android:includeFontPadding="false"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -29,78 +29,9 @@
                 android:textSize="32sp"/>
             <LinearLayout
                 style="@style/settingscard"
-                android:id="@+id/dateFormatCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    style="@style/customcardtitle"
-                    android:text="@string/settings_title_clock_format"
-                    android:layout_marginTop="-12dp"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
-                    android:layout_marginBottom="12dp"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="0"
-                        android:text="@string/settingsdateformat" />
-                    <EditText
-                        android:id="@+id/dateformat"
-                        style="@style/settingsInput"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/defaultdateformat"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"/>
-                    <TextClock
-                        android:id="@+id/datefprev"
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:maxWidth="180dp"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickclockcolor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/color"/>
-                    <View
-                        android:id="@+id/clockcolorprev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                style="@style/settingscard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    style="@style/customcardtitle"
-                    android:text="@string/settings_title_feed"
-                    android:layout_marginTop="-12dp"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
-                    android:layout_marginBottom="12dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -162,6 +93,66 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:id="@+id/dateFormatCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/customcardtitle"
+                    android:text="@string/settings_title_clock_format"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/cardSeparator"
+                    android:layout_marginBottom="12dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_label"
+                        android:layout_weight="0"
+                        android:text="@string/settingsdateformat" />
+                    <EditText
+                        android:id="@+id/dateformat"
+                        style="@style/settingsInput"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/defaultdateformat"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"/>
+                    <TextClock
+                        android:id="@+id/datefprev"
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:maxWidth="180dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="pickclockcolor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/color"/>
+                    <View
+                        android:id="@+id/clockcolorprev"
+                        style="@style/colorPreview"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
