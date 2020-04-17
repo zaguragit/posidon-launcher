@@ -7,7 +7,7 @@ This is a one-page launcher with an rss feed.
 
 Feel free to fork, contribute or use parts of the code in your own projects.
 
-![icon](/app/src/main/res/mipmap-xxxhdpi/ic.png)
+<img width=192px src="/fastlane/metadata/android/en-US/images/icon.png"/>
 
 ### Things you can do to help
 - Make quickstep work
