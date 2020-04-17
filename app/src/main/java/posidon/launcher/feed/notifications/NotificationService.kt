@@ -14,10 +14,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.feed.notifications.SwipeToDeleteCallback.SwipeListener
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
@@ -26,8 +24,9 @@ import java.util.*
 class NotificationService : NotificationListenerService() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        instance = this
         if (!Settings.isInitialized) Settings.init(baseContext)
-        SwipeToDeleteCallback.swipeListener = object : SwipeListener {
+        /*SwipeToDeleteCallback.swipeListener = object : SwipeListener {
             override fun onSwipe(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 try {
                     val pos = viewHolder!!.adapterPosition
@@ -38,7 +37,7 @@ class NotificationService : NotificationListenerService() {
                 } catch (e: Exception) { e.printStackTrace() }
                 onUpdate()
             }
-        }
+        }*/
         onUpdate()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -195,12 +194,13 @@ class NotificationService : NotificationListenerService() {
     }
 
     companion object {
-        private var notificationGroups = ArrayList<ArrayList<Notification>>()
+        lateinit var instance: NotificationService private set
+        var notificationGroups = ArrayList<ArrayList<Notification>>()
+            private set
         var onUpdate = {}
 		var contextReference: WeakReference<Context>? = null
 		var notificationsAmount = 0
         private var updating = false
-        fun groups(): ArrayList<ArrayList<Notification>> = notificationGroups
 
         fun handleMusicNotification(notification: StatusBarNotification) {
             println("handling music notification")

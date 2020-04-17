@@ -28,7 +28,6 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -42,7 +41,6 @@ import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
-import posidon.launcher.feed.notifications.SwipeToDeleteCallback
 import posidon.launcher.items.*
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
@@ -654,7 +652,7 @@ class Main : AppCompatActivity() {
         notifications = findViewById(R.id.notifications)
         notifications.isNestedScrollingEnabled = false
         notifications.layoutManager = LinearLayoutManager(this)
-        ItemTouchHelper(SwipeToDeleteCallback()).attachToRecyclerView(notifications)
+        //ItemTouchHelper(SwipeToDeleteCallback()).attachToRecyclerView(notifications)
 
         val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
         findViewById<View>(R.id.parentNotification).setOnLongClickListener(LauncherMenu(this@Main, window))
