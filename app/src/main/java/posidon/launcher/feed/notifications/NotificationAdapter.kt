@@ -53,11 +53,6 @@ class NotificationAdapter(private val context: Context, private val window: Wind
         val groups = NotificationService.notificationGroups
         if (groups.size != 0) for (notificationI in groups[i].indices) {
             val notification = groups[i][notificationI]
-            fun onSwipeAway() {
-                try { NotificationService.instance.cancelNotification(notification.key) }
-                catch (e: Exception) { e.printStackTrace() }
-                NotificationService.onUpdate()
-            }
             val retView: View
             val view: View = if (notification.isSummary) {
                 retView = LayoutInflater.from(context).inflate(R.layout.notification_normal_summary, null)
@@ -70,7 +65,19 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                     v1 = LayoutInflater.from(context).inflate(R.layout.notification_big_pic, null)
                     v1.findViewById<ImageView>(R.id.bigPic).setImageDrawable(notification.bigPic)
                 }
-                retView = SwipeableLayout(v1, ::onSwipeAway).apply {
+                retView = SwipeableLayout(v1) {
+                    try {
+                        val group = groups[i]
+                        group.remove(notification)
+                        if (group.size == 1 && group[0].isSummary) {
+                            NotificationService.instance.cancelNotification(group[0].key)
+                            groups.removeAt(i)
+                        }
+                        NotificationService.instance.cancelNotification(notification.key)
+                    }
+                    catch (e: Exception) { e.printStackTrace() }
+                    NotificationService.update()
+                }.apply {
                     setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
                     setBackgroundColor(Main.accentColor)
                 }

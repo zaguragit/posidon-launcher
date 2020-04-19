@@ -56,7 +56,7 @@ class Gallery : AppCompatActivity() {
         val gallery = findViewById<GridView>(R.id.gallery)
 
 
-        thread {
+        thread(isDaemon = true) {
             try {
                 var currentWall = Wall()
                 val bufferReader = BufferedReader(InputStreamReader(URL(REPO + INDEX_FILE).openStream()))

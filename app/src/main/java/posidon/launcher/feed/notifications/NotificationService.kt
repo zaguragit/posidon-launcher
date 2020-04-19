@@ -2,7 +2,6 @@ package posidon.launcher.feed.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -18,12 +17,18 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import java.lang.ref.WeakReference
 import java.util.*
 
 class NotificationService : NotificationListenerService() {
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    init {
+        update = {
+            if (!updating) try { NotificationLoader(activeNotifications).start() }
+            catch (e: Exception) { NotificationLoader(null).start() }
+        }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         instance = this
         if (!Settings.isInitialized) Settings.init(baseContext)
         /*SwipeToDeleteCallback.swipeListener = object : SwipeListener {
@@ -38,21 +43,18 @@ class NotificationService : NotificationListenerService() {
                 onUpdate()
             }
         }*/
-        onUpdate()
+        update()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onNotificationPosted(s: StatusBarNotification) = onUpdate()
-    override fun onNotificationRemoved(s: StatusBarNotification) = onUpdate()
-    override fun onNotificationRemoved(s: StatusBarNotification, rm: RankingMap, reason: Int) = onUpdate()
-    override fun onNotificationRankingUpdate(rm: RankingMap) = onUpdate()
-    override fun onNotificationChannelModified(pkg: String, u: UserHandle, c: NotificationChannel, modifType: Int) = onUpdate()
-    override fun onNotificationChannelGroupModified(pkg: String, u: UserHandle, g: NotificationChannelGroup, modifType: Int) = onUpdate()
-
-    private fun onUpdate() {
-        if (!updating) try { NotificationLoader(activeNotifications).start() }
-        catch (e: Exception) { NotificationLoader(null).start() }
-    }
+    override fun onNotificationPosted(s: StatusBarNotification) = update()
+    override fun onNotificationPosted(s: StatusBarNotification?, rm: RankingMap?) = update()
+    override fun onNotificationRemoved(s: StatusBarNotification) = update()
+    override fun onNotificationRemoved(s: StatusBarNotification?, rm: RankingMap?) = update()
+    override fun onNotificationRemoved(s: StatusBarNotification, rm: RankingMap, reason: Int) = update()
+    override fun onNotificationRankingUpdate(rm: RankingMap) = update()
+    override fun onNotificationChannelModified(pkg: String, u: UserHandle, c: NotificationChannel, modifType: Int) = update()
+    override fun onNotificationChannelGroupModified(pkg: String, u: UserHandle, g: NotificationChannelGroup, modifType: Int) = update()
 
     private class NotificationLoader(private val notifications: Array<StatusBarNotification>?) : Thread() {
         override fun run() {
@@ -134,7 +136,6 @@ class NotificationService : NotificationListenerService() {
                     if (!hasMusic) Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
                 } else Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
             } catch (e: Exception) { e.printStackTrace() }
-            notificationGroups.clear()
             notificationGroups = groups
             notificationsAmount = notificationsAmount2
             onUpdate()
@@ -146,15 +147,15 @@ class NotificationService : NotificationListenerService() {
             val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
             var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = contextReference!!.get()!!.packageManager.getApplicationLabel(contextReference!!.get()!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.publicContext.packageManager.getApplicationLabel(Tools.publicContext.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(contextReference!!.get())
+                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = contextReference!!.get()!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.publicContext.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.animate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -181,7 +182,7 @@ class NotificationService : NotificationListenerService() {
             var bigPic: Drawable? = null
             val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
             if (b != null) {
-                try { bigPic = BitmapDrawable(contextReference!!.get()!!.resources, b) }
+                try { bigPic = BitmapDrawable(Tools.publicContext.resources, b) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             return Notification(
@@ -194,22 +195,27 @@ class NotificationService : NotificationListenerService() {
     }
 
     companion object {
+
         lateinit var instance: NotificationService private set
         var notificationGroups = ArrayList<ArrayList<Notification>>()
             private set
         var onUpdate = {}
-		var contextReference: WeakReference<Context>? = null
+		//var contextReference: WeakReference<Context>? = null
 		var notificationsAmount = 0
         private var updating = false
+
+
+        var update = {}
+            private set
 
         fun handleMusicNotification(notification: StatusBarNotification) {
             println("handling music notification")
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(contextReference!!.get())
+                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = contextReference!!.get()!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.publicContext.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.animate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -218,7 +224,7 @@ class NotificationService : NotificationListenerService() {
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = contextReference!!.get()!!.packageManager.getApplicationLabel(contextReference!!.get()!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.publicContext.packageManager.getApplicationLabel(Tools.publicContext.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
 
@@ -243,9 +249,9 @@ class NotificationService : NotificationListenerService() {
                         ColorDrawable(color),
                         GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    val marginX = (Settings["feed:card_margin_x", 16] * contextReference!!.get()!!.resources.displayMetrics.density).toInt()
-                    setLayerInset(0, 0, 0, 136.dp(contextReference!!.get()!!).toInt(), 0)
-                    setLayerInset(1, Tools.getDisplayWidth(contextReference!!.get()!!) - 136.dp(contextReference!!.get()!!).toInt() - marginX * 2, 0, 0, 0)
+                    val marginX = (Settings["feed:card_margin_x", 16] * Tools.publicContext.resources.displayMetrics.density).toInt()
+                    setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
+                    setLayerInset(1, Tools.getDisplayWidth(Tools.publicContext) - 136.dp.toInt() - marginX * 2, 0, 0, 0)
                 }
                 Main.instance.findViewById<ImageView>(R.id.musicPrev).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
