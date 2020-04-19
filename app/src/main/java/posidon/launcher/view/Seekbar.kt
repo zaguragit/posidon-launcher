@@ -39,7 +39,7 @@ class Seekbar(context: Context?, attrs: AttributeSet?) : AppCompatSeekBar(contex
         out.cornerRadius = 12 * resources.displayMetrics.density
         out.setColor(Main.accentColor and 0x00ffffff or 0x88000000.toInt())
         out.setStroke((10 * resources.displayMetrics.density).toInt(), 0x0)
-        return ClipDrawable(out, Gravity.START, GradientDrawable.Orientation.BL_TR.ordinal)
+        return ClipDrawable(out, Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
     }
 
     private fun generateThumb(): ShapeDrawable {

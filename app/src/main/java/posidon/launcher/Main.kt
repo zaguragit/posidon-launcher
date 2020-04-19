@@ -70,73 +70,9 @@ import kotlin.system.exitProcess
 
 class Main : AppCompatActivity() {
 
-    private lateinit var drawerGrid: GridView
-    private lateinit var drawerScrollBar: AlphabetScrollbar
-    private lateinit var searchBar: View
-    private lateinit var powerManager: PowerManager
-    private lateinit var desktop: NestedScrollView
-    private lateinit var feedRecycler: RecyclerView
-    private lateinit var notifications: RecyclerView
-    private lateinit var blurBg: LayerDrawable
-    private lateinit var widgetLayout: ResizableLayout
-    private var dockHeight = 0
-    private lateinit var behavior: BottomSheetBehavior<*>
-    private lateinit var batteryBar: ProgressBar
-
-    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            batteryBar.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-        }
-    }
-
-    private val onAppLoaderEnd = {
-        if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.adapter = SectionedDrawerAdapter()
-            drawerGrid.onItemClickListener = null
-            drawerGrid.onItemLongClickListener = null
-        } else {
-            drawerGrid.adapter = DrawerAdapter()
-            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
-            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
-        }
-        drawerScrollBar.updateAdapter()
-        setDock()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    init {
         Tools.publicContext = this
         instance = this
-        Settings.init(Tools.publicContext)
-        if (Settings["init", true]) {
-            startActivity(Intent(this, WelcomeActivity::class.java))
-            finish()
-        }
-        WidgetManager.init()
-        accentColor = Settings["accent", 0x1155ff] or -0x1000000
-        setContentView(R.layout.main)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
-
-        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            Log.e("posidonLauncher", "uncaught exception", throwable)
-            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
-            Process.killProcess(Process.myPid());
-            exitProcess(0);
-        }
-
-        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
-        filter.addDataScheme("package")
-        receiver = AppChangeReceiver()
-        registerReceiver(receiver, filter)
-
-        batteryBar = findViewById(R.id.battery)
-        registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-
         setDock = {
             val data = Settings["dock", ""].split("\n").toTypedArray()
             val columnCount = Settings["dock:columns", 5]
@@ -374,7 +310,6 @@ class Main : AppCompatActivity() {
                 true
             }
         }
-
         setCustomizations = {
             applyFontSetting(this@Main)
 
@@ -561,6 +496,74 @@ class Main : AppCompatActivity() {
                 drawerGrid.layoutParams = drawerGrid.layoutParams
             }
         }
+    }
+
+    private lateinit var drawerGrid: GridView
+    private lateinit var drawerScrollBar: AlphabetScrollbar
+    private lateinit var searchBar: View
+    private lateinit var powerManager: PowerManager
+    private lateinit var desktop: NestedScrollView
+    private lateinit var feedRecycler: RecyclerView
+    private lateinit var notifications: RecyclerView
+    private lateinit var blurBg: LayerDrawable
+    private lateinit var widgetLayout: ResizableLayout
+    private lateinit var widgetsArea: FrameLayout
+    private var dockHeight = 0
+    private lateinit var behavior: BottomSheetBehavior<*>
+    private lateinit var batteryBar: ProgressBar
+
+    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            batteryBar.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+        }
+    }
+
+    private val onAppLoaderEnd = {
+        if (Settings["drawer:sections_enabled", false]) {
+            drawerGrid.adapter = SectionedDrawerAdapter()
+            drawerGrid.onItemClickListener = null
+            drawerGrid.onItemLongClickListener = null
+        } else {
+            drawerGrid.adapter = DrawerAdapter()
+            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
+            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        }
+        drawerScrollBar.updateAdapter()
+        setDock()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Settings.init(Tools.publicContext)
+        if (Settings["init", true]) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        }
+        WidgetManager.init()
+        accentColor = Settings["accent", 0x1155ff] or -0x1000000
+        setContentView(R.layout.main)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
+
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
+            Log.e("posidonLauncher", "uncaught exception", throwable)
+            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
+            Process.killProcess(Process.myPid());
+            exitProcess(0);
+        }
+
+        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
+        filter.addDataScheme("package")
+        receiver = AppChangeReceiver()
+        registerReceiver(receiver, filter)
+
+        batteryBar = findViewById(R.id.battery)
+        registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+
 
         desktop = findViewById(R.id.desktop)
         desktop.isNestedScrollingEnabled = false
@@ -648,7 +651,7 @@ class Main : AppCompatActivity() {
         feedRecycler.layoutManager = LinearLayoutManager(this@Main)
         feedRecycler.isNestedScrollingEnabled = false
 
-        NotificationService.contextReference = WeakReference(this)
+        //NotificationService.contextReference = WeakReference(this)
         notifications = findViewById(R.id.notifications)
         notifications.isNestedScrollingEnabled = false
         notifications.layoutManager = LinearLayoutManager(this)
@@ -825,7 +828,7 @@ class Main : AppCompatActivity() {
         NotificationService.onUpdate()
         if (canBlurWall(this)) {
             val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
-            thread {
+            thread(isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["blurradius", 15f]
                 for (i in 0 until blurLayers) {
