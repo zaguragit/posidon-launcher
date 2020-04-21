@@ -20,6 +20,7 @@ import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.vibrate
 import posidon.launcher.wall.Gallery
 import java.util.*
 
@@ -42,7 +43,7 @@ class LauncherMenu(private val context: Context, private val window: Window) : O
         var dialog: Dialog? = null
         private fun menu(context: Context, window: Window) {
             isActive = true
-            Tools.vibrate(context)
+            context.vibrate()
             val homescreen = window.decorView.findViewById<View>(android.R.id.content)
             val page = homescreen.findViewById<View>(R.id.desktop)
             page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L

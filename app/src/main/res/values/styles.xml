@@ -151,6 +151,9 @@
         <item name="android:windowBackground">@color/hiddenAppsBG</item>
     </style>
 
-    <style name="floatingScreen" parent="hometheme">
+    <style name="floatingScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/black_gradient</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

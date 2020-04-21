@@ -3,8 +3,6 @@ package posidon.launcher.feed.notifications
 import android.app.Notification
 import android.app.PendingIntent
 import android.graphics.drawable.Drawable
-import android.widget.Toast
-import posidon.launcher.tools.Tools
 
 class Notification(
         val title: CharSequence?,
@@ -18,9 +16,8 @@ class Notification(
         val progress: Int
 ) {
     fun open() {
-        Toast.makeText(Tools.publicContext, "app opened", Toast.LENGTH_LONG).show()
         try { contentIntent?.send() }
-        catch (ignore: Exception) {}
+        catch (e: Exception) {}
     }
 
     override fun equals(other: Any?): Boolean {

@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -23,7 +22,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.Loader
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.animate
-import posidon.launcher.tools.Tools.applyFontSetting
+import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.centerCropWallpaper
 import posidon.launcher.tools.toBitmap
 import java.io.File
@@ -35,7 +34,7 @@ class WallActivity : AppCompatActivity() {
     private var index = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.wall_preview)
         loading = findViewById(R.id.loading)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)

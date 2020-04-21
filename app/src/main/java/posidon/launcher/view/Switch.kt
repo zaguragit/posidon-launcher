@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.StateSet
 import posidon.launcher.Main
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.vibrate
 
 
 class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(context, attrs) {
@@ -19,7 +20,7 @@ class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(co
     }
 
     override fun performClick(): Boolean {
-        Tools.vibrate(context)
+        context.vibrate()
         return super.performClick()
     }
 

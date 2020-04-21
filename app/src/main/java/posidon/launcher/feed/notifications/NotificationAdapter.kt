@@ -79,10 +79,9 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                     NotificationService.update()
                 }.apply {
                     setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
-                    setBackgroundColor(Main.accentColor)
+                    setSwipeColor(Main.accentColor)
                 }
                 v1.apply {
-                    setBackgroundColor(Settings["notificationbgcolor", -0x1])
                     val padding = 8.dp.toInt()
                     setPadding(padding, 0, padding, 0)
                 }

@@ -13,6 +13,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.getStatusBarHeight
 
 class AlphabetScrollbar(
         val listView: AbsListView, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -44,13 +45,13 @@ class AlphabetScrollbar(
 
     fun update() {
         fg = Settings["labelColor", -0x11111112]
-        topPadding = listView.paddingTop + Tools.getStatusBarHeight(context) + Settings["dockbottompadding", 10].dp(context)
+        topPadding = listView.paddingTop + context.getStatusBarHeight() + Settings["dockbottompadding", 10].dp
         paint.apply {
             color = fg
             alpha = 180
             isAntiAlias = true
             typeface = ResourcesCompat.getFont(context, R.font.posidon_sans)
-            textSize = 16.dp(context)
+            textSize = 16.dp
         }
         invalidate()
     }

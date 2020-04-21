@@ -13,6 +13,8 @@ import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.vibrate
 import kotlin.math.abs
 
 class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
@@ -21,7 +23,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     private var crossButton: View
     var stopResizingOnFingerLift = true
     var onResizeListener: OnResizeListener? = null
-    private val maxHeight get() = Tools.getDisplayHeight(context) / 3 * 2
+    private val maxHeight get() = Tools.getDisplayHeight(context) * 2 / 3
 
     var resizing = false
         set(value) {
@@ -29,11 +31,12 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
             if (field) {
                 dragHandle.visibility = VISIBLE
                 crossButton.visibility = VISIBLE
+                dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Main.accentColor))
             } else {
                 dragHandle.visibility = GONE
                 crossButton.visibility = GONE
             }
-            if (layoutParams != null && layoutParams.height < MIN_HEIGHT * resources.displayMetrics.density) layoutParams.height = (MIN_HEIGHT * resources.displayMetrics.density).toInt()
+            if (layoutParams != null && layoutParams.height < MIN_HEIGHT.dp) layoutParams.height = MIN_HEIGHT.dp.toInt()
         }
 
     override fun addView(child: View, index: Int) {
@@ -64,7 +67,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                 MotionEvent.ACTION_MOVE -> {
                     val location = intArrayOf(0, 0)
                     getLocationOnScreen(location)
-                    if (location[1] + event.rawY >= MIN_HEIGHT * resources.displayMetrics.density && location[1] + event.rawY <= maxHeight - 96 * resources.displayMetrics.density) {
+                    if (location[1] + event.rawY >= MIN_HEIGHT.dp && location[1] + event.rawY <= maxHeight) {
                         layoutParams.height = (event.rawY - y).toInt()
                         layoutParams = layoutParams
                         onResizeListener?.onUpdate(layoutParams.height)
@@ -94,7 +97,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     private val longPressHandler = Handler()
     private val onLongPress = Runnable {
         if (!LauncherMenu.isActive && hasWindowFocus()) {
-            Tools.vibrate(context)
+            context.vibrate()
             resizing = true
         }
     }
@@ -131,7 +134,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     }
 
     inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
-        val threshold = 32 * resources.displayMetrics.density
+        val threshold = 32.dp
         return abs(startX - endX) < threshold && abs(startY - endY) < threshold
     }
 }

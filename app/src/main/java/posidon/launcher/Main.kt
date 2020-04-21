@@ -15,6 +15,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
 import android.media.AudioManager
@@ -46,21 +47,19 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
-import posidon.launcher.tools.Tools.applyFontSetting
 import posidon.launcher.tools.Tools.blurredWall
 import posidon.launcher.tools.Tools.canBlurWall
 import posidon.launcher.tools.Tools.getDisplayHeight
 import posidon.launcher.tools.Tools.getDisplayWidth
-import posidon.launcher.tools.Tools.getStatusBarHeight
+import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.Tools.isInstalled
-import posidon.launcher.tools.Tools.isTablet
+import posidon.launcher.tools.isTablet
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.AlphabetScrollbar
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.ResizableLayout.OnResizeListener
-import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -211,7 +210,7 @@ class Main : AppCompatActivity() {
             }
             val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(findViewById<View>(R.id.drawer))
             val containerHeight = (appSize * rowCount + resources.displayMetrics.density * if (Settings["dockLabelsEnabled", false]) 18 * rowCount else 0).toInt()
-            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet(this@Main)) (containerHeight + resources.displayMetrics.density * 84).toInt() else (containerHeight + resources.displayMetrics.density * 14).toInt()
+            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) (containerHeight + resources.displayMetrics.density * 84).toInt() else (containerHeight + resources.displayMetrics.density * 14).toInt()
             container.layoutParams.height = containerHeight
             behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt()
             val metrics = DisplayMetrics()
@@ -311,7 +310,7 @@ class Main : AppCompatActivity() {
             }
         }
         setCustomizations = {
-            applyFontSetting(this@Main)
+            applyFontSetting()
 
             when (Settings["dock:background_type", 0]) {
                 0 -> { findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
@@ -344,7 +343,7 @@ class Main : AppCompatActivity() {
 
             if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             if (Settings["drawersearchbarenabled", true]) {
-                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + 56.dp.toInt())
+                drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
                 searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
                 searchBar.visibility = VISIBLE
                 val bg = ShapeDrawable()
@@ -359,7 +358,7 @@ class Main : AppCompatActivity() {
                 findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
             } else {
                 searchBar.visibility = GONE
-                drawerGrid.setPadding(0, getStatusBarHeight(this@Main), 0, Tools.navbarHeight + 12.dp.toInt())
+                drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
             }
             if (Settings["docksearchbarenabled", false]) {
                 findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
@@ -457,7 +456,7 @@ class Main : AppCompatActivity() {
                     }
                 })
             }
-            if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight(this@Main) - 12 * resources.displayMetrics.density).toInt(), 0, 0)
+            if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight() - 12 * resources.displayMetrics.density).toInt(), 0, 0)
 
             shouldSetApps = false
             customized = false
@@ -468,6 +467,7 @@ class Main : AppCompatActivity() {
             findViewById<View>(R.id.parentNotification).background = notificationBackground
             val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
             parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
+            parentNotificationTitle.typeface = mainFont
             val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
             parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
             parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
@@ -487,7 +487,7 @@ class Main : AppCompatActivity() {
                 drawerScrollBar.visibility = VISIBLE
                 (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
                         if (Settings["drawer:sections_enabled", false]) 0
-                        else (24 * Tools.getDensity(this@Main)).toInt()
+                        else 24.dp.toInt()
                 drawerGrid.layoutParams = drawerGrid.layoutParams
                 drawerScrollBar.update()
             } else  {
@@ -568,7 +568,7 @@ class Main : AppCompatActivity() {
         desktop = findViewById(R.id.desktop)
         desktop.isNestedScrollingEnabled = false
         desktop.isSmoothScrollingEnabled = false
-        desktop.onTopOverScroll = { if (!LauncherMenu.isActive) Tools.pullStatusbar(this) }
+        desktop.onTopOverScroll = { if (!LauncherMenu.isActive) pullStatusbar() }
         updateNavbarHeight(this@Main)
         drawerGrid = findViewById(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
@@ -642,7 +642,7 @@ class Main : AppCompatActivity() {
         drawerScrollBar = AlphabetScrollbar(drawerGrid)
         findViewById<FrameLayout>(R.id.drawercontent).addView(drawerScrollBar)
         (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
-            width = 24.dp(this@Main).toInt()
+            width = 24.dp.toInt()
             gravity = Gravity.END
         }
         drawerScrollBar.bringToFront()

@@ -15,6 +15,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.vibrate
 
 class FeedChooserAdapter(internal val context: Context, private val feedUrls: ArrayList<String>) : RecyclerView.Adapter<FeedChooserAdapter.ViewHolder>() {
 
@@ -41,7 +42,7 @@ class FeedChooserAdapter(internal val context: Context, private val feedUrls: Ar
 */
         holder.card.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
         holder.text.setOnLongClickListener {
-            Tools.vibrate(context)
+            context.vibrate()
             val dialog = BottomSheetDialog(context, R.style.bottomsheet)
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)

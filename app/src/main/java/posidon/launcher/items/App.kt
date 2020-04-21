@@ -21,6 +21,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
+import posidon.launcher.tools.vibrate
 import java.util.*
 
 class App : LauncherItem() {
@@ -78,7 +79,7 @@ class App : LauncherItem() {
             context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
         }
         d.findViewById<View>(R.id.uninstallbtn)!!.setOnClickListener {
-            Tools.vibrate(context)
+            context.vibrate()
             d.dismiss()
             val uninstallIntent = Intent("android.intent.action.DELETE")
             uninstallIntent.data = Uri.parse("package:$packageName")

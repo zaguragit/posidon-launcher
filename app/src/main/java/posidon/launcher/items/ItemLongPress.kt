@@ -30,12 +30,13 @@ import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
+import posidon.launcher.tools.vibrate
 import java.util.*
 
 object ItemLongPress {
     var currentPopup: PopupWindow? = null
     private fun popupWindow(context: Context, methods: Methods, showRemove: Boolean, item: LauncherItem): PopupWindow {
-        Tools.vibrate(context)
+        context.vibrate()
         val content: View
         var color: Int
         val txtColor: Int

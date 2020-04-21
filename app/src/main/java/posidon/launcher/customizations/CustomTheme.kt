@@ -20,6 +20,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.view.Spinner
 
 
@@ -29,7 +30,7 @@ class CustomTheme : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Tools.applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.custom_theme)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
@@ -57,37 +58,37 @@ class CustomTheme : AppCompatActivity() {
                 d.dismiss()
                 Settings["font"] = "sansserif"
                 fontName.text = getString(R.string.sans_serif)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.findViewById<View>(R.id.posidonsans).setOnClickListener {
                 d.dismiss()
                 Settings["font"] = "posidonsans"
                 fontName.text = getString(R.string.posidon_sans)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.findViewById<View>(R.id.monospace).setOnClickListener {
                 d.dismiss()
                 Settings["font"] = "monospace"
                 fontName.text = getString(R.string.monospace)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.findViewById<View>(R.id.ubuntu).setOnClickListener {
                 d.dismiss()
                 Settings["font"] = "ubuntu"
                 fontName.text = getString(R.string.ubuntu)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.findViewById<View>(R.id.lexendDeca).setOnClickListener {
                 d.dismiss()
                 Settings["font"] = "lexendDeca"
                 fontName.text = getString(R.string.lexend_deca)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.findViewById<View>(R.id.open_dyslexic).setOnClickListener {
                 d.dismiss()
                 Settings["font"] = "openDyslexic"
                 fontName.text = getString(R.string.open_dyslexic)
-                Tools.applyFontSetting(this@CustomTheme)
+                applyFontSetting()
             }
             d.show()
         }
@@ -99,7 +100,7 @@ class CustomTheme : AppCompatActivity() {
         findViewById<Switch>(R.id.reshapeicons).isChecked = Settings["reshapeicons", false]
 
         findViewById<Spinner>(R.id.iconBackgrounds).data = resources.getStringArray(R.array.iconBackgrounds)
-        findViewById<Spinner>(R.id.iconBackgrounds).selectionI = when(Settings["icon:background_type", "dominant"]) {
+        findViewById<Spinner>(R.id.iconBackgrounds).selectionI = when(Settings["icon:background_type", "custom"]) {
             "dominant" -> 0
             "lv" -> 1
             "dv" -> 2

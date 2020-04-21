@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.hasNavbar
 
 @TargetApi(Build.VERSION_CODES.Q)
 class QuickStepService : Service() {
@@ -48,7 +49,7 @@ class QuickStepService : Service() {
 
         override fun onActiveNavBarRegionChanges(activeRegion: Region?) {
             println("QUICKSTEP.onActiveNavBarRegionChanges(${activeRegion!!.bounds})")
-            if (Tools.hasNavbar(this@QuickStepService)) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
+            if (hasNavbar) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
             else onNavigationModeChanged(NavigationMode.GESTURAL)
         }
 
@@ -106,7 +107,7 @@ class QuickStepService : Service() {
         super.onCreate()
         Settings.init(this)
 
-        if (Tools.hasNavbar(this@QuickStepService)) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
+        if (hasNavbar) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
         else onNavigationModeChanged(NavigationMode.GESTURAL)
     }
 

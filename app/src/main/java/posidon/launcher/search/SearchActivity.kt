@@ -25,7 +25,7 @@ import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
 import posidon.launcher.tools.Loader
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
 import java.util.*
 import kotlin.math.abs
 
@@ -34,7 +34,7 @@ class SearchActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_layout)
-        Tools.applyFontSetting(this@SearchActivity)
+        applyFontSetting()
         val searchTxt = findViewById<EditText>(R.id.searchTxt)
         searchTxt.requestFocus()
         val searchgrid = findViewById<GridView>(R.id.searchgrid)
