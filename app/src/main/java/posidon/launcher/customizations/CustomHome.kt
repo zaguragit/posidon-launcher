@@ -23,6 +23,8 @@ import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
 import posidon.launcher.view.Switch
 
@@ -30,7 +32,7 @@ class CustomHome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Tools.applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.custom_home)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
@@ -147,17 +149,17 @@ class CustomHome : AppCompatActivity() {
         dialog.setContentView(R.layout.custom_home_feed_card_layout_chooser)
         dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
         dialog.findViewById<View>(R.id.card0)!!.setOnClickListener {
-            Tools.vibrate(this)
+            vibrate()
             Settings["feed:card_layout"] = 0
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card1)!!.setOnClickListener {
-            Tools.vibrate(this)
+            vibrate()
             Settings["feed:card_layout"] = 1
             dialog.dismiss()
         }
         dialog.findViewById<View>(R.id.card2)!!.setOnClickListener {
-            Tools.vibrate(this)
+            vibrate()
             Settings["feed:card_layout"] = 2
             dialog.dismiss()
         }

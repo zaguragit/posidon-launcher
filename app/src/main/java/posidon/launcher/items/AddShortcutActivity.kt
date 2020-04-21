@@ -17,10 +17,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Dock
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.*
 import kotlin.math.min
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -28,7 +26,7 @@ class AddShortcutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Tools.applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.add_shortcut_activity)
         val launcherApps = getSystemService(LauncherApps::class.java)!!
         val shortcut = launcherApps.getPinItemRequest(intent).shortcutInfo
@@ -47,13 +45,9 @@ class AddShortcutActivity : AppCompatActivity() {
             val t = findViewById<TextView>(R.id.docksearchtxt)
             t.setTextColor(Settings["docksearchtxtcolor", -0x1000000])
             t.text = Settings["searchhinttxt", "Search.."]
-            (findViewById<View>(R.id.docksearchic) as ImageView).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-            (findViewById<View>(R.id.docksearchic) as ImageView).imageTintMode = PorterDuff.Mode.MULTIPLY
-            (findViewById<View>(R.id.battery) as ProgressBar).progressTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-            (findViewById<View>(R.id.battery) as ProgressBar).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-            (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-            (findViewById<View>(R.id.battery) as ProgressBar).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            ((findViewById<View>(R.id.battery) as ProgressBar).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(Settings["docksearchtxtcolor", -0x1000000])) -0x23000000 else -0x11000001)
+            findViewById<ImageView>(R.id.docksearchic).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
+            findViewById<ImageView>(R.id.docksearchic).imageTintMode = PorterDuff.Mode.MULTIPLY
+            findViewById<View>(R.id.battery).visibility = View.GONE
         } else {
             findViewById<View>(R.id.docksearchbar).visibility = View.GONE
             findViewById<View>(R.id.battery).visibility = View.GONE
@@ -61,9 +55,9 @@ class AddShortcutActivity : AppCompatActivity() {
 
         var appSize = 0
         when (Settings["dockicsize", 1]) {
-            0 -> appSize = (resources.displayMetrics.density * 64).toInt()
-            1 -> appSize = (resources.displayMetrics.density * 74).toInt()
-            2 -> appSize = (resources.displayMetrics.density * 84).toInt()
+            0 -> appSize = 64.dp.toInt()
+            1 -> appSize = 74.dp.toInt()
+            2 -> appSize = 84.dp.toInt()
         }
         val data = Settings["dock", ""].split("\n").toTypedArray()
         val container = findViewById<GridLayout>(R.id.dockContainer)
@@ -73,7 +67,7 @@ class AddShortcutActivity : AppCompatActivity() {
         val showLabels = Settings["dockLabelsEnabled", false]
         container.columnCount = columnCount
         container.rowCount = rowCount
-        appSize = min(appSize, ((Tools.getDisplayWidth(this) - 32 * resources.displayMetrics.density) / columnCount).toInt())
+        appSize = min(appSize, ((Tools.getDisplayWidth(this) - 32.dp) / columnCount).toInt())
         var i = 0
         while (i < data.size && i < columnCount * rowCount) {
             val string = data[i]
@@ -85,16 +79,16 @@ class AddShortcutActivity : AppCompatActivity() {
                 val folder = Folder(this, data[i])
                 img.setImageDrawable(folder.icon)
                 if (showLabels) {
-                    (view.findViewById<View>(R.id.icontxt) as TextView).text = folder.label
-                    (view.findViewById<View>(R.id.icontxt) as TextView).setTextColor(Settings["dockLabelColor", -0x11111112])
+                    view.findViewById<TextView>(R.id.icontxt).text = folder.label
+                    view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                 } else view.findViewById<View>(R.id.icontxt).visibility = View.GONE
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
                 val shortcut = Shortcut(string)
                 if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = View.GONE
                 if (Tools.isInstalled(shortcut.packageName, packageManager)) {
                     if (showLabels) {
-                        (view.findViewById<View>(R.id.icontxt) as TextView).text = shortcut.label
-                        (view.findViewById<View>(R.id.icontxt) as TextView).setTextColor(Settings["dockLabelColor", -0x11111112])
+                        view.findViewById<TextView>(R.id.icontxt).text = shortcut.label
+                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
                     img.setImageDrawable(shortcut.icon)
                 } else {
@@ -111,8 +105,8 @@ class AddShortcutActivity : AppCompatActivity() {
                     }
                 } else {
                     if (showLabels) {
-                        (view.findViewById<View>(R.id.icontxt) as TextView).text = app.label
-                        (view.findViewById<View>(R.id.icontxt) as TextView).setTextColor(Settings["dockLabelColor", -0x11111112])
+                        view.findViewById<TextView>(R.id.icontxt).text = app.label
+                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
                     img.setImageDrawable(app.icon)
                 }

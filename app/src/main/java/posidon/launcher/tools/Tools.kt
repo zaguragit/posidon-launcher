@@ -80,15 +80,6 @@ object Tools {
 
 	inline fun getDisplayWidth(c: Context) = c.resources.displayMetrics.widthPixels
     inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
-    inline fun getDensity(c: Context) = c.resources.displayMetrics.density
-
-    inline fun pullStatusbar(context: Context) {
-        try {
-            @SuppressLint("WrongConstant")
-            val sbs = context.getSystemService("statusbar")
-            Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel")(sbs)
-        } catch (e: Exception) { e.printStackTrace() }
-    }
 
     lateinit var publicContext: Context
 
@@ -366,34 +357,6 @@ object Tools {
         navbarHeight = min(if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0, navbarHeight)
     }
 
-	inline fun getStatusBarHeight(c: Context): Int {
-        val resourceId = c.resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) c.resources.getDimensionPixelSize(resourceId) else 0
-    }
-
-	inline fun isTablet(c: Context): Boolean {
-        return c.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
-    }
-
-    inline fun hasNavbar(c: Context): Boolean {
-        val id: Int = c.resources.getIdentifier("config_showNavigationBar", "bool", "android")
-        return id != 0 && c.resources.getBoolean(id)
-    }
-
-    inline fun vibrate(context: Context) {
-        val duration = Settings["hapticfeedback", 14]
-        if (duration != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) (context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(
-                    VibrationEffect.createOneShot(duration.toLong(), VibrationEffect.DEFAULT_AMPLITUDE),
-                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
-            ) else (context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(duration.toLong())
-        }
-    }
-
-    inline fun isAirplaneModeOn(context: Context): Boolean {
-        return android.provider.Settings.System.getInt(context.contentResolver, android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0
-    }
-
 	@RequiresApi(api = Build.VERSION_CODES.O)
     fun adaptic(context: Context, drawable: Drawable): Drawable {
         val icShape = Settings["icshape", 4]
@@ -480,17 +443,6 @@ object Tools {
         } else drawable
     }
 
-	inline fun applyFontSetting(activity: Activity) {
-        when (Settings["font", "lexendDeca"]) {
-            "sansserif" -> activity.theme.applyStyle(R.style.font_sans_serif, true)
-            "posidonsans" -> activity.theme.applyStyle(R.style.font_posidon_sans, true)
-            "monospace" -> activity.theme.applyStyle(R.style.font_monospace, true)
-            "ubuntu" -> activity.theme.applyStyle(R.style.font_ubuntu, true)
-            "lexendDeca" -> activity.theme.applyStyle(R.style.font_lexend_deca, true)
-            "openDyslexic" -> activity.theme.applyStyle(R.style.font_open_dyslexic, true)
-        }
-    }
-
     inline val isDefaultLauncher: Boolean
         get() {
             val intent = Intent(Intent.ACTION_MAIN)
@@ -499,6 +451,17 @@ object Tools {
         }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.075f))).toFloat()
+}
+
+inline fun Activity.applyFontSetting() {
+    when (Settings["font", "lexendDeca"]) {
+        "sansserif" -> theme.applyStyle(R.style.font_sans_serif, true)
+        "posidonsans" -> theme.applyStyle(R.style.font_posidon_sans, true)
+        "monospace" -> theme.applyStyle(R.style.font_monospace, true)
+        "ubuntu" -> theme.applyStyle(R.style.font_ubuntu, true)
+        "lexendDeca" -> theme.applyStyle(R.style.font_lexend_deca, true)
+        "openDyslexic" -> theme.applyStyle(R.style.font_open_dyslexic, true)
+    }
 }
 
 inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
@@ -522,6 +485,52 @@ inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable:
     return bitmap
 }
 
-
-inline fun Number.dp(c: Context) = c.resources.displayMetrics.density * toFloat()
 inline val Number.dp get() = Tools.publicContext.resources.displayMetrics.density * toFloat()
+
+inline val Context.mainFont get() =
+    if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
+    else {
+        when {
+            Settings["font", "lexendDeca"] == "posidonsans" -> resources.getFont(R.font.posidon_sans)
+            Settings["font", "lexendDeca"] == "monospace" -> resources.getFont(R.font.ubuntu_mono)
+            Settings["font", "lexendDeca"] == "ubuntu" -> resources.getFont(R.font.ubuntu_medium)
+            Settings["font", "lexendDeca"] == "openDyslexic" -> resources.getFont(R.font.open_dyslexic3)
+            else -> resources.getFont(R.font.lexend_deca)
+        }
+    }
+
+inline val Context.isAirplaneModeOn get() =
+    android.provider.Settings.System.getInt(contentResolver, android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0
+
+inline fun Context.pullStatusbar() {
+    try {
+        @SuppressLint("WrongConstant")
+        val sbs = getSystemService("statusbar")
+        Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel")(sbs)
+    } catch (e: Exception) { e.printStackTrace() }
+}
+
+
+
+inline fun Context.getStatusBarHeight(): Int {
+    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+}
+
+inline val Context.isTablet get() =
+    resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
+
+inline val Context.hasNavbar: Boolean get() {
+    val id: Int = resources.getIdentifier("config_showNavigationBar", "bool", "android")
+    return id != 0 && resources.getBoolean(id)
+}
+
+inline fun Context.vibrate() {
+    val duration = Settings["hapticfeedback", 14]
+    if (duration != 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(
+                VibrationEffect.createOneShot(duration.toLong(), VibrationEffect.DEFAULT_AMPLITUDE),
+                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+        ) else (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(duration.toLong())
+    }
+}

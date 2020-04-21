@@ -21,9 +21,9 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickWallColor
 import posidon.launcher.tools.Tools.animate
-import posidon.launcher.tools.Tools.applyFontSetting
+import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.clearAnimation
-import posidon.launcher.tools.Tools.getStatusBarHeight
+import posidon.launcher.tools.getStatusBarHeight
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -35,7 +35,7 @@ class Gallery : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Settings.init(this)
-        applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.wall_gallery)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val sidepadding = (28 * resources.displayMetrics.density).toInt()
@@ -43,7 +43,7 @@ class Gallery : AppCompatActivity() {
         val toolbarHeight = Tools.navbarHeight + (64 * resources.displayMetrics.density).toInt()
         findViewById<View>(R.id.toolbar).setPadding(sidepadding, 0, sidepadding, Tools.navbarHeight)
         findViewById<View>(R.id.toolbar).layoutParams.height = toolbarHeight
-        findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight(this) + 4.dp(this).toInt(), gridsidepadding, toolbarHeight + 20.dp(this).toInt())
+        findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight() + 4.dp.toInt(), gridsidepadding, toolbarHeight + 20.dp.toInt())
         findViewById<View>(R.id.pickwallbtn).setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) pickFile()

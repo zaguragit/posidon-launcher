@@ -28,7 +28,7 @@ class QuickStepActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
 
-        (taskDescription.layoutParams as FrameLayout.LayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp(this).toInt()) + 32.dp(this).toInt()
+        (taskDescription.layoutParams as FrameLayout.LayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp.toInt()) + 32.dp.toInt()
 
         if (QuickStepService.recentTasks.isEmpty()) {
             taskDescription.visibility = GONE

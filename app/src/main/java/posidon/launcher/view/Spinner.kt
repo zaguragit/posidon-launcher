@@ -27,7 +27,7 @@ class Spinner : AppCompatTextView {
             var popup: PopupWindow? = null
             popup = PopupWindow(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(8.dp(context).toInt(), 8.dp(context).toInt(), 8.dp(context).toInt(), 8.dp(context).toInt())
+                setPadding(8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt())
                 for (i in data.indices) {
                     addView(TextView(context).apply {
                         text = data[i]
@@ -37,11 +37,7 @@ class Spinner : AppCompatTextView {
                         }
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())
-                        setPadding(
-                                18.dp(context).toInt(),
-                                9.dp(context).toInt(),
-                                18.dp(context).toInt(),
-                                9.dp(context).toInt())
+                        setPadding(18.dp.toInt(), 9.dp.toInt(), 18.dp.toInt(), 9.dp.toInt())
                     })
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {

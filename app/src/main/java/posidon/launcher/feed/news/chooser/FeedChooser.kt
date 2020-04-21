@@ -16,6 +16,8 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.getStatusBarHeight
+import posidon.launcher.tools.vibrate
 
 class FeedChooser : AppCompatActivity() {
 
@@ -29,7 +31,7 @@ class FeedChooser : AppCompatActivity() {
         grid = findViewById(R.id.grid)
         grid.layoutManager = GridLayoutManager(this, 2)
         val padding = (4 * resources.displayMetrics.density).toInt()
-        grid.setPadding(padding, Tools.getStatusBarHeight(this), padding, Tools.navbarHeight + padding)
+        grid.setPadding(padding, getStatusBarHeight(), padding, Tools.navbarHeight + padding)
 
         feedUrls.addAll(Settings["feedUrls", defaultSources].split("|"))
         if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
@@ -42,7 +44,7 @@ class FeedChooser : AppCompatActivity() {
         fab.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
         fab.imageTintList = ColorStateList.valueOf(Main.accentColor)
         fab.setOnClickListener {
-            Tools.vibrate(this)
+            vibrate()
             val dialog = BottomSheetDialog(this, R.style.bottomsheet)
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)

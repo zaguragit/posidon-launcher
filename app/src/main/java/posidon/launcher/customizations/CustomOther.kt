@@ -20,6 +20,8 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
 import java.io.FileNotFoundException
 import kotlin.system.exitProcess
@@ -29,7 +31,7 @@ class CustomOther : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Tools.applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.custom_other)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
@@ -42,7 +44,7 @@ class CustomOther : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 Settings["hapticfeedback"] = seekBar.progress
-                Tools.vibrate(this@CustomOther)
+                vibrate()
             }
         })
         findViewById<Spinner>(R.id.animationOptions).data = resources.getStringArray(R.array.animationNames)

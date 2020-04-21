@@ -24,6 +24,7 @@ import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Sort
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
 
 class CustomHiddenApps : AppCompatActivity() {
 
@@ -31,7 +32,7 @@ class CustomHiddenApps : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Tools.applyFontSetting(this)
+        applyFontSetting()
         setContentView(R.layout.custom_hidden_apps)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
