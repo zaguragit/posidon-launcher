@@ -34,24 +34,8 @@ class AddShortcutActivity : AppCompatActivity() {
             Main.launcherApps.pinShortcuts(shortcut.`package`, ArrayList<String>().apply { add(shortcut.id) }, Process.myUserHandle())
         }
 
-        if (Settings["docksearchbarenabled", false]) {
-            findViewById<View>(R.id.docksearchbar).visibility = View.VISIBLE
-            findViewById<View>(R.id.battery).visibility = View.VISIBLE
-            val bg = ShapeDrawable()
-            val tr = Settings["docksearchradius", 30] * resources.displayMetrics.density
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-            bg.paint.color = Settings["docksearchcolor", -0x22000001]
-            findViewById<View>(R.id.docksearchbar).background = bg
-            val t = findViewById<TextView>(R.id.docksearchtxt)
-            t.setTextColor(Settings["docksearchtxtcolor", -0x1000000])
-            t.text = Settings["searchhinttxt", "Search.."]
-            findViewById<ImageView>(R.id.docksearchic).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-            findViewById<ImageView>(R.id.docksearchic).imageTintMode = PorterDuff.Mode.MULTIPLY
-            findViewById<View>(R.id.battery).visibility = View.GONE
-        } else {
-            findViewById<View>(R.id.docksearchbar).visibility = View.GONE
-            findViewById<View>(R.id.battery).visibility = View.GONE
-        }
+        findViewById<View>(R.id.docksearchbar).visibility = View.GONE
+        findViewById<View>(R.id.battery).visibility = View.GONE
 
         var appSize = 0
         when (Settings["dockicsize", 1]) {
@@ -112,8 +96,8 @@ class AddShortcutActivity : AppCompatActivity() {
                 }
             }
             view.setOnClickListener {
-                Dock[i] = Shortcut(shortcut!!)
-                finish()
+                Dock.add(Shortcut(shortcut!!), i)
+                //finish()
             }
             container.addView(view)
             i++

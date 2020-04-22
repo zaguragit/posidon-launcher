@@ -165,6 +165,7 @@ class Main : AppCompatActivity() {
                     }}
                     view.setOnLongClickListener(ItemLongPress.folder(this@Main, folder, i))
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
+                    println("SHORTCUTT!!")
                     val shortcut = Shortcut(string)
                     if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
                     if (isInstalled(shortcut.packageName, packageManager)) {
@@ -651,11 +652,9 @@ class Main : AppCompatActivity() {
         feedRecycler.layoutManager = LinearLayoutManager(this@Main)
         feedRecycler.isNestedScrollingEnabled = false
 
-        //NotificationService.contextReference = WeakReference(this)
         notifications = findViewById(R.id.notifications)
         notifications.isNestedScrollingEnabled = false
         notifications.layoutManager = LinearLayoutManager(this)
-        //ItemTouchHelper(SwipeToDeleteCallback()).attachToRecyclerView(notifications)
 
         val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
         findViewById<View>(R.id.parentNotification).setOnLongClickListener(LauncherMenu(this@Main, window))

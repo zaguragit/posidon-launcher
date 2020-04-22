@@ -413,6 +413,7 @@ object Tools {
             layerDrawable.draw(canvas)
             val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             canvas = Canvas(outputBitmap)
+            canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
             if (icShape != 3) {
                 val path = Path()
                 when (icShape) {
@@ -421,23 +422,23 @@ object Tools {
                     4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
                         val xx = 2
                         val yy = 2
-                        val radius = (Math.min(width, height) shr 1) - 2
+                        val radius = (min(width, height) shr 1) - 2
                         val radiusToPow = radius * radius * radius.toDouble()
                         path.moveTo(-radius.toFloat(), 0f)
-                        for (x in -radius..radius) path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - Math.abs(x * x * x)).toFloat())
-                        for (x in radius downTo -radius) path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - Math.abs(x * x * x))).toFloat())
+                        for (x in -radius..radius) path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
+                        for (x in radius downTo -radius) path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
                         path.close()
                         val matrix = Matrix()
                         matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
                         path.transform(matrix)
                     }
                 }
-                canvas.clipPath(path)
+                path.fillType = Path.FillType.INVERSE_EVEN_ODD
+                canvas.drawPath(path, Paint().apply {
+                    isAntiAlias = true
+                    xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+                })
             }
-            val p = Paint()
-            p.isAntiAlias = true
-            p.isFilterBitmap = true
-            canvas.drawBitmap(bitmap, 0f, 0f, p)
             bitmap = outputBitmap
             BitmapDrawable(context.resources, bitmap)
         } else drawable
