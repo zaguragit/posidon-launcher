@@ -60,16 +60,17 @@ class Folder(context: Context, string: String) : LauncherItem() {
             layerDrawable.draw(canvas)
             val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             canvas = Canvas(outputBitmap)
-            if (Settings.get("icshape", 4) != 3) {
+            canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
+            if (Settings["icshape", 4] != 3) {
                 val path = Path()
-                when (Settings.get("icshape", 4)) {
-                    1 -> path.addCircle(width.toFloat() / 2f + 1, height.toFloat() / 2f + 1, Math.min(width.toFloat(), height.toFloat() / 2f) - 2, Path.Direction.CCW)
-                    2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), Math.min(width, height).toFloat() / 4f, Math.min(width, height).toFloat() / 4f, Path.Direction.CCW)
+                when (Settings["icshape", 4]) {
+                    1 -> path.addCircle(width.toFloat() / 2f + 1, height.toFloat() / 2f + 1, min(width.toFloat(), height.toFloat() / 2f) - 2, Path.Direction.CCW)
+                    2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), min(width, height).toFloat() / 4f, min(width, height).toFloat() / 4f, Path.Direction.CCW)
                     0, 4 -> {
                         //Formula: (|x|)^3 + (|y|)^3 = radius^3
                         val xx = 2
                         val yy = 2
-                        val radius = Math.min(width, height) / 2 - 2
+                        val radius = min(width, height) / 2 - 2
                         val radiusToPow = radius * radius * radius.toDouble()
                         path.moveTo(-radius.toFloat(), 0f)
                         run {
@@ -90,12 +91,12 @@ class Folder(context: Context, string: String) : LauncherItem() {
                         path.transform(matrix)
                     }
                 }
-                canvas.clipPath(path)
+                path.fillType = Path.FillType.INVERSE_EVEN_ODD
+                canvas.drawPath(path, Paint().apply {
+                    isAntiAlias = true
+                    xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+                })
             }
-            val p = Paint()
-            p.isAntiAlias = true
-            p.isFilterBitmap = true
-            canvas.drawBitmap(bitmap, 0f, 0f, p)
             bitmap = outputBitmap
             return bitmap
         } catch (e: Exception) { e.printStackTrace() }
