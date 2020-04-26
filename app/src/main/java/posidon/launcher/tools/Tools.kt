@@ -81,16 +81,16 @@ object Tools {
 	inline fun getDisplayWidth(c: Context) = c.resources.displayMetrics.widthPixels
     inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
 
-    lateinit var publicContext: Context
+    var publicContext: Context? = null
 
-    fun fastBlur(bitmap: Bitmap?, radius: Int): Bitmap? {
+    fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap? {
+        if (radius < 1) return null
         var bitmap = bitmap
-        val d = max(radius, 1).toFloat()
-        val width = (bitmap!!.width / d).roundToInt()
+        val d = radius.toFloat()
+        val width = (bitmap.width / d).roundToInt()
         val height = (bitmap.height / d).roundToInt()
         bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
         bitmap = bitmap.copy(bitmap.config, true)
-        if (radius < 1) return null
         val w = bitmap.width
         val h = bitmap.height
         val pix = IntArray(w * h)
@@ -112,7 +112,7 @@ object Tools {
         var yp: Int
         var yi: Int
         var yw: Int
-        val vmin = IntArray(Math.max(w, h))
+        val vmin = IntArray(max(w, h))
         var divsum = div + 1 shr 1
         divsum *= divsum
         val dv = IntArray(256 * divsum)
@@ -299,6 +299,7 @@ object Tools {
                                 displayHeight * bitmap.width / bitmap.height,
                                 displayHeight,
                                 false)
+                        bitmap.config = Bitmap.Config.ARGB_8888
                         bitmap = Bitmap.createBitmap(
                                 bitmap, 0, 0,
                                 displayWidth,
@@ -310,6 +311,7 @@ object Tools {
                                 displayWidth,
                                 displayWidth * bitmap.height / bitmap.width,
                                 false)
+                        bitmap.config = Bitmap.Config.ARGB_8888
                         bitmap = Bitmap.createBitmap(
                                 bitmap, 0, bitmap.height - displayHeight shr 1,
                                 displayWidth,
@@ -448,7 +450,7 @@ object Tools {
         get() {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)
-            return publicContext.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+            return publicContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
         }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.075f))).toFloat()
@@ -486,7 +488,8 @@ inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable:
     return bitmap
 }
 
-inline val Number.dp get() = Tools.publicContext.resources.displayMetrics.density * toFloat()
+inline val Number.dp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
+inline val Number.sp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
 
 inline val Context.mainFont get() =
     if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF

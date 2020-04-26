@@ -35,9 +35,9 @@ class AppSectionView(context: Context) : LinearLayout(context) {
     }
 
     val appSize = when (Settings["icsize", 1]) {
-        0 -> (Tools.publicContext.resources.displayMetrics.density * 64).toInt()
-        2 -> (Tools.publicContext.resources.displayMetrics.density * 84).toInt()
-        else -> (Tools.publicContext.resources.displayMetrics.density * 74).toInt()
+        0 -> 64.dp.toInt()
+        2 -> 84.dp.toInt()
+        else -> 74.dp.toInt()
     }
 
     fun add(app: App) {

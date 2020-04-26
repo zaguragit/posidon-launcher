@@ -44,4 +44,45 @@
         android:padding="4dp"
         android:layout_marginBottom="4dp"
         android:visibility="gone"/>
+    <View
+        android:id="@+id/bottomSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#55555555"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/cancel"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="12dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_cross"
+            android:background="@drawable/button_bg_round"/>
+        <EditText
+            android:id="@+id/replyText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:hint="@string/reply"
+            android:background="@android:color/transparent"
+            android:includeFontPadding="false"/>
+        <ImageView
+            android:id="@+id/replySend"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="12dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/arrow_to_right"
+            android:background="@drawable/button_bg_round"/>
+    </LinearLayout>
 </LinearLayout>

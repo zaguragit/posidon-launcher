@@ -6,26 +6,20 @@ import posidon.launcher.Main
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object Settings {
 
-    enum class Type(val string: String) {
-        TEXT("text"),
-        INT("int"),
-        FLOAT("float"),
-        BOOL("bool"),
-        LIST("list"),
-    }
-
-    var isInitialized: Boolean = false
-        private set
     private lateinit var ints: HashMap<String, Int>
     private lateinit var floats: HashMap<String, Float>
     private lateinit var bools: HashMap<String, Boolean>
     private lateinit var strings: HashMap<String, String>
-    private lateinit var lists: HashMap<String, String>
+    private lateinit var lists: HashMap<String, ArrayList<String>>
     private lateinit var context: Context
+
+    var isInitialized: Boolean = false
+        private set
 
     inline operator fun set(key: String, value: Int) {
         putNotSave(key, value)
@@ -47,17 +41,7 @@ object Settings {
         apply()
     }
 
-    inline operator fun set(key: String, value: Array<Int>) {
-        putNotSave(key, value)
-        apply()
-    }
-
-    inline operator fun set(key: String, value: Array<Float>) {
-        putNotSave(key, value)
-        apply()
-    }
-
-    inline operator fun set(key: String, value: Array<Boolean>) {
+    inline operator fun set(key: String, value: ArrayList<String>) {
         putNotSave(key, value)
         apply()
     }
@@ -69,54 +53,17 @@ object Settings {
         if (value == null) strings.keys.remove(key)
         else strings[key] = value
     }
-
-    fun putNotSave(key: String, value: Array<Int>) {
-        val stringBuilder = StringBuilder(Type.INT.string)
-        for (i in value) stringBuilder.append(' ').append(i)
-        lists[key] = stringBuilder.toString()
-    }
-
-    fun putNotSave(key: String, value: Array<Float>) {
-        val stringBuilder = StringBuilder(Type.FLOAT.string)
-        for (i in value) stringBuilder.append(' ').append(i)
-        lists[key] = stringBuilder.toString()
-    }
-
-    fun putNotSave(key: String, value: Array<Boolean>) {
-        val stringBuilder = StringBuilder(Type.BOOL.string)
-        for (i in value) stringBuilder.append(' ').append(if (i) '1' else '0')
-        lists[key] = stringBuilder.toString()
-    }
+    fun putNotSave(key: String, value: ArrayList<String>) { lists[key] = value }
 
     fun apply() = PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default
     operator fun get(key: String, default: Boolean) = bools[key] ?: default
-    operator fun get(key: String, default: String) = getString(key)
-            ?: default
+    operator fun get(key: String, default: String) = getString(key) ?: default
     fun getString(key: String) = strings[key]
+    fun getStrings(key: String) = lists[key] ?: ArrayList()
 
-    fun getInts(key: String, default: Array<Int>): Array<Int> {
-        if (lists[key] == null) return default
-        val stringList = lists[key]!!.split(' ')
-        if (stringList[0] != Type.INT.string) return default
-        return Array(stringList.size - 1) { stringList[it].toInt() }
-    }
-
-    fun getFloats(key: String, default: Array<Float>): Array<Float> {
-        if (lists[key] == null) return default
-        val stringList = lists[key]!!.split(' ')
-        if (stringList[0] != Type.FLOAT.string) return default
-        return Array(stringList.size - 1) { stringList[it].toFloat() }
-    }
-
-    fun getBools(key: String, default: Array<Boolean>): Array<Boolean> {
-        if (lists[key] == null) return default
-        val stringList = lists[key]!!.split(' ')
-        if (stringList[0] != Type.BOOL.string) return default
-        return Array(stringList.size - 1) { stringList[it] != "0" }
-    }
 
     fun init(context: Context) {
         Settings.context = context
@@ -133,7 +80,6 @@ object Settings {
                     floats = it.floats
                     bools = it.bools
                     strings = it.strings
-                    lists = it.lists
                 }
             } else {
                 ints = HashMap()
@@ -164,7 +110,6 @@ object Settings {
                 floats = it.floats
                 bools = it.bools
                 strings = it.strings
-                lists = it.lists
                 Main.customized = true
                 Main.shouldSetApps = true
             }
@@ -176,6 +121,6 @@ object Settings {
             val floats: HashMap<String, Float>,
             val bools: HashMap<String, Boolean>,
             val strings: HashMap<String, String>,
-            val lists: HashMap<String, String>
+            val lists: HashMap<String, ArrayList<String>>
     ) : Serializable { companion object { private const val serialVersionUID = 0 } }
 }

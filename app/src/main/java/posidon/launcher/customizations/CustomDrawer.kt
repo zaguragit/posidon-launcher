@@ -68,7 +68,7 @@ class CustomDrawer : AppCompatActivity() {
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
         findViewById<Spinner>(R.id.sortingOptions).data = resources.getStringArray(R.array.sortingAlgorithms)
-        findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["drawer:sorting", 1]
+        findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["drawer:sorting", 0]
 
         findViewById<Switch>(R.id.blurswitch).isChecked = Settings["blur", true]
         val blurSlider = findViewById<SeekBar>(R.id.blurSlider)
@@ -115,7 +115,7 @@ class CustomDrawer : AppCompatActivity() {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
             putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
-            if (get("drawer:sorting", 1) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
+            if (get("drawer:sorting", 0) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
                 putNotSave("drawer:sorting", findViewById<Spinner>(R.id.sortingOptions).selectionI)
                 Main.shouldSetApps = true
             }

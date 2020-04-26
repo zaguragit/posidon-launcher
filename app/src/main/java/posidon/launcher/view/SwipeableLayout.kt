@@ -4,12 +4,12 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import posidon.launcher.R
 import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
@@ -19,8 +19,8 @@ import kotlin.math.min
 
 class SwipeableLayout(
     val frontView: View,
-    var onSwipeAway: () -> Unit
-) : FrameLayout(frontView.context) {
+    var onSwipeAway: (() -> Unit)? = null
+) : CardView(frontView.context) {
 
     val closeIcon = ImageView(context).apply {
         setImageResource(R.drawable.ic_cross)
@@ -34,6 +34,8 @@ class SwipeableLayout(
     fun setSwipeColor(color: Int) { backView.setBackgroundColor(color) }
 
     init {
+        setCardBackgroundColor(0)
+        cardElevation = 0f
         addView(backView)
         addView(frontView)
         closeIcon.run {
@@ -46,12 +48,14 @@ class SwipeableLayout(
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
-        override fun onAnimationEnd(animation: Animator?) = onSwipeAway()
+        override fun onAnimationEnd(animation: Animator?) { onSwipeAway?.invoke() }
     }
 
     var initX = 0f
     var initY = 0f
     var xOffset = 0f
+
+    fun reset() { frontView.translationX = 0f }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (ev.action) {
@@ -138,7 +142,7 @@ class SwipeableLayout(
             if (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat())) true
             else super.onInterceptTouchEvent(ev)
         }
-        MotionEvent.ACTION_UP -> if (abs(xOffset) == 0f) super.onInterceptTouchEvent(ev) else true
+        MotionEvent.ACTION_UP -> if (abs(xOffset) < 8.dp) super.onInterceptTouchEvent(ev) else true
         else -> {
             if (ev.action == MotionEvent.ACTION_DOWN) {
                 initX = ev.x

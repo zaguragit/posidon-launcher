@@ -60,7 +60,7 @@ class AddShortcutActivity : AppCompatActivity() {
             img.layoutParams.height = appSize
             img.layoutParams.width = appSize
             if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
-                val folder = Folder(this, data[i])
+                val folder = Folder(data[i])
                 img.setImageDrawable(folder.icon)
                 if (showLabels) {
                     view.findViewById<TextView>(R.id.icontxt).text = folder.label

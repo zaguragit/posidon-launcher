@@ -36,7 +36,8 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                 dragHandle.visibility = GONE
                 crossButton.visibility = GONE
             }
-            if (layoutParams != null && layoutParams.height < MIN_HEIGHT.dp) layoutParams.height = MIN_HEIGHT.dp.toInt()
+            if (layoutParams != null && layoutParams.height < MIN_HEIGHT.dp)
+                layoutParams.height = MIN_HEIGHT.dp.toInt()
         }
 
     override fun addView(child: View, index: Int) {

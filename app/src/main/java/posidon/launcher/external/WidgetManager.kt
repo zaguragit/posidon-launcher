@@ -36,7 +36,7 @@ object WidgetManager {
         try {
             val id = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             val providerInfo = widgetManager.getAppWidgetInfo(id)
-            hostView = host.createView(Tools.publicContext.applicationContext, id, providerInfo)
+            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo)
             widgetLayout.addView(hostView)
             if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo.provider)) {
                 val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
@@ -78,7 +78,7 @@ object WidgetManager {
                     Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
             }
-            hostView = host.createView(Tools.publicContext.applicationContext, id, providerInfo)
+            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo)
             hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
         } else widgetLayout.visibility = View.GONE

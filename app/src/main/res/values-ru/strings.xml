@@ -148,6 +148,10 @@
     <string name="name_color">Цвет имя</string>
     <string name="sections">Разделы</string>
     <string name="name_position">Позиция имя</string>
+    <string name="swipe_to_remove">Swipe to remove</string>
+    <string name="removed">Removed</string>
+    <string name="restore">Restore</string>
+    <string name="reply">Reply</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

@@ -110,7 +110,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xff000000.toInt())
                     putNotSave("notificationtxtcolor", 0xff888888.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
-                    putNotSave("drawer:sorting", 1)
+                    putNotSave("drawer:sorting", 0)
                     apply()
                 }
                 1 -> {
@@ -141,7 +141,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xff000000.toInt())
                     putNotSave("notificationtxtcolor", 0xff000000.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
-                    putNotSave("drawer:sorting", 1)
+                    putNotSave("drawer:sorting", 0)
                     apply()
                 }
                 2 -> {
@@ -172,7 +172,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtitlecolor", 0xdd000000.toInt())
                     putNotSave("notificationtxtcolor", 0x88000000.toInt())
                     putNotSave("notificationbgcolor", 0xa8eeeeee.toInt())
-                    putNotSave("drawer:sorting", 1)
+                    putNotSave("drawer:sorting", 0)
                     apply()
                 }
             }
@@ -185,13 +185,14 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
-        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings["feedenabled"] = checked }
+        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings["feed:enabled"] = checked }
         Tools.updateNavbarHeight(this)
     }
 
     fun done3(v: View) {
         Settings.apply {
             putNotSave("dock", when {
+                Tools.isInstalled("org.mozilla.fenix", packageManager) -> "org.mozilla.fenix/org.mozilla.fenix.App"
                 Tools.isInstalled("org.mozilla.firefox", packageManager) -> "org.mozilla.firefox/org.mozilla.firefox.App"
                 else -> "com.android.chrome/com.google.android.apps.chrome.Main"
             } + '\n' + when {
@@ -199,6 +200,7 @@ class Tutorial : AppCompatActivity() {
                 Tools.isInstalled("com.twitter.android", packageManager) -> "com.twitter.android/com.twitter.android.StartActivity"
                 Tools.isInstalled("com.discord", packageManager) -> "com.discord/com.discord.app.AppActivity\$Main"
                 Tools.isInstalled("com.trello", packageManager) -> "com.trello/com.trello.home.HomeActivity"
+                Tools.isInstalled("com.topjohbwu.magisk", packageManager) -> "com.topjohbwu.magisk/a.c"
                 Tools.isInstalled("com.google.android.apps.playconsole", packageManager) -> "com.google.android.apps.playconsole/com.google.android.apps.playconsole.activity.MainAndroidActivity"
                 else -> ""
             } + '\n' + when {

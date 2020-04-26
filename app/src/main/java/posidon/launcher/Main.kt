@@ -3,6 +3,7 @@ package posidon.launcher
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -33,10 +34,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import kotlinx.android.synthetic.main.quickstep.*
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
+import posidon.launcher.external.quickstep.QuickStepService
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -76,10 +79,10 @@ class Main : AppCompatActivity() {
             val data = Settings["dock", ""].split("\n").toTypedArray()
             val columnCount = Settings["dock:columns", 5]
             val appSize = min(when (Settings["dockicsize", 1]) {
-                0 -> (resources.displayMetrics.density * 64).toInt()
-                2 -> (resources.displayMetrics.density * 84).toInt()
-                else -> (resources.displayMetrics.density * 74).toInt()
-            }, ((getDisplayWidth(this@Main) - 32 * resources.displayMetrics.density) / columnCount).toInt())
+                0 -> 64.dp.toInt()
+                2 -> 84.dp.toInt()
+                else -> 74.dp.toInt()
+            }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
             val rowCount = Settings["dock:rows", 1]
             val showLabels = Settings["dockLabelsEnabled", false]
 
@@ -90,12 +93,12 @@ class Main : AppCompatActivity() {
             var i = 0
             while (i < data.size && i < columnCount * rowCount) {
                 val string = data[i]
-                val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
+                val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, container, false)
                 val img = view.findViewById<ImageView>(R.id.iconimg)
                 img.layoutParams.height = appSize
                 img.layoutParams.width = appSize
                 if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
-                    val folder = Folder(this@Main, data[i])
+                    val folder = Folder(data[i])
                     img.setImageDrawable(folder.icon)
                     if (showLabels) {
                         view.findViewById<TextView>(R.id.icontxt).text = folder.label
@@ -210,8 +213,8 @@ class Main : AppCompatActivity() {
                 i++
             }
             val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(findViewById<View>(R.id.drawer))
-            val containerHeight = (appSize * rowCount + resources.displayMetrics.density * if (Settings["dockLabelsEnabled", false]) 18 * rowCount else 0).toInt()
-            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) (containerHeight + resources.displayMetrics.density * 84).toInt() else (containerHeight + resources.displayMetrics.density * 14).toInt()
+            val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp * rowCount else 0f).toInt() * rowCount
+            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) containerHeight + 84.dp.toInt() else containerHeight + 14.dp.toInt()
             container.layoutParams.height = containerHeight
             behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt()
             val metrics = DisplayMetrics()
@@ -391,7 +394,7 @@ class Main : AppCompatActivity() {
                 drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
             }
             feedRecycler.visibility = if (Settings["feed:enabled", true]) VISIBLE else GONE
-            val marginX = (Settings["feed:card_margin_x", 16] * resources.displayMetrics.density).toInt()
+            val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
             (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
             (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
             (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
@@ -536,7 +539,7 @@ class Main : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Settings.init(Tools.publicContext)
+        Settings.init(this)
         if (Settings["init", true]) {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
@@ -811,7 +814,6 @@ class Main : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         WidgetManager.host.startListening()
-        //val mngr: ActivityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         onUpdate()
     }
@@ -820,7 +822,7 @@ class Main : AppCompatActivity() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
         if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
-            override fun onFinished(feedModels: List<FeedItem>) {
+            override fun onFinished(feedModels: ArrayList<FeedItem>) {
                 feedRecycler.adapter = FeedAdapter(feedModels, this@Main, window)
             }
         }).execute()
