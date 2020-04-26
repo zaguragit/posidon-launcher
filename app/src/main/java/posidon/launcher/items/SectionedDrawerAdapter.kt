@@ -16,7 +16,7 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer {
 
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         val section = Main.appSections[i]
-        val convertView = cv as AppSectionView? ?: AppSectionView(Tools.publicContext)
+        val convertView = cv as AppSectionView? ?: AppSectionView(Tools.publicContext!!)
         convertView.setApps(section)
         convertView.title = section[0].label!![0].toUpperCase().toString()
         return convertView

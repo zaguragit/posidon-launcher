@@ -422,8 +422,8 @@ object ColorTools {
     }
 
     fun getWallpaperColors() = ArrayList<Int>().apply {
-        if (ActivityCompat.checkSelfPermission(Tools.publicContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val palette = Palette.from(WallpaperManager.getInstance(Tools.publicContext).peekFastDrawable().toBitmap()).generate()
+        if (ActivityCompat.checkSelfPermission(Tools.publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val palette = Palette.from(WallpaperManager.getInstance(Tools.publicContext).fastDrawable.toBitmap()).generate()
             add(palette.getDominantColor(0xff1155ff.toInt()))
             add(palette.getDarkVibrantColor(0xff1155ff.toInt()))
             add(palette.getVibrantColor(0xff1155ff.toInt()))

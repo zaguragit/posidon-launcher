@@ -276,7 +276,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_label"
                         android:layout_weight="1"
                         android:text="@string/name_position"/>
                     <posidon.launcher.view.Spinner

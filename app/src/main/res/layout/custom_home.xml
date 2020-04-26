@@ -222,7 +222,7 @@
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_label"
+                        android:drawableStart="@drawable/ic_visible"
                         android:text="@string/setting_hide_until_user_scrolls" />
                     <posidon.launcher.view.Switch
                         android:id="@+id/hidefeed"
@@ -268,7 +268,7 @@
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_label"
+                        android:drawableStart="@drawable/ic_apps"
                         android:text="@string/images" />
                     <posidon.launcher.view.Switch
                         android:id="@+id/newscardenableimg"
@@ -292,6 +292,28 @@
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/swipe_to_remove" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/delete_articles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
+                <TextView
+                    style="@style/settingsbtn"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_label"
+                    android:text="@string/removed"
+                    android:onClick="seeRemovedArticles"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

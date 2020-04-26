@@ -149,6 +149,10 @@
     <string name="name_color">Color de nombre</string>
     <string name="sections">Secciones</string>
     <string name="name_position">Posicion de nombre</string>
+    <string name="swipe_to_remove">Swipe to remove</string>
+    <string name="removed">Removed</string>
+    <string name="restore">Restore</string>
+    <string name="reply">Reply</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

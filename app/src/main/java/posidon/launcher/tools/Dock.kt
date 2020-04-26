@@ -34,7 +34,7 @@ object Dock {
         val string = Settings["dock", ""].split("\n")[i]
         return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
-            string.startsWith("folder(") && string.endsWith(')') -> Folder(Tools.publicContext, string)
+            string.startsWith("folder(") && string.endsWith(')') -> Folder(string)
             else -> App[string]
         }
     }
@@ -51,7 +51,7 @@ object Dock {
                 val string = data[++i]
                 return when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
-                    string.startsWith("folder(") && string.endsWith(')') -> Folder(Tools.publicContext, string)
+                    string.startsWith("folder(") && string.endsWith(')') -> Folder(string)
                     else -> App[string]!!
                 }
             }

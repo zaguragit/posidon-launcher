@@ -11,13 +11,24 @@ import posidon.launcher.storage.Settings
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean>() {
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
     private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
+    val deleted = Settings.getStrings("feed:deleted_articles")
 
     override fun doInBackground(vararg Units: Unit): Boolean? {
+        val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+        val deletedIter = deleted.iterator()
+        for (article in deletedIter) {
+            val day = article.substringBefore(':').toDouble()
+            if (abs(day - today) > 4) deletedIter.remove()
+        }
+        Settings.apply()
         for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
             if (!TextUtils.isEmpty(u)) {
                 val domain: String
@@ -70,7 +81,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
     }
 
     interface Listener {
-        fun onFinished(feedModels: List<FeedItem>)
+        fun onFinished(feedModels: ArrayList<FeedItem>)
     }
 
     fun urlToName(url: String): String {
@@ -102,8 +113,16 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                 if (eventType == XmlPullParser.END_TAG) {
                     if (name.equals("item", ignoreCase = true) || name.equals("entry", ignoreCase = true)) {
                         isItem = 0
-                        if (title != null && link != null)
-                            feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                        if (title != null && link != null) {
+                            //feedItem.title + feedItem.link
+                            if (Settings["feed:delete_articles", false]) {
+                                var show = true
+                                for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
+                                    show = false; break
+                                }
+                                if (show) feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                            } else feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                        }
                         title = null
                         link = null
                         img = null

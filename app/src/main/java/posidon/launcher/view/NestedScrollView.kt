@@ -1,9 +1,12 @@
 package posidon.launcher.view
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 
 class NestedScrollView : NestedScrollView {
 
@@ -16,17 +19,34 @@ class NestedScrollView : NestedScrollView {
     override fun onOverScrolled(scrollX: Int, scrollY: Int, clampedX: Boolean, clampedY: Boolean) {
         val oldScrollY = this.scrollY
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
-        if (clampedY && scrollY == 0 && oldScrollY == 0 && superOldScrollY == 0 && canScrollVertically(1) && pointerCount == 1)
-            onTopOverScroll()
+        println(System.currentTimeMillis() - timeSincePress)
+        if (clampedY &&
+            scrollY == 0 &&
+            oldScrollY == 0 &&
+            superOldScrollY == 0 &&
+            pointerCount == 1 &&
+            System.currentTimeMillis() - timeSincePress < 240) onTopOverScroll()
+    }
+
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        println("TT2")
+        if (ev.action == MotionEvent.ACTION_MOVE && scrollY > superOldScrollY) {
+            superOldScrollY = scrollY
+        }
+        pointerCount = ev.pointerCount
+        return super.onTouchEvent(ev)
+    }
+
+    private var timeSincePress = 0L
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            timeSincePress = System.currentTimeMillis()
+            superOldScrollY = scrollY
+        }
+        pointerCount = ev.pointerCount
+        return super.onInterceptTouchEvent(ev)
     }
 
     private var superOldScrollY = 0
     private var pointerCount = 0
-
-    override fun dispatchTouchEvent(e: MotionEvent): Boolean {
-        if ((e.action == MotionEvent.ACTION_MOVE && scrollY > superOldScrollY) || e.action == MotionEvent.ACTION_DOWN)
-            superOldScrollY = scrollY
-        pointerCount = e.pointerCount
-        return super.dispatchTouchEvent(e)
-    }
 }

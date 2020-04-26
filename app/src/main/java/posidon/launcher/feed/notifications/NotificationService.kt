@@ -30,6 +30,7 @@ class NotificationService : NotificationListenerService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         instance = this
+        if (Tools.publicContext == null) Tools.publicContext = baseContext
         if (!Settings.isInitialized) Settings.init(baseContext)
         /*SwipeToDeleteCallback.swipeListener = object : SwipeListener {
             override fun onSwipe(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
@@ -147,7 +148,7 @@ class NotificationService : NotificationListenerService() {
             val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
             var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = Tools.publicContext.packageManager.getApplicationLabel(Tools.publicContext.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             var icon: Drawable? = null
@@ -155,7 +156,7 @@ class NotificationService : NotificationListenerService() {
                 icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = Tools.publicContext.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.animate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -182,7 +183,7 @@ class NotificationService : NotificationListenerService() {
             var bigPic: Drawable? = null
             val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
             if (b != null) {
-                try { bigPic = BitmapDrawable(Tools.publicContext.resources, b) }
+                try { bigPic = BitmapDrawable(Tools.publicContext!!.resources, b) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             return Notification(
@@ -215,7 +216,7 @@ class NotificationService : NotificationListenerService() {
                 icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = Tools.publicContext.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.animate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -224,7 +225,7 @@ class NotificationService : NotificationListenerService() {
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = Tools.publicContext.packageManager.getApplicationLabel(Tools.publicContext.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
 
@@ -249,9 +250,9 @@ class NotificationService : NotificationListenerService() {
                         ColorDrawable(color),
                         GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    val marginX = (Settings["feed:card_margin_x", 16] * Tools.publicContext.resources.displayMetrics.density).toInt()
+                    val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
                     setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
-                    setLayerInset(1, Tools.getDisplayWidth(Tools.publicContext) - 136.dp.toInt() - marginX * 2, 0, 0, 0)
+                    setLayerInset(1, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0, 0, 0)
                 }
                 Main.instance.findViewById<ImageView>(R.id.musicPrev).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)

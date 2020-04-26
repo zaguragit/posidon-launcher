@@ -179,7 +179,7 @@ object ItemLongPress {
                     folderWindow.dismiss()
                     var data = Settings["dock", ""].split("\n").toTypedArray()
                     if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                    val f = Folder(context, data[i])
+                    val f = Folder(data[i])
                     f.apps.removeAt(folderIndex)
                     data[i] = if (f.apps.size == 1) f.apps[0]!!.packageName + "/" + f.apps[0]!!.name else f.toString()
                     Settings["dock"] = TextUtils.join("\n", data)

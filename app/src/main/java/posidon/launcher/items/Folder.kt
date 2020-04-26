@@ -8,11 +8,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import posidon.launcher.items.App.Companion.get
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import java.util.*
 import kotlin.math.min
 
-class Folder(context: Context, string: String) : LauncherItem() {
+class Folder(string: String) : LauncherItem() {
 
     val apps: MutableList<App?> = ArrayList()
 
@@ -114,7 +115,7 @@ class Folder(context: Context, string: String) : LauncherItem() {
             val app = get(a[i])
             if (app != null) apps.add(app)
         }
-        icon = BitmapDrawable(context.resources, icon(context))
+        icon = BitmapDrawable(Tools.publicContext!!.resources, icon(Tools.publicContext!!))
     }
 
     companion object {

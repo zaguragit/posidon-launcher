@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.feed.news.RemovedArticles
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
@@ -61,14 +62,9 @@ class CustomHome : AppCompatActivity() {
         dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
 
 
-        val showBehindDock = findViewById<Switch>(R.id.showBehindDock)
-        showBehindDock.isChecked = Settings["feed:show_behind_dock", false]
-
-        val feedswitch = findViewById<Switch>(R.id.feedenabled)
-        feedswitch.isChecked = Settings["feed:enabled", true]
-
-        val hidefeedswitch = findViewById<Switch>(R.id.hidefeed)
-        hidefeedswitch.isChecked = Settings["hidefeed", false]
+        findViewById<Switch>(R.id.showBehindDock).isChecked = Settings["feed:show_behind_dock", false]
+        findViewById<Switch>(R.id.feedenabled).isChecked = Settings["feed:enabled", true]
+        findViewById<Switch>(R.id.hidefeed).isChecked = Settings["hidefeed", false]
 
         val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
         val maxWidth = Settings["feed:max_img_width", Tools.getDisplayWidth(this)]
@@ -82,7 +78,7 @@ class CustomHome : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val newVal: Int = Tools.getDisplayWidth(this@CustomHome) / 6 * (progress + 1)
                 newsCardMaxImageWidthNum.text = newVal.toString()
-                Settings.putNotSave("feed:max_img_width", newVal)
+                Settings["feed:max_img_width"] = newVal
             }
         })
 
@@ -117,6 +113,8 @@ class CustomHome : AppCompatActivity() {
         findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings["feed:card_img_enabled", true]
         findViewById<Switch>(R.id.newscardblackgradient).isChecked = Settings["feed:card_text_shadow", true]
 
+        findViewById<Switch>(R.id.delete_articles).isChecked = Settings["feed:delete_articles", false]
+
         findViewById<View>(R.id.notificationtitlecolorprev).background = ColorTools.colorcircle(Settings["notificationtitlecolor", -0xeeeded])
         findViewById<View>(R.id.notificationtxtcolorprev).background = ColorTools.colorcircle(Settings["notificationtxtcolor", -0xdad9d9])
         findViewById<View>(R.id.notificationbgprev).background = ColorTools.colorcircle(Settings["notificationbgcolor", -0x1])
@@ -127,9 +125,7 @@ class CustomHome : AppCompatActivity() {
         findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", -0xdad9d9])
 
         findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
-        findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) {
-            "os" -> 0; "byApp" -> 1; else -> 2
-        }
+        findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
 
         Main.customized = true
     }
@@ -143,7 +139,7 @@ class CustomHome : AppCompatActivity() {
     fun pickNotificationActionBGColor(v: View) { ColorTools.pickColor(this, "notificationActionBGColor", 0x88e0e0e0.toInt()) }
     fun pickNotificationActionTextColor(v: View) { ColorTools.pickColor(this, "notificationActionTextColor", -0xdad9d9) }
 
-    fun chooseFeeds(v: View) { startActivity(Intent(this, FeedChooser::class.java)) }
+    fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
     fun chooseLayouts(v: View) {
         val dialog = BottomSheetDialog(this, R.style.bottomsheet)
         dialog.setContentView(R.layout.custom_home_feed_card_layout_chooser)
@@ -165,6 +161,7 @@ class CustomHome : AppCompatActivity() {
         }
         dialog.show()
     }
+    fun seeRemovedArticles(v: View) = startActivity(Intent(this, RemovedArticles::class.java))
 
     override fun onPause() {
         Main.customized = true
@@ -172,14 +169,13 @@ class CustomHome : AppCompatActivity() {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
             putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
+            putNotSave("feed:delete_articles", findViewById<Switch>(R.id.delete_articles).isChecked)
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
             putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
             putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
-            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) {
-                0 -> "os"; 1 -> "byApp"; else -> "none"
-            })
+            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) { 0 -> "os"; 1 -> "byApp"; else -> "none" })
             apply()
         }
         super.onPause()

@@ -129,6 +129,10 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
+            android:name=".feed.news.RemovedArticles"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings" />
+        <activity
             android:name=".customizations.CustomSearch"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
@@ -217,8 +221,11 @@
         <activity
             android:name=".items.AddShortcutActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
             android:theme="@style/floatingScreen">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
             </intent-filter>
         </activity>

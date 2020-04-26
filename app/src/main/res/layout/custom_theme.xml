@@ -169,7 +169,7 @@
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_color"
                         android:text="@string/recolor_white_bgs"/>
                     <posidon.launcher.view.Switch
                         android:id="@+id/recolorWhiteBGsSwitch"

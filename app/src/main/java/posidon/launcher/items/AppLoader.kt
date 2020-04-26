@@ -73,7 +73,12 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             } else app.icon = pacslist[i].loadIcon(packageManager)
             app.packageName = pacslist[i].activityInfo.packageName
             app.name = pacslist[i].activityInfo.name
-            app.label = Settings[app.packageName + "/" + app.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
+            var customLabel = Settings[app.packageName + "/" + app.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
+            if (customLabel.isEmpty()) {
+                Settings[app.packageName + "/" + app.name + "?label"] = pacslist[i].loadLabel(packageManager).toString()
+                customLabel = pacslist[i].loadLabel(packageManager).toString()
+            }
+            app.label = customLabel
             var intres = 0
             val iconResource = ThemeTools.getResourceName(themeRes, iconpackName, "ComponentInfo{" + app.packageName + "/" + app.name + "}")
             if (iconResource != null) intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
@@ -112,7 +117,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             } else tmpApps[i - skippedapps] = app
         }
         tmpApps = tmpApps.copyOf(tmpApps.size - skippedapps)
-        if (Settings["drawer:sorting", 1] == 1) Sort.colorSort(tmpApps)
+        if (Settings["drawer:sorting", 0] == 1) Sort.colorSort(tmpApps)
         else {
             var i = 0
             var j: Int

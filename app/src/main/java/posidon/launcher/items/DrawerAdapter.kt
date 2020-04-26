@@ -12,6 +12,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer {
 
@@ -20,9 +21,9 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
     override fun getItemId(i: Int): Long = 0
 
     var appSize = when (Settings["icsize", 1]) {
-        0 -> (Tools.publicContext.resources.displayMetrics.density * 64).toInt()
-        2 -> (Tools.publicContext.resources.displayMetrics.density * 84).toInt()
-        else -> (Tools.publicContext.resources.displayMetrics.density * 74).toInt()
+        0 -> 64.dp.toInt()
+        2 -> 84.dp.toInt()
+        else -> 74.dp.toInt()
     }
 
     internal class ViewHolder {
@@ -33,7 +34,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
         val viewHolder: ViewHolder
-        val li = Tools.publicContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
             else li.inflate(R.layout.list_item, parent, false).apply {
