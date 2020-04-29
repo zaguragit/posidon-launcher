@@ -2,6 +2,7 @@
 ![kotlin_percentage](https://img.shields.io/badge/kotlin-100%25-6779F6)
 ![andorid_min_version](https://img.shields.io/badge/minSdk-21-3DDC84)
 ![license](https://img.shields.io/github/license/leoxshn/posidonLauncher?color=ff8800)
+![Twitter Follow](https://img.shields.io/twitter/follow/posidon?style=social)
 
 This is a one-page launcher with an rss feed.
 
