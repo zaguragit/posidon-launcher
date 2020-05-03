@@ -23,3 +23,6 @@ The less dependencies, the better.
 Only add dependencies if they're essential.
 
 Google services dependencies are forbidden
+
+### Performance stuff
+Using the "inline" word with functions is good, specially if they're small.

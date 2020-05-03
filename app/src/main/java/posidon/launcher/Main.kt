@@ -3,7 +3,6 @@ package posidon.launcher
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -16,7 +15,6 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
 import android.media.AudioManager
@@ -30,16 +28,14 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import kotlinx.android.synthetic.main.quickstep.*
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
-import posidon.launcher.external.quickstep.QuickStepService
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -66,6 +62,7 @@ import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.system.exitProcess
@@ -410,24 +407,35 @@ class Main : AppCompatActivity() {
                     override fun onAnimationStart(animation: Animator?) {}
                     override fun onAnimationEnd(animation: Animator?) {
                         feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                        wasHiddenLastTime = true
+                    }
+                }
+                val fadeInAnimListener = object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                    override fun onAnimationEnd(animation: Animator?) {
+                        wasHiddenLastTime = false
                     }
                 }
                 desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
                     val a = 6.dp
-                    if (wasHiddenLastTime && y > a) {
-                        feedRecycler.translationX = 0f
-                        feedRecycler.animate().alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.setListener(null).duration = 200L
-                        wasHiddenLastTime = false
-                    } else if (!wasHiddenLastTime && y < a && oldY >= a) {
-                        feedRecycler.animate().alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.setListener(fadeOutAnimListener).duration = 180L
-                        wasHiddenLastTime = true
+                    if (y > a) {
+                        if (wasHiddenLastTime) {
+                            feedRecycler.translationX = 0f
+                            feedRecycler.animate().setListener(fadeInAnimListener).alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.duration = 200L
+                        }
+                    } else if (y < a && oldY >= a) {
+                        if (!wasHiddenLastTime) {
+                            feedRecycler.animate().setListener(fadeOutAnimListener).alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.duration = 180L
+                        }
                     }
                     if (!LauncherMenu.isActive) {
                         if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
                             val distance = oldY - y
                             if (y < a || distance > a) {
                                 behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.setHideable(false)
+                                behavior.isHideable = false
                             } else if (distance < -a) {
                                 behavior.isHideable = true
                                 behavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -444,11 +452,11 @@ class Main : AppCompatActivity() {
                 desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
                     if (!LauncherMenu.isActive) {
                         if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
-                            val a = 6 * resources.displayMetrics.density
+                            val a = 6.dp
                             val distance = oldY - y
-                            if ((y < a || distance > a)) {
+                            if (y < a || distance > a) {
                                 behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.setHideable(false)
+                                behavior.isHideable = false
                             } else if (distance < -a) {
                                 behavior.isHideable = true
                                 behavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -551,9 +559,10 @@ class Main : AppCompatActivity() {
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("posidonLauncher", "uncaught exception", throwable)
+            Settings.applyNow()
             startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
-            Process.killProcess(Process.myPid());
-            exitProcess(0);
+            Process.killProcess(Process.myPid())
+            exitProcess(0)
         }
 
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -584,7 +593,7 @@ class Main : AppCompatActivity() {
         behavior = BottomSheetBehavior.from<View>(findViewById(R.id.drawer))
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         behavior.isHideable = false
-        behavior.setBottomSheetCallback(object : BottomSheetCallback() {
+        behavior.addBottomSheetCallback(object : BottomSheetCallback() {
 
             val things = IntArray(5)
             val radii = FloatArray(8)
@@ -604,7 +613,7 @@ class Main : AppCompatActivity() {
                 things[2] = Settings["dock:background_type", 0]
                 things[3] = Settings["dock:background_color", -0x78000000]
                 things[4] = if (canBlurWall(this@Main)) 1 else 0
-                val tr = things[1] * resources.displayMetrics.density
+                val tr = things[1].dp
                 radii[0] = tr
                 radii[1] = tr
                 radii[2] = tr
@@ -630,7 +639,7 @@ class Main : AppCompatActivity() {
                         }
                         if (things[4] == 1) {
                             val repetitive = (slideOffset * 255).toInt() * things[0]
-                            for (i in 0 until things[0]) blurBg.getDrawable(i).alpha = min(repetitive - (i shl 8) + i, 255)
+                            for (i in 0 until things[0]) blurBg.getDrawable(i).alpha = max(min(repetitive - (i shl 8) + i, 255), 0)
                         }
                     } catch (e: Exception) {}
                 } else if (!Settings["feed:show_behind_dock", false]) {
@@ -698,6 +707,7 @@ class Main : AppCompatActivity() {
                             notifications.visibility = VISIBLE
                         }
                     }
+                    notifications.recycledViewPool.clear()
                     notifications.adapter = NotificationAdapter(this@Main, window)
                 }} catch (e: Exception) { e.printStackTrace() }
             }
@@ -845,10 +855,12 @@ class Main : AppCompatActivity() {
         }
         if (tmp != Tools.navbarHeight || customized) {
             setCustomizations()
-            try { notifications.adapter!!.notifyDataSetChanged() }
+            try {
+                notifications.recycledViewPool.clear()
+                notifications.adapter!!.notifyDataSetChanged()
+            }
             catch (e: Exception) { e.printStackTrace() }
         } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) for (app in apps) animate(app!!.icon!!)
-        System.gc()
     }
 
     override fun onPause() {
@@ -862,7 +874,6 @@ class Main : AppCompatActivity() {
             findViewById<View>(R.id.arrowUp).visibility = GONE
             findViewById<View>(R.id.parentNotification).background.alpha = 255
         }
-        System.gc()
     }
 
     override fun onStop() {

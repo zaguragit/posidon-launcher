@@ -14,7 +14,6 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
 import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,7 +21,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.LinearLayoutManager
+import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
@@ -95,7 +94,7 @@ object ItemLongPress {
                 (appinfobtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
                 (editBtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
             }
-            if (!showRemove) removeBtn.visibility = GONE else {
+            if (!showRemove) removeBtn.visibility = View.GONE else {
                 removeBtn.setOnClickListener { v ->
                     window.dismiss()
                     methods.onRemove(v)
@@ -135,7 +134,7 @@ object ItemLongPress {
         }
     }
 
-	fun dock(context: Context, app: App, i: Int) = OnLongClickListener { view ->
+	fun dock(context: Context, app: App, i: Int) = View.OnLongClickListener { view ->
         if (currentPopup == null) {
             val location = IntArray(2)
             val icon = view.findViewById<View>(R.id.iconimg)
@@ -153,7 +152,7 @@ object ItemLongPress {
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
             popupWindow.isFocusable = false
-            val myShadow = DragShadowBuilder(icon)
+            val myShadow = View.DragShadowBuilder(icon)
             val clipData = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
             var data = Settings["dock", ""].split("\n").toTypedArray()
@@ -168,7 +167,7 @@ object ItemLongPress {
         true
     }
 
-	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow) = OnLongClickListener { view ->
+	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow) = View.OnLongClickListener { view ->
         if (currentPopup == null) {
             val location = IntArray(2)
             view.getLocationOnScreen(location)
@@ -202,7 +201,7 @@ object ItemLongPress {
             }, false, app!!)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
-            val myShadow = DragShadowBuilder(icon)
+            val myShadow = View.DragShadowBuilder(icon)
             val data = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)
             val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
@@ -215,7 +214,7 @@ object ItemLongPress {
         true
     }
 
-    fun drawer(context: Context, app: App) = OnLongClickListener {
+    fun drawer(context: Context, app: App) = View.OnLongClickListener {
         if (currentPopup == null) try {
             val icon = it.findViewById<View>(R.id.iconimg)
             val location = IntArray(2)
@@ -225,7 +224,7 @@ object ItemLongPress {
             }, false, app)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
-            val myShadow = DragShadowBuilder(icon)
+            val myShadow = View.DragShadowBuilder(icon)
             val data = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
             val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
@@ -268,7 +267,7 @@ object ItemLongPress {
         true
     }
 
-	fun folder(context: Context, folder: Folder, i: Int) = OnLongClickListener { view ->
+	fun folder(context: Context, folder: Folder, i: Int) = View.OnLongClickListener { view ->
         if (currentPopup == null) {
             val location = IntArray(2)
             val icon = view.findViewById<View>(R.id.iconimg)
@@ -289,7 +288,7 @@ object ItemLongPress {
                     val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
                     val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
                     editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(folder.icon)
-                    editContent.findViewById<View>(R.id.edit).visibility = GONE
+                    editContent.findViewById<View>(R.id.edit).visibility = View.GONE
                     editLabel.setText(folder.label)
                     editWindow.setOnDismissListener {
                         folder.label = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
@@ -301,7 +300,7 @@ object ItemLongPress {
                     editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
                 }
             }, true, folder)
-            val myShadow = DragShadowBuilder(icon)
+            val myShadow = View.DragShadowBuilder(icon)
             val clipData = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(folder, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
             var data = Settings["dock", ""].split("\n").toTypedArray()

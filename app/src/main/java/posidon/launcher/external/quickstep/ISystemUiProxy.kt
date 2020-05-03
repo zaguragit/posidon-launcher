@@ -27,8 +27,7 @@ interface ISystemUiProxy : IInterface {
                 }
                 TRANSACTION_startScreenPinning -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Int
-                    _arg0 = data.readInt()
+                    val _arg0: Int = data.readInt()
                     startScreenPinning(_arg0)
                     reply!!.writeNoException()
                     true
@@ -41,8 +40,7 @@ interface ISystemUiProxy : IInterface {
                 }
                 TRANSACTION_onOverviewShown -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Boolean
-                    _arg0 = 0 != data.readInt()
+                    val _arg0: Boolean = 0 != data.readInt()
                     onOverviewShown(_arg0)
                     reply!!.writeNoException()
                     true
@@ -61,18 +59,15 @@ interface ISystemUiProxy : IInterface {
                 }
                 TRANSACTION_setNavBarButtonAlpha -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Float
-                    _arg0 = data.readFloat()
-                    val _arg1: Boolean
-                    _arg1 = 0 != data.readInt()
+                    val _arg0: Float = data.readFloat()
+                    val _arg1: Boolean = 0 != data.readInt()
                     setNavBarButtonAlpha(_arg0, _arg1)
                     reply!!.writeNoException()
                     true
                 }
                 TRANSACTION_onStatusBarMotionEvent -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: MotionEvent?
-                    _arg0 = if (0 != data.readInt()) {
+                    val _arg0: MotionEvent? = if (0 != data.readInt()) {
                         MotionEvent.CREATOR.createFromParcel(data)
                     } else {
                         null
@@ -83,38 +78,29 @@ interface ISystemUiProxy : IInterface {
                 }
                 TRANSACTION_onAssistantProgress -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Float
-                    _arg0 = data.readFloat()
+                    val _arg0: Float = data.readFloat()
                     onAssistantProgress(_arg0)
                     reply!!.writeNoException()
                     true
                 }
                 TRANSACTION_onAssistantGestureCompletion -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Float
-                    _arg0 = data.readFloat()
+                    val _arg0: Float = data.readFloat()
                     onAssistantGestureCompletion(_arg0)
                     reply!!.writeNoException()
                     true
                 }
                 TRANSACTION_startAssistant -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Bundle?
-                    _arg0 = if (0 != data.readInt()) {
-                        Bundle.CREATOR.createFromParcel(data)
-                    } else {
-                        null
-                    }
+                    val _arg0: Bundle? = if (0 != data.readInt()) Bundle.CREATOR.createFromParcel(data) else null
                     startAssistant(_arg0)
                     reply!!.writeNoException()
                     true
                 }
                 TRANSACTION_monitorGestureInput -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: String?
-                    _arg0 = data.readString()
-                    val _arg1: Int
-                    _arg1 = data.readInt()
+                    val _arg0: String? = data.readString()
+                    val _arg1: Int = data.readInt()
                     val _result = monitorGestureInput(_arg0, _arg1)
                     reply!!.writeNoException()
                     if (_result != null) {
@@ -127,8 +113,7 @@ interface ISystemUiProxy : IInterface {
                 }
                 TRANSACTION_notifyAccessibilityButtonClicked -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Int
-                    _arg0 = data.readInt()
+                    val _arg0: Int = data.readInt()
                     notifyAccessibilityButtonClicked(_arg0)
                     reply!!.writeNoException()
                     true

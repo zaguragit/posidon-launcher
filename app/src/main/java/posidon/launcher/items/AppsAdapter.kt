@@ -29,7 +29,7 @@ class AppsAdapter(private val context: Context, private val apps: Array<App>) : 
         if (convertView == null) {
             if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
                 convertView = li.inflate(R.layout.list_item, null)
-                if (Settings["drawer:columns", 4] == 2) (convertView.findViewById<View>(R.id.icontxt) as TextView).textSize = 18f
+                if (Settings["drawer:columns", 4] == 2) convertView.findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
             viewHolder = ViewHolder()
             viewHolder.icon = convertView.findViewById(R.id.iconimg)

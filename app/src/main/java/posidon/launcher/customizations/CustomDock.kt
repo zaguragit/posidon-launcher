@@ -70,16 +70,16 @@ class CustomDock : AppCompatActivity() {
         findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["dock:background_color", -0x78000000])
         findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["dockLabelColor", -0x11111112])
 
-        (findViewById<View>(R.id.radiusSlider) as SeekBar).progress = Settings["dockradius", 30]
+        findViewById<SeekBar>(R.id.radiusSlider).progress = Settings["dockradius", 30]
 
         val bottompadding = findViewById<SeekBar>(R.id.bottompaddingslider)
         bottompadding.progress = Settings["dockbottompadding", 10]
-        (findViewById<View>(R.id.bottompadding) as TextView).text = Settings["dockbottompadding", 10].toString()
+        findViewById<TextView>(R.id.bottompadding).text = Settings["dockbottompadding", 10].toString()
         bottompadding.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                (findViewById<View>(R.id.bottompadding) as TextView).text = progress.toString()
+                findViewById<TextView>(R.id.bottompadding).text = progress.toString()
                 Settings["dockbottompadding"] = progress
             }
         })
@@ -95,7 +95,7 @@ class CustomDock : AppCompatActivity() {
             putNotSave("dock:background_type", findViewById<Spinner>(R.id.animationOptions).selectionI)
             putNotSave("dockicsize", icsize!!.progress)
             putNotSave("dockLabelsEnabled", findViewById<Switch>(R.id.labelsEnabled).isChecked)
-            putNotSave("dockradius", (findViewById<View>(R.id.radiusSlider) as SeekBar).progress)
+            putNotSave("dockradius", findViewById<SeekBar>(R.id.radiusSlider).progress)
             apply()
         }
         super.onPause()

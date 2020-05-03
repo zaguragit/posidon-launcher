@@ -6,8 +6,10 @@ import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import posidon.launcher.R
@@ -36,6 +38,7 @@ class SwipeableLayout(
     init {
         setCardBackgroundColor(0)
         cardElevation = 0f
+        preventCornerOverlap = true
         addView(backView)
         addView(frontView)
         closeIcon.run {
@@ -139,10 +142,10 @@ class SwipeableLayout(
     override fun onInterceptTouchEvent(ev: MotionEvent) = when (ev.action) {
         MotionEvent.ACTION_MOVE -> {
             xOffset = ev.x - initX
-            if (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat())) true
+            if (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat()) && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) true
             else super.onInterceptTouchEvent(ev)
         }
-        MotionEvent.ACTION_UP -> if (abs(xOffset) < 8.dp) super.onInterceptTouchEvent(ev) else true
+        MotionEvent.ACTION_UP -> if (abs(xOffset) < 8.dp || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) super.onInterceptTouchEvent(ev) else true
         else -> {
             if (ev.action == MotionEvent.ACTION_DOWN) {
                 initX = ev.x
@@ -153,4 +156,20 @@ class SwipeableLayout(
     }
 
     fun setIconColor(value: Int) { closeIcon.imageTintList = ColorStateList.valueOf(value) }
+
+    companion object {
+        private fun checkForHorizontalScroll(ev: MotionEvent, viewGroup: ViewGroup): Boolean {
+            for (i in 0 until viewGroup.childCount) {
+                val child = viewGroup.getChildAt(i)
+                if (child is ViewGroup &&
+                    child.x <= ev.x && child.x + child.measuredWidth >= ev.x &&
+                    child.y <= ev.y && child.y + child.measuredHeight >= ev.y) {
+                    return if (child is HorizontalScrollView && (child.canScrollHorizontally(1) || child.canScrollHorizontally(-1))) {
+                        true
+                    } else checkForHorizontalScroll(ev, child)
+                }
+            }
+            return false
+        }
+    }
 }

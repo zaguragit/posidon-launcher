@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.hasNavbar
 
 @TargetApi(Build.VERSION_CODES.Q)

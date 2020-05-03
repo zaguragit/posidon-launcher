@@ -1,6 +1,5 @@
 package posidon.launcher.feed.notifications
 
-import android.app.Activity
 import android.app.RemoteInput
 import android.content.Context
 import android.content.Intent
@@ -9,8 +8,10 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.os.Bundle
-import android.view.*
-import android.view.inputmethod.EditorInfo
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.cardview.widget.CardView
@@ -85,8 +86,10 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                 v1.apply {
                     val padding = 8.dp.toInt()
                     when {
-                        notificationI == 0 || (notificationI == 1 && groups[i][0].isSummary) ->
-                            setPadding(padding, padding, padding, 0)
+                        notificationI == 0 || (notificationI == 1 && groups[i][0].isSummary) -> {
+                            if (notificationI == groups[i].lastIndex) setPadding(padding, padding, padding, padding)
+                            else setPadding(padding, padding, padding, 0)
+                        }
                         notificationI == groups[i].lastIndex -> setPadding(padding, 0, padding, padding)
                         else -> setPadding(padding, 0, padding, 0)
                     }
@@ -125,6 +128,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                                                 if (!hasFocus) {
                                                     text.clear()
                                                     this@lin.visibility = View.GONE
+                                                    v1.findViewById<View>(R.id.bottomSeparator).visibility = View.GONE
                                                     imm.hideSoftInputFromWindow(windowToken, 0)
                                                 }
                                             }
@@ -135,6 +139,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                                             setOnClickListener {
                                                 textArea.text.clear()
                                                 this@lin.visibility = View.GONE
+                                                v1.findViewById<View>(R.id.bottomSeparator).visibility = View.GONE
                                             }
                                         }
                                         findViewById<ImageView>(R.id.replySend).apply {
@@ -158,6 +163,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                                                 action.actionIntent.send(context, 0, intent)
                                                 textArea.text.clear()
                                                 this@lin.visibility = View.GONE
+                                                v1.findViewById<View>(R.id.bottomSeparator).visibility = View.GONE
                                             }
                                         }
                                     }

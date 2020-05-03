@@ -2,7 +2,6 @@ package posidon.launcher.feed.news
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -13,12 +12,12 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.view.LinearLayoutManager
 
 class RemovedArticles : AppCompatActivity() {
 
@@ -85,15 +84,15 @@ class RemovedArticles : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, i: Int) {
+            val str = removedList[i]
             holder.button.setOnClickListener {
-                removedList.removeAt(i)
+                removedList.remove(str)
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(i, removedList.size - i)
             }
-            val str = removedList[i]
             val a = str.indexOf(':', str.indexOf(':') + 1)
             val b = str.indexOf(':', a + 1)
-            holder.label.text = removedList[i].substring(if (b == -1) a + 1 else b + 1)
+            holder.label.text = str.substring(if (b == -1) a + 1 else b + 1)
         }
     }
 }

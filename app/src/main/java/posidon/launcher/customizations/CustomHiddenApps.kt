@@ -37,7 +37,7 @@ class CustomHiddenApps : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         pm = packageManager
-        setapps(findViewById<View>(R.id.list) as ListView)
+        setapps(findViewById(R.id.list))
     }
 
     private fun setapps(list: ListView) {

@@ -68,11 +68,11 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
             val swipeableLayout = holder.card.findViewById<SwipeableLayout>(R.id.separator)
             swipeableLayout.reset()
             swipeableLayout.onSwipeAway = {
-                val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
-                Settings.getStrings("feed:deleted_articles").add("$day:" + feedItem.link + ':' + feedItem.title)
-                feedModels.removeAt(i)
+                feedModels.remove(feedItem)
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(i, feedModels.size - i)
+                val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+                Settings.getStrings("feed:deleted_articles").add("$day:" + feedItem.link + ':' + feedItem.title)
                 Settings.apply()
             }
         }

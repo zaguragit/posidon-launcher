@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 internal object PrivateStorage {
+
     fun writeData(data: Serializable, context: Context, path: String) {
         try {
             val fos = context.openFileOutput(path, Context.MODE_PRIVATE)

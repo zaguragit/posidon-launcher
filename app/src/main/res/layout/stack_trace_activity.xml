@@ -39,17 +39,12 @@
             android:background="@drawable/button_bg_round"/>
 
         <TextView
-            android:id="@+id/throwable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_marginTop="32dp"/>
-        <TextView
             android:id="@+id/stackTrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:textColor="#545556"
             android:textSize="16sp"
-            android:layout_marginTop="15dp"/>
+            android:fontFamily="@font/roboto_mono"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

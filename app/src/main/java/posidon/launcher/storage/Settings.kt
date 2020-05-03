@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.concurrent.thread
 
 object Settings {
 
@@ -22,28 +23,23 @@ object Settings {
         private set
 
     inline operator fun set(key: String, value: Int) {
-        putNotSave(key, value)
-        apply()
+        putNotSave(key, value); apply()
     }
 
     inline operator fun set(key: String, value: Float) {
-        putNotSave(key, value)
-        apply()
+        putNotSave(key, value); apply()
     }
 
     inline operator fun set(key: String, value: Boolean) {
-        putNotSave(key, value)
-        apply()
+        putNotSave(key, value); apply()
     }
 
     inline operator fun set(key: String, value: String?) {
-        putNotSave(key, value)
-        apply()
+        putNotSave(key, value); apply()
     }
 
     inline operator fun set(key: String, value: ArrayList<String>) {
-        putNotSave(key, value)
-        apply()
+        putNotSave(key, value); apply()
     }
 
     fun putNotSave(key: String, value: Int) { ints[key] = value }
@@ -55,7 +51,20 @@ object Settings {
     }
     fun putNotSave(key: String, value: ArrayList<String>) { lists[key] = value }
 
-    fun apply() = PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
+    private var saveRequests = 0
+    private var isBeingSaved = false
+    fun applyNow() {
+        saveRequests++
+        if (!isBeingSaved) {
+            isBeingSaved = true
+            while (saveRequests != 0) {
+                PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
+                saveRequests--
+            }
+            isBeingSaved = false
+        }
+    }
+    inline fun apply() { thread { applyNow() }}
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default
@@ -95,24 +104,22 @@ object Settings {
             SettingsFile(ints, floats, bools, strings, lists), context,
             "${SimpleDateFormat("MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
 
-    fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context, uri).let {
-        if (it != null) {
-            if (it is SettingsFile) {
-                ints = it.ints
-                floats = it.floats
-                bools = it.bools
-                strings = it.strings
-                lists = it.lists
-                Main.customized = true
-                Main.shouldSetApps = true
-            } else if (it is posidon.launcher.tools.Settings.SettingsFile) {
-                ints = it.ints
-                floats = it.floats
-                bools = it.bools
-                strings = it.strings
-                Main.customized = true
-                Main.shouldSetApps = true
-            }
+    fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context, uri)?.let {
+        if (it is SettingsFile) {
+            ints = it.ints
+            floats = it.floats
+            bools = it.bools
+            strings = it.strings
+            lists = it.lists
+            Main.customized = true
+            Main.shouldSetApps = true
+        } else if (it is posidon.launcher.tools.Settings.SettingsFile) {
+            ints = it.ints
+            floats = it.floats
+            bools = it.bools
+            strings = it.strings
+            Main.customized = true
+            Main.shouldSetApps = true
         }
     }
 

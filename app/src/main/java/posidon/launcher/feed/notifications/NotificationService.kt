@@ -32,18 +32,6 @@ class NotificationService : NotificationListenerService() {
         instance = this
         if (Tools.publicContext == null) Tools.publicContext = baseContext
         if (!Settings.isInitialized) Settings.init(baseContext)
-        /*SwipeToDeleteCallback.swipeListener = object : SwipeListener {
-            override fun onSwipe(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-                try {
-                    val pos = viewHolder!!.adapterPosition
-                    val group = notificationGroups[pos]
-                    for (notification in group) cancelNotification(notification.key)
-                    group.clear()
-                    notificationGroups.removeAt(pos)
-                } catch (e: Exception) { e.printStackTrace() }
-                onUpdate()
-            }
-        }*/
         update()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -136,7 +124,14 @@ class NotificationService : NotificationListenerService() {
                     }
                     if (!hasMusic) Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
                 } else Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
-            } catch (e: Exception) { e.printStackTrace() }
+            }
+            catch (e: Exception) { e.printStackTrace() }
+            catch (e: OutOfMemoryError) {
+                groups.clear()
+                notificationGroups.clear()
+                notificationsAmount2 = 0
+                System.gc()
+            }
             notificationGroups = groups
             notificationsAmount = notificationsAmount2
             onUpdate()
@@ -210,7 +205,6 @@ class NotificationService : NotificationListenerService() {
             private set
 
         fun handleMusicNotification(notification: StatusBarNotification) {
-            println("handling music notification")
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
                 icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
