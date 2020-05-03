@@ -28,7 +28,7 @@ import posidon.launcher.view.SwipeableLayout
 
 class NotificationAdapter(private val context: Context, private val window: Window) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
-    class NotificationViewHolder(internal val view: ViewGroup, internal val card: CardView, internal val linearLayout: LinearLayout) : RecyclerView.ViewHolder(view)
+    class NotificationViewHolder(internal val view: ViewGroup, internal val card: SwipeableLayout, internal val linearLayout: LinearLayout) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val view = RelativeLayout(context)
@@ -36,18 +36,22 @@ class NotificationAdapter(private val context: Context, private val window: Wind
         val vMargin = 9.dp.toInt()
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
-        val card = CardView(context)
-        card.preventCornerOverlap = true
-        card.elevation = 0f
-        card.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        card.radius = Settings["feed:card_radius", 15].dp
-        card.setCardBackgroundColor(Settings["notificationbgcolor", -0x1])
+        val ll = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setBackgroundColor(Settings["notificationbgcolor", -0x1])
+        }
+
+        val card = SwipeableLayout(ll).apply {
+            setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
+            preventCornerOverlap = true
+            elevation = 0f
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            radius = Settings["feed:card_radius", 15].dp
+        }
         view.addView(card)
 
-        val ll = LinearLayout(context)
-        ll.orientation = LinearLayout.VERTICAL
-        ll.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        card.addView(ll)
         return NotificationViewHolder(view, card, ll)
     }
 
@@ -57,6 +61,13 @@ class NotificationAdapter(private val context: Context, private val window: Wind
             val notification = groups[i][notificationI]
             val retView: View
             val view: View = if (notification.isSummary) {
+                holder.card.onSwipeAway = {
+                    Main.instance.runOnUiThread {
+                        val iter = groups[i].iterator()
+                        for (n in iter) n.cancel()
+                        groups.removeAt(i)
+                    }
+                }
                 retView = LayoutInflater.from(context).inflate(R.layout.notification_normal_summary, null)
                 retView
             } else {
@@ -72,10 +83,10 @@ class NotificationAdapter(private val context: Context, private val window: Wind
                         val group = groups[i]
                         group.remove(notification)
                         if (group.size == 1 && group[0].isSummary) {
-                            NotificationService.instance.cancelNotification(group[0].key)
+                            group[0].cancel()
                             groups.removeAt(i)
                         }
-                        NotificationService.instance.cancelNotification(notification.key)
+                        notification.cancel()
                     }
                     catch (e: Exception) { e.printStackTrace() }
                     NotificationService.update()

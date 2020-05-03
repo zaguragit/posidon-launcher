@@ -164,7 +164,7 @@ class SwipeableLayout(
                 if (child is ViewGroup &&
                     child.x <= ev.x && child.x + child.measuredWidth >= ev.x &&
                     child.y <= ev.y && child.y + child.measuredHeight >= ev.y) {
-                    return if (child is HorizontalScrollView && (child.canScrollHorizontally(1) || child.canScrollHorizontally(-1))) {
+                    return if (child is HorizontalScrollView && (child.canScrollHorizontally(1) || child.canScrollHorizontally(-1)) || child is SwipeableLayout) {
                         true
                     } else checkForHorizontalScroll(ev, child)
                 }
