@@ -20,6 +20,10 @@ class Notification(
         catch (e: Exception) {}
     }
 
+    fun cancel() {
+        NotificationService.instance.cancelNotification(key)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
