@@ -63,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
         bg.paint.color = Settings["searchUiBg", -0x78000000]
         window.setBackgroundDrawable(bg)
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
-        (findViewById<View>(R.id.failtxt) as TextView).setTextColor(Settings["searchtxtcolor", -0x1])
+        findViewById<TextView>(R.id.failtxt).setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
         searchTxt.hint = Settings["searchhinttxt", "Search.."]
         findViewById<ImageView>(R.id.searchIcon).apply {
@@ -186,29 +186,29 @@ class SearchActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     bufferNum = operators[math[i]]!!.apply(bufferNum, java.lang.Double.valueOf(math[i + 1]))
                     findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
-                    (findViewById<View>(R.id.type) as TextView).setText(R.string.math_operation)
-                    (findViewById<View>(R.id.result) as TextView).text = "$tmp = $bufferNum"
+                    findViewById<TextView>(R.id.type).setText(R.string.math_operation)
+                    findViewById<TextView>(R.id.result).text = "$tmp = $bufferNum"
                     findViewById<View>(R.id.fail).visibility = View.GONE
                 }
             }
         } catch (e: Exception) {
             if (j == 0) {
                 findViewById<View>(R.id.fail).visibility = View.VISIBLE
-                (findViewById<View>(R.id.failtxt) as TextView).text = getString(R.string.no_results_for, string)
+                findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
             }
             if (string.contains("ip", ignoreCase = true)) {
                 stillWantIP = true
                 findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
-                (findViewById<View>(R.id.type) as TextView).setText(R.string.ip_address_external)
-                (findViewById<View>(R.id.result) as TextView).text = ""
+                findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
+                findViewById<TextView>(R.id.result).text = ""
                 Loader.text("https://checkip.amazonaws.com") {
                     if (stillWantIP) (findViewById<View>(R.id.result) as TextView).text = it.trimEnd()
                 }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (string.contains("pi", ignoreCase = true) || string.contains("π", ignoreCase = true)) {
                 findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
-                (findViewById<View>(R.id.type) as TextView).setText(R.string.value_of_pi)
-                (findViewById<View>(R.id.result) as TextView).text = "\u03c0 = " + Math.PI
+                findViewById<TextView>(R.id.type).setText(R.string.value_of_pi)
+                findViewById<TextView>(R.id.result).text = "\u03c0 = " + Math.PI
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else findViewById<View>(R.id.smartbox).visibility = View.GONE
         }

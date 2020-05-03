@@ -1,12 +1,9 @@
 package posidon.launcher.view
 
 import android.content.Context
-import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 
 class NestedScrollView : NestedScrollView {
 

@@ -122,7 +122,6 @@ class Gallery : AppCompatActivity() {
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "image/*"
         startActivityForResult(intent, 1)
-        System.gc()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -136,7 +135,6 @@ class Gallery : AppCompatActivity() {
                 try { WallActivity.img = BitmapFactory.decodeStream(baseContext.contentResolver.openInputStream(data!!.data!!)) }
                 catch (e: FileNotFoundException) { e.printStackTrace() }
                 startActivity(Intent(this, WallActivity::class.java))
-                System.gc()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

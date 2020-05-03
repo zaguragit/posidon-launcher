@@ -11,6 +11,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.min
 
 class Folder(string: String) : LauncherItem() {
@@ -77,13 +78,13 @@ class Folder(string: String) : LauncherItem() {
                         run {
                             var x = -radius
                             while (x <= radius) {
-                                path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - Math.abs(x * x * x)).toFloat())
+                                path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
                                 x++
                             }
                         }
                         var x = radius
                         while (x >= -radius) {
-                            path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - Math.abs(x * x * x))).toFloat())
+                            path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
                             x--
                         }
                         path.close()

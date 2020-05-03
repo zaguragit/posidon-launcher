@@ -420,7 +420,7 @@ object Tools {
                 val path = Path()
                 when (icShape) {
                     1 -> path.addCircle(width.toFloat() / 2f + 1, height.toFloat() / 2f + 1, min(width.toFloat(), height.toFloat() / 2f) - 2, Path.Direction.CCW)
-                    2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), Math.min(width, height).toFloat() / 4f, Math.min(width, height).toFloat() / 4f, Path.Direction.CCW)
+                    2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), min(width, height).toFloat() / 4f, min(width, height).toFloat() / 4f, Path.Direction.CCW)
                     4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
                         val xx = 2
                         val yy = 2

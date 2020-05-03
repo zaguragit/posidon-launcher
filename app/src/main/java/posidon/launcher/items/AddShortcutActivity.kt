@@ -1,24 +1,24 @@
 package posidon.launcher.items
 
 import android.content.pm.LauncherApps
-import android.content.res.ColorStateList
-import android.graphics.PorterDuff
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.dp
 import kotlin.math.min
 
 @RequiresApi(Build.VERSION_CODES.O)

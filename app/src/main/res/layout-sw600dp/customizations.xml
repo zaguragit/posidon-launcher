@@ -25,6 +25,57 @@
             android:text="@string/settings_title"
             android:fontFamily="@font/posidon_sans"/>
         <LinearLayout
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:background="@drawable/settings_suggestion_card"
+            android:layout_margin="12dp"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/suggestionTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:text="@string/would_you_like_to_rate_this_launcher"
+                android:padding="18dp"/>
+            <TextView
+                android:onClick="hideCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="14sp"
+                android:textColor="#8899aa"
+                android:text="@string/no"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:includeFontPadding="false"
+                android:background="@drawable/button_bg_round"
+                android:backgroundTint="#252932"
+                android:layout_marginEnd="12dp"/>
+            <TextView
+                android:id="@+id/yesBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:text="@string/yes"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:includeFontPadding="false"
+                android:background="@drawable/button_bg_round"
+                android:backgroundTint="@color/accent"
+                android:layout_marginEnd="12dp"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

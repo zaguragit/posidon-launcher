@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 
 class FeedChooserAdapter(internal val context: Context, private val feedUrls: ArrayList<String>) : RecyclerView.Adapter<FeedChooserAdapter.ViewHolder>() {

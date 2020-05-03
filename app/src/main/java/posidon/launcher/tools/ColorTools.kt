@@ -2,7 +2,6 @@ package posidon.launcher.tools
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.WallpaperColors
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
@@ -24,12 +23,12 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.ColorInt
 import androidx.core.app.ActivityCompat
 import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.view.LinearLayoutManager
 
 object ColorTools {
 
@@ -178,7 +177,6 @@ object ColorTools {
                 }
             }
         })
-        System.gc()
         d.show()
     }
 
@@ -294,7 +292,6 @@ object ColorTools {
                 }
             }
         })
-        System.gc()
         d.show()
     }
 
@@ -417,7 +414,6 @@ object ColorTools {
                 }
             }
         })
-        System.gc()
         d.show()
     }
 

@@ -8,7 +8,6 @@ import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.util.StateSet
 import posidon.launcher.Main
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 
 

@@ -26,13 +26,7 @@ class Notification(
         other as posidon.launcher.feed.notifications.Notification
         if (title != other.title) return false
         if (isSummary != other.isSummary) return false
-        if (actions != null) {
-            if (other.actions == null) return false
-            if (!actions.contentEquals(other.actions)) return false
-        } else if (other.actions != null) return false
-        if (contentIntent != other.contentIntent) return false
         if (key != other.key) return false
-        if (progress != other.progress) return false
         return true
     }
 

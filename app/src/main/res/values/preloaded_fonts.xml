@@ -5,6 +5,7 @@
         <item>@font/clear_font</item>
         <item>@font/ubuntu_medium</item>
         <item>@font/ubuntu_mono</item>
+        <item>@font/roboto_mono</item>
         <item>@font/open_dyslexic3</item>
     </array>
 </resources>

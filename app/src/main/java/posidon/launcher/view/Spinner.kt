@@ -11,7 +11,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import posidon.launcher.R
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 
 class Spinner : AppCompatTextView {

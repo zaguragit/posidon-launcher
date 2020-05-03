@@ -26,14 +26,12 @@ class GridView : GridView {
         var mo = maxOverScroll
         if ((scrollY + deltaY >= scrollRangeY || scrollY + deltaY <= 0) && !isTouchEvent) {
             val elapsedTime: Long = System.currentTimeMillis() - startTime
-            println(elapsedTime)
             val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 5000f)
             deltaY = (deltaY * interpolation).toInt()
         } else {
             startTime = System.currentTimeMillis()
             mo = 0f
         }
-        println("overScrollByY($deltaY, $scrollY, $scrollRangeY, $isTouchEvent)")
         return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY, mx, mo.toInt(), isTouchEvent)
     }
 }

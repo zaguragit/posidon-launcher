@@ -21,12 +21,9 @@ interface ISystemGestureExclusionListener : IInterface {
                 }
                 TRANSACTION_onSystemGestureExclusionChanged -> {
                     data.enforceInterface(descriptor)
-                    val _arg0: Int
-                    _arg0 = data.readInt()
-                    val _arg1: Region?
-                    _arg1 = if (0 != data.readInt()) Region.CREATOR.createFromParcel(data) else null
-                    val _arg2: Region?
-                    _arg2 = if (0 != data.readInt()) Region.CREATOR.createFromParcel(data) else null
+                    val _arg0: Int = data.readInt()
+                    val _arg1: Region? = if (0 != data.readInt()) Region.CREATOR.createFromParcel(data) else null
+                    val _arg2: Region? = if (0 != data.readInt()) Region.CREATOR.createFromParcel(data) else null
                     onSystemGestureExclusionChanged(_arg0, _arg1, _arg2)
                     true
                 }

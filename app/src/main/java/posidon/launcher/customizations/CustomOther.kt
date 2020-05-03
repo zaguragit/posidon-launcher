@@ -35,8 +35,8 @@ class CustomOther : AppCompatActivity() {
         setContentView(R.layout.custom_other)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        (findViewById<View>(R.id.hidestatus) as Switch).isChecked = Settings["hidestatus", false]
-        (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked = Settings["mnmlstatus", false]
+        findViewById<Switch>(R.id.hidestatus).isChecked = Settings["hidestatus", false]
+        findViewById<Switch>(R.id.mnmlstatus).isChecked = Settings["mnmlstatus", false]
         val hapticbar = findViewById<SeekBar>(R.id.hapticbar)
         hapticbar.progress = Settings["hapticfeedback", 14]
         hapticbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -59,8 +59,8 @@ class CustomOther : AppCompatActivity() {
     override fun onPause() {
         Main.customized = true
         Settings.apply {
-            putNotSave("hidestatus", (findViewById<View>(R.id.hidestatus) as Switch).isChecked)
-            putNotSave("mnmlstatus", (findViewById<View>(R.id.mnmlstatus) as Switch).isChecked)
+            putNotSave("hidestatus", findViewById<Switch>(R.id.hidestatus).isChecked)
+            putNotSave("mnmlstatus", findViewById<Switch>(R.id.mnmlstatus).isChecked)
             putNotSave("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectionI) {
                 2 -> "scale_up"
                 1 -> "clip_reveal"

@@ -14,7 +14,7 @@ import posidon.launcher.R
 
 internal class WallAdapter(private val context: Context) : BaseAdapter() {
 
-    override fun getCount(): Int = Gallery.walls!!.size
+    override fun getCount(): Int = Gallery.walls.size
     override fun getItem(position: Int): Any? = null
     override fun getItemId(position: Int): Long = 0
 

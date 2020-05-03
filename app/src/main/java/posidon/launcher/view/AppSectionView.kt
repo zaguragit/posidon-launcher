@@ -3,12 +3,14 @@ package posidon.launcher.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 
 class AppSectionView(context: Context) : LinearLayout(context) {
@@ -66,7 +68,6 @@ class AppSectionView(context: Context) : LinearLayout(context) {
                 if (parentContainer.canScrollVertically(-1))
                     parentContainer.parent.requestDisallowInterceptTouchEvent(true)
                 gridLayout.onTouchEvent(event)
-                println("$v, $event")
                 false
             }
             setOnClickListener { app.open(context, it) }
