@@ -26,7 +26,10 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
         val deletedIter = deleted.iterator()
         for (article in deletedIter) {
             val day = article.substringBefore(':').toDouble()
-            if (abs(day - today) > 4) deletedIter.remove()
+            if (abs(day - today) > 4) {
+                println("DELETED: $day, $today, ${abs(day - today)}")
+                deletedIter.remove()
+            }
         }
         Settings.apply()
         for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {

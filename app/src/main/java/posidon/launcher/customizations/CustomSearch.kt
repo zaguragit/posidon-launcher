@@ -19,7 +19,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 
-
 class CustomSearch : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

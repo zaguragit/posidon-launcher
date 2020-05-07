@@ -24,23 +24,19 @@ class RemovedArticles : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyFontSetting()
-        val removedList = Settings.getStrings("feed:deleted_articles")
         setContentView(RecyclerView(this).apply {
             layoutManager = LinearLayoutManager(this@RemovedArticles)
-            adapter = Adapter(this@RemovedArticles, removedList)
+            adapter = Adapter(this@RemovedArticles)
             setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight)
         })
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
-    override fun onPause() {
-        super.onPause()
-        Settings.apply()
-    }
-
-    class Adapter(val context: Context, val removedList: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+    class Adapter(val context: Context) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
         class ViewHolder(layout: View, val label: TextView, val button: View) : RecyclerView.ViewHolder(layout)
+
+        val removedList = Settings.getStrings("feed:deleted_articles")
 
         override fun getItemCount() = removedList.size
 
@@ -89,6 +85,7 @@ class RemovedArticles : AppCompatActivity() {
                 removedList.remove(str)
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(i, removedList.size - i)
+                Settings.apply()
             }
             val a = str.indexOf(':', str.indexOf(':') + 1)
             val b = str.indexOf(':', a + 1)

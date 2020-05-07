@@ -72,6 +72,14 @@ class Main : AppCompatActivity() {
     init {
         Tools.publicContext = this
         instance = this
+
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
+            Log.e("posidonLauncher", "uncaught exception", throwable)
+            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
+            Process.killProcess(Process.myPid())
+            exitProcess(0)
+        }
+
         setDock = {
             val data = Settings["dock", ""].split("\n").toTypedArray()
             val columnCount = Settings["dock:columns", 5]
@@ -398,7 +406,7 @@ class Main : AppCompatActivity() {
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
             if (Settings["hidefeed", false]) {
-                feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                feedRecycler.translationX = Tools.getDisplayWidth(this).toFloat()
                 feedRecycler.alpha = 0f
                 var wasHiddenLastTime = true
                 val fadeOutAnimListener = object : Animator.AnimatorListener {
@@ -556,14 +564,6 @@ class Main : AppCompatActivity() {
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         setContentView(R.layout.main)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
-
-        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            Log.e("posidonLauncher", "uncaught exception", throwable)
-            Settings.applyNow()
-            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
-            Process.killProcess(Process.myPid())
-            exitProcess(0)
-        }
 
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val filter = IntentFilter()

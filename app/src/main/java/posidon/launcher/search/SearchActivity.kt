@@ -3,6 +3,7 @@ package posidon.launcher.search
 import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
@@ -26,24 +27,34 @@ import posidon.launcher.items.ItemLongPress
 import posidon.launcher.tools.Loader
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.sp
 import java.util.*
 import kotlin.math.abs
 
 class SearchActivity : AppCompatActivity() {
+
     private val operators: MutableMap<String, Arithmetic> = HashMap()
+    private lateinit var smartBox: View
+    private lateinit var grid: GridView
+
+    private var bottomPaddingWhenSmartBoxIsShown = 0
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_layout)
         applyFontSetting()
+        smartBox = findViewById(R.id.smartbox)
+        bottomPaddingWhenSmartBoxIsShown = (146.dp + 46.sp).toInt()
         val searchTxt = findViewById<EditText>(R.id.searchTxt)
         searchTxt.requestFocus()
-        val searchgrid = findViewById<GridView>(R.id.searchgrid)
-        search("", searchgrid)
+        grid = findViewById(R.id.searchgrid)
+        grid.isStackFromBottom = Settings["search:start_from_bottom", false]
         searchTxt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                search(s.toString(), searchgrid)
+                search(s.toString())
             }
         })
         searchTxt.setOnEditorActionListener { _, actionId, event ->
@@ -54,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
         var bg = ShapeDrawable()
-        val tr = Settings["searchradius", 0] * resources.displayMetrics.density
+        val tr = Settings["searchradius", 0].dp
         bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
         bg.paint.color = Settings["searchcolor", 0x33000000]
         findViewById<View>(R.id.searchbar).background = bg
@@ -79,24 +90,24 @@ class SearchActivity : AppCompatActivity() {
         }
         operators["+"] = Add()
         operators["plus"] = Add()
-        operators["-"] = Subtract()
-        operators["minus"] = Subtract()
-        operators["*"] = Multiply()
-        operators["x"] = Multiply()
-        operators["times"] = Multiply()
-        operators["/"] = Divide()
-        operators[":"] = Divide()
-        operators["over"] = Divide()
+        operators["-"] = Sub()
+        operators["minus"] = Sub()
+        operators["*"] = Mul()
+        operators["x"] = Mul()
+        operators["times"] = Mul()
+        operators["/"] = Div()
+        operators[":"] = Div()
+        operators["over"] = Div()
         operators["&"] = And()
         operators["and"] = And()
         operators["|"] = Or()
         operators["or"] = Or()
-        operators["%"] = Remainder()
-        operators["rem"] = Remainder()
+        operators["%"] = Rem()
+        operators["rem"] = Rem()
 
-        window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { v, event ->
-            println("search: " + event.action)
-            println("search.y: " + event.y)
+        window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
+            //println("search: " + event.action)
+            //println("search.y: " + event.y)
             when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
                     val objs = event.localState as Array<*>
@@ -125,10 +136,13 @@ class SearchActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        search("")
     }
 
     private var stillWantIP = false
-    private fun search(string: String, grid: GridView) {
+
+    private fun search(string: String) {
         stillWantIP = false
         var j = 0
         val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
@@ -185,7 +199,8 @@ class SearchActivity : AppCompatActivity() {
                     math[i].toDouble()
                 } catch (e: Exception) {
                     bufferNum = operators[math[i]]!!.apply(bufferNum, java.lang.Double.valueOf(math[i + 1]))
-                    findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
+                    smartBox.visibility = View.VISIBLE
+                    grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
                     findViewById<TextView>(R.id.type).setText(R.string.math_operation)
                     findViewById<TextView>(R.id.result).text = "$tmp = $bufferNum"
                     findViewById<View>(R.id.fail).visibility = View.GONE
@@ -198,30 +213,35 @@ class SearchActivity : AppCompatActivity() {
             }
             if (string.contains("ip", ignoreCase = true)) {
                 stillWantIP = true
-                findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
+                smartBox.visibility = View.VISIBLE
+                grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
                 findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 findViewById<TextView>(R.id.result).text = ""
                 Loader.text("https://checkip.amazonaws.com") {
-                    if (stillWantIP) (findViewById<View>(R.id.result) as TextView).text = it.trimEnd()
+                    if (stillWantIP) findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (string.contains("pi", ignoreCase = true) || string.contains("π", ignoreCase = true)) {
-                findViewById<View>(R.id.smartbox).visibility = View.VISIBLE
+                smartBox.visibility = View.VISIBLE
+                grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
                 findViewById<TextView>(R.id.type).setText(R.string.value_of_pi)
                 findViewById<TextView>(R.id.result).text = "\u03c0 = " + Math.PI
                 findViewById<View>(R.id.fail).visibility = View.GONE
-            } else findViewById<View>(R.id.smartbox).visibility = View.GONE
+            } else {
+                smartBox.visibility = View.GONE
+                grid.setPadding(0, 0, 0, 64.dp.toInt())
+            }
         }
     }
 
-    internal abstract class Arithmetic { abstract fun apply(x: Double, y: Double): Double }
-    internal class Add : Arithmetic() { override fun apply(x: Double, y: Double): Double = x + y }
-    internal class Subtract : Arithmetic() { override fun apply(x: Double, y: Double): Double = x - y }
-    internal class Multiply : Arithmetic() { override fun apply(x: Double, y: Double): Double = x * y }
-    internal class Divide : Arithmetic() { override fun apply(x: Double, y: Double): Double = x / y }
-    internal class And : Arithmetic() { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
-    internal class Or : Arithmetic() { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
-    internal class Remainder : Arithmetic() { override fun apply(x: Double, y: Double): Double = (x.toInt() % y.toInt()).toDouble() }
+    internal interface Arithmetic { fun apply(x: Double, y: Double): Double }
+    internal class Add : Arithmetic { override fun apply(x: Double, y: Double): Double = x + y }
+    internal class Sub : Arithmetic { override fun apply(x: Double, y: Double): Double = x - y }
+    internal class Mul : Arithmetic { override fun apply(x: Double, y: Double): Double = x * y }
+    internal class Div : Arithmetic { override fun apply(x: Double, y: Double): Double = x / y }
+    internal class And : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
+    internal class Or : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
+    internal class Rem : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() % y.toInt()).toDouble() }
 
     override fun onPause() {
         super.onPause()
@@ -230,25 +250,21 @@ class SearchActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun cook(s: String): String {
-        return s.toLowerCase()
-                .replace(",", "")
-                .replace(".", "")
-                .replace('ñ', 'n')
-                .replace('k', 'c')
-                .replace("cc", "c")
-                .replace('z', 's')
-                .replace("wh", "w")
-                .replace("ts", "s")
-                .replace("tz", "s")
-                .replace("gh", "g")
-                .replace('e', '3')
-                .replace("-", "")
-                .replace("_", "")
-                .replace("/", "")
-                .replace("&", "")
-                .replace("'", "")
-    }
+    private fun cook(s: String) = s.toLowerCase()
+            .replace('ñ', 'n')
+            .replace('k', 'c')
+            .replace("cc", "c")
+            .replace('z', 's')
+            .replace("ts", "s")
+            .replace("sc", "s")
+            .replace("cs", "s")
+            .replace("tz", "s")
+            .replace("gh", "h")
+            .replace("wh", "h")
+            .replace('e', '3')
+            .replace('a', '4')
+            .replace('i', '1')
+            .replace(Regex("[-'&/_,.:;*\"!]"), "")
 
     companion object {
         private fun hideKeyboard(activity: Activity) {

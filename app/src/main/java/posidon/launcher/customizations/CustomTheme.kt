@@ -94,7 +94,7 @@ class CustomTheme : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings["accent", 0x1155ff] or -0x1000000)
-        findViewById<View>(R.id.iconBackground).background = ColorTools.colorcircle(Settings["icon:background", -0x1])
+        findViewById<View>(R.id.iconBackground).background = ColorTools.colorcircle(Settings["icon:background", 0xff252627.toInt()])
 
         findViewById<Switch>(R.id.animatedicons).isChecked = Settings["animatedicons", true]
         findViewById<Switch>(R.id.reshapeicons).isChecked = Settings["reshapeicons", false]

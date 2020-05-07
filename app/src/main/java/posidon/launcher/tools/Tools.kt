@@ -380,13 +380,14 @@ object Tools {
                                 Color.green(it) > 0xdd &&
                                 Color.blue(it) > 0xdd
                             }) {
-                        drr[0] = ColorDrawable(when(Settings["icon:background_type", "dominant"]) {
-                            "dominant" -> Palette.from(drr[1]!!.toBitmap()).generate().getDominantColor(Settings["icon:background", -0x1])
-                            "lv" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightVibrantColor(Settings["icon:background", -0x1])
-                            "dv" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
-                            "lm" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightMutedColor(Settings["icon:background", -0x1])
-                            "dm" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkMutedColor(Settings["icon:background", -0x1])
-                            else -> Settings["icon:background", -0x1]
+                        val bgColor = Settings["icon:background", 0xff252627.toInt()]
+                        drr[0] = ColorDrawable(when(Settings["icon:background_type", "custom"]) {
+                            "dominant" -> Palette.from(drr[1]!!.toBitmap()).generate().getDominantColor(bgColor)
+                            "lv" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightVibrantColor(bgColor)
+                            "dv" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkVibrantColor(bgColor)
+                            "lm" -> Palette.from(drr[1]!!.toBitmap()).generate().getLightMutedColor(bgColor)
+                            "dm" -> Palette.from(drr[1]!!.toBitmap()).generate().getDarkMutedColor(bgColor)
+                            else -> bgColor
                         })
                     }
                 }
@@ -397,13 +398,14 @@ object Tools {
                 d.setBounds(c.width / 4, c.height / 4, c.width / 4 * 3, c.height / 4 * 3)
                 drawable.draw(c)
                 drr[1] = BitmapDrawable(context.resources, b)
-                drr[0] = ColorDrawable(when(Settings["icon:background_type", "dominant"]) {
-                    "dominant" -> Palette.from(b).generate().getDominantColor(Settings["icon:background", -0x1])
-                    "lv" -> Palette.from(b).generate().getLightVibrantColor(Settings["icon:background", -0x1])
-                    "dv" -> Palette.from(b).generate().getDarkVibrantColor(Settings["icon:background", -0x1])
-                    "lm" -> Palette.from(b).generate().getLightMutedColor(Settings["icon:background", -0x1])
-                    "dm" -> Palette.from(b).generate().getDarkMutedColor(Settings["icon:background", -0x1])
-                    else -> Settings["icon:background", -0x1]
+                val bgColor = Settings["icon:background", 0xff252627.toInt()]
+                drr[0] = ColorDrawable(when(Settings["icon:background_type", "custom"]) {
+                    "dominant" -> Palette.from(b).generate().getDominantColor(bgColor)
+                    "lv" -> Palette.from(b).generate().getLightVibrantColor(bgColor)
+                    "dv" -> Palette.from(b).generate().getDarkVibrantColor(bgColor)
+                    "lm" -> Palette.from(b).generate().getLightMutedColor(bgColor)
+                    "dm" -> Palette.from(b).generate().getDarkMutedColor(bgColor)
+                    else -> bgColor
                 })
             }
             val layerDrawable = LayerDrawable(drr)
