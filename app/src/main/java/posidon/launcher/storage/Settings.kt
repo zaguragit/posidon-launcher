@@ -53,7 +53,7 @@ object Settings {
 
     private var saveRequests = 0
     private var isBeingSaved = false
-    fun applyNow() {
+    fun apply() { Main.instance.runOnUiThread {
         saveRequests++
         if (!isBeingSaved) {
             isBeingSaved = true
@@ -63,15 +63,14 @@ object Settings {
             }
             isBeingSaved = false
         }
-    }
-    inline fun apply() { thread { applyNow() }}
+    }}
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default
     operator fun get(key: String, default: Boolean) = bools[key] ?: default
     operator fun get(key: String, default: String) = getString(key) ?: default
     fun getString(key: String) = strings[key]
-    fun getStrings(key: String) = lists[key] ?: ArrayList()
+    fun getStrings(key: String) = lists[key] ?: ArrayList<String>().also { lists[key] = it }
 
 
     fun init(context: Context) {

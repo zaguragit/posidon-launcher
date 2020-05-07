@@ -33,11 +33,12 @@ class SwipeableLayout(
         clipBounds = Rect(0, 0, 0, 0)
     }
 
-    fun setSwipeColor(color: Int) { backView.setBackgroundColor(color) }
+    fun setSwipeColor(color: Int) = backView.setBackgroundColor(color)
 
     init {
         setCardBackgroundColor(0)
         cardElevation = 0f
+        radius = 0f
         preventCornerOverlap = true
         addView(backView)
         addView(frontView)

@@ -37,7 +37,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
     private val maxWidth = Settings["feed:max_img_width", Tools.getDisplayWidth(context)]
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): FeedModelViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(when(Settings["feed:card_layout", 0]) {
+        val v = LayoutInflater.from(context).inflate(when(Settings["feed:card_layout", 0]) {
             1 -> R.layout.feed_card1
             2 -> R.layout.feed_card2
             else -> R.layout.feed_card0
@@ -54,6 +54,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
                 radius = Settings["feed:card_radius", 15].dp
                 id = R.id.separator
+                v.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             } else v.apply {
                 findViewById<CardView>(R.id.card).radius = Settings["feed:card_radius", 15].dp
             })
@@ -61,6 +62,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
     }
 
     override fun onBindViewHolder(holder: FeedModelViewHolder, i: Int) {
+        holder.card.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         val feedItem = feedModels[i]
         holder.card.findViewById<TextView>(R.id.title).text = feedItem.title
         holder.card.findViewById<TextView>(R.id.source).text = feedItem.source.name
@@ -74,6 +76,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
                 Settings.getStrings("feed:deleted_articles").add("$day:" + feedItem.link + ':' + feedItem.title)
                 Settings.apply()
+                println("ARTICLE DELETED")
             }
         }
         if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {

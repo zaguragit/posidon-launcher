@@ -55,14 +55,16 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@color/cardtxt"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:includeFontPadding="false"/>
         <TextView
             android:id="@+id/result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="32sp"
             android:textColor="@color/cardtitle"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:includeFontPadding="false"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/searchbar"

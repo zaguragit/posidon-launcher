@@ -16,7 +16,7 @@ class NestedScrollView : NestedScrollView {
     override fun onOverScrolled(scrollX: Int, scrollY: Int, clampedX: Boolean, clampedY: Boolean) {
         val oldScrollY = this.scrollY
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
-        println(System.currentTimeMillis() - timeSincePress)
+        //println(System.currentTimeMillis() - timeSincePress)
         if (clampedY &&
             scrollY == 0 &&
             oldScrollY == 0 &&
@@ -26,7 +26,7 @@ class NestedScrollView : NestedScrollView {
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        println("TT2")
+        //println("TT2")
         if (ev.action == MotionEvent.ACTION_MOVE && scrollY > superOldScrollY) {
             superOldScrollY = scrollY
         }
