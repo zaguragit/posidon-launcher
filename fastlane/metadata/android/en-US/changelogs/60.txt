@@ -1,0 +1,4 @@
+- Made notifications individually swipeable
+- Added an option to swipe to remove feed articles
+- Made it possible to reply to notifications from the launcher
+- Fixed many bugs
