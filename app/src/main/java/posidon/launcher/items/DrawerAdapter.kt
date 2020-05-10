@@ -48,9 +48,9 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
             viewHolder.icon!!.layoutParams.width = appSize
             convertView.tag = viewHolder
         } else viewHolder = convertView.tag as ViewHolder
-        viewHolder.icon!!.setImageDrawable(Main.apps[i]!!.icon)
+        viewHolder.icon!!.setImageDrawable(Main.apps[i].icon)
         if (Settings["labelsenabled", false]) {
-            viewHolder.text!!.text = Main.apps[i]!!.label
+            viewHolder.text!!.text = Main.apps[i].label
             viewHolder.text!!.visibility = View.VISIBLE
             viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
         } else viewHolder.text!!.visibility = View.INVISIBLE
@@ -59,19 +59,33 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
 
     private val savedSections = ArrayList<Char>().apply {
         for (i in Main.apps.indices) {
-            val char = Main.apps[i]!!.label!![0].toUpperCase()
-            if (i == 0 || Main.apps[i - 1]!!.label!![0].toUpperCase() != char) add(char)
+            val label0 = Main.apps[i].label!!
+            val char0 = if (label0.isEmpty()) ' ' else label0[0].toUpperCase()
+            if (i == 0) {
+                add(char0)
+                return@apply
+            }
+            val label1 = Main.apps[i - 1].label!!
+            val char1 = if (label1.isEmpty()) ' ' else label1[0].toUpperCase()
+            if (char0 != char1) add(char0)
         }
     }.toTypedArray()
 
     override fun getSections(): Array<Char> = savedSections
 
-    override fun getSectionForPosition(i: Int): Int =
-            savedSections.indexOf(Main.apps[i]!!.label!![0].toUpperCase())
+    override fun getSectionForPosition(i: Int): Int {
+        val label = Main.apps[i].label!!
+        return savedSections.indexOf(if (label.isEmpty()) ' ' else label[0].toUpperCase())
+    }
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
-        for (j in Main.apps.indices) if (Main.apps[j]!!.label!![0].toUpperCase() == char) return j
+        for (j in Main.apps.indices) {
+            val label = Main.apps[j].label!!
+            if (char == if (label.isEmpty()) ' ' else label[0].toUpperCase()) {
+                return j
+            }
+        }
         return 0
     }
 

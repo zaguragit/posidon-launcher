@@ -32,6 +32,7 @@ import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
@@ -72,13 +73,6 @@ class Main : AppCompatActivity() {
     init {
         Tools.publicContext = this
         instance = this
-
-        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            Log.e("posidonLauncher", "uncaught exception", throwable)
-            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
-            Process.killProcess(Process.myPid())
-            exitProcess(0)
-        }
 
         setDock = {
             val data = Settings["dock", ""].split("\n").toTypedArray()
@@ -351,12 +345,13 @@ class Main : AppCompatActivity() {
             }
 
             if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            if (Settings["drawersearchbarenabled", true]) {
+
+            /*if (Settings["drawersearchbarenabled", true]) {
                 drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
                 searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
                 searchBar.visibility = VISIBLE
                 val bg = ShapeDrawable()
-                val tr = Settings["searchradius", 0] * resources.displayMetrics.density
+                val tr = Settings["searchradius", 0].dp
                 bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
                 bg.paint.color = Settings["searchcolor", 0x33000000]
                 searchBar.background = bg
@@ -369,11 +364,12 @@ class Main : AppCompatActivity() {
                 searchBar.visibility = GONE
                 drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
             }
+
             if (Settings["docksearchbarenabled", false]) {
                 findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
                 findViewById<View>(R.id.battery).visibility = VISIBLE
                 val bg = ShapeDrawable()
-                val tr = Settings["docksearchradius", 30] * resources.displayMetrics.density
+                val tr = Settings["dock:search:radius", 30].dp
                 bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
                 bg.paint.color = Settings["docksearchcolor", -0x22000001]
                 findViewById<View>(R.id.docksearchbar).background = bg
@@ -390,13 +386,27 @@ class Main : AppCompatActivity() {
             } else {
                 findViewById<View>(R.id.docksearchbar).visibility = GONE
                 findViewById<View>(R.id.battery).visibility = GONE
-            }
+            }*/
+
+            setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
+            setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
+            setDrawerSearchbarFGColor(Settings["searchtxtcolor", -0x1])
+            setDrawerSearchbarRadius(Settings["searchradius", 0])
+
+            setSearchHintText(Settings["searchhinttxt", "Search.."])
+
+            setDockSearchBarVisible(Settings["docksearchbarenabled", false])
+            setDockSearchbarBelowApps(Settings["dock:search:below_apps", false])
+            setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
+            setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
+            setDockSearchbarRadius(Settings["dock:search:radius", 30])
+
             if (Settings["drawer:sections_enabled", false]) {
                 drawerGrid.numColumns = 1
                 drawerGrid.verticalSpacing = 0
             } else {
                 drawerGrid.numColumns = Settings["drawer:columns", 4]
-                drawerGrid.verticalSpacing = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
+                drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
             }
             feedRecycler.visibility = if (Settings["feed:enabled", true]) VISIBLE else GONE
             val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
@@ -502,19 +512,7 @@ class Main : AppCompatActivity() {
                 notifications.visibility = VISIBLE
                 findViewById<View>(R.id.parentNotification).visibility = GONE
             }
-
-            if (Settings["drawer:scrollbar_enabled", false]) {
-                drawerScrollBar.visibility = VISIBLE
-                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
-                        if (Settings["drawer:sections_enabled", false]) 0
-                        else 24.dp.toInt()
-                drawerGrid.layoutParams = drawerGrid.layoutParams
-                drawerScrollBar.update()
-            } else  {
-                drawerScrollBar.visibility = GONE
-                (drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
-                drawerGrid.layoutParams = drawerGrid.layoutParams
-            }
+            setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
         }
     }
 
@@ -532,26 +530,6 @@ class Main : AppCompatActivity() {
     private lateinit var behavior: BottomSheetBehavior<*>
     private lateinit var batteryBar: ProgressBar
 
-    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            batteryBar.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-        }
-    }
-
-    private val onAppLoaderEnd = {
-        if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.adapter = SectionedDrawerAdapter()
-            drawerGrid.onItemClickListener = null
-            drawerGrid.onItemLongClickListener = null
-        } else {
-            drawerGrid.adapter = DrawerAdapter()
-            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i]!!.open(this@Main, v) }
-            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
-        }
-        drawerScrollBar.updateAdapter()
-        setDock()
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -559,7 +537,16 @@ class Main : AppCompatActivity() {
         if (Settings["init", true]) {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
+            exitProcess(0)
         }
+
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
+            Log.e("posidonLauncher", "uncaught exception", throwable)
+            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
+            Process.killProcess(Process.myPid())
+            exitProcess(0)
+        }
+
         WidgetManager.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         setContentView(R.layout.main)
@@ -582,6 +569,7 @@ class Main : AppCompatActivity() {
         desktop.isNestedScrollingEnabled = false
         desktop.isSmoothScrollingEnabled = false
         desktop.onTopOverScroll = { if (!LauncherMenu.isActive) pullStatusbar() }
+        desktop.onBottomOverScroll = { if (!LauncherMenu.isActive) behavior.state = STATE_EXPANDED }
         updateNavbarHeight(this@Main)
         drawerGrid = findViewById(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
@@ -815,6 +803,27 @@ class Main : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            batteryBar.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+        }
+    }
+
+    private val onAppLoaderEnd = {
+        if (Settings["drawer:sections_enabled", false]) {
+            drawerGrid.adapter = SectionedDrawerAdapter()
+            drawerGrid.onItemClickListener = null
+            drawerGrid.onItemLongClickListener = null
+        } else {
+            drawerGrid.adapter = DrawerAdapter()
+            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Main, v) }
+            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
+        }
+        drawerScrollBar.updateAdapter()
+        setDock()
+    }
+
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
@@ -924,7 +933,9 @@ class Main : AppCompatActivity() {
     }
 
     inner class AppChangeReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) { AppLoader(context, onAppLoaderEnd).execute() }
+        override fun onReceive(context: Context, intent: Intent) {
+            AppLoader(context, onAppLoaderEnd).execute()
+        }
     }
 
     override fun onBackPressed() {
@@ -941,7 +952,7 @@ class Main : AppCompatActivity() {
         var appSections = ArrayList<ArrayList<App>>()
         var shouldSetApps = true
         var customized = false
-        var apps: Array<App?> = emptyArray()
+        var apps = ArrayList<App>()
         var accentColor = -0xeeaa01
         var receiver: AppChangeReceiver? = null
         lateinit var instance: Main private set
@@ -949,5 +960,114 @@ class Main : AppCompatActivity() {
         lateinit var setDock: () -> Unit private set
         @RequiresApi(api = Build.VERSION_CODES.M)
         lateinit var launcherApps: LauncherApps
+
+        fun setSearchHintText(text: String) {
+            Settings["searchhinttxt"] = text
+            instance.findViewById<TextView>(R.id.searchTxt).text = text
+            instance.findViewById<TextView>(R.id.docksearchtxt).text = text
+        }
+
+        fun setDrawerSearchbarBGColor(color: Int) {
+            Settings["searchcolor"] = color
+            val bg = ShapeDrawable()
+            val tr = Settings["searchradius", 0].dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            bg.paint.color = color
+            instance.searchBar.background = bg
+        }
+
+        fun setDrawerSearchbarRadius(radius: Int) {
+            Settings["searchradius"] = radius
+            val bg = ShapeDrawable()
+            val tr = radius.dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            bg.paint.color = Settings["searchcolor", 0x33000000]
+            instance.searchBar.background = bg
+        }
+
+        fun setDrawerSearchbarFGColor(color: Int) {
+            Settings["searchhintcolor"] = color
+            instance.findViewById<TextView>(R.id.searchTxt).setTextColor(color)
+            instance.findViewById<ImageView>(R.id.searchIcon).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
+            instance.findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
+        }
+
+        fun setDrawerSearchBarVisible(visible: Boolean) {
+            Settings["drawersearchbarenabled"] = visible
+            if (visible) {
+                instance.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
+                instance.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
+                instance.searchBar.visibility = VISIBLE
+            } else {
+                instance.searchBar.visibility = GONE
+                instance.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
+            }
+        }
+
+        fun setDockSearchbarBGColor(color: Int) {
+            Settings["docksearchcolor"] = color
+            val bg = ShapeDrawable()
+            val tr = Settings["dock:search:radius", 30].dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
+            bg.paint.color = color
+            instance.findViewById<View>(R.id.docksearchbar).background = bg
+        }
+
+        fun setDockSearchbarRadius(radius: Int) {
+            val bg = ShapeDrawable()
+            Settings["dock:search:radius"] = radius
+            val tr = radius.dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
+            bg.paint.color = Settings["docksearchcolor", -0x22000001]
+            instance.findViewById<View>(R.id.docksearchbar).background = bg
+        }
+
+        fun setDockSearchbarFGColor(color: Int) {
+            Settings["docksearchtxtcolor"] = color
+            instance.findViewById<TextView>(R.id.docksearchtxt).setTextColor(color)
+            instance.findViewById<ImageView>(R.id.docksearchic).imageTintList = ColorStateList.valueOf(color)
+            instance.findViewById<ImageView>(R.id.docksearchic).imageTintMode = PorterDuff.Mode.MULTIPLY
+            instance.findViewById<ProgressBar>(R.id.battery).progressTintList = ColorStateList.valueOf(color)
+            instance.findViewById<ProgressBar>(R.id.battery).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+            instance.findViewById<ProgressBar>(R.id.battery).progressBackgroundTintList = ColorStateList.valueOf(color)
+            instance.findViewById<ProgressBar>(R.id.battery).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
+            (instance.findViewById<ProgressBar>(R.id.battery).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
+        }
+
+        fun setDockSearchBarVisible(visible: Boolean) {
+            Settings["docksearchbarenabled"] = visible
+            if (visible) {
+                instance.findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
+                instance.findViewById<View>(R.id.battery).visibility = VISIBLE
+            } else {
+                instance.findViewById<View>(R.id.docksearchbar).visibility = GONE
+                instance.findViewById<View>(R.id.battery).visibility = GONE
+            }
+        }
+
+        fun setDockSearchbarBelowApps(isBelow: Boolean) {
+            Settings["dock:search:below_apps"] = isBelow
+            if (isBelow) {
+                instance.findViewById<View>(R.id.docksearchbar).bringToFront()
+            } else {
+                instance.findViewById<View>(R.id.dockContainer).bringToFront()
+            }
+        }
+
+        fun setDrawerScrollbarEnabled(enabled: Boolean) {
+            Settings["drawer:scrollbar_enabled"] = enabled
+            if (enabled) {
+                instance.drawerScrollBar.visibility = VISIBLE
+                (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
+                        if (Settings["drawer:sections_enabled", false]) 0
+                        else 24.dp.toInt()
+                instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
+                instance.drawerScrollBar.update()
+            } else  {
+                instance.drawerScrollBar.visibility = GONE
+                (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
+                instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
+            }
+        }
     }
 }

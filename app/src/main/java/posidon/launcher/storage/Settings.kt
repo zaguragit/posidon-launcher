@@ -3,6 +3,7 @@ package posidon.launcher.storage
 import android.content.Context
 import android.net.Uri
 import posidon.launcher.Main
+import posidon.launcher.tools.Tools
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,7 +54,9 @@ object Settings {
 
     private var saveRequests = 0
     private var isBeingSaved = false
-    fun apply() { Main.instance.runOnUiThread {
+
+    inline fun apply() = Main.instance.runOnUiThread(::applyOnThisThread)
+    fun applyOnThisThread() {
         saveRequests++
         if (!isBeingSaved) {
             isBeingSaved = true
@@ -63,7 +66,7 @@ object Settings {
             }
             isBeingSaved = false
         }
-    }}
+    }
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default

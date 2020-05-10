@@ -148,7 +148,7 @@ class SearchActivity : AppCompatActivity() {
         val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
         if (showHidden) j++
         for (app in Main.apps) {
-            for (word in app!!.label!!.split(" ").toTypedArray()) if (cook(word).contains(cook(string)) || word.contains(string)) {
+            for (word in app.label!!.split(" ").toTypedArray()) if (cook(word).contains(cook(string)) || word.contains(string)) {
                 j++
                 break
             }
@@ -158,7 +158,7 @@ class SearchActivity : AppCompatActivity() {
             findViewById<View>(R.id.fail).visibility = View.GONE
             j = 0
             for (app in Main.apps) {
-                for (word in app!!.label!!.split(" ").toTypedArray()) {
+                for (word in app.label!!.split(" ").toTypedArray()) {
                     if (cook(word).contains(cook(string)) || word.contains(string)) {
                         results[j] = app
                         j++

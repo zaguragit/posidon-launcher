@@ -197,8 +197,8 @@ object ItemLongPress {
             val location = IntArray(2)
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {}
-                override fun onEdit(v: View) { showAppEditDialog(context, app!!, v) }
-            }, false, app!!)
+                override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
+            }, false, app)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
             val myShadow = View.DragShadowBuilder(icon)

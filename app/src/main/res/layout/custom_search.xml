@@ -166,6 +166,22 @@
                         android:layout_weight="1"
                         android:max="30"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/show_below_apps" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/dockSearchBarBelowAppsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
             </LinearLayout>
 
 

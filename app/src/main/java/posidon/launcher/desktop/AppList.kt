@@ -30,7 +30,7 @@ class AppList : FragmentActivity() {
 
         gridView.adapter = DrawerAdapter()
         gridView.setOnItemClickListener {
-            _, view, i, _ -> Main.apps[i]!!.open(this@AppList, view)
+            _, view, i, _ -> Main.apps[i].open(this@AppList, view)
             finish()
         }
 

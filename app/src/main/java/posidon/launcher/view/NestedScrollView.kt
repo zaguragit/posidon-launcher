@@ -12,23 +12,35 @@ class NestedScrollView : NestedScrollView {
     constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
     var onTopOverScroll = {}
+    var onBottomOverScroll = {}
 
     override fun onOverScrolled(scrollX: Int, scrollY: Int, clampedX: Boolean, clampedY: Boolean) {
         val oldScrollY = this.scrollY
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
-        //println(System.currentTimeMillis() - timeSincePress)
         if (clampedY &&
             scrollY == 0 &&
             oldScrollY == 0 &&
             superOldScrollY == 0 &&
             pointerCount == 1 &&
-            System.currentTimeMillis() - timeSincePress < 240) onTopOverScroll()
+            System.currentTimeMillis() - timeSincePress < 240) {
+            if (oldPointerY < newPointerY) {
+                onTopOverScroll()
+            } else if (oldPointerY > newPointerY) {
+                onBottomOverScroll()
+            }
+        }
     }
 
+    var oldPointerY = 0f
+    var newPointerY = 0f
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         //println("TT2")
-        if (ev.action == MotionEvent.ACTION_MOVE && scrollY > superOldScrollY) {
-            superOldScrollY = scrollY
+        if (ev.action == MotionEvent.ACTION_MOVE) {
+            oldPointerY = newPointerY
+            newPointerY = ev.y
+            if (scrollY > superOldScrollY) {
+                superOldScrollY = scrollY
+            }
         }
         pointerCount = ev.pointerCount
         return super.onTouchEvent(ev)
@@ -39,6 +51,8 @@ class NestedScrollView : NestedScrollView {
         if (ev.action == MotionEvent.ACTION_DOWN) {
             timeSincePress = System.currentTimeMillis()
             superOldScrollY = scrollY
+            oldPointerY = ev.y
+            newPointerY = ev.y
         }
         pointerCount = ev.pointerCount
         return super.onInterceptTouchEvent(ev)
