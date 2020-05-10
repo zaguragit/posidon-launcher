@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Switch
 import android.widget.TextView
@@ -52,45 +53,51 @@ class CustomTheme : AppCompatActivity() {
             "openDyslexic" -> fontName.text = getString(R.string.open_dyslexic)
         }
         findViewById<View>(R.id.fontbox).setOnClickListener {
-            val d = Dialog(this@CustomTheme)
-            d.setContentView(R.layout.font_list)
-            d.findViewById<View>(R.id.sansserif).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "sansserif"
-                fontName.text = getString(R.string.sans_serif)
-                applyFontSetting()
-            }
-            d.findViewById<View>(R.id.posidonsans).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "posidonsans"
-                fontName.text = getString(R.string.posidon_sans)
-                applyFontSetting()
-            }
-            d.findViewById<View>(R.id.monospace).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "monospace"
-                fontName.text = getString(R.string.monospace)
-                applyFontSetting()
-            }
-            d.findViewById<View>(R.id.ubuntu).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "ubuntu"
-                fontName.text = getString(R.string.ubuntu)
-                applyFontSetting()
-            }
-            d.findViewById<View>(R.id.lexendDeca).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "lexendDeca"
-                fontName.text = getString(R.string.lexend_deca)
-                applyFontSetting()
-            }
-            d.findViewById<View>(R.id.open_dyslexic).setOnClickListener {
-                d.dismiss()
-                Settings["font"] = "openDyslexic"
-                fontName.text = getString(R.string.open_dyslexic)
-                applyFontSetting()
-            }
-            d.show()
+            Dialog(this@CustomTheme).apply {
+                setContentView(R.layout.font_list)
+                findViewById<View>(R.id.sansserif).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "sansserif"
+                    fontName.text = getString(R.string.sans_serif)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.posidonsans).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "posidonsans"
+                    fontName.text = getString(R.string.posidon_sans)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.monospace).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "monospace"
+                    fontName.text = getString(R.string.monospace)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.ubuntu).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "ubuntu"
+                    fontName.text = getString(R.string.ubuntu)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.lexendDeca).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "lexendDeca"
+                    fontName.text = getString(R.string.lexend_deca)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.open_dyslexic).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "openDyslexic"
+                    fontName.text = getString(R.string.open_dyslexic)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+            }.show()
         }
 
         findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings["accent", 0x1155ff] or -0x1000000)
@@ -99,15 +106,29 @@ class CustomTheme : AppCompatActivity() {
         findViewById<Switch>(R.id.animatedicons).isChecked = Settings["animatedicons", true]
         findViewById<Switch>(R.id.reshapeicons).isChecked = Settings["reshapeicons", false]
 
-        findViewById<Spinner>(R.id.iconBackgrounds).data = resources.getStringArray(R.array.iconBackgrounds)
-        findViewById<Spinner>(R.id.iconBackgrounds).selectionI = when(Settings["icon:background_type", "custom"]) {
-            "dominant" -> 0
-            "lv" -> 1
-            "dv" -> 2
-            "lm" -> 3
-            "dm" -> 4
-            else -> 5
+        findViewById<Spinner>(R.id.iconBackgrounds).apply {
+            data = resources.getStringArray(R.array.iconBackgrounds)
+            selectionI = when (Settings["icon:background_type", "custom"]) {
+                "dominant" -> 0
+                "lv" -> 1
+                "dv" -> 2
+                "lm" -> 3
+                "dm" -> 4
+                else -> 5
+            }
+            setSelectionChangedListener {
+                Settings["icon:background_type"] = when (findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
+                    0 -> "dominant"
+                    1 -> "lv"
+                    2 -> "dv"
+                    3 -> "lm"
+                    4 -> "dm"
+                    else -> "custom"
+                }
+                Main.shouldSetApps = true
+            }
         }
+
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             findViewById<View>(R.id.icshapesettings).visibility = View.GONE
@@ -117,28 +138,31 @@ class CustomTheme : AppCompatActivity() {
             findViewById<Switch>(R.id.recolorWhiteBGsSwitch).isChecked = Settings["icon:tint_white_bg", true]
         }
         Main.shouldSetApps = true
+    }
+
+    fun pickAccentColor(v: View) = ColorTools.pickColorNoAlpha(this, Settings["accent", 0x1155ff]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["accent"] = it
+        Main.accentColor = it or -0x1000000
         Main.customized = true
     }
 
-    fun pickAccentColor(v: View) { ColorTools.pickColorNoAlpha(this, "accent", 0x1155ff) }
-    fun pickIconBGColor(v: View) { ColorTools.pickColor(this, "icon:background", -0x1) }
-    fun iconPackSelector(v: View) { startActivity(Intent(this, IconPackPicker::class.java)) }
+    fun pickIconBGColor(v: View) = ColorTools.pickColor(this, Settings["icon:background", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["icon:background"] = it
+        Main.shouldSetApps = true
+    }
+
+    fun iconPackSelector(v: View) = startActivity(Intent(this, IconPackPicker::class.java))
 
     override fun onPause() {
-        Main.customized = true
+        Main.shouldSetApps = true
         Settings.apply {
             putNotSave("animatedicons", findViewById<Switch>(R.id.animatedicons).isChecked)
             putNotSave("reshapeicons", findViewById<Switch>(R.id.reshapeicons).isChecked)
             putNotSave("icon:tint_white_bg", findViewById<Switch>(R.id.recolorWhiteBGsSwitch).isChecked)
-            putNotSave("icon:background_type", when(findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
-                0 -> "dominant"
-                1 -> "lv"
-                2 -> "dv"
-                3 -> "lm"
-                4 -> "dm"
-                else -> "custom"
-            })
-            Main.accentColor = Settings["accent", 0x1155ff] or -0x1000000
             apply()
         }
         super.onPause()

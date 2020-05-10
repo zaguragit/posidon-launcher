@@ -29,6 +29,10 @@ class Tutorial : AppCompatActivity() {
     private var selectedStyle = -1
     private var done = false
 
+    init {
+        Tools.publicContext = this
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial1)
@@ -111,7 +115,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtxtcolor", 0xff888888.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
                     putNotSave("drawer:sorting", 0)
-                    apply()
+                    applyOnThisThread()
                 }
                 1 -> {
                     putNotSave("accent", 0x4297FE)
@@ -142,7 +146,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtxtcolor", 0xff000000.toInt())
                     putNotSave("notificationbgcolor", 0xffffffff.toInt())
                     putNotSave("drawer:sorting", 0)
-                    apply()
+                    applyOnThisThread()
                 }
                 2 -> {
                     putNotSave("accent", 0x4DD863)
@@ -173,7 +177,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("notificationtxtcolor", 0x88000000.toInt())
                     putNotSave("notificationbgcolor", 0xa8eeeeee.toInt())
                     putNotSave("drawer:sorting", 0)
-                    apply()
+                    applyOnThisThread()
                 }
             }
             setContentView(R.layout.tutorial2)
@@ -185,7 +189,10 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
-        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings["feed:enabled"] = checked }
+        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings.apply {
+            putNotSave("feed:enabled", checked)
+            applyOnThisThread()
+        }}
         Tools.updateNavbarHeight(this)
     }
 
@@ -219,13 +226,16 @@ class Tutorial : AppCompatActivity() {
                 Tools.isInstalled("com.aspiro.tidal", packageManager) -> "com.aspiro.tidal/com.aspiro.wamp.LoginFragmentActivity"
                 else -> ""
             })
-            apply()
+            applyOnThisThread()
         }
         setContentView(R.layout.tutorial4)
     }
 
     fun done4(v: View) {
-        Settings["init"] = false
+        Settings.apply {
+            putNotSave("init", false)
+            applyOnThisThread()
+        }
         if (!Tools.isDefaultLauncher) chooseLauncher()
         startActivity(Intent(this, Main::class.java))
         finish()

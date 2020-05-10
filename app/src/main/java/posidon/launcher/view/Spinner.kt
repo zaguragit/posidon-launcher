@@ -21,6 +21,12 @@ class Spinner : AppCompatTextView {
 
     var data: Array<String> = emptyArray()
 
+    var onSelectionChangedListener: ((Spinner) -> Unit)? = null
+
+    inline fun setSelectionChangedListener(
+        noinline listener: ((Spinner) -> Unit)?
+    ) { onSelectionChangedListener = listener }
+
     init {
         setOnClickListener {
             var popup: PopupWindow? = null
@@ -33,6 +39,7 @@ class Spinner : AppCompatTextView {
                         setOnClickListener {
                             selectionI = i
                             popup!!.dismiss()
+                            onSelectionChangedListener?.invoke(this@Spinner)
                         }
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())

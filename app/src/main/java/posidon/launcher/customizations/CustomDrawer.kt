@@ -8,6 +8,7 @@ package posidon.launcher.customizations
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Switch
@@ -46,6 +47,7 @@ class CustomDrawer : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 c.text = (progress + 1).toString()
                 Settings["drawer:columns"] = progress + 1
+                Main.customized = true
             }
         })
 
@@ -59,6 +61,7 @@ class CustomDrawer : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 verticalspacingnum.text = progress.toString()
                 Settings["verticalspacing"] = progress
+                Main.customized = true
             }
         })
 
@@ -102,29 +105,39 @@ class CustomDrawer : AppCompatActivity() {
         findViewById<Spinner>(R.id.sectionLetter).selectionI = Settings["drawer:sec_name_pos", 0]
 
         findViewById<Switch>(R.id.sectionsEnabled).isChecked = Settings["drawer:sections_enabled", false]
-
-        Main.customized = true
     }
 
-    fun pickBGColor(v: View) { ColorTools.pickColor(this, "drawer:background_color", -0x78000000) }
-    fun pickLabelColor(v: View) { ColorTools.pickColor(this, "labelColor", 0xeeeeeeee.toInt()) }
+    fun pickBGColor(v: View) = ColorTools.pickColor(this, Settings["drawer:background_color", -0x78000000]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["drawer:background_color"] = it
+        Main.shouldSetApps = true
+
+    }
+
+    fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["labelColor", 0xeeeeeeee.toInt()]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["labelColor"] = it
+        Main.shouldSetApps = true
+    }
 
     override fun onPause() {
-        Main.customized = true
+        Main.setDrawerScrollbarEnabled(findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
         Settings.apply {
             putNotSave("icsize", icsize!!.progress)
             putNotSave("labelsenabled", findViewById<Switch>(R.id.labelsenabled).isChecked)
-            putNotSave("drawer:scrollbar_enabled", findViewById<Switch>(R.id.scrollbarEnabled).isChecked)
+            if (get("drawer:sections_enabled", false) != findViewById<Switch>(R.id.sectionsEnabled).isChecked) {
+                putNotSave("drawer:sections_enabled", findViewById<Switch>(R.id.sectionsEnabled).isChecked)
+                Main.shouldSetApps = true
+                Main.customized = true
+            }
             if (get("drawer:sorting", 0) != findViewById<Spinner>(R.id.sortingOptions).selectionI) {
                 putNotSave("drawer:sorting", findViewById<Spinner>(R.id.sortingOptions).selectionI)
                 Main.shouldSetApps = true
             }
             if (get("drawer:sec_name_pos", 0) != findViewById<Spinner>(R.id.sectionLetter).selectionI) {
                 putNotSave("drawer:sec_name_pos", findViewById<Spinner>(R.id.sectionLetter).selectionI)
-                Main.shouldSetApps = true
-            }
-            if (get("drawer:sections_enabled", false) != findViewById<Switch>(R.id.sectionsEnabled).isChecked) {
-                putNotSave("drawer:sections_enabled", findViewById<Switch>(R.id.sectionsEnabled).isChecked)
                 Main.shouldSetApps = true
             }
             putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)

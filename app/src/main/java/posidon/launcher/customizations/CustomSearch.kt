@@ -7,6 +7,7 @@ package posidon.launcher.customizations
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Switch
@@ -31,33 +32,57 @@ class CustomSearch : AppCompatActivity() {
         findViewById<Switch>(R.id.drawersearchbar).isChecked = Settings["drawersearchbarenabled", true]
         findViewById<View>(R.id.searchcolorprev).background = ColorTools.colorcircle(Settings["searchcolor", 0x33000000])
         findViewById<View>(R.id.searchtxtcolorprev).background = ColorTools.colorcircle(Settings["searchtxtcolor", -0x1])
-        findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorcircle(Settings["searchhintcolor", -0x1])
-        findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
         findViewById<SeekBar>(R.id.searchradiusslider).progress = Settings["searchradius", 0]
+
         findViewById<Switch>(R.id.docksearchbar).isChecked = Settings["docksearchbarenabled", false]
         findViewById<View>(R.id.docksearchcolorprev).background = ColorTools.colorcircle(Settings["docksearchcolor", -0x22000001])
         findViewById<View>(R.id.docksearchtxtcolorprev).background = ColorTools.colorcircle(Settings["docksearchtxtcolor", -0x1000000])
-        findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings["docksearchradius", 30]
+        findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings["dock:search:radius", 30]
+        findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked = Settings["dock:search:below_apps", false]
+
         findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorcircle(Settings["searchUiBg", -0x78000000])
-        Main.customized = true
+        findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorcircle(Settings["searchhintcolor", -0x1])
+        findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
     }
 
-    fun picksearchcolor(v: View) { ColorTools.pickColor(this, "searchcolor", 0x33000000) }
-    fun picksearchtxtcolor(v: View) { ColorTools.pickColor(this, "searchtxtcolor", -0x1) }
-    fun picksearchhintcolor(v: View) { ColorTools.pickColor(this, "searchhintcolor", -0x1) }
-    fun pickdocksearchcolor(v: View) { ColorTools.pickColor(this, "docksearchcolor", -0x22000001) }
-    fun pickdocksearchtxtcolor(v: View) { ColorTools.pickColor(this, "docksearchtxtcolor", -0x1000000) }
-    fun pickSearchUiBgColor(v: View) { ColorTools.pickColor(this, "searchUiBg", -0x78000000) }
+    fun picksearchcolor(v: View) = ColorTools.pickColor(this, Settings["searchcolor", 0x33000000]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Main.setDrawerSearchbarBGColor(it)
+    }
+    fun picksearchtxtcolor(v: View) = ColorTools.pickColor(this, Settings["searchtxtcolor", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Main.setDrawerSearchbarFGColor(it)
+    }
+    fun pickdocksearchcolor(v: View) = ColorTools.pickColor(this, Settings["docksearchcolor", -0x22000001]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Main.setDockSearchbarBGColor(it)
+    }
+    fun pickdocksearchtxtcolor(v: View) = ColorTools.pickColor(this, Settings["docksearchtxtcolor", -0x1000000]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Main.setDockSearchbarFGColor(it)
+    }
+    fun picksearchhintcolor(v: View) = ColorTools.pickColor(this, Settings["searchhintcolor", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["searchhintcolor"] = it
+    }
+    fun pickSearchUiBgColor(v: View) = ColorTools.pickColor(this, Settings["searchUiBg", -0x78000000]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["searchUiBg"] = it
+    }
 
     override fun onPause() {
-        Main.customized = true
-        Settings.apply {
-            putNotSave("searchhinttxt", findViewById<TextView>(R.id.hinttxt).text.toString())
-            putNotSave("searchradius", findViewById<SeekBar>(R.id.searchradiusslider).progress)
-            putNotSave("docksearchbarenabled", findViewById<Switch>(R.id.docksearchbar).isChecked)
-            putNotSave("drawersearchbarenabled", findViewById<Switch>(R.id.drawersearchbar).isChecked)
-            apply()
-        }
+        Main.setDrawerSearchbarRadius(findViewById<SeekBar>(R.id.searchradiusslider).progress)
+        Main.setDockSearchbarRadius(findViewById<SeekBar>(R.id.docksearchradiusslider).progress)
+        Main.setDrawerSearchBarVisible(findViewById<Switch>(R.id.drawersearchbar).isChecked)
+        Main.setDockSearchBarVisible(findViewById<Switch>(R.id.docksearchbar).isChecked)
+        Main.setDockSearchbarBelowApps(findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked)
+        Main.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
         super.onPause()
     }
 }
