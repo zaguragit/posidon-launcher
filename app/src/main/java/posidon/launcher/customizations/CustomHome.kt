@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.SeekBar
@@ -130,14 +131,53 @@ class CustomHome : AppCompatActivity() {
         Main.customized = true
     }
 
-    fun pickclockcolor(v: View) { ColorTools.pickColor(this, "clockcolor", -0x1) }
-    fun picknewscardcolor(v: View) { ColorTools.pickColor(this, "feed:card_bg", -0xdad9d9) }
-    fun picknewscardtxtcolor(v: View) { ColorTools.pickColor(this, "feed:card_txt_color", -0x1) }
-    fun picknotificationtitlecolor(v: View) { ColorTools.pickColor(this, "notificationtitlecolor", -0xeeeded) }
-    fun picknotificationtxtcolor(v: View) { ColorTools.pickColor(this, "notificationtxtcolor", -0xdad9d9) }
-    fun picknotificationcolor(v: View) { ColorTools.pickColor(this, "notificationbgcolor", -0x1) }
-    fun pickNotificationActionBGColor(v: View) { ColorTools.pickColor(this, "notificationActionBGColor", 0x88e0e0e0.toInt()) }
-    fun pickNotificationActionTextColor(v: View) { ColorTools.pickColor(this, "notificationActionTextColor", -0xdad9d9) }
+    fun pickclockcolor(v: View) = ColorTools.pickColor(this, Settings["clockcolor", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["clockcolor"] = it
+    }
+
+    fun picknewscardcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_bg", -0xdad9d9]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["feed:card_bg"] = it
+    }
+
+    fun picknewscardtxtcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_txt_color", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["feed:card_txt_color"] = it
+    }
+
+    fun picknotificationtitlecolor(v: View) = ColorTools.pickColor(this, Settings["notificationtitlecolor", -0xeeeded]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["notificationtitlecolor"] = it
+    }
+
+    fun picknotificationtxtcolor(v: View) = ColorTools.pickColor(this, Settings["notificationtxtcolor", -0xdad9d9]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["notificationtxtcolor"] = it
+    }
+
+    fun picknotificationcolor(v: View) = ColorTools.pickColor(this, Settings["notificationbgcolor", -0x1]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["notificationbgcolor"] = it
+    }
+
+    fun pickNotificationActionBGColor(v: View) = ColorTools.pickColor(this, Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["notificationActionBGColor"] = it
+    }
+
+    fun pickNotificationActionTextColor(v: View) = ColorTools.pickColor(this, Settings["notificationActionTextColor", -0xdad9d9]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["notificationActionTextColor"] = it
+    }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
     fun chooseLayouts(v: View) {
