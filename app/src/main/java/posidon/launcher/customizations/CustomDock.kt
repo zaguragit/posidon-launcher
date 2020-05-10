@@ -7,6 +7,7 @@ package posidon.launcher.customizations
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Switch
@@ -86,8 +87,17 @@ class CustomDock : AppCompatActivity() {
         Main.customized = true
     }
 
-    fun pickColor(v: View) { ColorTools.pickColor(this, "dock:background_color", -0x78000000) }
-    fun pickLabelColor(v: View) { ColorTools.pickColor(this, "dockLabelColor", -0x11111112) }
+    fun pickColor(v: View) = ColorTools.pickColor(this, Settings["dock:background_color", -0x78000000]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["dock:background_color"] = it
+    }
+
+    fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["dockLabelColor", -0x11111112]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["dockLabelColor"] = it
+    }
 
     override fun onPause() {
         Main.customized = true

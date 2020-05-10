@@ -7,6 +7,7 @@ package posidon.launcher.customizations
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Switch
@@ -51,9 +52,23 @@ class CustomFolders : AppCompatActivity() {
         Main.customized = true
     }
 
-    fun pickColor(v: View) { ColorTools.pickColor(this, "folderBG", -0x22eeeded) }
-    fun pickLabelColor(v: View) { ColorTools.pickColor(this, "folder:label_color", -0x22000001) }
-    fun pickTitleColor(v: View) { ColorTools.pickColor(this, "folder:title_color", 0xffffffff.toInt()) }
+    fun pickColor(v: View) = ColorTools.pickColor(this, Settings["folderBG", -0x22eeeded]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["folderBG"] = it
+    }
+
+    fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["folder:label_color", -0x22000001]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["folder:label_color"] = it
+    }
+
+    fun pickTitleColor(v: View) = ColorTools.pickColor(this, Settings["folder:title_color", 0xffffffff.toInt()]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        Settings["folder:title_color"] = it
+    }
 
     override fun onPause() {
         Main.customized = true
