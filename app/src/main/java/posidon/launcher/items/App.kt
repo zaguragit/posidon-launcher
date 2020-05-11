@@ -23,15 +23,15 @@ import posidon.launcher.tools.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
 
-class App : LauncherItem() {
-
-    var name: String? = null
-    var packageName: String? = null
+class App(
+    val packageName: String,
+    val name: String? = null
+) : LauncherItem() {
 
     inline fun open(context: Context, view: View) {
         try {
             val launchintent = Intent(Intent.ACTION_MAIN)
-            launchintent.component = ComponentName(packageName!!, name!!)
+            launchintent.component = ComponentName(packageName, name!!)
             launchintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> context.startActivity(launchintent, ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle())

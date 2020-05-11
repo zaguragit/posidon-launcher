@@ -72,7 +72,7 @@ class AppSectionView(context: Context) : LinearLayout(context) {
             }
             setOnClickListener { app.open(context, it) }
             setOnLongClickListener(ItemLongPress.drawer(context, app))
-            (layoutParams as GridLayout.LayoutParams).bottomMargin = (resources.displayMetrics.density * Settings["verticalspacing", 12]).toInt()
+            (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
         })
     }
 

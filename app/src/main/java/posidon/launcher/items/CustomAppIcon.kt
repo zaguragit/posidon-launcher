@@ -16,6 +16,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 
 class CustomAppIcon : AppCompatActivity() {
 
@@ -50,8 +51,8 @@ class CustomAppIcon : AppCompatActivity() {
                         (gridView.adapter as IconsAdapter).search(s.toString())
                     }
                 })
-                setPadding((18 * resources.displayMetrics.density).toInt(), 0, (18 * resources.displayMetrics.density).toInt(), 0)
-                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, (64 * resources.displayMetrics.density).toInt())
+                setPadding(18.dp.toInt(), 0, 18.dp.toInt(), 0)
+                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 64.dp.toInt())
                 setBackgroundColor(0xdd111213.toInt())
                 visibility = View.GONE
                 searchBar = this
@@ -67,16 +68,15 @@ class CustomAppIcon : AppCompatActivity() {
         mainIntent.addCategory("com.anddoes.launcher.THEME")
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
-            iconPacks.add(App())
+            iconPacks.add(App(pacslist[i].activityInfo.packageName))
             iconPacks[i].icon = pacslist[i].loadIcon(packageManager)
-            iconPacks[i].packageName = pacslist[i].activityInfo.packageName
             iconPacks[i].label = pacslist[i].loadLabel(packageManager).toString()
         }
 
         gridView.adapter = IconpacksAdapter()
         gridView.setOnItemClickListener { _,_,i,_ -> try {
             gridView.numColumns = 4
-            gridView.adapter = IconsAdapter(iconPacks[i].packageName!!)
+            gridView.adapter = IconsAdapter(iconPacks[i].packageName)
             state = 1
             defaultOption.visibility = View.GONE
             searchBar.visibility = View.VISIBLE
@@ -111,9 +111,9 @@ class CustomAppIcon : AppCompatActivity() {
             viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
             var appSize = 0
             when (Settings["icsize", 1]) {
-                0 -> appSize = (resources.displayMetrics.density * 64).toInt()
-                1 -> appSize = (resources.displayMetrics.density * 74).toInt()
-                2 -> appSize = (resources.displayMetrics.density * 84).toInt()
+                0 -> appSize = 64.dp.toInt()
+                1 -> appSize = 74.dp.toInt()
+                2 -> appSize = 84.dp.toInt()
             }
             viewHolder.icon!!.layoutParams.height = appSize
             viewHolder.icon!!.layoutParams.width = appSize
@@ -181,9 +181,9 @@ class CustomAppIcon : AppCompatActivity() {
             } catch (ignore: Exception) {}
             var appSize = 0
             when (Settings["icsize", 1]) {
-                0 -> appSize = (resources.displayMetrics.density * 64).toInt()
-                1 -> appSize = (resources.displayMetrics.density * 74).toInt()
-                2 -> appSize = (resources.displayMetrics.density * 84).toInt()
+                0 -> appSize = 64.dp.toInt()
+                1 -> appSize = 74.dp.toInt()
+                2 -> appSize = 84.dp.toInt()
             }
             viewHolder.icon!!.layoutParams.height = appSize
             viewHolder.icon!!.layoutParams.width = appSize

@@ -22,11 +22,8 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.RemovedArticles
 import posidon.launcher.feed.news.chooser.FeedChooser
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.vibrate
+import posidon.launcher.tools.*
 import posidon.launcher.view.Spinner
 import posidon.launcher.view.Switch
 
@@ -68,8 +65,8 @@ class CustomHome : AppCompatActivity() {
         findViewById<Switch>(R.id.hidefeed).isChecked = Settings["hidefeed", false]
 
         val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
-        val maxWidth = Settings["feed:max_img_width", Tools.getDisplayWidth(this)]
-        newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Tools.getDisplayWidth(this).toFloat() * 6).toInt() - 1
+        val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
+        newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.displayWidth.toFloat() * 6).toInt() - 1
         newsCardMaxImageWidthSlider.max = 5
         val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
         newsCardMaxImageWidthNum.text = maxWidth.toString()
@@ -77,7 +74,7 @@ class CustomHome : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) { Settings.apply() }
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                val newVal: Int = Tools.getDisplayWidth(this@CustomHome) / 6 * (progress + 1)
+                val newVal: Int = Device.displayWidth / 6 * (progress + 1)
                 newsCardMaxImageWidthNum.text = newVal.toString()
                 Settings["feed:max_img_width"] = newVal
             }

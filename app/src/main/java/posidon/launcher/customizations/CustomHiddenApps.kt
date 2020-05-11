@@ -46,10 +46,8 @@ class CustomHiddenApps : AppCompatActivity() {
         val pacslist = pm!!.queryIntentActivities(mainIntent, 0)
         val pacs = arrayOfNulls<App>(pacslist.size)
         for (i in pacslist.indices) {
-            pacs[i] = App()
+            pacs[i] = App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)
             pacs[i]!!.icon = pacslist[i].loadIcon(pm)
-            pacs[i]!!.packageName = pacslist[i].activityInfo.packageName
-            pacs[i]!!.name = pacslist[i].activityInfo.name
             pacs[i]!!.label = pacslist[i].loadLabel(pm).toString()
         }
         Sort.labelSort(pacs)

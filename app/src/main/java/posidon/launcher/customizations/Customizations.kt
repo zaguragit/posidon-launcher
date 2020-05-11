@@ -19,6 +19,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.dp
 import kotlin.math.max
 
 
@@ -33,7 +34,7 @@ class Customizations : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0) findViewById<View>(R.id.quickStepOptions).visibility = View.VISIBLE
         if (Settings["dev:enabled", false]) findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
-        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, (24 * resources.displayMetrics.density).toInt()))
+        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, 24.dp.toInt()))
         cardThing()
     }
 

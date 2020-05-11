@@ -10,6 +10,7 @@ import android.widget.SectionIndexer
 import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.dp
 
 class AppsAdapter(private val context: Context, private val apps: Array<App>) : BaseAdapter(), SectionIndexer {
 
@@ -44,9 +45,9 @@ class AppsAdapter(private val context: Context, private val apps: Array<App>) : 
         } else viewHolder.text!!.visibility = View.INVISIBLE
         var appSize = 0
         when (Settings["icsize", 1]) {
-            0 -> appSize = (context.resources.displayMetrics.density * 64).toInt()
-            1 -> appSize = (context.resources.displayMetrics.density * 74).toInt()
-            2 -> appSize = (context.resources.displayMetrics.density * 84).toInt()
+            0 -> appSize = 64.dp.toInt()
+            1 -> appSize = 74.dp.toInt()
+            2 -> appSize = 84.dp.toInt()
         }
         viewHolder.icon!!.layoutParams.height = appSize
         viewHolder.icon!!.layoutParams.width = appSize

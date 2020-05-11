@@ -15,10 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Dock
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.*
 import kotlin.math.min
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -51,7 +48,7 @@ class AddShortcutActivity : AppCompatActivity() {
         val showLabels = Settings["dockLabelsEnabled", false]
         container.columnCount = columnCount
         container.rowCount = rowCount
-        appSize = min(appSize, ((Tools.getDisplayWidth(this) - 32.dp) / columnCount).toInt())
+        appSize = min(appSize, ((Device.displayWidth - 32.dp) / columnCount).toInt())
         var i = 0
         while (i < data.size && i < columnCount * rowCount) {
             val string = data[i]
@@ -111,7 +108,7 @@ class AddShortcutActivity : AppCompatActivity() {
             container.addView(view)
             i++
         }
-        val containerHeight = (appSize * rowCount + resources.displayMetrics.density * if (Settings["dockLabelsEnabled", false]) 18 * rowCount else 0).toInt()
+        val containerHeight = appSize * rowCount + if (Settings["dockLabelsEnabled", false]) (18.dp * rowCount).toInt() else 0
         container.layoutParams.height = containerHeight
     }
 }

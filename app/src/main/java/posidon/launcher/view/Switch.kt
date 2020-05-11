@@ -8,6 +8,7 @@ import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.util.StateSet
 import posidon.launcher.Main
+import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 
 
@@ -33,8 +34,8 @@ class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(co
     private fun generateCircle(color: Int): ShapeDrawable {
         val out = ShapeDrawable(OvalShape())
         out.paint.color = color
-        out.intrinsicHeight = (24 * resources.displayMetrics.density).toInt()
-        out.intrinsicWidth = (24 * resources.displayMetrics.density).toInt()
+        out.intrinsicHeight = 24.dp.toInt()
+        out.intrinsicWidth = 24.dp.toInt()
         return out
     }
 
@@ -47,9 +48,9 @@ class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(co
 
     private fun generateBG(color: Int): GradientDrawable {
         val out = GradientDrawable()
-        out.cornerRadius = 12 * resources.displayMetrics.density
+        out.cornerRadius = 12.dp
         out.setColor(color)
-        out.setStroke((10 * resources.displayMetrics.density).toInt(), 0x0)
+        out.setStroke(10.dp.toInt(), 0x0)
         return out
     }
 }

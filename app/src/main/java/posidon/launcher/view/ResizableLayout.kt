@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
@@ -23,7 +24,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     private var crossButton: View
     var stopResizingOnFingerLift = true
     var onResizeListener: OnResizeListener? = null
-    private val maxHeight get() = Tools.getDisplayHeight(context) * 2 / 3
+    private val maxHeight get() = Device.displayHeight * 2 / 3
 
     var resizing = false
         set(value) {

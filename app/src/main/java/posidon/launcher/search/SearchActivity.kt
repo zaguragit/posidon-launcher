@@ -169,10 +169,8 @@ class SearchActivity : AppCompatActivity() {
         }
         if (showHidden) {
             findViewById<View>(R.id.fail).visibility = View.GONE
-            val app = App()
+            val app = App(BuildConfig.APPLICATION_ID, HiddenAppsActivity::class.java.name)
             app.label = "Hidden apps"
-            app.packageName = BuildConfig.APPLICATION_ID
-            app.name = HiddenAppsActivity::class.java.name
             app.icon = getDrawable(R.drawable.hidden_apps)
             results[j] = app
             j++

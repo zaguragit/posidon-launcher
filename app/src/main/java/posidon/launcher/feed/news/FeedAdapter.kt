@@ -21,11 +21,8 @@ import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
-import posidon.launcher.tools.Loader
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.*
 import posidon.launcher.view.SwipeableLayout
 import java.util.*
 import kotlin.collections.ArrayList
@@ -34,7 +31,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
 
     class FeedModelViewHolder(val card: View) : RecyclerView.ViewHolder(card)
 
-    private val maxWidth = Settings["feed:max_img_width", Tools.getDisplayWidth(context)]
+    private val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): FeedModelViewHolder {
         val v = LayoutInflater.from(context).inflate(when(Settings["feed:card_layout", 0]) {

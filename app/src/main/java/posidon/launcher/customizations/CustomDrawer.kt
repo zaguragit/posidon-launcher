@@ -112,7 +112,6 @@ class CustomDrawer : AppCompatActivity() {
         v.getChildAt(1).background = ColorTools.colorcircle(it)
         Settings["drawer:background_color"] = it
         Main.shouldSetApps = true
-
     }
 
     fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["labelColor", 0xeeeeeeee.toInt()]) {

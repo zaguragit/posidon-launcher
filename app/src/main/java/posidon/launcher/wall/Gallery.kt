@@ -38,9 +38,9 @@ class Gallery : AppCompatActivity() {
         applyFontSetting()
         setContentView(R.layout.wall_gallery)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        val sidepadding = (28 * resources.displayMetrics.density).toInt()
-        val gridsidepadding = (15 * resources.displayMetrics.density).toInt()
-        val toolbarHeight = Tools.navbarHeight + (64 * resources.displayMetrics.density).toInt()
+        val sidepadding = 28.dp.toInt()
+        val gridsidepadding = 15.dp.toInt()
+        val toolbarHeight = Tools.navbarHeight + 64.dp.toInt()
         findViewById<View>(R.id.toolbar).setPadding(sidepadding, 0, sidepadding, Tools.navbarHeight)
         findViewById<View>(R.id.toolbar).layoutParams.height = toolbarHeight
         findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight() + 4.dp.toInt(), gridsidepadding, toolbarHeight + 20.dp.toInt())

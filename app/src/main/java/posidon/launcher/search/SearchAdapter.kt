@@ -10,6 +10,7 @@ import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.dp
 
 internal class SearchAdapter(private val context: Context, private val results: Array<App?>) : BaseAdapter() {
 
@@ -27,9 +28,9 @@ internal class SearchAdapter(private val context: Context, private val results: 
         text.setTextColor(Settings["searchtxtcolor", -0x1])
         var appSize = 0
         when (Settings["icsize", 1]) {
-            0 -> appSize = (context.resources.displayMetrics.density * 64).toInt()
-            1 -> appSize = (context.resources.displayMetrics.density * 72).toInt()
-            2 -> appSize = (context.resources.displayMetrics.density * 96).toInt()
+            0 -> appSize = 64.dp.toInt()
+            1 -> appSize = 72.dp.toInt()
+            2 -> appSize = 96.dp.toInt()
         }
         icon.layoutParams.height = appSize
         icon.layoutParams.width = appSize
