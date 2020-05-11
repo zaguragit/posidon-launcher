@@ -18,7 +18,7 @@
         android:onClick="openSearch"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
         <ImageView
             android:id="@+id/docksearchic"
@@ -51,6 +51,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"/>
 </LinearLayout>

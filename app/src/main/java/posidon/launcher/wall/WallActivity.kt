@@ -19,12 +19,9 @@ import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.R
-import posidon.launcher.tools.Loader
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
-import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.centerCropWallpaper
-import posidon.launcher.tools.toBitmap
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
@@ -52,8 +49,8 @@ class WallActivity : AppCompatActivity() {
                     Tools.clearAnimation(loading!!.drawable)
                     loading!!.visibility = View.GONE
                     if (it != null) {
-                        val displayWidth = Tools.getDisplayWidth(this)
-                        val displayHeight = Tools.getDisplayHeight(this)
+                        val displayWidth = Device.displayWidth
+                        val displayHeight = Device.displayHeight
                         val width: Int
                         val height: Int
                         if (it.intrinsicHeight / it.intrinsicWidth.toFloat() < displayHeight / displayWidth.toFloat()) {
@@ -65,7 +62,7 @@ class WallActivity : AppCompatActivity() {
                         }
                         it.toBitmap(width, height).let {
                             img = it
-                            if (it.height / it.width < Tools.getDisplayHeight(this) / Tools.getDisplayWidth(this))
+                            if (it.height / it.width < displayHeight / displayWidth)
                                 img = centerCropWallpaper(this@WallActivity, it)
                         }
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
@@ -88,7 +85,7 @@ class WallActivity : AppCompatActivity() {
             } catch (ignore: Exception) {}
         }
         var bottompadding = Tools.navbarHeight
-        if (bottompadding == 0) bottompadding = (20 * resources.displayMetrics.density).toInt()
+        if (bottompadding == 0) bottompadding = 20.dp.toInt()
         findViewById<View>(R.id.bottomstuff).setPadding(0, 0, 0, bottompadding)
         findViewById<View>(R.id.applybtn).background = btnBG()
         findViewById<View>(R.id.applybtn).setOnClickListener {
@@ -123,14 +120,14 @@ class WallActivity : AppCompatActivity() {
     }
 
     private fun btnBG(): ShapeDrawable {
-        val r = 24 * resources.displayMetrics.density
+        val r = 24.dp
         val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
         out.paint.color = Palette.from(img!!).generate().getVibrantColor(-0xdad9d9)
         return out
     }
 
     private fun dialogBtnBG(): ShapeDrawable {
-        val r = 24 * resources.displayMetrics.density
+        val r = 24.dp
         val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
         out.paint.color = Palette.from(img!!).generate().getDarkMutedColor(Palette.from(img!!).generate().getDominantColor(-0xeeeded))
         return out

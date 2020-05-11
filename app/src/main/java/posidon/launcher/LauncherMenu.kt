@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 import posidon.launcher.wall.Gallery
@@ -89,7 +90,7 @@ class LauncherMenu(private val context: Context, private val window: Window) : O
             behavior.isHideable = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val list = ArrayList<Rect>()
-                list.add(Rect(0, 0, Tools.getDisplayWidth(homescreen.context), Tools.getDisplayHeight(homescreen.context)))
+                list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
                 homescreen.systemGestureExclusionRects = list
             }
             isActive = false

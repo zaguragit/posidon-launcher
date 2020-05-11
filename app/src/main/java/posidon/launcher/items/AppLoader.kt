@@ -26,7 +26,6 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         val packageManager = context.get()!!.packageManager
         val pacslist = packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
         val ICONSIZE = 65.dp.toInt()
-        var themeRes: Resources? = null
         val iconpackName = Settings["iconpack", "system"]
         var intresiconback = 0
         var intresiconfront = 0
@@ -37,9 +36,9 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
         }
         var iconPackInfo = ThemeTools.IconPackInfo()
-        if (iconpackName.compareTo("") != 0) {
-            try { themeRes = packageManager.getResourcesForApplication(iconpackName) }
-            catch (ignore: Exception) {}
+        var themeRes: Resources? = null
+        try {
+            themeRes = packageManager.getResourcesForApplication(iconpackName)
             if (themeRes != null) {
                 iconPackInfo = ThemeTools.getIconPackInfo(themeRes, iconpackName)
                 if (iconPackInfo.iconBack != null) {
@@ -52,19 +51,25 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     intresiconfront = themeRes.getIdentifier(iconPackInfo.iconFront, "drawable", iconpackName)
                 }
             }
-        }
+        } catch (e: Exception) {}
         val uniformOptions = BitmapFactory.Options()
         uniformOptions.inScaled = false
         var back: Bitmap? = null
         var mask: Bitmap? = null
         var front: Bitmap? = null
-        if (iconpackName.compareTo("") != 0 && themeRes != null) {
-            if (intresiconback != 0) back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
-            if (intresiconmask != 0) mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
-            if (intresiconfront != 0) front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
+        if (themeRes != null) {
+            if (intresiconback != 0) {
+                back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
+            }
+            if (intresiconmask != 0) {
+                mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
+            }
+            if (intresiconfront != 0) {
+                front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
+            }
         }
         for (i in pacslist.indices) {
-            val app = App()
+            val app = App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 try {
                     app.icon = Tools.adaptic(context.get()!!, packageManager.getActivityIcon(ComponentName(
@@ -74,8 +79,6 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     e.printStackTrace()
                 }
             } else app.icon = pacslist[i].loadIcon(packageManager)
-            app.packageName = pacslist[i].activityInfo.packageName
-            app.name = pacslist[i].activityInfo.name
             var customLabel = Settings[app.packageName + "/" + app.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
             if (customLabel.isEmpty()) {
                 Settings[app.packageName + "/" + app.name + "?label"] = pacslist[i].loadLabel(packageManager).toString()
@@ -84,39 +87,58 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             app.label = customLabel
             var intres = 0
             val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
-            if (iconResource != null) intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
-            if (intres != 0) try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get()!!, themeRes!!.getDrawable(intres)!!)
-                else app.icon = themeRes!!.getDrawable(intres)
-            } catch (e: Exception) { e.printStackTrace() } else try {
-                var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
-                app.icon!!.draw(Canvas(orig))
-                val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(scaledBitmap)
-                if (back != null) canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
-                val origCanv = Canvas(scaledOrig)
-                orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
-                origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
-                if (mask != null) origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
-                canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
-                if (front != null) canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
-                app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
-            } catch (e: Exception) { e.printStackTrace() }
+            if (iconResource != null) {
+                intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
+            }
+            if (intres != 0) {
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get()!!, themeRes!!.getDrawable(intres)!!)
+                    else app.icon = themeRes!!.getDrawable(intres)
+                } catch (e: Exception) { e.printStackTrace() }
+            } else {
+                try {
+                    var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                    app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
+                    app.icon!!.draw(Canvas(orig))
+                    val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                    val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                    val canvas = Canvas(scaledBitmap)
+                    if (back != null) {
+                        canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
+                    }
+                    val origCanv = Canvas(scaledOrig)
+                    orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
+                    origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
+                    if (mask != null) {
+                        origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
+                    }
+                    canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
+                    if (front != null) {
+                        canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
+                    }
+                    app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
             val customIcon = Settings["app:" + app.packageName + ":icon", ""]
-            if (customIcon != "") try {
-                val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
-                val t = packageManager.getResourcesForApplication(data[0])
-                val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                app.icon = t.getDrawable(intRes)
-            } catch (e: Exception) { e.printStackTrace() }
-            try { if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) Tools.animate(app.icon!!) }
-            catch (ignore: Exception) {}
+            if (customIcon != "") {
+                try {
+                    val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
+                    val t = packageManager.getResourcesForApplication(data[0])
+                    val intRes = t.getIdentifier(data[1], "drawable", data[0])
+                    app.icon = t.getDrawable(intRes)
+                } catch (e: Exception) { e.printStackTrace() }
+            }
+            try {
+                if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
+                    Tools.animate(app.icon!!)
+                }
+            } catch (ignore: Exception) {}
             App.putInSecondMap(app.packageName + "/" + app.name, app)
             if (Settings[pacslist[i].activityInfo.packageName + "/" + pacslist[i].activityInfo.name + "?hidden", false]) {
                 App.hidden.add(app)
-            } else tmpApps.add(app)
+            } else {
+                tmpApps.add(app)
+            }
         }
         if (Settings["drawer:sorting", 0] == 1) {
             tmpApps.sortWith(Comparator { o1, o2 ->

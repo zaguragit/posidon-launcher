@@ -16,6 +16,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.vibrate
 
@@ -30,7 +31,7 @@ class FeedChooser : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         grid = findViewById(R.id.grid)
         grid.layoutManager = GridLayoutManager(this, 2)
-        val padding = (4 * resources.displayMetrics.density).toInt()
+        val padding = 4.dp.toInt()
         grid.setPadding(padding, getStatusBarHeight(), padding, Tools.navbarHeight + padding)
 
         feedUrls.addAll(Settings["feedUrls", defaultSources].split("|"))
@@ -60,7 +61,7 @@ class FeedChooser : AppCompatActivity() {
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()
         }
-        (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = (20 * resources.displayMetrics.density + Tools.navbarHeight).toInt()
+        (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
     }
 
     override fun onPause() {

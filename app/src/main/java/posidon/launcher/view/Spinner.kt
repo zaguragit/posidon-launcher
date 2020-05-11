@@ -48,7 +48,7 @@ class Spinner : AppCompatTextView {
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {
                 val bg = ShapeDrawable()
-                val r = 18 * context.resources.displayMetrics.density
+                val r = 18.dp
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 bg.paint.color = context.resources.getColor(R.color.cardbg)
                 setBackgroundDrawable(bg)

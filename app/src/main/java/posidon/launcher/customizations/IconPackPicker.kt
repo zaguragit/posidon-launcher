@@ -47,15 +47,14 @@ class IconPackPicker : AppCompatActivity() {
         val pacslist = pm.queryIntentActivities(mainIntent, 0)
         val apps = arrayOfNulls<App>(pacslist.size)
         for (i in pacslist.indices) {
-            apps[i] = App()
+            apps[i] = App(pacslist[i].activityInfo.packageName)
             apps[i]!!.icon = pacslist[i].loadIcon(pm)
-            apps[i]!!.packageName = pacslist[i].activityInfo.packageName
             apps[i]!!.label = pacslist[i].loadLabel(pm).toString()
         }
         val grid = findViewById<GridView>(R.id.grid)
         grid.adapter = IconPackListAdapter(this, apps as Array<App>)
         grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
-            Settings["iconpack"] = apps[position].packageName!!
+            Settings["iconpack"] = apps[position].packageName
             view.background = getDrawable(R.drawable.selection)
             if (lastclicked !== view) {
                 lastclicked!!.setBackgroundColor(0x0)

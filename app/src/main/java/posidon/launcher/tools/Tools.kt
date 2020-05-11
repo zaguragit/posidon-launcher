@@ -78,9 +78,6 @@ object Tools {
         return found
     }
 
-	inline fun getDisplayWidth(c: Context) = c.resources.displayMetrics.widthPixels
-    inline fun getDisplayHeight(c: Context) = c.resources.displayMetrics.heightPixels
-
     var publicContext: Context? = null
 
     fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap? {
@@ -289,8 +286,8 @@ object Tools {
 	fun blurredWall(context: Context, radius: Float): Bitmap? {
         try {
             @SuppressLint("MissingPermission") var bitmap: Bitmap? = WallpaperManager.getInstance(context).peekFastDrawable().toBitmap()
-            val displayWidth = getDisplayWidth(context)
-            val displayHeight = getDisplayHeight(context) + navbarHeight
+            val displayWidth = Device.displayWidth
+            val displayHeight = Device.displayHeight + navbarHeight
             if (bitmap!!.width > radius && bitmap.height > radius) {
                 when {
                     bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
@@ -521,14 +518,6 @@ inline fun Context.pullStatusbar() {
 inline fun Context.getStatusBarHeight(): Int {
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
     return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
-}
-
-inline val Context.isTablet get() =
-    resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
-
-inline val Context.hasNavbar: Boolean get() {
-    val id: Int = resources.getIdentifier("config_showNavigationBar", "bool", "android")
-    return id != 0 && resources.getBoolean(id)
 }
 
 inline fun Context.vibrate() {

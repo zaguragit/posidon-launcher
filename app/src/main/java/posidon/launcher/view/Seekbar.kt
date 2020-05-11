@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatSeekBar
 import posidon.launcher.Main
+import posidon.launcher.tools.dp
 
 class Seekbar(context: Context?, attrs: AttributeSet?) : AppCompatSeekBar(context, attrs) {
 
@@ -28,22 +29,22 @@ class Seekbar(context: Context?, attrs: AttributeSet?) : AppCompatSeekBar(contex
 
     private fun generateTrackBG(): GradientDrawable {
         val out = GradientDrawable()
-        out.cornerRadius = 12 * resources.displayMetrics.density
+        out.cornerRadius = 12.dp
         out.setColor(0xff08090a.toInt())
-        out.setStroke((10 * resources.displayMetrics.density).toInt(), 0x0)
+        out.setStroke(10.dp.toInt(), 0x0)
         return out
     }
 
     private fun generateTrackFG(): ClipDrawable {
         val out = GradientDrawable()
-        out.cornerRadius = 12 * resources.displayMetrics.density
+        out.cornerRadius = 12.dp
         out.setColor(Main.accentColor and 0x00ffffff or 0x88000000.toInt())
-        out.setStroke((10 * resources.displayMetrics.density).toInt(), 0x0)
+        out.setStroke(10.dp.toInt(), 0x0)
         return ClipDrawable(out, Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
     }
 
     private fun generateThumb(): ShapeDrawable {
-        val r = (24 * resources.displayMetrics.density).toInt()
+        val r = 24.dp.toInt()
         val out = ShapeDrawable(OvalShape())
         out.paint.color = Main.accentColor
         out.intrinsicHeight = r

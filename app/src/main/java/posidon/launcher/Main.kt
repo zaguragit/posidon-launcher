@@ -49,8 +49,6 @@ import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.blurredWall
 import posidon.launcher.tools.Tools.canBlurWall
-import posidon.launcher.tools.Tools.getDisplayHeight
-import posidon.launcher.tools.Tools.getDisplayWidth
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.Tools.isInstalled
 import posidon.launcher.tools.isTablet
@@ -105,7 +103,7 @@ class Main : AppCompatActivity() {
                     } else view.findViewById<View>(R.id.icontxt).visibility = GONE
                     val finalI = i
                     val bgColor = Settings["folderBG", -0x22eeeded]
-                    val r = Settings["folderCornerRadius", 18] * resources.displayMetrics.density
+                    val r = Settings["folderCornerRadius", 18].dp
                     val labelsEnabled = Settings["folderLabelsEnabled", false]
                     view.setOnClickListener { if (!Folder.currentlyOpen) {
                         Folder.currentlyOpen = true
@@ -158,12 +156,15 @@ class Main : AppCompatActivity() {
                         content.findViewById<View>(R.id.bg).background = bg
                         val location = IntArray(2)
                         view.getLocationInWindow(location)
-                        val gravity = if (location[0] > getDisplayWidth(this@Main) / 2) Gravity.END else Gravity.START
-                        val x = if (location[0] > getDisplayWidth(this@Main) / 2) getDisplayWidth(this@Main) - location[0] - view.measuredWidth else location[0]
-                        popupWindow.showAtLocation(
-                                view, Gravity.BOTTOM or gravity, x,
-                                (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * resources.displayMetrics.density).toInt()
-                        )
+                        val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+                        val x = if (location[0] > Device.displayWidth / 2) {
+                            Device.displayWidth - location[0] - view.measuredWidth
+                        } else location[0]
+                        var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
+                        if (Settings["dock:search:below_apps", false] && !isTablet) {
+                            y += 68.dp.toInt()
+                        }
+                        popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
                     }}
                     view.setOnLongClickListener(ItemLongPress.folder(this@Main, folder, i))
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
@@ -215,21 +216,21 @@ class Main : AppCompatActivity() {
             val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp * rowCount else 0f).toInt() * rowCount
             dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) containerHeight + 84.dp.toInt() else containerHeight + 14.dp.toInt()
             container.layoutParams.height = containerHeight
-            behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt()
+            behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
             val metrics = DisplayMetrics()
             windowManager.defaultDisplay.getRealMetrics(metrics)
             findViewById<View>(R.id.drawercontent).layoutParams.height = metrics.heightPixels
             (findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
             if (Settings["feed:show_behind_dock", false]) {
                 (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, 0)
-                findViewById<View>(R.id.desktopContent).setPadding(0, 0, 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt())
+                findViewById<View>(R.id.desktopContent).setPadding(0, 0, 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
             } else {
-                (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, (dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18) * resources.displayMetrics.density).toInt())
-                findViewById<View>(R.id.desktopContent).setPadding(0, (6 * resources.displayMetrics.density).toInt(), 0, (24 * resources.displayMetrics.density).toInt())
+                (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
+                findViewById<View>(R.id.desktopContent).setPadding(0, 6.dp.toInt(), 0, 24.dp.toInt())
             }
             if (Settings["dock:background_type", 0] == 1) {
                 val bg = findViewById<View>(R.id.drawer).background as LayerDrawable
-                bg.setLayerInset(0, 0, 0, 0, getDisplayHeight(this@Main) - (Settings["dockbottompadding", 10] * resources.displayMetrics.density).toInt())
+                bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
                 bg.setLayerInset(1, 0, behavior.peekHeight, 0, 0)
             }
             (findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
@@ -259,14 +260,14 @@ class Main : AppCompatActivity() {
                     DragEvent.ACTION_DROP -> {
                         ((event.localState as Array<*>)[1] as View).visibility = VISIBLE
                         if (behavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-                            if (event.y > getDisplayHeight(this@Main) - dockHeight) {
+                            if (event.y > Device.displayHeight - dockHeight) {
                                 val item = (event.localState as Array<*>)[0] as LauncherItem?
                                 val location = IntArray(2)
                                 var i = 0
                                 if (item is App) {
                                     while (i < container.childCount) {
                                         container.getChildAt(i).getLocationOnScreen(location)
-                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100 * resources.displayMetrics.density)
+                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
                                         if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
                                             var data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
                                             if (data.size <= i) data = data.copyOf(i + 1)
@@ -284,7 +285,7 @@ class Main : AppCompatActivity() {
                                 } else if (item is Folder) {
                                     while (i < container.childCount) {
                                         container.getChildAt(i).getLocationOnScreen(location)
-                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100 * resources.displayMetrics.density)
+                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
                                         if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
                                             var data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
                                             if (data.size <= i) data = data.copyOf(i + 1)
@@ -317,7 +318,7 @@ class Main : AppCompatActivity() {
 
             when (Settings["dock:background_type", 0]) {
                 0 -> { findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30] * resources.displayMetrics.density
+                    val tr = Settings["dockradius", 30].dp
                     shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
                     paint.color = Settings["dock:background_color", -0x78000000]
                 }}
@@ -416,7 +417,7 @@ class Main : AppCompatActivity() {
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
             if (Settings["hidefeed", false]) {
-                feedRecycler.translationX = Tools.getDisplayWidth(this).toFloat()
+                feedRecycler.translationX = Device.displayWidth.toFloat()
                 feedRecycler.alpha = 0f
                 var wasHiddenLastTime = true
                 val fadeOutAnimListener = object : Animator.AnimatorListener {
@@ -486,12 +487,12 @@ class Main : AppCompatActivity() {
                     }
                 })
             }
-            if (!Settings["hidestatus", false]) desktop.setPadding(0, (getStatusBarHeight() - 12 * resources.displayMetrics.density).toInt(), 0, 0)
+            if (!Settings["hidestatus", false]) desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
 
             shouldSetApps = false
             customized = false
             val notificationBackground = ShapeDrawable()
-            val r = resources.displayMetrics.density * Settings["feed:card_radius", 15]
+            val r = Settings["feed:card_radius", 15].dp
             notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
             findViewById<View>(R.id.parentNotification).background = notificationBackground
@@ -595,7 +596,7 @@ class Main : AppCompatActivity() {
                     colors[1] = Settings["dock:background_color", -0x78000000]
                 }
                 colors[2] = Settings["drawer:background_color", -0x78000000]
-                floats[0] = dockHeight.toFloat() / (getDisplayHeight(this@Main) + dockHeight)
+                floats[0] = dockHeight.toFloat() / (Device.displayHeight + dockHeight)
                 things[0] = Settings["blurLayers", 1]
                 things[1] = Settings["dockradius", 30]
                 things[2] = Settings["dock:background_type", 0]
@@ -633,7 +634,7 @@ class Main : AppCompatActivity() {
                 } else if (!Settings["feed:show_behind_dock", false]) {
                     (desktop.layoutParams as CoordinatorLayout.LayoutParams).bottomMargin =
                             ((1 + slideOffset) * (dockHeight + Tools.navbarHeight +
-                            (Settings["dockbottompadding", 10] - 18) * resources.displayMetrics.density)).toInt()
+                            (Settings["dockbottompadding", 10] - 18).dp)).toInt()
                     desktop.layoutParams = desktop.layoutParams
                 }
                 findViewById<View>(R.id.realdock).alpha = inverseOffset
@@ -738,7 +739,7 @@ class Main : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val list = ArrayList<Rect>()
-            list.add(Rect(0, 0, getDisplayWidth(this), getDisplayHeight(this)))
+            list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
             findViewById<View>(R.id.homeView).systemGestureExclusionRects = list
         }
 

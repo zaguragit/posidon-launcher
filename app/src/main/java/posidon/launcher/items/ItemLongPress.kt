@@ -25,11 +25,8 @@ import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.toBitmap
-import posidon.launcher.tools.vibrate
+import posidon.launcher.tools.*
 import java.util.*
 
 object ItemLongPress {
@@ -56,7 +53,7 @@ object ItemLongPress {
                 recyclerView.layoutManager = LinearLayoutManager(context)
                 recyclerView.adapter = ShortcutAdapter(context, shortcuts!!, txtColor)
                 val bg = ShapeDrawable()
-                val r = 18 * context.resources.displayMetrics.density
+                val r = 18.dp
                 bg.shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
                 bg.paint.color = 0x33000000
                 recyclerView.background = bg
@@ -74,7 +71,7 @@ object ItemLongPress {
             val removeBtn = content.findViewById<View>(R.id.removeBtn)
             val editBtn = content.findViewById<View>(R.id.editbtn)
             val bg = ShapeDrawable()
-            val r = 18 * context.resources.displayMetrics.density
+            val r = 18.dp
             bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             bg.paint.color = color
             content.findViewById<View>(R.id.bg).background = bg
@@ -116,7 +113,7 @@ object ItemLongPress {
             val removeBtn = content.findViewById<View>(R.id.removeBtn)
             val editbtn = content.findViewById<View>(R.id.editbtn)
             val bg = ShapeDrawable()
-            val r = 18 * context.resources.displayMetrics.density
+            val r = 18.dp
             bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             bg.paint.color = color
             content.findViewById<View>(R.id.bg).background = bg
@@ -139,8 +136,8 @@ object ItemLongPress {
             val location = IntArray(2)
             val icon = view.findViewById<View>(R.id.iconimg)
             icon.getLocationInWindow(location)
-            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     var data = Settings["dock", ""].split("\n").toTypedArray()
@@ -159,10 +156,11 @@ object ItemLongPress {
             if (data.size <= i) data = Arrays.copyOf(data, i + 1)
             data[i] = ""
             Settings["dock"] = TextUtils.join("\n", data)
-            popupWindow.showAtLocation(
-                    view, Gravity.BOTTOM or gravity, x,
-                    (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
-            )
+            var y = -view.y.toInt() + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp.toInt()
+            if (Settings["dock:search:below_apps", false] && !context.isTablet) {
+                y += 68.dp.toInt()
+            }
+            popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
         }
         true
     }
@@ -171,8 +169,8 @@ object ItemLongPress {
         if (currentPopup == null) {
             val location = IntArray(2)
             view.getLocationOnScreen(location)
-            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
             popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     folderWindow.dismiss()
@@ -185,7 +183,7 @@ object ItemLongPress {
                     Main.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
-            }, true, app).showAtLocation(v, Gravity.BOTTOM or gravity, x, Tools.getDisplayHeight(context) - location[1] + Tools.navbarHeight)
+            }, true, app).showAtLocation(v, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + Tools.navbarHeight)
         }
         true
     }
@@ -204,11 +202,11 @@ object ItemLongPress {
             val myShadow = View.DragShadowBuilder(icon)
             val data = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)
-            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
-            if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Device.displayHeight / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
                     icon, Gravity.BOTTOM or gravity, x,
-                    context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
+                    Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight
             )
         } catch (ignore: Exception) {}
         true
@@ -226,13 +224,16 @@ object ItemLongPress {
             icon.getLocationInWindow(location)
             val myShadow = View.DragShadowBuilder(icon)
             val data = ClipData.newPlainText("", "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
-            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - icon.measuredWidth else location[0]
-            if (location[1] < Tools.getDisplayHeight(context) / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
-                    icon, Gravity.BOTTOM or gravity, x,
-                    context.resources.displayMetrics.heightPixels - location[1] + (4 * context.resources.displayMetrics.density).toInt() + Tools.navbarHeight
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                icon.startDragAndDrop(data, myShadow, arrayOf(app, it, popupWindow), 0)
+            } else icon.startDrag(data, myShadow, arrayOf(app, it, popupWindow), 0)
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Device.displayHeight / 2f) {
+                popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight)
+            } else {
+                popupWindow.showAtLocation(icon, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
+            }
         } catch (ignore: Exception) {}
         true
     }
@@ -254,15 +255,12 @@ object ItemLongPress {
             val data = ClipData.newPlainText("", "")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0)
             else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)*/
-            val gravity = if (location[0] > Tools.getDisplayWidth(activity) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(activity) / 2) Tools.getDisplayWidth(activity) - location[0] - icon.measuredWidth else location[0]
-            if (location[1] < Tools.getDisplayHeight(activity) / 2f) popupWindow.showAtLocation(
-                        icon, Gravity.TOP or gravity, x,
-                        location[1] + icon.measuredHeight
-            ) else popupWindow.showAtLocation(
-                    icon, Gravity.BOTTOM or gravity, x,
-                    Tools.getDisplayHeight(activity) - location[1] + (4 * activity.resources.displayMetrics.density).toInt() + Tools.navbarHeight
-            )
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
+            if (location[1] < Device.displayHeight / 2f) popupWindow.showAtLocation(
+                    icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight)
+            else popupWindow.showAtLocation(
+                    icon, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
         } catch (e: Exception) { e.printStackTrace() }
         true
     }
@@ -272,8 +270,8 @@ object ItemLongPress {
             val location = IntArray(2)
             val icon = view.findViewById<View>(R.id.iconimg)
             icon.getLocationInWindow(location)
-            val gravity = if (location[0] > Tools.getDisplayWidth(context) / 2) Gravity.END else Gravity.START
-            val x = if (location[0] > Tools.getDisplayWidth(context) / 2) Tools.getDisplayWidth(context) - location[0] - view.measuredWidth else location[0]
+            val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
+            val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     var data = Settings["dock", ""].split("\n").toTypedArray()
@@ -307,10 +305,11 @@ object ItemLongPress {
             if (data.size <= i) data = Arrays.copyOf(data, i + 1)
             data[i] = ""
             Settings["dock"] = TextUtils.join("\n", data)
-            popupWindow.showAtLocation(
-                    view, Gravity.BOTTOM or gravity, x,
-                    (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12) * context.resources.displayMetrics.density).toInt()
-            )
+            var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp).toInt()
+            if (Settings["dock:search:below_apps", false] && !context.isTablet) {
+                y += 68.dp.toInt()
+            }
+            popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
         }
         true
     }
