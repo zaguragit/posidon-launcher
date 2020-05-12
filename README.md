@@ -1,15 +1,21 @@
-# posidon launcher
+
+<div align="center">
+  <p><img width=192px src="/fastlane/metadata/android/en-US/images/icon.png"/></p>
+  <h1>posidon launcher</h1>
+</div>
+<div align="center">
+  
 ![Kotlin percentage](https://img.shields.io/badge/kotlin-100%25-6779F6)
 ![andorid_min_version](https://img.shields.io/badge/minSdk-21-3DDC84)
 ![License](https://img.shields.io/github/license/leoxshn/posidonLauncher?color=ff8800)
 [![Google Play rating](https://img.shields.io/endpoint?color=00D1FF&label=rating&url=https://api-playstore.rajkumaar.co.in/rating?id=posidon.launcher)](https://play.google.com/store/apps/details?id=posidon.launcher)
 [![Twitter Follow](https://img.shields.io/twitter/follow/posidon?style=social)](https://twitter.com/posidon)
 
+</div>
+
 This is a one-page launcher with an rss feed.
 
 Feel free to fork, contribute or use parts of the code in your own projects.
-
-<img width=192px src="/fastlane/metadata/android/en-US/images/icon.png"/>
 
 ### Things you can do to help
 - Make quickstep work (feel free to delete the current implementation, cause it doesn't work)
