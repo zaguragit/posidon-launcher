@@ -202,5 +202,5 @@ class NotificationAdapter(private val context: Context, private val window: Wind
         }
     }
 
-    override fun getItemCount(): Int { return NotificationService.notificationGroups.size }
+    override fun getItemCount() = NotificationService.notificationGroups.size
 }
