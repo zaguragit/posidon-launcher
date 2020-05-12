@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="posidon.launcher">
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -23,7 +24,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/hometheme">
-        <!--
+
+        <meta-data
+            android:name="xyz.paphonb.quickstepswitcher.minSdk"
+            android:value="29"/>
+        <meta-data
+            android:name="xyz.paphonb.quickstepswitcher.maxSdk"
+            android:value="29"/>
+
         <service
             android:name="posidon.launcher.external.quickstep.QuickStepService"
             android:permission="android.permission.STATUS_BAR_SERVICE"
@@ -43,7 +51,6 @@
             android:screenOrientation="unspecified"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             tools:targetApi="q"/>
-        -->
 
         <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>

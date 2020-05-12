@@ -5,8 +5,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
+import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.quickstep.*
@@ -15,6 +15,7 @@ import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.view.LinearLayoutManager
 import kotlin.math.max
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -28,7 +29,7 @@ class QuickStepActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
 
-        (taskDescription.layoutParams as FrameLayout.LayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp.toInt()) + 32.dp.toInt()
+        (taskDescription.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp.toInt()) + 32.dp.toInt()
 
         if (QuickStepService.recentTasks.isEmpty()) {
             taskDescription.visibility = GONE
@@ -37,6 +38,11 @@ class QuickStepActivity : AppCompatActivity() {
             for (i in 1 until QuickStepService.recentTasks.size) {
                 println(QuickStepService.recentTasks[i].toString())
             }
+        }
+
+        recycler.run {
+            layoutManager = LinearLayoutManager(this@QuickStepActivity)
+            adapter = QuickStepAdapter()
         }
     }
 

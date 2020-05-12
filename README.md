@@ -12,7 +12,7 @@ Feel free to fork, contribute or use parts of the code in your own projects.
 <img width=192px src="/fastlane/metadata/android/en-US/images/icon.png"/>
 
 ### Things you can do to help
-- Make quickstep work
+- Make quickstep work (feel free to delete the current implementation, cause it doesn't work)
 - Find / fix bugs
 
 ### What I intend to do with Quickstep
