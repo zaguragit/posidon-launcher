@@ -412,8 +412,10 @@ class Main : AppCompatActivity() {
             feedRecycler.visibility = if (Settings["feed:enabled", true]) VISIBLE else GONE
             val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
             (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
-            (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
-            (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
+            if (Settings["notif:enabled", true]) {
+                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
+                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
+            }
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
             (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
             if (Settings["hidefeed", false]) {
@@ -491,24 +493,30 @@ class Main : AppCompatActivity() {
 
             shouldSetApps = false
             customized = false
-            val notificationBackground = ShapeDrawable()
-            val r = Settings["feed:card_radius", 15].dp
-            notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-            notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
-            findViewById<View>(R.id.parentNotification).background = notificationBackground
-            val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
-            parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-            parentNotificationTitle.typeface = mainFont
-            val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
-            parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
-            parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
-            parentNotificationBtn.imageTintList = ColorStateList.valueOf(accentColor)
-            parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor and 0x00ffffff or 0x33000000)
-            if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
-                notifications.visibility = GONE
-                findViewById<View>(R.id.arrowUp).visibility = GONE
-                findViewById<View>(R.id.parentNotification).visibility = VISIBLE
-                findViewById<View>(R.id.parentNotification).background.alpha = 255
+
+            if (Settings["notif:enabled", true]) {
+                val notificationBackground = ShapeDrawable()
+                val r = Settings["feed:card_radius", 15].dp
+                notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
+                findViewById<View>(R.id.parentNotification).background = notificationBackground
+                val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
+                parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
+                parentNotificationTitle.typeface = mainFont
+                val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
+                parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
+                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
+                parentNotificationBtn.imageTintList = ColorStateList.valueOf(accentColor)
+                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor and 0x00ffffff or 0x33000000)
+                if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
+                    notifications.visibility = GONE
+                    findViewById<View>(R.id.arrowUp).visibility = GONE
+                    findViewById<View>(R.id.parentNotification).visibility = VISIBLE
+                    findViewById<View>(R.id.parentNotification).background.alpha = 255
+                } else {
+                    notifications.visibility = VISIBLE
+                    findViewById<View>(R.id.parentNotification).visibility = GONE
+                }
             } else {
                 notifications.visibility = VISIBLE
                 findViewById<View>(R.id.parentNotification).visibility = GONE
@@ -674,34 +682,40 @@ class Main : AppCompatActivity() {
 
         setCustomizations()
 
-        try {
-            NotificationService.onUpdate = {
-                try { runOnUiThread {
-                    if (Settings["collapseNotifications", false]) {
-                        if (NotificationService.notificationsAmount > 1) {
-                            findViewById<View>(R.id.parentNotification).visibility = VISIBLE
-                            parentNotificationTitle.text = resources.getString(
-                                    R.string.num_notifications,
-                                    NotificationService.notificationsAmount
-                            )
-                            if (notifications.visibility == VISIBLE) {
-                                findViewById<View>(R.id.parentNotification).background.alpha = 127
-                                findViewById<View>(R.id.arrowUp).visibility = VISIBLE
-                            } else {
-                                findViewById<View>(R.id.parentNotification).background.alpha = 255
-                                findViewById<View>(R.id.arrowUp).visibility = GONE
+        if (Settings["notif:enabled", true]) {
+            try {
+                NotificationService.onUpdate = {
+                    try {
+                        runOnUiThread {
+                            if (Settings["collapseNotifications", false]) {
+                                if (NotificationService.notificationsAmount > 1) {
+                                    findViewById<View>(R.id.parentNotification).visibility = VISIBLE
+                                    parentNotificationTitle.text = resources.getString(
+                                            R.string.num_notifications,
+                                            NotificationService.notificationsAmount
+                                    )
+                                    if (notifications.visibility == VISIBLE) {
+                                        findViewById<View>(R.id.parentNotification).background.alpha = 127
+                                        findViewById<View>(R.id.arrowUp).visibility = VISIBLE
+                                    } else {
+                                        findViewById<View>(R.id.parentNotification).background.alpha = 255
+                                        findViewById<View>(R.id.arrowUp).visibility = GONE
+                                    }
+                                } else {
+                                    findViewById<View>(R.id.parentNotification).visibility = GONE
+                                    notifications.visibility = VISIBLE
+                                }
                             }
-                        } else {
-                            findViewById<View>(R.id.parentNotification).visibility = GONE
-                            notifications.visibility = VISIBLE
+                            notifications.recycledViewPool.clear()
+                            notifications.adapter = NotificationAdapter(this@Main, window)
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                    notifications.recycledViewPool.clear()
-                    notifications.adapter = NotificationAdapter(this@Main, window)
-                }} catch (e: Exception) { e.printStackTrace() }
-            }
-            startService(Intent(this, NotificationService::class.java))
-        } catch (ignore: Exception) {}
+                }
+                startService(Intent(this, NotificationService::class.java))
+            } catch (e: Exception) {}
+        }
         widgetLayout = findViewById(R.id.widgets)
         widgetLayout.layoutParams.height = Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT]
         widgetLayout.layoutParams = widgetLayout.layoutParams
@@ -846,7 +860,9 @@ class Main : AppCompatActivity() {
                 feedRecycler.adapter = FeedAdapter(feedModels, this@Main, window)
             }
         }).execute()
-        NotificationService.onUpdate()
+        if (Settings["notif:enabled", true]) {
+            NotificationService.onUpdate()
+        }
         if (canBlurWall(this)) {
             val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
@@ -865,11 +881,14 @@ class Main : AppCompatActivity() {
         }
         if (tmp != Tools.navbarHeight || customized) {
             setCustomizations()
-            try {
-                notifications.recycledViewPool.clear()
-                notifications.adapter!!.notifyDataSetChanged()
+            if (Settings["notif:enabled", true]) {
+                try {
+                    notifications.recycledViewPool.clear()
+                    notifications.adapter!!.notifyDataSetChanged()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-            catch (e: Exception) { e.printStackTrace() }
         } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) for (app in apps) animate(app!!.icon!!)
     }
 
@@ -879,7 +898,7 @@ class Main : AppCompatActivity() {
         if (behavior.state != BottomSheetBehavior.STATE_COLLAPSED) behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         desktop.scrollTo(0, 0)
         WidgetManager.host.stopListening()
-        if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
+        if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
             notifications.visibility = GONE
             findViewById<View>(R.id.arrowUp).visibility = GONE
             findViewById<View>(R.id.parentNotification).background.alpha = 255
@@ -917,13 +936,17 @@ class Main : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            try { startService(Intent(this, NotificationService::class.java)) }
-            catch (ignore: Exception) {}
+            if (Settings["notif:enabled", true]) {
+                try { startService(Intent(this, NotificationService::class.java)) }
+                catch (e: Exception) {}
+            }
             if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility =
                     SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     SYSTEM_UI_FLAG_LOW_PROFILE
-            if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute()
+            if (shouldSetApps) {
+                AppLoader(this@Main, onAppLoaderEnd).execute()
+            }
             val playBtn = findViewById<ImageView>(R.id.musicPlay)
             if ((getSystemService(Context.AUDIO_SERVICE) as AudioManager).isMusicActive)
                 playBtn.setImageResource(R.drawable.ic_pause)

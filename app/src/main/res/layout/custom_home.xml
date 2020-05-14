@@ -320,10 +320,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    style="@style/customcardtitle"
-                    android:text="@string/notifications"
-                    android:layout_marginTop="-12dp"/>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/customcardtitle"
+                        android:text="@string/notifications"
+                        android:layout_marginTop="-12dp"/>
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/notificationsEnabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:padding="12dp"/>
+                </FrameLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
