@@ -26,7 +26,7 @@ Feel free to fork, contribute or use parts of the code in your own projects.
 ### Contribute
 
 #### Code
-Please read the [contribution guidlines](CODE_GUIDELINES.md)
+Please read the [contribution guidlines](CONTRIBUTIONS.md)
 
 The best thing you can do is to make quickstep work, feel free to delete my implementation, cause it doesn't work at all. All the quickstep-related code is in the [external/quickstep folder](app/src/main/java/posidon/launcher/external/quickstep)
 
