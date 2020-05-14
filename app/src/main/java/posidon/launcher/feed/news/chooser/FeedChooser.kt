@@ -37,7 +37,8 @@ class FeedChooser : AppCompatActivity() {
         feedUrls.addAll(Settings["feedUrls", defaultSources].split("|"))
         if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
             feedUrls.removeAt(0)
-            Settings["feedUrls"] = ""
+            Settings.putNotSave("feedUrls", "")
+            Settings.applyOnThisThread()
         }
 
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
@@ -49,14 +50,14 @@ class FeedChooser : AppCompatActivity() {
             val dialog = BottomSheetDialog(this, R.style.bottomsheet)
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
-            //dialog.findViewById<TextView>(R.id.title)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setTextColor(Main.accentColor)
             dialog.findViewById<TextView>(R.id.done)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
             dialog.findViewById<TextView>(R.id.done)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls.add(dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' '))
                 grid.adapter!!.notifyDataSetChanged()
-                Settings["feedUrls"] = feedUrls.joinToString("|")
+                Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
+                Settings.applyOnThisThread()
             }
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()
@@ -70,6 +71,6 @@ class FeedChooser : AppCompatActivity() {
     }
 
     companion object {
-        const val defaultSources = "androidpolice.com"
+        const val defaultSources = "androidpolice.com/feed"
     }
 }

@@ -53,13 +53,15 @@ class FeedChooserAdapter(internal val context: Context, private val feedUrls: Ar
                 dialog.dismiss()
                 feedUrls[position] = dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' ')
                 notifyDataSetChanged()
-                Settings["feedUrls"] = feedUrls.joinToString("|")
+                Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
+                Settings.applyOnThisThread()
             }
             dialog.findViewById<TextView>(R.id.remove)!!.setOnClickListener {
                 dialog.dismiss()
                 feedUrls.removeAt(position)
                 notifyDataSetChanged()
-                Settings["feedUrls"] = feedUrls.joinToString("|")
+                Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
+                Settings.applyOnThisThread()
             }
             dialog.show()
             true
