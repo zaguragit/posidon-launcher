@@ -1,10 +1,10 @@
 package posidon.launcher.feed.news
 
 import android.os.AsyncTask
-import android.text.TextUtils
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.xmlpull.v1.XmlPullParserFactory
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.news.chooser.Source
 import posidon.launcher.storage.Settings
@@ -19,9 +19,10 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
     val deleted = Settings.getStrings("feed:deleted_articles")
+    val pullParserFactory = XmlPullParserFactory.newInstance()
 
     companion object {
-        private val endStrings = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
+        private val endStrings = arrayOf("", "/feed", "/rss", "/feed.xml", "/rss.xml", "/atom", "/atom.xml")
     }
 
     override fun doInBackground(vararg Units: Unit): Boolean? {
@@ -108,81 +109,76 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
         var date: String? = null
         var isItem = 0
         inputStream.use {
-            val parser = Xml.newPullParser()
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+            val parser: XmlPullParser = pullParserFactory.newPullParser()
             parser.setInput(inputStream, null)
             parser.nextTag()
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                val eventType = parser.eventType
                 val name = parser.name ?: continue
-                if (eventType == XmlPullParser.END_TAG) {
-                    if (name.equals("item", ignoreCase = true) || name.equals("entry", ignoreCase = true)) {
-                        isItem = 0
-                        if (title != null && link != null) {
-                            if (Settings["feed:delete_articles", false]) {
-                                var show = true
-                                for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
-                                    show = false; break
-                                }
-                                if (show) feedModels.add(FeedItem(title!!, link!!, img, date, source))
-                            } else feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                when (parser.eventType) {
+                    XmlPullParser.END_TAG -> when {
+                        name.equals("item", ignoreCase = true) ||
+                        name.equals("entry", ignoreCase = true) -> {
+                            isItem = 0
+                            if (title != null && link != null) {
+                                if (Settings["feed:delete_articles", false]) {
+                                    var show = true
+                                    for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
+                                        show = false; break
+                                    }
+                                    if (show) feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                                } else feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                            }
+                            title = null
+                            link = null
+                            img = null
+                            date = null
                         }
-                        title = null
-                        link = null
-                        img = null
-                        date = null
                     }
-                    continue
-                }
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (name.equals("item", ignoreCase = true)) {
-                        isItem = 1
-                        continue
-                    } else if (name.equals("entry", ignoreCase = true)) {
-                        isItem = 2
-                        continue
-                    }
-                }
-                var result = ""
-                if (parser.next() == XmlPullParser.TEXT) {
-                    result = parser.text
-                    parser.nextTag()
-                }
-                when {
-                    isItem == 1 -> when { //RSS
-                        name.equals("title", ignoreCase = true) -> title = result
-                        name.equals("link", ignoreCase = true) -> link = result
-                        name.equals("pubDate", ignoreCase = true) -> date = result
-                        img == null -> img = when (name) {
-                            "description" -> {
+                    XmlPullParser.START_TAG -> when {
+                        name.equals("item", ignoreCase = true) -> isItem = 1
+                        name.equals("entry", ignoreCase = true) -> isItem = 2
+                        isItem == 1 -> when { //RSS
+                            name.equals("title", ignoreCase = true) -> title = getText(parser)
+                            name.equals("link", ignoreCase = true) -> link = getText(parser)
+                            name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
+                            img == null -> when (name) {
+                                "description" -> {
+                                    val result = getText(parser)
+                                    if (result.contains("src=\"")) {
+                                        val start = result.indexOf("src=\"", result.indexOf("img")) + 5
+                                        val end = result.indexOf("\"", start)
+                                        img = result.substring(start, end)
+                                    }
+                                }
+                                "media:content" -> img = parser.getAttributeValue(null, "url").also { println("media:content (start) -> $it") }
+                                "image" -> img = getText(parser)
+                                "itunes:image" -> img = parser.getAttributeValue(null, "href")
+                                "enclosure" -> img = parser.getAttributeValue(null, "url")
+                            }
+                        }
+                        isItem == 2 -> when { //Atom
+                            name.equals("title", ignoreCase = true) -> title = getText(parser)
+                            name.equals("id", ignoreCase = true) -> link = getText(parser)
+                            name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
+                            (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true) && img == null) -> {
+                                val result = getText(parser)
                                 if (result.contains("src=\"")) {
                                     val start = result.indexOf("src=\"", result.indexOf("img")) + 5
                                     val end = result.indexOf("\"", start)
-                                    result.substring(start, end)
-                                } else null
-                            }
-                            "media:content" -> parser.getAttributeValue(null, "url")
-                            "image" -> result
-                            "itunes:image" -> parser.getAttributeValue(null, "href")
-                            "enclosure" -> parser.getAttributeValue(null, "url")
-                            else -> null
-                        }
-                    }
-                    isItem == 2 -> when { //Atom
-                        name.equals("title", ignoreCase = true) -> title = result
-                        name.equals("id", ignoreCase = true) -> link = result
-                        name.equals("pubDate", ignoreCase = true) -> date = result
-                        (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true) && img == null) -> {
-                            if (result.contains("src=\"")) {
-                                val start = result.indexOf("src=\"", result.indexOf("img")) + 5
-                                val end = result.indexOf("\"", start)
-                                img = result.substring(start, end)
+                                    img = result.substring(start, end)
+                                }
                             }
                         }
+                        name.equals("title", ignoreCase = true) -> source.name = getText(parser)
                     }
-                    name.equals("title", ignoreCase = true) -> source.name = result
                 }
             }
         }
+    }
+
+    private fun getText(parser: XmlPullParser): String {
+        return if (parser.next() == XmlPullParser.TEXT) {
+            parser.text.also { parser.nextTag() }
+        } else ""
     }
 }
