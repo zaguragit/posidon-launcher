@@ -18,8 +18,11 @@ import kotlin.math.abs
 class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean>() {
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
-    private val endStrings: Array<String> = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
     val deleted = Settings.getStrings("feed:deleted_articles")
+
+    companion object {
+        private val endStrings = arrayOf("", "feed", "rss", "feed.xml", "rss.xml", "atom", "atom.xml")
+    }
 
     override fun doInBackground(vararg Units: Unit): Boolean? {
         val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
@@ -27,13 +30,12 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
         for (article in deletedIter) {
             val day = article.substringBefore(':').toDouble()
             if (abs(day - today) > 4) {
-                println("DELETED: $day, $today, ${abs(day - today)}")
                 deletedIter.remove()
             }
         }
         Settings.apply()
         for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
-            if (!TextUtils.isEmpty(u)) {
+            if (u.isNotEmpty()) {
                 val domain: String
                 var url = if (!u.startsWith("http://") && !u.startsWith("https://")) {
                     val slashI = u.indexOf('/')
@@ -44,7 +46,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                     domain = if (slashI != -1) u.substring(0, slashI) else u
                     u
                 }
-                if (!url.endsWith("/")) url += "/"
+                if (url.endsWith("/")) url = url.substring(0, url.length - 1)
                 var searching = true
                 var i = 0
                 while (searching && i < endStrings.size) {
@@ -117,7 +119,6 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                     if (name.equals("item", ignoreCase = true) || name.equals("entry", ignoreCase = true)) {
                         isItem = 0
                         if (title != null && link != null) {
-                            //feedItem.title + feedItem.link
                             if (Settings["feed:delete_articles", false]) {
                                 var show = true
                                 for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
