@@ -142,7 +142,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
                             img == null -> when (name) {
-                                "description" -> {
+                                "description", "content:encoded" -> {
                                     val result = getText(parser)
                                     if (result.contains("src=\"")) {
                                         val start = result.indexOf("src=\"", result.indexOf("img")) + 5
@@ -150,17 +150,16 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                                         img = result.substring(start, end)
                                     }
                                 }
-                                "media:content" -> img = parser.getAttributeValue(null, "url").also { println("media:content (start) -> $it") }
                                 "image" -> img = getText(parser)
+                                "media:content", "media:thumbnail", "enclosure" -> img = parser.getAttributeValue(null, "url")
                                 "itunes:image" -> img = parser.getAttributeValue(null, "href")
-                                "enclosure" -> img = parser.getAttributeValue(null, "url")
                             }
                         }
                         isItem == 2 -> when { //Atom
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("id", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
-                            (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true) && img == null) -> {
+                            (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true)) && img == null -> {
                                 val result = getText(parser)
                                 if (result.contains("src=\"")) {
                                     val start = result.indexOf("src=\"", result.indexOf("img")) + 5
@@ -169,7 +168,12 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                                 }
                             }
                         }
-                        name.equals("title", ignoreCase = true) -> source.name = getText(parser)
+                        name.equals("title", ignoreCase = true) -> {
+                            val new = getText(parser)
+                            if (new.isNotBlank()) {
+                                source.name = new
+                            }
+                        }
                     }
                 }
             }

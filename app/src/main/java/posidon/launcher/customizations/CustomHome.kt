@@ -113,6 +113,9 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<Switch>(R.id.delete_articles).isChecked = Settings["feed:delete_articles", false]
 
+
+        findViewById<Switch>(R.id.notificationsEnabled).isChecked = Settings["notif:enabled", true]
+
         findViewById<View>(R.id.notificationtitlecolorprev).background = ColorTools.colorcircle(Settings["notificationtitlecolor", -0xeeeded])
         findViewById<View>(R.id.notificationtxtcolorprev).background = ColorTools.colorcircle(Settings["notificationtxtcolor", -0xdad9d9])
         findViewById<View>(R.id.notificationbgprev).background = ColorTools.colorcircle(Settings["notificationbgcolor", -0x1])
@@ -205,6 +208,7 @@ class CustomHome : AppCompatActivity() {
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
+            putNotSave("notif:enabled", findViewById<Switch>(R.id.notificationsEnabled).isChecked)
             putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
             putNotSave("feed:delete_articles", findViewById<Switch>(R.id.delete_articles).isChecked)
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
