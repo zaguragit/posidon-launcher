@@ -11,9 +11,9 @@
 [![Google Play rating](https://img.shields.io/endpoint?color=00D1FF&label=rating&url=https://api-playstore.rajkumaar.co.in/rating?id=posidon.launcher)](https://play.google.com/store/apps/details?id=posidon.launcher)
 [![Twitter Follow](https://img.shields.io/twitter/follow/posidon?style=social)](https://twitter.com/posidon)
 
-#### A one-page launcher with an rss feed.
 </div>
 
+#### A one-page launcher with an rss feed.
 Feel free to fork, contribute or use parts of the code in your own projects.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
