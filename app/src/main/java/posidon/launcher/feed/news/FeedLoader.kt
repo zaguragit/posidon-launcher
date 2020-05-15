@@ -151,7 +151,18 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                                     }
                                 }
                                 "image" -> img = getText(parser)
-                                "media:content", "media:thumbnail", "enclosure" -> img = parser.getAttributeValue(null, "url")
+                                "media:content" -> {
+                                    val medium = parser.getAttributeValue(null, "medium")
+                                    val url = parser.getAttributeValue(null, "url")
+                                    if (medium == "image" ||
+                                        url.endsWith(".jpg") ||
+                                        url.endsWith(".png") ||
+                                        url.endsWith(".svg") ||
+                                        url.endsWith(".jpeg")) {
+                                        img = url
+                                    }
+                                }
+                                "media:thumbnail", "enclosure" -> img = parser.getAttributeValue(null, "url")
                                 "itunes:image" -> img = parser.getAttributeValue(null, "href")
                             }
                         }
