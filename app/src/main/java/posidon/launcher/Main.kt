@@ -28,6 +28,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.palette.graphics.Palette
 import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -82,6 +83,7 @@ class Main : AppCompatActivity() {
             }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
             val rowCount = Settings["dock:rows", 1]
             val showLabels = Settings["dockLabelsEnabled", false]
+            val notifBadgesEnabled = Settings["notif:badges", true]
 
             val container = findViewById<GridLayout>(R.id.dockContainer)
             container.removeAllViews()
@@ -101,6 +103,19 @@ class Main : AppCompatActivity() {
                         view.findViewById<TextView>(R.id.icontxt).text = folder.label
                         view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     } else view.findViewById<View>(R.id.icontxt).visibility = GONE
+                    if (notifBadgesEnabled) {
+                        var notificationCount = 0
+                        for (app in folder.apps) {
+                            notificationCount += app.notificationCount
+                        }
+                        if (notificationCount != 0) {
+                            val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                            badge.visibility = View.VISIBLE
+                            badge.text = notificationCount.toString()
+                            badge.background = ColorTools.notificationBadge(accentColor)
+                            badge.setTextColor(if (ColorTools.useDarkText(accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
+                        } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
                     val finalI = i
                     val bgColor = Settings["folderBG", -0x22eeeded]
                     val r = Settings["folderCornerRadius", 18].dp
@@ -140,6 +155,16 @@ class Main : AppCompatActivity() {
                                     iconTxt.text = app.label
                                     iconTxt.setTextColor(Settings["folder:label_color", -0x22000001])
                                 } else appIcon.findViewById<View>(R.id.icontxt).visibility = GONE
+                                if (notifBadgesEnabled && app.notificationCount != 0) {
+                                    val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
+                                    badge.visibility = View.VISIBLE
+                                    badge.text = app.notificationCount.toString()
+                                    Palette.from(app.icon!!.toBitmap()).generate {
+                                        val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                                        badge.background = ColorTools.notificationBadge(color)
+                                        badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                                    }
+                                } else { appIcon.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
                                 appIcon.setOnClickListener { view ->
                                     app.open(this@Main, view)
                                     popupWindow.dismiss()
@@ -195,6 +220,16 @@ class Main : AppCompatActivity() {
                             view.findViewById<TextView>(R.id.icontxt).text = app.label
                             view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                         }
+                        if (notifBadgesEnabled && app.notificationCount != 0) {
+                            val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                            badge.visibility = View.VISIBLE
+                            badge.text = app.notificationCount.toString()
+                            Palette.from(app.icon!!.toBitmap()).generate {
+                                val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                                badge.background = ColorTools.notificationBadge(color)
+                                badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                            }
+                        } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
                         img.setImageDrawable(app.icon)
                         view.setOnClickListener { view -> app.open(this@Main, view) }
                         view.setOnLongClickListener(ItemLongPress.dock(this@Main, app, i))
@@ -346,48 +381,6 @@ class Main : AppCompatActivity() {
             }
 
             if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
-            /*if (Settings["drawersearchbarenabled", true]) {
-                drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
-                searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
-                searchBar.visibility = VISIBLE
-                val bg = ShapeDrawable()
-                val tr = Settings["searchradius", 0].dp
-                bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                bg.paint.color = Settings["searchcolor", 0x33000000]
-                searchBar.background = bg
-                val t = findViewById<TextView>(R.id.searchTxt)
-                t.setTextColor(Settings["searchhintcolor", -0x1])
-                t.text = Settings["searchhinttxt", "Search.."]
-                findViewById<ImageView>(R.id.searchIcon).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-                findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
-            } else {
-                searchBar.visibility = GONE
-                drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
-            }
-
-            if (Settings["docksearchbarenabled", false]) {
-                findViewById<View>(R.id.docksearchbar).visibility = VISIBLE
-                findViewById<View>(R.id.battery).visibility = VISIBLE
-                val bg = ShapeDrawable()
-                val tr = Settings["dock:search:radius", 30].dp
-                bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-                bg.paint.color = Settings["docksearchcolor", -0x22000001]
-                findViewById<View>(R.id.docksearchbar).background = bg
-                val t = findViewById<TextView>(R.id.docksearchtxt)
-                t.setTextColor(Settings["docksearchtxtcolor", -0x1000000])
-                t.text = Settings["searchhinttxt", "Search.."]
-                findViewById<ImageView>(R.id.docksearchic).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                findViewById<ImageView>(R.id.docksearchic).imageTintMode = PorterDuff.Mode.MULTIPLY
-                findViewById<ProgressBar>(R.id.battery).progressTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                findViewById<ProgressBar>(R.id.battery).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-                findViewById<ProgressBar>(R.id.battery).progressBackgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["docksearchtxtcolor", -0x1000000]))
-                findViewById<ProgressBar>(R.id.battery).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-                (findViewById<ProgressBar>(R.id.battery).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(Settings["docksearchtxtcolor", -0x1000000])) -0x23000000 else -0x11000001)
-            } else {
-                findViewById<View>(R.id.docksearchbar).visibility = GONE
-                findViewById<View>(R.id.battery).visibility = GONE
-            }*/
 
             setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
             setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
@@ -708,6 +701,10 @@ class Main : AppCompatActivity() {
                             }
                             notifications.recycledViewPool.clear()
                             notifications.adapter = NotificationAdapter(this@Main, window)
+                            if (Settings["notif:badges", true]) {
+                                drawerGrid.invalidateViews()
+                                setDock()
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

@@ -68,8 +68,8 @@ class CustomDock : AppCompatActivity() {
         val docklabelswitch = findViewById<Switch>(R.id.labelsEnabled)
         docklabelswitch.isChecked = Settings["dockLabelsEnabled", false]
 
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["dock:background_color", -0x78000000])
-        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["dockLabelColor", -0x11111112])
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorCircle(Settings["dock:background_color", -0x78000000])
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorCircle(Settings["dockLabelColor", -0x11111112])
 
         findViewById<SeekBar>(R.id.radiusSlider).progress = Settings["dockradius", 30]
 
@@ -89,13 +89,13 @@ class CustomDock : AppCompatActivity() {
 
     fun pickColor(v: View) = ColorTools.pickColor(this, Settings["dock:background_color", -0x78000000]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["dock:background_color"] = it
     }
 
     fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["dockLabelColor", -0x11111112]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["dockLabelColor"] = it
     }
 

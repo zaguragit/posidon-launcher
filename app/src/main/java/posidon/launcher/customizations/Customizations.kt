@@ -38,16 +38,17 @@ class Customizations : AppCompatActivity() {
         cardThing()
     }
 
-    fun openApps    (v: View) = startActivity(Intent(this, CustomDrawer    ::class.java))
-    fun openDock    (v: View) = startActivity(Intent(this, CustomDock      ::class.java))
-    fun openHome    (v: View) = startActivity(Intent(this, CustomHome      ::class.java))
-    fun openSearch  (v: View) = startActivity(Intent(this, CustomSearch    ::class.java))
-    fun openFolders (v: View) = startActivity(Intent(this, CustomFolders   ::class.java))
-    fun openTheme   (v: View) = startActivity(Intent(this, CustomTheme     ::class.java))
-    fun openQStep   (v: View) = startActivity(Intent(this, CustomQuickStep ::class.java))
-    fun openOther   (v: View) = startActivity(Intent(this, CustomOther     ::class.java))
-    fun openDev     (v: View) = startActivity(Intent(this, CustomDev       ::class.java))
-    fun openAbout   (v: View) = startActivity(Intent(this, About           ::class.java))
+    fun openApps    (v: View) = startActivity(Intent(this, CustomDrawer        ::class.java))
+    fun openDock    (v: View) = startActivity(Intent(this, CustomDock          ::class.java))
+    fun openHome    (v: View) = startActivity(Intent(this, CustomHome          ::class.java))
+    fun openNotif   (v: View) = startActivity(Intent(this, CustomNotifications ::class.java))
+    fun openSearch  (v: View) = startActivity(Intent(this, CustomSearch        ::class.java))
+    fun openFolders (v: View) = startActivity(Intent(this, CustomFolders       ::class.java))
+    fun openTheme   (v: View) = startActivity(Intent(this, CustomTheme         ::class.java))
+    fun openQStep   (v: View) = startActivity(Intent(this, CustomQuickStep     ::class.java))
+    fun openOther   (v: View) = startActivity(Intent(this, CustomOther         ::class.java))
+    fun openDev     (v: View) = startActivity(Intent(this, CustomDev           ::class.java))
+    fun openAbout   (v: View) = startActivity(Intent(this, About               ::class.java))
 
     fun hideCard(v: View? = null) {
         Settings["rated"] = true

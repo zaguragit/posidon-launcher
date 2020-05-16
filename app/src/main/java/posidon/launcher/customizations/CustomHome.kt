@@ -36,7 +36,7 @@ class CustomHome : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorcircle(Settings["clockcolor", -0x1])
+        findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorCircle(Settings["clockcolor", -0x1])
 
         val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         when {
@@ -106,77 +106,32 @@ class CustomHome : AppCompatActivity() {
             }
         })
 
-        findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorcircle(Settings["feed:card_bg", -0xdad9d9])
-        findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorcircle(Settings["feed:card_txt_color", -0x1])
+        findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorCircle(Settings["feed:card_bg", -0xdad9d9])
+        findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorCircle(Settings["feed:card_txt_color", -0x1])
         findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings["feed:card_img_enabled", true]
         findViewById<Switch>(R.id.newscardblackgradient).isChecked = Settings["feed:card_text_shadow", true]
 
         findViewById<Switch>(R.id.delete_articles).isChecked = Settings["feed:delete_articles", false]
-
-
-        findViewById<Switch>(R.id.notificationsEnabled).isChecked = Settings["notif:enabled", true]
-
-        findViewById<View>(R.id.notificationtitlecolorprev).background = ColorTools.colorcircle(Settings["notificationtitlecolor", -0xeeeded])
-        findViewById<View>(R.id.notificationtxtcolorprev).background = ColorTools.colorcircle(Settings["notificationtxtcolor", -0xdad9d9])
-        findViewById<View>(R.id.notificationbgprev).background = ColorTools.colorcircle(Settings["notificationbgcolor", -0x1])
-
-        findViewById<Switch>(R.id.actionButtonSwitch).isChecked = Settings["notificationActionsEnabled", false]
-        findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked = Settings["collapseNotifications", false]
-        findViewById<View>(R.id.actionBGPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", 0x88e0e0e0.toInt()])
-        findViewById<View>(R.id.actionTextColorPreview).background = ColorTools.colorcircle(Settings["notificationActionTextColor", -0xdad9d9])
-
-        findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
-        findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
 
         Main.customized = true
     }
 
     fun pickclockcolor(v: View) = ColorTools.pickColor(this, Settings["clockcolor", -0x1]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["clockcolor"] = it
     }
 
     fun picknewscardcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_bg", -0xdad9d9]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["feed:card_bg"] = it
     }
 
     fun picknewscardtxtcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_txt_color", -0x1]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["feed:card_txt_color"] = it
-    }
-
-    fun picknotificationtitlecolor(v: View) = ColorTools.pickColor(this, Settings["notificationtitlecolor", -0xeeeded]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
-        Settings["notificationtitlecolor"] = it
-    }
-
-    fun picknotificationtxtcolor(v: View) = ColorTools.pickColor(this, Settings["notificationtxtcolor", -0xdad9d9]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
-        Settings["notificationtxtcolor"] = it
-    }
-
-    fun picknotificationcolor(v: View) = ColorTools.pickColor(this, Settings["notificationbgcolor", -0x1]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
-        Settings["notificationbgcolor"] = it
-    }
-
-    fun pickNotificationActionBGColor(v: View) = ColorTools.pickColor(this, Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
-        Settings["notificationActionBGColor"] = it
-    }
-
-    fun pickNotificationActionTextColor(v: View) = ColorTools.pickColor(this, Settings["notificationActionTextColor", -0xdad9d9]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
-        Settings["notificationActionTextColor"] = it
     }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
@@ -208,15 +163,11 @@ class CustomHome : AppCompatActivity() {
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
-            putNotSave("notif:enabled", findViewById<Switch>(R.id.notificationsEnabled).isChecked)
             putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
             putNotSave("feed:delete_articles", findViewById<Switch>(R.id.delete_articles).isChecked)
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
-            putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
-            putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
-            putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) { 0 -> "os"; 1 -> "byApp"; else -> "none" })
             apply()
         }
         super.onPause()

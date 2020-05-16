@@ -89,6 +89,11 @@
                 android:text="@string/settings_title_desktop" />
             <TextView
                 style="@style/customcategory"
+                android:drawableStart="@drawable/custom_notifications"
+                android:onClick="openNotif"
+                android:text="@string/notifications" />
+            <TextView
+                style="@style/customcategory"
                 android:drawableStart="@drawable/custom_dock"
                 android:onClick="openDock"
                 android:text="@string/settings_title_dock" />

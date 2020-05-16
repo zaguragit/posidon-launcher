@@ -46,11 +46,19 @@ object ColorTools {
 
     inline fun useDarkText(@ColorInt bg: Int) = bg shr 8 and 0xFF > 240 || (bg shr 8 and 0xFF /*green*/ > 200 && bg shr 16 and 0xFF /*red*/ > 120)
 
-    inline fun colorcircle(@ColorInt color: Int): Drawable {
+    inline fun colorCircle(@ColorInt color: Int): Drawable {
         val d = GradientDrawable()
         d.shape = GradientDrawable.OVAL
         d.setColor(color)
         d.setStroke(1, -0x1000000)
+        return d
+    }
+
+    inline fun notificationBadge(@ColorInt color: Int): Drawable {
+        val d = GradientDrawable()
+        d.shape = GradientDrawable.OVAL
+        d.setColor(color)
+        d.setStroke(1, 0x55000000)
         return d
     }
 
@@ -695,7 +703,7 @@ object ColorTools {
 
         override fun onBindViewHolder(holder: ColorViewHolder, i: Int) {
             holder.imageView.apply {
-                setImageDrawable(colorcircle(colors[i]))
+                setImageDrawable(colorCircle(colors[i]))
                 setOnClickListener {
                     onItemClickListener?.invoke(colors[i])
                 }

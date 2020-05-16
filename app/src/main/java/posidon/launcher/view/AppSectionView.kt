@@ -7,11 +7,14 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.toBitmap
 
 class AppSectionView(context: Context) : LinearLayout(context) {
 
@@ -29,14 +32,12 @@ class AppSectionView(context: Context) : LinearLayout(context) {
         setTextColor(Settings["labelColor", -0x11111112])
     }
 
-
-
     fun setApps(list: Collection<App>) {
         clear()
         list.forEach { add(it) }
     }
 
-    val appSize = when (Settings["icsize", 1]) {
+    private val appSize = when (Settings["icsize", 1]) {
         0 -> 64.dp.toInt()
         2 -> 84.dp.toInt()
         else -> 74.dp.toInt()
@@ -51,8 +52,8 @@ class AppSectionView(context: Context) : LinearLayout(context) {
                 if (Settings["drawer:columns", 4] == 2) findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
         ).apply {
-            findViewById<ImageView>(R.id.iconimg).apply {
-                setImageDrawable(app.icon)
+            findViewById<ImageView>(R.id.iconimg).setImageDrawable(app.icon)
+            findViewById<View>(R.id.iconFrame).apply {
                 layoutParams.height = appSize
                 layoutParams.width = appSize
             }
@@ -62,6 +63,17 @@ class AppSectionView(context: Context) : LinearLayout(context) {
                     visibility = View.VISIBLE
                     setTextColor(Settings["labelColor", -0x11111112])
                 } else visibility = View.INVISIBLE
+            }
+            findViewById<TextView>(R.id.notificationBadge).apply {
+                if (Settings["notif:badges", true] && app.notificationCount != 0) {
+                    visibility = View.VISIBLE
+                    text = app.notificationCount.toString()
+                    Palette.from(app.icon!!.toBitmap()).generate {
+                        val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                        background = ColorTools.notificationBadge(color)
+                        setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                    }
+                } else { visibility = View.GONE }
             }
             setOnTouchListener { v, event ->
                 val parentContainer = this@AppSectionView.parent as View

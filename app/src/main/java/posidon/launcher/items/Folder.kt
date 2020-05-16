@@ -16,11 +16,13 @@ import kotlin.math.min
 
 class Folder(string: String) : LauncherItem() {
 
-    val apps: MutableList<App?> = ArrayList()
+    val apps: MutableList<App> = ArrayList()
 
     override fun toString(): String {
         val sb = StringBuilder()
-        for (app in apps) if (app != null) sb.append("¬").append(app.packageName).append("/").append(app.name)
+        for (app in apps) {
+            sb.append("¬").append(app.packageName).append("/").append(app.name)
+        }
         return "folder($label$sb)"
     }
 
