@@ -32,7 +32,7 @@
     <string name="spacing">Uitlijning</string>
     <string name="permission_storage_description">Verleen toegang tot je opslag om de achtergrond te kunnen wijzigen en de vervaging in de app-lijst aan te passen</string>
     <string name="storage_access">Toegang tot opslag</string>
-    <string name="ok">Ok��</string>
+    <string name="ok">Ok¨¦</string>
     <string name="notification_access">Toegang tot meldingen</string>
     <string name="permission_notifications_description">Verleen toegang tot je meldingen om je meldingen te tonen op het startscherm</string>
     <string name="permission_notifications_short_description">Meldingen tonen op je startscherm</string>
@@ -68,7 +68,7 @@
     <string name="background">Achtergrond</string>
     <string name="text_color">Tekstkleur</string>
     <string name="images">Afbeeldingen</string>
-    <string name="title_color">Title color</string>
+    <string name="title_color">Titelkleur</string>
     <string name="sans_serif">Schreefloos</string>
     <string name="posidon_sans">Posidon Sans</string>
     <string name="monospace">Monospace</string>
@@ -127,7 +127,7 @@
     <string name="choose_a_launcher">Kies een startscherm</string>
     <string name="launchers">Startschermen</string>
     <string name="horizontal_margin">Horizontale marge</string>
-    <string name="value_of_pi">Waarde van π</string>
+    <string name="value_of_pi">Waarde van 蟺</string>
     <string name="settings_title_news">Nieuws</string>
     <string name="show_behind_dock">Tonen achter dock</string>
     <string name="some_quick_adjustments">Enkele snelle aanpassingen</string>
