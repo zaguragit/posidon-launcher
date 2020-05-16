@@ -43,10 +43,10 @@ class CustomFolders : AppCompatActivity() {
             }
         })
 
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["folderBG", -0x22eeeded])
-        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["folder:label_color", -0x22000001])
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorCircle(Settings["folderBG", -0x22eeeded])
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorCircle(Settings["folder:label_color", -0x22000001])
         findViewById<Switch>(R.id.labelsEnabled).isChecked = Settings["folderLabelsEnabled", false]
-        findViewById<View>(R.id.titleColorPrev).background = ColorTools.colorcircle(Settings["folder:title_color", 0xffffffff.toInt()])
+        findViewById<View>(R.id.titleColorPrev).background = ColorTools.colorCircle(Settings["folder:title_color", 0xffffffff.toInt()])
         findViewById<Switch>(R.id.titleEnabled).isChecked = Settings["folder:show_title", true]
         findViewById<SeekBar>(R.id.radiusSlider).progress = Settings["folderCornerRadius", 18]
         Main.customized = true
@@ -54,19 +54,19 @@ class CustomFolders : AppCompatActivity() {
 
     fun pickColor(v: View) = ColorTools.pickColor(this, Settings["folderBG", -0x22eeeded]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["folderBG"] = it
     }
 
     fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["folder:label_color", -0x22000001]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["folder:label_color"] = it
     }
 
     fun pickTitleColor(v: View) = ColorTools.pickColor(this, Settings["folder:title_color", 0xffffffff.toInt()]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["folder:title_color"] = it
     }
 

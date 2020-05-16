@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.util.*
@@ -46,6 +47,16 @@ class NotificationService : NotificationListenerService() {
     override fun onNotificationChannelGroupModified(pkg: String, u: UserHandle, g: NotificationChannelGroup, modifType: Int) = update()
 
     private class NotificationLoader(private val notifications: Array<StatusBarNotification>?) : Thread() {
+
+        private fun showNotificationBadgeOnPackage(packageName: String) {
+            val apps = App.getJustPackage(packageName)
+            if (apps != null) {
+                for (app in apps) {
+                    app.notificationCount++
+                }
+            }
+        }
+
         override fun run() {
             var hasMusic = false
             updating = true
@@ -53,17 +64,24 @@ class NotificationService : NotificationListenerService() {
             var i = 0
             var notificationsAmount2 = 0
             try {
+                for (app in Main.apps) {
+                    app.notificationCount = 0
+                }
                 if (notifications != null) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
                         while (i < notifications.size) {
-                            if (notifications[i].notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
-                                handleMusicNotification(notifications[i])
+                            val notification = notifications[i]
+                            if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                                handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
                             }
+
+                            showNotificationBadgeOnPackage(notification.packageName)
+
                             val group = ArrayList<Notification>()
-                            if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
-                                val key = notifications[i].groupKey
+                            if (notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
+                                val key = notification.groupKey
                                 var last: Bundle? = null
                                 var extras: Bundle
                                 while (i < notifications.size && notifications[i].isGroup && notifications[i].groupKey == key && notifications[i].groupKey != null) {
@@ -79,7 +97,7 @@ class NotificationService : NotificationListenerService() {
                                     i++
                                 }
                             } else {
-                                group.add(formatNotification(notifications[i]))
+                                group.add(formatNotification(notification))
                                 notificationsAmount2++
                                 i++
                             }
@@ -87,13 +105,17 @@ class NotificationService : NotificationListenerService() {
                         }
                     } else if (Settings["notifications:groupingType", "os"] == "byApp") {
                         while (i < notifications.size) {
-                            if (notifications[i].notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
-                                handleMusicNotification(notifications[i])
+                            val notification = notifications[i]
+                            if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                                handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
                             }
+
+                            showNotificationBadgeOnPackage(notification.packageName)
+
                             val group = ArrayList<Notification>()
-                            val packageName = notifications[i].packageName
+                            val packageName = notification.packageName
                             var last: Bundle? = null
                             var extras: Bundle
                             while (i < notifications.size && notifications[i].packageName == packageName) {
@@ -111,13 +133,18 @@ class NotificationService : NotificationListenerService() {
                             groups.add(group)
                         }
                     } else while (i < notifications.size) {
-                        if (notifications[i].notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
-                            handleMusicNotification(notifications[i])
+                        val notification = notifications[i]
+                        if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            handleMusicNotification(notification)
                             hasMusic = true
-                            i++; continue
+                            i++
+                            continue
                         }
+
+                        showNotificationBadgeOnPackage(notification.packageName)
+
                         val group = ArrayList<Notification>()
-                        group.add(formatNotification(notifications[i]))
+                        group.add(formatNotification(notification))
                         groups.add(group)
                         notificationsAmount2++
                         i++

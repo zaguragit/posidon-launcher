@@ -153,6 +153,8 @@
     <string name="restore">Herstellen</string>
     <string name="reply">Antwoord</string>
     <string name="show_below_apps">Tonen onder apps</string>
+    <string name="cards">Cards</string>
+    <string name="notification_badges">Notification badges</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>

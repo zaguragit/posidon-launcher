@@ -133,7 +133,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     Tools.animate(app.icon!!)
                 }
             } catch (ignore: Exception) {}
-            App.putInSecondMap(app.packageName + "/" + app.name, app)
+            App.putInSecondMap(app.packageName, app.name!!, app)
             if (Settings[pacslist[i].activityInfo.packageName + "/" + pacslist[i].activityInfo.name + "?hidden", false]) {
                 App.hidden.add(app)
             } else {

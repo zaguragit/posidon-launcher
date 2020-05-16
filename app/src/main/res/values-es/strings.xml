@@ -154,6 +154,8 @@
     <string name="restore">Restore</string>
     <string name="reply">Reply</string>
     <string name="show_below_apps">Show below apps</string>
+    <string name="cards">Cards</string>
+    <string name="notification_badges">Notification badges</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

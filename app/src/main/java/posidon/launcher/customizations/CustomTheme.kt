@@ -100,8 +100,8 @@ class CustomTheme : AppCompatActivity() {
             }.show()
         }
 
-        findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorcircle(Settings["accent", 0x1155ff] or -0x1000000)
-        findViewById<View>(R.id.iconBackground).background = ColorTools.colorcircle(Settings["icon:background", 0xff252627.toInt()])
+        findViewById<View>(R.id.accentcolorprev).background = ColorTools.colorCircle(Settings["accent", 0x1155ff] or -0x1000000)
+        findViewById<View>(R.id.iconBackground).background = ColorTools.colorCircle(Settings["icon:background", 0xff252627.toInt()])
 
         findViewById<Switch>(R.id.animatedicons).isChecked = Settings["animatedicons", true]
         findViewById<Switch>(R.id.reshapeicons).isChecked = Settings["reshapeicons", false]
@@ -142,7 +142,7 @@ class CustomTheme : AppCompatActivity() {
 
     fun pickAccentColor(v: View) = ColorTools.pickColorNoAlpha(this, Settings["accent", 0x1155ff]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["accent"] = it
         Main.accentColor = it or -0x1000000
         Main.customized = true
@@ -150,7 +150,7 @@ class CustomTheme : AppCompatActivity() {
 
     fun pickIconBGColor(v: View) = ColorTools.pickColor(this, Settings["icon:background", -0x1]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["icon:background"] = it
         Main.shouldSetApps = true
     }

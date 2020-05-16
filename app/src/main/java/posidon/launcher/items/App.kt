@@ -22,11 +22,14 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
+import kotlin.collections.ArrayList
 
 class App(
     val packageName: String,
     val name: String? = null
 ) : LauncherItem() {
+
+    var notificationCount = 0
 
     inline fun open(context: Context, view: View) {
         try {
@@ -90,14 +93,35 @@ class App(
     override fun toString() = "$packageName/$name"
 
     companion object {
-        private var appsByName = HashMap<String, App>()
-        private var appsByName2 = HashMap<String, App>()
+        private var appsByName = HashMap<String, ArrayList<App>>()
+        private var appsByName2 = HashMap<String, ArrayList<App>>()
         val hidden = ArrayList<App>()
 
-        operator fun get(component: String?) = appsByName[component]
+        operator fun get(component: String): App? {
+            val a = component.split('/')
+            val list = appsByName[a[0]] ?: return null
+            return list.firstOrNull { it.name == a[1] }
+        }
 
-        fun putInSecondMap(component: String, app: App) {
-            appsByName2[component] = app
+        operator fun get(packageName: String, name: String): App? {
+            val list = appsByName[packageName] ?: return null
+            return list.firstOrNull { it.name == name }
+        }
+
+        fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
+
+        fun putInSecondMap(packageName: String, name: String, app: App) {
+            val list = appsByName2[packageName]
+            if (list == null) {
+                appsByName2[packageName] = arrayListOf(app)
+                return
+            }
+            val thisAppI = list.indexOfFirst { it.name == name }
+            if (thisAppI == -1) {
+                list.add(app)
+                return
+            }
+            list[thisAppI] = app
         }
 
         fun swapMaps() {

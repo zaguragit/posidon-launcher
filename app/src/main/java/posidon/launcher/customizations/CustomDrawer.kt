@@ -67,8 +67,8 @@ class CustomDrawer : AppCompatActivity() {
 
         findViewById<Switch>(R.id.labelsenabled).isChecked = Settings["labelsenabled", false]
         findViewById<Switch>(R.id.scrollbarEnabled).isChecked = Settings["drawer:scrollbar_enabled", false]
-        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorcircle(Settings["drawer:background_color", -0x78000000])
-        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorcircle(Settings["labelColor", 0xeeeeeeee.toInt()])
+        findViewById<View>(R.id.bgColorPrev).background = ColorTools.colorCircle(Settings["drawer:background_color", -0x78000000])
+        findViewById<View>(R.id.labelColorPrev).background = ColorTools.colorCircle(Settings["labelColor", 0xeeeeeeee.toInt()])
 
         findViewById<Spinner>(R.id.sortingOptions).data = resources.getStringArray(R.array.sortingAlgorithms)
         findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["drawer:sorting", 0]
@@ -109,14 +109,14 @@ class CustomDrawer : AppCompatActivity() {
 
     fun pickBGColor(v: View) = ColorTools.pickColor(this, Settings["drawer:background_color", -0x78000000]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["drawer:background_color"] = it
         Main.shouldSetApps = true
     }
 
     fun pickLabelColor(v: View) = ColorTools.pickColor(this, Settings["labelColor", 0xeeeeeeee.toInt()]) {
         v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorcircle(it)
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["labelColor"] = it
         Main.shouldSetApps = true
     }

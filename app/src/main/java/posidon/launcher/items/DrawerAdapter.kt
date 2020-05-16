@@ -4,15 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.SectionIndexer
-import android.widget.TextView
+import android.widget.*
+import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.toBitmap
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer {
 
@@ -26,14 +26,15 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
         else -> 74.dp.toInt()
     }
 
-    internal class ViewHolder {
-        var icon: ImageView? = null
-        var text: TextView? = null
-    }
+    internal class ViewHolder(
+        val icon: ImageView,
+        val iconFrame: FrameLayout,
+        val text: TextView,
+        val notificationBadge: TextView)
 
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
-        val viewHolder: ViewHolder
+        val holder: ViewHolder
         val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
@@ -41,19 +42,34 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
                 if (Settings["drawer:columns", 4] == 2)
                     findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
-            viewHolder = ViewHolder()
-            viewHolder.icon = convertView.findViewById(R.id.iconimg)
-            viewHolder.text = convertView.findViewById(R.id.icontxt)
-            viewHolder.icon!!.layoutParams.height = appSize
-            viewHolder.icon!!.layoutParams.width = appSize
-            convertView.tag = viewHolder
-        } else viewHolder = convertView.tag as ViewHolder
-        viewHolder.icon!!.setImageDrawable(Main.apps[i].icon)
+            holder = ViewHolder(
+                convertView.findViewById(R.id.iconimg),
+                convertView.findViewById(R.id.iconFrame),
+                convertView.findViewById(R.id.icontxt),
+                convertView.findViewById(R.id.notificationBadge))
+            holder.iconFrame.layoutParams.height = appSize
+            holder.iconFrame.layoutParams.width = appSize
+            convertView.tag = holder
+        } else holder = convertView.tag as ViewHolder
+        val app = Main.apps[i]
+        holder.icon.setImageDrawable(app.icon)
         if (Settings["labelsenabled", false]) {
-            viewHolder.text!!.text = Main.apps[i].label
-            viewHolder.text!!.visibility = View.VISIBLE
-            viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
-        } else viewHolder.text!!.visibility = View.INVISIBLE
+            holder.text.text = app.label
+            holder.text.visibility = View.VISIBLE
+            holder.text.setTextColor(Settings["labelColor", -0x11111112])
+        } else holder.text.visibility = View.INVISIBLE
+        if (Settings["notif:badges", true] && app.notificationCount != 0) {
+            val badge = holder.notificationBadge
+            badge.visibility = View.VISIBLE
+            badge.text = app.notificationCount.toString()
+            Palette.from(app.icon!!.toBitmap()).generate {
+                val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                badge.background = ColorTools.notificationBadge(color)
+                badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+            }
+        } else {
+            holder.notificationBadge.visibility = View.GONE
+        }
         return convertView
     }
 

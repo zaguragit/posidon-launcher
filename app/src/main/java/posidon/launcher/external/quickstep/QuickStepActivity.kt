@@ -48,7 +48,7 @@ class QuickStepActivity : AppCompatActivity() {
 
     fun setTaskI(i: Int) {
         val info = packageManager.resolveActivity(QuickStepService.recentTasks[i]!!.baseIntent, 0)!!
-        icon.setImageDrawable(App[info.let { "${it.resolvePackageName}/${it.activityInfo.parentActivityName}" }]?.icon ?: info.loadIcon(packageManager))
+        icon.setImageDrawable(App[info.resolvePackageName, info.activityInfo.parentActivityName]?.icon ?: info.loadIcon(packageManager))
         label.text = info.loadLabel(packageManager)
     }
 
