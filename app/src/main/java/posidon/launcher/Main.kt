@@ -84,7 +84,6 @@ class Main : AppCompatActivity() {
             val rowCount = Settings["dock:rows", 1]
             val showLabels = Settings["dockLabelsEnabled", false]
             val notifBadgesEnabled = Settings["notif:badges", true]
-
             val container = findViewById<GridLayout>(R.id.dockContainer)
             container.removeAllViews()
             container.columnCount = columnCount
@@ -94,8 +93,10 @@ class Main : AppCompatActivity() {
                 val string = data[i]
                 val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, container, false)
                 val img = view.findViewById<ImageView>(R.id.iconimg)
-                img.layoutParams.height = appSize
-                img.layoutParams.width = appSize
+                view.findViewById<View>(R.id.iconFrame).run {
+                    layoutParams.height = appSize
+                    layoutParams.width = appSize
+                }
                 if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
                     val folder = Folder(data[i])
                     img.setImageDrawable(folder.icon)
@@ -147,8 +148,10 @@ class Main : AppCompatActivity() {
                             } else {
                                 val appIcon = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
                                 val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
-                                icon.layoutParams.height = appSize
-                                icon.layoutParams.width = appSize
+                                appIcon.findViewById<View>(R.id.iconFrame).run {
+                                    layoutParams.height = appSize
+                                    layoutParams.width = appSize
+                                }
                                 icon.setImageDrawable(app.icon)
                                 if (labelsEnabled) {
                                     val iconTxt = appIcon.findViewById<TextView>(R.id.icontxt)
@@ -241,8 +244,10 @@ class Main : AppCompatActivity() {
             while (i < columnCount * rowCount) {
                 val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
                 val img = view.findViewById<ImageView>(R.id.iconimg)
-                img.layoutParams.height = appSize
-                img.layoutParams.width = appSize
+                view.findViewById<View>(R.id.iconFrame).run {
+                    layoutParams.height = appSize
+                    layoutParams.width = appSize
+                }
                 if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
                 container.addView(view)
                 i++
