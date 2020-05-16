@@ -1,0 +1,193 @@
+<resources>
+    <string name="app_name">posidon-startscherm</string>
+    <string name="aboutbtn">Over</string>
+    <string name="walls">Achtergronden</string>
+
+    <string name="appLabels">App-labels</string>
+    <string name="icon_pack">Pictogramthema</string>
+    <string name="iconSize">Pictogramgrootte</string>
+    <string name="columns">Kolommen</string>
+
+    <string name="settings_title">Aanpassingen</string>
+    <string name="settings_title_apps">App-lijst</string>
+    <string name="settings_title_desktop">Feed</string>
+    <string name="settings_title_clock_format">Klok</string>
+    <string name="settings_title_search">Zoeken</string>
+    <string name="settings_title_dev">Ontwikkelaar</string>
+    <string name="settings_title_dock">Dock</string>
+    <string name="settings_title_feed">Feed</string>
+    <string name="settings_title_ui">Thema</string>
+    <string name="settings_title_other">Overig</string>
+    <string name="settings_title_icons">Pictogrammen</string>
+
+    <string name="defaultdateformat">d MMM | cccc</string>
+    <string name="settingsdateformat">Datum</string>
+    <string name="searchbarhint">Zoeken...</string>
+    <string name="feed_sources">Bronnen</string>
+    <string name="example_feed_url">androidpolice.com/feed</string>
+    <string name="settings_icon_count">Pictogrambadges</string>
+    <string name="slogan">Minimaal, boordevol functies, anders.</string>
+    <string name="developer">Leo Shneyderis</string>
+    <string name="settingshidestatus">Statusbalk verbergen</string>
+    <string name="spacing">Uitlijning</string>
+    <string name="permission_storage_description">Verleen toegang tot je opslag om de achtergrond te kunnen wijzigen en de vervaging in de app-lijst aan te passen</string>
+    <string name="storage_access">Toegang tot opslag</string>
+    <string name="ok">Ok¨¦</string>
+    <string name="notification_access">Toegang tot meldingen</string>
+    <string name="permission_notifications_description">Verleen toegang tot je meldingen om je meldingen te tonen op het startscherm</string>
+    <string name="permission_notifications_short_description">Meldingen tonen op je startscherm</string>
+    <string name="pixel_stock_android">Pixel</string>
+    <string name="one_ui">One UI</string>
+    <string name="ios">iOS</string>
+    <string name="surprise_me">Verras me...</string>
+    <string name="preset_chooser_title">Kies een globaal thema</string>
+    <string name="done">Klaar</string>
+    <string name="explanation">Houd je startscherm lang ingedrukt om aanpassingen te doen en de achtergrond te wijzigen</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Website</string>
+    <string name="leoxshn_description">Maker van dit startscherm</string>
+    <string name="sajid_shaik">Sajid Shaik</string>
+    <string name="sajid_shaik_description">Ontwerper van het startschermpictogram</string>
+    <string name="app_name_hint">naam</string>
+    <string name="version">Versie</string>
+    <string name="uninstall">Verwijderen</string>
+    <string name="component">Onderdeel</string>
+    <string name="propenties">Eigenschappen</string>
+    <string name="edit">Bewerken</string>
+    <string name="remove_icon">Pictogram verwijderen</string>
+    <string name="colorpicker_hint">Hexcode (ff000000 voor zwart)</string>
+    <string name="apply">toepassen</string>
+    <string name="setting_show_component">Onderdeel tonen in app-eigenschappen</string>
+    <string name="color">Kleur</string>
+    <string name="radius">Straal</string>
+    <string name="bottom_padding">Opvulling aan onderkant</string>
+    <string name="blur">Vervaging</string>
+    <string name="setting_title_hide_apps">Apps verbergen</string>
+    <string name="setting_hide_until_user_scrolls">Verbergen tot je begint met scrollen</string>
+    <string name="corner_radius">Hoekstraal</string>
+    <string name="background">Achtergrond</string>
+    <string name="text_color">Tekstkleur</string>
+    <string name="images">Afbeeldingen</string>
+    <string name="title_color">Title color</string>
+    <string name="sans_serif">Schreefloos</string>
+    <string name="posidon_sans">Posidon Sans</string>
+    <string name="monospace">Monospace</string>
+    <string name="math_operation">Wiskunde-opdracht</string>
+    <string name="no_results_for">Geen resultaten gevonden voor \"%1$s\"</string>
+    <string name="ip_address_external">IP-adres (extern)</string>
+    <string name="failed_to_connect">Kan niet verbinden</string>
+    <string name="next">Volgende</string>
+    <string name="hint_color">Tipkleur</string>
+    <string name="hint_text">Tiptekst</string>
+    <string name="font">Lettertype</string>
+    <string name="default_icon_theme">Systeem</string>
+    <string name="force_stop_launcher">Geforceerd stoppen/herstarten</string>
+    <string name="icon_shape">Pictogramvorm</string>
+    <string name="squircle">Rondhoekig vierkant</string>
+    <string name="square">Vierkant</string>
+    <string name="rounded_square">Afgerond vierkant</string>
+    <string name="circle">Cirkel</string>
+    <string name="accent_color">Accentkleur</string>
+    <string name="animated">Animatie</string>
+    <string name="generate_adaptive_icons">Aanpasbare pictogrammen genereren</string>
+    <string name="settings_title_icon_packs">Pictogramthema\'s</string>
+    <string name="show_in_dock">Tonen op dock</string>
+    <string name="show_in_drawer">Tonen in app-lijst</string>
+    <string name="duration">Duur</string>
+    <string name="haptic_feedback">Haptische feedback</string>
+    <string name="minimal_statusbar">Minimale statusbalk</string>
+    <string name="statusbar">Statusbalk</string>
+    <string name="notifications">Meldinges</string>
+    <string name="text_shadow">Tekstschaduw</string>
+    <string name="ubuntu">Ubuntu</string>
+    <string name="lexend_deca">Lexend Deca</string>
+    <string name="wall_apply_home_screen">Startscherm</string>
+    <string name="wall_apply_lock_screen">Vergrendelscherm</string>
+    <string name="wall_apply_both">Beide</string>
+    <string name="settings_rows">Rijen</string>
+    <string name="settings_title_folders">Mappen</string>
+    <string name="telegram">Telegram</string>
+    <string name="action_buttons">Actieknoppen</string>
+    <string name="sorting">Sortering</string>
+    <string name="blur_layers">Overgangslagen</string>
+    <string name="start">Starten</string>
+    <string name="remove">Verwijderen</string>
+    <string name="labelColor">Labelkleur</string>
+    <string name="num_notifications">%1$d meldingen</string>
+    <string name="collapse_notifications">Meldingen inklappen</string>
+    <string name="open_dyslexic">OpenDyslexic3</string>
+    <string name="app_open_animation">Animatie bij openen van app</string>
+    <string name="no">Nee</string>
+    <string name="yes">Ja</string>
+    <string name="would_you_like_to_rate_this_launcher">Wil je deze app beoordelen in de Play Store?</string>
+    <string name="layout">Indeling</string>
+    <string name="sample_feed_source">posidon-nieuws</string>
+    <string name="sample_feed_card_title">Er is een nieuwe versie van posidon beschikbaar!</string>
+    <string name="hidden_apps">Verborgen apps</string>
+    <string name="choose_a_launcher">Kies een startscherm</string>
+    <string name="launchers">Startschermen</string>
+    <string name="horizontal_margin">Horizontale marge</string>
+    <string name="value_of_pi">Waarde van Ï€</string>
+    <string name="settings_title_news">Nieuws</string>
+    <string name="show_behind_dock">Tonen achter dock</string>
+    <string name="some_quick_adjustments">Enkele snelle aanpassingen</string>
+    <string name="mk_backup">Back-up maken</string>
+    <string name="use_backup">Back-up herstellen</string>
+    <string name="permissions">Machtigingen</string>
+    <string name="grant">Verlenen</string>
+    <string name="background_type">Soort achtergrond</string>
+    <string name="max_image_width">Max. afbeeldingsbreedte</string>
+    <string name="scrollbar">Scrollbalk</string>
+    <string name="grouping">Groepering</string>
+    <string name="recolor_white_bgs">Tint toepassen op witte achtergronden</string>
+    <string name="oops">Oeps!</string>
+    <string name="posidon_launcher_crashed">posidon is gecrasht</string>
+    <string name="send_bug_report">Bugmelding versturen</string>
+    <string name="settings_title_quickstep">QuickStep</string>
+    <string name="show_name">Naam tonen</string>
+    <string name="name_color">Naam van kleur</string>
+    <string name="sections">Secties</string>
+    <string name="name_position">Naam van positie</string>
+    <string name="swipe_to_remove">Veeg om te verwijderen</string>
+    <string name="removed">Verwijderd</string>
+    <string name="restore">Herstellen</string>
+    <string name="reply">Antwoord</string>
+    <string name="show_below_apps">Tonen onder apps</string>
+
+    <array name="sortingAlgorithms">
+        <item>Alfabetisch</item>
+        <item>Op kleur</item>
+    </array>
+
+    <array name="animationNames">
+        <item>posidon</item>
+        <item>onthullen</item>
+        <item>omhoogduwen</item>
+    </array>
+
+    <array name="bgModes">
+        <item>egaal</item>
+        <item>gloeiende onderzijde</item>
+    </array>
+
+    <array name="notificationGrouping">
+        <item>Systeeminstelling gebruiken</item>
+        <item>Groeperen op app</item>
+        <item>Niet groeperen</item>
+    </array>
+
+    <array name="iconBackgrounds">
+        <item>Dominante kleur</item>
+        <item>Lichte felle kleur</item>
+        <item>Donkere felle kleur</item>
+        <item>Lichte gedimde kleur</item>
+        <item>Donkere gedimde kleur</item>
+        <item>Aangepast</item>
+    </array>
+
+    <array name="namePositions">
+        <item>Bovenkant</item>
+        <item>Linkerkant</item>
+        <item>Verbergen</item>
+    </array>
+</resources>
