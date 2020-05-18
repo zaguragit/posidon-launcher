@@ -87,6 +87,7 @@
             </intent-filter>
             <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
         </activity>
+
         <activity
             android:name=".desktop.DesktopMode"
             android:label="posidon desktop"
@@ -107,6 +108,8 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"/>
+
+
         <activity
             android:name=".customizations.Customizations"
             android:icon="@drawable/customizations"
@@ -178,10 +181,14 @@
             android:name=".customizations.About"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
+
+
         <activity
             android:name=".tools.StackTraceActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
+
+
         <activity
             android:name=".wall.Gallery"
             android:icon="@drawable/walls"
@@ -201,6 +208,8 @@
                 <action android:name="posidon.launcher.action.APPLY_ICONPACK" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".search.SearchActivity"
             android:configChanges="keyboardHidden|screenSize|orientation">
@@ -216,6 +225,16 @@
                 android:resource="@mipmap/ic" />
         </activity>
         <activity
+            android:name=".search.ConsoleActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
             android:name=".tutorial.Tutorial"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/tutorial" />
@@ -228,6 +247,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".items.AddShortcutActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
@@ -239,6 +260,18 @@
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
             </intent-filter>
         </activity>
+
+
+        <activity
+            android:name=".feed.news.readers.WebViewActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings" />
+        <activity
+            android:name=".feed.news.readers.ArticleActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings" />
+
+
         <activity android:name=".items.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts" />
     </application>

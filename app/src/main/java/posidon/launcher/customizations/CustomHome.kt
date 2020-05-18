@@ -113,6 +113,13 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<Switch>(R.id.delete_articles).isChecked = Settings["feed:delete_articles", false]
 
+        findViewById<Spinner>(R.id.readMethods).apply {
+            data = resources.getStringArray(R.array.articleReadingMethods)
+            selectionI = when(Settings["feed:openLinks", "browse"]) {
+                "webView" -> 1; "app" -> 2; else -> 0
+            }
+        }
+
         Main.customized = true
     }
 
@@ -168,6 +175,9 @@ class CustomHome : AppCompatActivity() {
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
+            putNotSave("feed:openLinks", when(findViewById<Spinner>(R.id.readMethods).selectionI) {
+                1 -> "webView"; 2 -> "app"; else -> "browse"
+            })
             apply()
         }
         super.onPause()

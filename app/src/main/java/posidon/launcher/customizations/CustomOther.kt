@@ -47,11 +47,13 @@ class CustomOther : AppCompatActivity() {
                 vibrate()
             }
         })
-        findViewById<Spinner>(R.id.animationOptions).data = resources.getStringArray(R.array.animationNames)
-        findViewById<Spinner>(R.id.animationOptions).selectionI = when(Settings["anim:app_open", "posidon"]) {
-            "scale_up" -> 2
-            "clip_reveal" -> 1
-            else -> 0
+        findViewById<Spinner>(R.id.animationOptions).apply {
+            data = resources.getStringArray(R.array.animationNames)
+            selectionI = when(Settings["anim:app_open", "posidon"]) {
+                "scale_up" -> 2
+                "clip_reveal" -> 1
+                else -> 0
+            }
         }
         Main.customized = true
     }

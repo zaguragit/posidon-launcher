@@ -21,6 +21,8 @@ import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
+import posidon.launcher.feed.news.readers.ArticleActivity
+import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.view.SwipeableLayout
@@ -129,22 +131,21 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
         }
         holder.card.findViewById<View>(R.id.card).setOnClickListener {
             try {
-                when (Settings["feed:openLinks", "browser"]) {
-                    "inWebView" -> {
+                val activityOptions = ActivityOptionsCompat.makeCustomAnimation(
+                    context,
+                    R.anim.slideup,
+                    R.anim.home_exit
+                ).toBundle()
 
-                    }
-                    "inApp" -> {
-
-                    }
-                    else -> {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
-                                feedItem.link.trim { it <= ' ' })),
-                                ActivityOptionsCompat.makeCustomAnimation(
-                                        context,
-                                        R.anim.slideup,
-                                        R.anim.home_exit
-                                ).toBundle())
-                    }
+                when (Settings["feed:openLinks", "browse"]) {
+                    "webView" -> context.startActivity(Intent(context, WebViewActivity::class.java).apply {
+                        putExtra("url", feedItem.link)
+                    }, activityOptions)
+                    "app" -> context.startActivity(Intent(context, ArticleActivity::class.java).apply {
+                        putExtra("url", feedItem.link)
+                        putExtra("sourceName", feedItem.source.name)
+                    }, activityOptions)
+                    else -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), activityOptions)
                 }
             }
             catch (e: Exception) { e.printStackTrace() }

@@ -15,6 +15,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -528,4 +530,12 @@ inline fun Context.vibrate() {
                 AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
         ) else (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(duration.toLong())
     }
+}
+
+
+inline fun Activity.hideKeyboard() {
+    val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    var view = currentFocus
+    if (view == null) view = View(this)
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }

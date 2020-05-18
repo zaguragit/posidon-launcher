@@ -1,9 +1,7 @@
 package posidon.launcher.search
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
@@ -15,7 +13,6 @@ import android.view.DragEvent
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
@@ -24,11 +21,8 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ItemLongPress
-import posidon.launcher.tools.Loader
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
-import posidon.launcher.tools.sp
+import posidon.launcher.tools.*
 import java.util.*
 import kotlin.math.abs
 
@@ -244,7 +238,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         overridePendingTransition(R.anim.fadein, R.anim.fadeout)
-        hideKeyboard(this)
+        hideKeyboard()
         finish()
     }
 
@@ -263,13 +257,4 @@ class SearchActivity : AppCompatActivity() {
             .replace('a', '4')
             .replace('i', '1')
             .replace(Regex("[-'&/_,.:;*\"!]"), "")
-
-    companion object {
-        private fun hideKeyboard(activity: Activity) {
-            val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            var view = activity.currentFocus
-            if (view == null) view = View(activity)
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
 }

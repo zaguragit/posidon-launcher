@@ -11,7 +11,12 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import posidon.launcher.R
+import posidon.launcher.tools.Device
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.sp
+import kotlin.math.max
+import kotlin.math.min
 
 class Spinner : AppCompatTextView {
 
@@ -20,7 +25,6 @@ class Spinner : AppCompatTextView {
     constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
     var data: Array<String> = emptyArray()
-
     var onSelectionChangedListener: ((Spinner) -> Unit)? = null
 
     inline fun setSelectionChangedListener(
@@ -30,6 +34,7 @@ class Spinner : AppCompatTextView {
     init {
         setOnClickListener {
             var popup: PopupWindow? = null
+            var height = 0f
             popup = PopupWindow(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt())
@@ -44,6 +49,8 @@ class Spinner : AppCompatTextView {
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())
                         setPadding(18.dp.toInt(), 9.dp.toInt(), 18.dp.toInt(), 9.dp.toInt())
+                        includeFontPadding = false
+                        height += 18f.sp + 18f.dp
                     })
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {
@@ -55,12 +62,11 @@ class Spinner : AppCompatTextView {
             }
             val location = IntArray(2)
             getLocationInWindow(location)
-            popup.showAtLocation(this, Gravity.TOP, location[0], location[1])
+            popup.showAtLocation(this, Gravity.TOP, location[0], min(location[1], Device.displayHeight - Tools.navbarHeight - height.toInt()))
         }
     }
 
-    val selection: String
-        get() = data[selectionI]
+    val selection: String get() = data[selectionI]
 
     var selectionI: Int = 0
         set(value) {

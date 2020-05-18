@@ -156,6 +156,8 @@
     <string name="show_below_apps">Show below apps</string>
     <string name="cards">Cards</string>
     <string name="notification_badges">Notification badges</string>
+    <string name="read_method">Reading method</string>
+    <string name="console">Console</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -192,5 +194,11 @@
         <item>Encima</item>
         <item>Izquierda</item>
         <item>Esconder</item>
+    </array>
+
+    <array name="articleReadingMethods">
+        <item>En navegador</item>
+        <item>En vista web</item>
+        <!--item>En vista articulo (experimental)</item-->
     </array>
 </resources>
