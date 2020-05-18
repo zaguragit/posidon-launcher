@@ -1012,7 +1012,7 @@ class Main : AppCompatActivity() {
         }
 
         fun setDrawerSearchbarFGColor(color: Int) {
-            Settings["searchhintcolor"] = color
+            Settings["searchtxtcolor"] = color
             instance.findViewById<TextView>(R.id.searchTxt).setTextColor(color)
             instance.findViewById<ImageView>(R.id.searchIcon).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
             instance.findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
