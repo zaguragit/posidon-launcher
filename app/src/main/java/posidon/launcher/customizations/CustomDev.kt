@@ -26,11 +26,13 @@ class CustomDev : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         findViewById<Switch>(R.id.showcomponent).isChecked = Settings["dev:show_app_component", false]
+        findViewById<Switch>(R.id.consoleEnabled).isChecked = Settings["dev:console", false]
         Main.customized = true
     }
 
     override fun onPause() {
         super.onPause()
         Settings["dev:show_app_component"] = findViewById<Switch>(R.id.showcomponent).isChecked
+        Settings["dev:console"] = findViewById<Switch>(R.id.consoleEnabled).isChecked
     }
 }

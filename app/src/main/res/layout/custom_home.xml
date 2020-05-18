@@ -311,9 +311,24 @@
                 <TextView
                     style="@style/settingsbtn"
                     android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_label"
+                    android:drawableStart="@drawable/ic_visible"
                     android:text="@string/removed"
                     android:onClick="seeRemovedArticles"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/read_method"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/readMethods"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -44,6 +44,7 @@ import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.*
+import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -59,6 +60,7 @@ import posidon.launcher.view.AlphabetScrollbar
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.ResizableLayout.OnResizeListener
+import java.io.Console
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -970,7 +972,7 @@ class Main : AppCompatActivity() {
     }
 
     fun openSearch(v: View?) = startActivity(
-        Intent(this, SearchActivity::class.java),
+        Intent(this, if (Settings["dev:console", false]) ConsoleActivity::class.java else SearchActivity::class.java),
         ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle()
     )
 
