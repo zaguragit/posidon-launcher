@@ -29,7 +29,13 @@ import kotlin.collections.ArrayList
 
 class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val context: Activity, private val window: Window) : RecyclerView.Adapter<FeedModelViewHolder>() {
 
-    class FeedModelViewHolder(val card: View) : RecyclerView.ViewHolder(card)
+    class FeedModelViewHolder(
+        val card: View,
+        val title: TextView,
+        val source: TextView,
+        val image: ImageView,
+        val swipeableLayout: SwipeableLayout?
+    ) : RecyclerView.ViewHolder(card)
 
     private val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
 
@@ -39,10 +45,13 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
             2 -> R.layout.feed_card2
             else -> R.layout.feed_card0
         }, parent, false)
+        val title = v.findViewById<TextView>(R.id.title)
+        val source = v.findViewById<TextView>(R.id.source)
         v.findViewById<View>(R.id.card).setOnLongClickListener(LauncherMenu(context, window))
         v.findViewById<CardView>(R.id.card).setCardBackgroundColor(Settings["feed:card_bg", -0xdad9d9])
-        v.findViewById<TextView>(R.id.source).setTextColor(Settings["feed:card_txt_color", -0x1])
-        v.findViewById<TextView>(R.id.title).setTextColor(Settings["feed:card_txt_color", -0x1])
+        source.setTextColor(Settings["feed:card_txt_color", -0x1])
+        title.setTextColor(Settings["feed:card_txt_color", -0x1])
+        var swipeableLayout: SwipeableLayout? = null
         return FeedModelViewHolder(FrameLayout(context).apply {
             val tp = 9.dp.toInt()
             setPadding(0, tp, 0, tp)
@@ -50,21 +59,21 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
                 setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
                 radius = Settings["feed:card_radius", 15].dp
-                id = R.id.separator
                 v.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                swipeableLayout = this
             } else v.apply {
                 findViewById<CardView>(R.id.card).radius = Settings["feed:card_radius", 15].dp
             })
-        })
+        }, title, source, v.findViewById(R.id.img), swipeableLayout)
     }
 
     override fun onBindViewHolder(holder: FeedModelViewHolder, i: Int) {
         holder.card.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         val feedItem = feedModels[i]
-        holder.card.findViewById<TextView>(R.id.title).text = feedItem.title
-        holder.card.findViewById<TextView>(R.id.source).text = feedItem.source.name
+        holder.title.text = feedItem.title
+        holder.source.text = feedItem.source.name
         if (Settings["feed:delete_articles", false]) {
-            val swipeableLayout = holder.card.findViewById<SwipeableLayout>(R.id.separator)
+            val swipeableLayout = holder.swipeableLayout!!
             swipeableLayout.reset()
             swipeableLayout.onSwipeAway = {
                 feedModels.remove(feedItem)
@@ -78,11 +87,11 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
         }
         if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {
             if (images.containsKey(feedItem.img)) {
-                holder.card.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
+                holder.image.setImageBitmap(images[feedItem.img])
                 if (Settings["feed:card_text_shadow", true]) {
                     val gradientDrawable = GradientDrawable()
                     gradientDrawable.colors = intArrayOf(0x0, Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0x1000000))
-                    holder.card.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                    holder.source.backgroundTintList = ColorStateList.valueOf(Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
                     holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
                 } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
             } else {
@@ -90,7 +99,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                     if (Settings["feed:card_text_shadow", true]) {
                         val gradientDrawable = GradientDrawable()
                         gradientDrawable.colors = intArrayOf(0x0, Palette.from(img).generate().getDarkMutedColor(-0x1000000))
-                        holder.card.findViewById<View>(R.id.source).backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        holder.source.backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
                         holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
                     } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
                 }
@@ -98,14 +107,14 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                     var worked = false
                     if (it != null) try {
                         images[feedItem.img] = it
-                        holder.card.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
+                        holder.image.setImageBitmap(images[feedItem.img])
                         onImageLoadEnd(it)
                         worked = true
                     } catch (e: Exception) { e.printStackTrace() }
                     if (!worked) Loader.nullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {
                         if (it != null) try {
                             images[feedItem.img] = it
-                            holder.card.findViewById<ImageView>(R.id.img).setImageBitmap(images[feedItem.img])
+                            holder.image.setImageBitmap(images[feedItem.img])
                             onImageLoadEnd(it)
                             worked = true
                         } catch (e: Exception) { e.printStackTrace() }
@@ -113,13 +122,31 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 }.execute()
             }
         } else {
-            holder.card.findViewById<View>(R.id.img).visibility = View.GONE
+            holder.image.visibility = View.GONE
             holder.card.findViewById<View>(R.id.card).layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             holder.card.findViewById<View>(R.id.txt).layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             holder.card.findViewById<View>(R.id.gradient).layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         }
         holder.card.findViewById<View>(R.id.card).setOnClickListener {
-            try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle()) }
+            try {
+                when (Settings["feed:openLinks", "browser"]) {
+                    "inWebView" -> {
+
+                    }
+                    "inApp" -> {
+
+                    }
+                    else -> {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
+                                feedItem.link.trim { it <= ' ' })),
+                                ActivityOptionsCompat.makeCustomAnimation(
+                                        context,
+                                        R.anim.slideup,
+                                        R.anim.home_exit
+                                ).toBundle())
+                    }
+                }
+            }
             catch (e: Exception) { e.printStackTrace() }
         }
     }
