@@ -1,0 +1,6 @@
+- Made it possible to open articles inside the launcher
+- Improved feed loading
+- Added notification badges
+- Made it possible to disable notification feed from settings
+- Moved the notification settings out of the feed settings
+- Increased the max amount of dock rows to 5
