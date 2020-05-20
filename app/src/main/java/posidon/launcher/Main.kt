@@ -276,7 +276,7 @@ class Main : AppCompatActivity() {
                 bg.setLayerInset(1, 0, behavior.peekHeight, 0, 0)
             }
             (findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
-            window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
+            window.decorView.setOnDragListener { _, event ->
                 when (event.action) {
                     DragEvent.ACTION_DRAG_LOCATION -> {
                         val objs = event.localState as Array<*>
@@ -285,7 +285,7 @@ class Main : AppCompatActivity() {
                         icon.getLocationOnScreen(location)
                         val x = abs(event.x - location[0] - icon.width / 2f)
                         val y = abs(event.y - location[1] - icon.height / 2f)
-                        if (x > icon.width / 2f || y > icon.height / 2f) {
+                        if (x > icon.width / 3.5f || y > icon.height / 3.5f) {
                             (objs[2] as PopupWindow).dismiss()
                             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
                         }
@@ -365,12 +365,12 @@ class Main : AppCompatActivity() {
                     paint.color = Settings["dock:background_color", -0x78000000]
                 }}
                 1 -> { findViewById<View>(R.id.drawer).background = LayerDrawable(arrayOf(
-                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                                Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                                Settings["dock:background_color", -0x78000000])),
-                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                                Settings["dock:background_color", -0x78000000],
-                                Settings["drawer:background_color", -0x78000000]))
+                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                        Settings["dock:background_color", -0x78000000] and 0x00ffffff,
+                        Settings["dock:background_color", -0x78000000])),
+                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                        Settings["dock:background_color", -0x78000000],
+                        Settings["drawer:background_color", -0x78000000]))
                 ))}
             }
 
@@ -973,8 +973,7 @@ class Main : AppCompatActivity() {
 
     fun openSearch(v: View?) = startActivity(
         Intent(this, if (Settings["dev:console", false]) ConsoleActivity::class.java else SearchActivity::class.java),
-        ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle()
-    )
+        ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle())
 
     companion object {
         var appSections = ArrayList<ArrayList<App>>()

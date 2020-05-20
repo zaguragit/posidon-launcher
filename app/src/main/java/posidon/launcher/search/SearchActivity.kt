@@ -24,6 +24,7 @@ import posidon.launcher.items.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class SearchActivity : AppCompatActivity() {
@@ -138,26 +139,21 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search(string: String) {
         stillWantIP = false
-        var j = 0
         val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
-        if (showHidden) j++
+        val results = ArrayList<App>()
+        findViewById<View>(R.id.fail).visibility = View.GONE
         for (app in Main.apps) {
-            for (word in app.label!!.split(" ").toTypedArray()) if (cook(word).contains(cook(string)) || word.contains(string)) {
-                j++
-                break
+            if (cook(app.label!!).contains(cook(string)) ||
+                app.label!!.contains(string) ||
+                cook(app.name!!).contains(cook(string)) ||
+                app.name.contains(string)) {
+                results.add(app)
+                continue
             }
-        }
-        val results = arrayOfNulls<App>(j)
-        if (j > 0) {
-            findViewById<View>(R.id.fail).visibility = View.GONE
-            j = 0
-            for (app in Main.apps) {
-                for (word in app.label!!.split(" ").toTypedArray()) {
-                    if (cook(word).contains(cook(string)) || word.contains(string)) {
-                        results[j] = app
-                        j++
-                        break
-                    }
+            for (word in app.label!!.split(" ").toTypedArray()) {
+                if (cook(word).contains(cook(string)) || word.contains(string)) {
+                    results.add(app)
+                    break
                 }
             }
         }
@@ -166,12 +162,11 @@ class SearchActivity : AppCompatActivity() {
             val app = App(BuildConfig.APPLICATION_ID, HiddenAppsActivity::class.java.name)
             app.label = "Hidden apps"
             app.icon = getDrawable(R.drawable.hidden_apps)
-            results[j] = app
-            j++
+            results.add(app)
         }
         try {
             grid.adapter = SearchAdapter(this, results)
-            grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i]!!.open(this@SearchActivity, view) }
+            grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
             grid.onItemLongClickListener = ItemLongPress.search(this, results)
         } catch (e: Exception) { e.printStackTrace() }
         try {
@@ -199,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         } catch (e: Exception) {
-            if (j == 0) {
+            if (results.isEmpty()) {
                 findViewById<View>(R.id.fail).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
             }
