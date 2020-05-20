@@ -34,7 +34,8 @@ class IconPackPicker : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.systemicons).setOnClickListener { v ->
-            Settings["iconpack"] = "system"
+            Settings.putNotSave("iconpack", "system")
+            Settings.applyOnThisThread()
             v.background = getDrawable(R.drawable.selection)
             if (lastclicked !== v) {
                 lastclicked!!.setBackgroundColor(0x0)
@@ -54,7 +55,8 @@ class IconPackPicker : AppCompatActivity() {
         val grid = findViewById<GridView>(R.id.grid)
         grid.adapter = IconPackListAdapter(this, apps as Array<App>)
         grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
-            Settings["iconpack"] = apps[position].packageName
+            Settings.putNotSave("iconpack", apps[position].packageName)
+            Settings.applyOnThisThread()
             view.background = getDrawable(R.drawable.selection)
             if (lastclicked !== view) {
                 lastclicked!!.setBackgroundColor(0x0)

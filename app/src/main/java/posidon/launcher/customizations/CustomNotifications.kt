@@ -7,21 +7,12 @@ package posidon.launcher.customizations
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextClock
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.feed.news.RemovedArticles
-import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.view.Spinner
@@ -84,6 +75,8 @@ class CustomNotifications : AppCompatActivity() {
         v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["notificationActionTextColor"] = it
     }
+
+    fun openHideApps(v: View) = startActivity(Intent(this, CustomHiddenAppNotifications::class.java))
 
     override fun onPause() {
         Main.customized = true

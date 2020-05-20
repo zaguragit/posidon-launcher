@@ -166,6 +166,10 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
+            android:name=".customizations.CustomHiddenAppNotifications"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings" />
+        <activity
             android:name=".customizations.CustomOther"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
@@ -209,10 +213,10 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".search.SearchActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation">
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:label="@string/settings_title_search">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -232,7 +236,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
 
         <activity
             android:name=".tutorial.Tutorial"

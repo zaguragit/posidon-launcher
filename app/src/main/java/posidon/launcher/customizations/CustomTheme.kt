@@ -50,6 +50,7 @@ class CustomTheme : AppCompatActivity() {
             "monospace" -> fontName.text = getString(R.string.monospace)
             "ubuntu" -> fontName.text = getString(R.string.ubuntu)
             "lexendDeca" -> fontName.text = getString(R.string.lexend_deca)
+            "inter" -> fontName.text = getString(R.string.inter)
             "openDyslexic" -> fontName.text = getString(R.string.open_dyslexic)
         }
         findViewById<View>(R.id.fontbox).setOnClickListener {
@@ -87,6 +88,13 @@ class CustomTheme : AppCompatActivity() {
                     dismiss()
                     Settings["font"] = "lexendDeca"
                     fontName.text = getString(R.string.lexend_deca)
+                    applyFontSetting()
+                    Main.instance.applyFontSetting()
+                }
+                findViewById<View>(R.id.inter).setOnClickListener {
+                    dismiss()
+                    Settings["font"] = "inter"
+                    fontName.text = getString(R.string.inter)
                     applyFontSetting()
                     Main.instance.applyFontSetting()
                 }

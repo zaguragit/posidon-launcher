@@ -43,6 +43,8 @@ class CustomSearch : AppCompatActivity() {
         findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorCircle(Settings["searchUiBg", -0x78000000])
         findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorCircle(Settings["searchhintcolor", -0x1])
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
+
+        findViewById<Switch>(R.id.asHome).isChecked = Settings["search:asHome", false]
     }
 
     fun picksearchcolor(v: View) = ColorTools.pickColor(this, Settings["searchcolor", 0x33000000]) {
@@ -83,6 +85,7 @@ class CustomSearch : AppCompatActivity() {
         Main.setDockSearchBarVisible(findViewById<Switch>(R.id.docksearchbar).isChecked)
         Main.setDockSearchbarBelowApps(findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked)
         Main.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
+        Settings["search:asHome"] = findViewById<Switch>(R.id.asHome).isChecked
         super.onPause()
     }
 }

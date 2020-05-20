@@ -6,8 +6,6 @@
 package posidon.launcher.customizations
 
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,9 +24,7 @@ import posidon.launcher.tools.Sort
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 
-class CustomHiddenApps : AppCompatActivity() {
-
-    private var pm: PackageManager? = null
+class CustomHiddenAppNotifications : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +32,16 @@ class CustomHiddenApps : AppCompatActivity() {
         setContentView(R.layout.custom_hidden_apps)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        pm = packageManager
         setapps(findViewById(R.id.list))
     }
 
     private fun setapps(list: ListView) {
-        val mainIntent = Intent(Intent.ACTION_MAIN, null)
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val pacslist = pm!!.queryIntentActivities(mainIntent, 0)
+        val pacslist = packageManager.getInstalledPackages(0)
         val pacs = ArrayList<App>()
         for (i in pacslist.indices) {
-            pacs.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name).apply {
-                icon = pacslist[i].loadIcon(pm)
-                label = pacslist[i].loadLabel(pm).toString()
+            pacs.add(App(pacslist[i].packageName).apply {
+                icon = pacslist[i].applicationInfo.loadIcon(packageManager)
+                label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()
             })
         }
         Sort.labelSort(pacs)
@@ -62,8 +55,8 @@ class CustomHiddenApps : AppCompatActivity() {
         override fun getItemId(position: Int) = 0L
 
         internal inner class ViewHolder(
-                var icon: ImageView,
-                var text: TextView
+            var icon: ImageView,
+            var text: TextView
         )
 
         override fun getView(i: Int, cv: View?, parent: ViewGroup): View {
@@ -87,7 +80,7 @@ class CustomHiddenApps : AppCompatActivity() {
             }
             val finalConvertView = convertView
 
-            val hidden = Settings[app.packageName + "/" + app.name + "?hidden", false]
+            val hidden = Settings["notif:ex:${app.packageName}", false]
             if (hidden) {
                 finalConvertView.setBackgroundColor(0x33ff0000)
             } else {
@@ -98,11 +91,11 @@ class CustomHiddenApps : AppCompatActivity() {
                 Main.customized = true
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
-                    Settings[app.packageName + "/" + app.name + "?hidden"] = false
+                    Settings["notif:ex:${app.packageName}"] = false
                     notifyDataSetChanged()
                 } else {
                     finalConvertView.setBackgroundColor(0x0)
-                    Settings[app.packageName + "/" + app.name + "?hidden"] = true
+                    Settings["notif:ex:${app.packageName}"] = true
                     notifyDataSetChanged()
                 }
             }
@@ -111,3 +104,4 @@ class CustomHiddenApps : AppCompatActivity() {
         }
     }
 }
+
