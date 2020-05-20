@@ -42,7 +42,8 @@
             android:orientation="horizontal"
             android:gravity="bottom"
             android:paddingBottom="14dp"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:layoutDirection="ltr">
             <ImageView
                 android:id="@+id/musicPrev"
                 android:layout_width="36dp"

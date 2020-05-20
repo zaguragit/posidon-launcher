@@ -162,7 +162,6 @@
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -178,6 +177,12 @@
                         android:id="@+id/notificationGrouping"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
+                <TextView
+                    style="@style/settingsbtn"
+                    android:onClick="openHideApps"
+                    android:layout_width="match_parent"
+                    android:drawableStart="@drawable/ic_visible"
+                    android:text="@string/hidden_apps"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

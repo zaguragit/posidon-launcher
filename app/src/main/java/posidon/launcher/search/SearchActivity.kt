@@ -26,6 +26,7 @@ import posidon.launcher.tools.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
+import kotlin.math.pow
 
 class SearchActivity : AppCompatActivity() {
 
@@ -80,25 +81,41 @@ class SearchActivity : AppCompatActivity() {
             imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])
             imageTintMode = PorterDuff.Mode.MULTIPLY
             setOnClickListener {
-                startActivity(Intent(this@SearchActivity, Main::class.java))
+                if (Settings["search:asHome", false]) {
+                    searchTxt.text.clear()
+                } else {
+                    startActivity(Intent(this@SearchActivity, Main::class.java))
+                }
             }
         }
-        operators["+"] = Add()
-        operators["plus"] = Add()
-        operators["-"] = Sub()
-        operators["minus"] = Sub()
-        operators["*"] = Mul()
-        operators["x"] = Mul()
-        operators["times"] = Mul()
-        operators["/"] = Div()
-        operators[":"] = Div()
-        operators["over"] = Div()
-        operators["&"] = And()
-        operators["and"] = And()
-        operators["|"] = Or()
-        operators["or"] = Or()
-        operators["%"] = Rem()
-        operators["rem"] = Rem()
+        val add = Add()
+        val sub = Sub()
+        val mul = Mul()
+        val div = Div()
+        val and = And()
+        val or = Or()
+        val xor = Or()
+        val rem = Rem()
+        val pow = Pow()
+        operators["+"] = add
+        operators["plus"] = add
+        operators["-"] = sub
+        operators["minus"] = sub
+        operators["*"] = mul
+        operators["x"] = mul
+        operators["times"] = mul
+        operators["/"] = div
+        operators[":"] = div
+        operators["over"] = div
+        operators["&"] = and
+        operators["and"] = and
+        operators["|"] = or
+        operators["or"] = or
+        operators["xor"] = xor
+        operators["%"] = rem
+        operators["rem"] = rem
+        operators["pow"] = pow
+        operators["^"] = pow
 
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
             //println("search: " + event.action)
@@ -145,8 +162,8 @@ class SearchActivity : AppCompatActivity() {
         for (app in Main.apps) {
             if (cook(app.label!!).contains(cook(string)) ||
                 app.label!!.contains(string) ||
-                cook(app.name!!).contains(cook(string)) ||
-                app.name.contains(string)) {
+                cook(app.packageName).contains(cook(string)) ||
+                app.packageName.contains(string)) {
                 results.add(app)
                 continue
             }
@@ -228,7 +245,9 @@ class SearchActivity : AppCompatActivity() {
     internal class Div : Arithmetic { override fun apply(x: Double, y: Double): Double = x / y }
     internal class And : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
     internal class Or : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
+    internal class Xor : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() xor y.toInt()).toDouble() }
     internal class Rem : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() % y.toInt()).toDouble() }
+    internal class Pow : Arithmetic { override fun apply(x: Double, y: Double): Double = x.pow(y) }
 
     override fun onPause() {
         super.onPause()

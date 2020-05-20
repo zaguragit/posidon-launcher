@@ -158,6 +158,8 @@
     <string name="notification_badges">Notification badges</string>
     <string name="read_method">Reading method</string>
     <string name="console">Console</string>
+    <string name="inter">Inter</string>
+    <string name="search_as_home">Search as home</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

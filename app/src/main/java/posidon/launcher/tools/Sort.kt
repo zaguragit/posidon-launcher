@@ -24,6 +24,24 @@ object Sort {
         }
     }
 
+    fun labelSort(apps: ArrayList<App>) {
+        var i = 0
+        var j: Int
+        var temp: App
+        while (i < apps.size - 1) {
+            j = i + 1
+            while (j < apps.size) {
+                if (apps[i].label!!.compareTo(apps[j].label!!, ignoreCase = true) > 0) {
+                    temp = apps[i]
+                    apps[i] = apps[j]
+                    apps[j] = temp
+                }
+                j++
+            }
+            i++
+        }
+    }
+
     fun colorSort(apps: Array<App?>) {
         var i = 0
         var j: Int

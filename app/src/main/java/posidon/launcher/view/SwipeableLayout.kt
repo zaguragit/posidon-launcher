@@ -76,8 +76,8 @@ class SwipeableLayout(
                     parent.requestDisallowInterceptTouchEvent(true)
                     frontView.translationX = xOffset
                     backView.clipBounds =
-                            if (xOffset > 0) Rect(0, 0, xOffset.toInt(), measuredHeight)
-                            else Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
+                        if (xOffset > 0) Rect(0, 0, xOffset.toInt(), measuredHeight)
+                        else Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
                     return true
                 }
             }

@@ -6,6 +6,8 @@
         <item>@font/ubuntu_medium</item>
         <item>@font/ubuntu_mono</item>
         <item>@font/roboto_mono</item>
+        <item>@font/lexend_deca</item>
+        <item>@font/inter</item>
         <item>@font/open_dyslexic3</item>
     </array>
 </resources>

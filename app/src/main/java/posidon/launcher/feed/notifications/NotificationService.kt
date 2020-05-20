@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.*
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.UserHandle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
@@ -67,13 +69,12 @@ class NotificationService : NotificationListenerService() {
                 for (app in Main.apps) {
                     app.notificationCount = 0
                 }
-                val excludedPackages = Settings.getStrings("notif:ex")
                 if (notifications != null) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
                         while (i < notifications.size) {
                             val notification = notifications[i]
 
-                            if (excludedPackages.contains(notification.packageName)) {
+                            if (Settings["notif:ex:${notification.packageName}", false]) {
                                 i++
                                 continue
                             }
@@ -113,6 +114,12 @@ class NotificationService : NotificationListenerService() {
                     } else if (Settings["notifications:groupingType", "os"] == "byApp") {
                         while (i < notifications.size) {
                             val notification = notifications[i]
+
+                            if (Settings["notif:ex:${notification.packageName}", false]) {
+                                i++
+                                continue
+                            }
+
                             if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
@@ -141,6 +148,12 @@ class NotificationService : NotificationListenerService() {
                         }
                     } else while (i < notifications.size) {
                         val notification = notifications[i]
+
+                        if (Settings["notif:ex:${notification.packageName}", false]) {
+                            i++
+                            continue
+                        }
+
                         if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
@@ -274,14 +287,25 @@ class NotificationService : NotificationListenerService() {
                     setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                     text = subtitle
                 }
-                Main.instance.findViewById<View>(R.id.musicCardOverImg).background = LayerDrawable(arrayOf(
-                        ColorDrawable(color),
-                        GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
-                )).apply {
-                    val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-                    setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
-                    setLayerInset(1, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0, 0, 0)
-                }
+                val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+                Main.instance.findViewById<View>(R.id.musicCardOverImg).background =
+                        if (instance.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+                            LayerDrawable(arrayOf(
+                                ColorDrawable(color),
+                                GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
+                            )).apply {
+                                setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
+                                setLayerInset(1, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0, 0, 0)
+                            }
+                        } else {
+                            LayerDrawable(arrayOf(
+                                ColorDrawable(color),
+                                GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
+                            )).apply {
+                                setLayerInset(0, 136.dp.toInt(), 0, 0, 0)
+                                setLayerInset(1, 0, 0, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0)
+                            }
+                        }
                 Main.instance.findViewById<ImageView>(R.id.musicPrev).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicNext).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)

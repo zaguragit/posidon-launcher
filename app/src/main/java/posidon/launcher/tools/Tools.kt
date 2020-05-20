@@ -464,6 +464,7 @@ inline fun Activity.applyFontSetting() {
         "monospace" -> theme.applyStyle(R.style.font_monospace, true)
         "ubuntu" -> theme.applyStyle(R.style.font_ubuntu, true)
         "lexendDeca" -> theme.applyStyle(R.style.font_lexend_deca, true)
+        "inter" -> theme.applyStyle(R.style.font_inter, true)
         "openDyslexic" -> theme.applyStyle(R.style.font_open_dyslexic, true)
     }
 }
@@ -495,11 +496,12 @@ inline val Number.sp get() = Tools.publicContext!!.resources.displayMetrics.dens
 inline val Context.mainFont get() =
     if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
     else {
-        when {
-            Settings["font", "lexendDeca"] == "posidonsans" -> resources.getFont(R.font.posidon_sans)
-            Settings["font", "lexendDeca"] == "monospace" -> resources.getFont(R.font.ubuntu_mono)
-            Settings["font", "lexendDeca"] == "ubuntu" -> resources.getFont(R.font.ubuntu_medium)
-            Settings["font", "lexendDeca"] == "openDyslexic" -> resources.getFont(R.font.open_dyslexic3)
+        when (Settings["font", "lexendDeca"]) {
+            "posidonsans" -> resources.getFont(R.font.posidon_sans)
+            "monospace" -> resources.getFont(R.font.ubuntu_mono)
+            "ubuntu" -> resources.getFont(R.font.ubuntu_medium)
+            "openDyslexic" -> resources.getFont(R.font.open_dyslexic3)
+            "inter" -> resources.getFont(R.font.inter)
             else -> resources.getFont(R.font.lexend_deca)
         }
     }

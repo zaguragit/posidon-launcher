@@ -18,6 +18,7 @@
     <style name="font_monospace"><item name="android:fontFamily">@font/ubuntu_mono</item></style>
     <style name="font_ubuntu"><item name="android:fontFamily">@font/ubuntu_medium</item></style>
     <style name="font_lexend_deca"><item name="android:fontFamily">@font/lexend_deca</item></style>
+    <style name="font_inter"><item name="android:fontFamily">@font/inter</item></style>
     <style name="font_open_dyslexic"><item name="android:fontFamily">@font/open_dyslexic3</item></style>
 
     <style name="longpressmenusheet" parent="Theme.AppCompat.Dialog">
