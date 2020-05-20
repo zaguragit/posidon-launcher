@@ -67,10 +67,17 @@ class NotificationService : NotificationListenerService() {
                 for (app in Main.apps) {
                     app.notificationCount = 0
                 }
+                val excludedPackages = Settings.getStrings("notif:ex")
                 if (notifications != null) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
                         while (i < notifications.size) {
                             val notification = notifications[i]
+
+                            if (excludedPackages.contains(notification.packageName)) {
+                                i++
+                                continue
+                            }
+
                             if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
