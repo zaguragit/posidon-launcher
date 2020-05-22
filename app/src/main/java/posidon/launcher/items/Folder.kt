@@ -32,7 +32,7 @@ class Folder(string: String) : LauncherItem() {
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
             drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
             for (i in 0 until previewApps) {
-                drr[i + 1] = BitmapDrawable(context.resources, apps[i]!!.icon!!.toBitmap())
+                drr[i + 1] = BitmapDrawable(context.resources, apps[i].icon!!.toBitmap())
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth

@@ -9,7 +9,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -24,12 +23,14 @@ import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
 import posidon.launcher.feed.news.readers.ArticleActivity
 import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Device
+import posidon.launcher.tools.Loader
+import posidon.launcher.tools.dp
 import posidon.launcher.view.SwipeableLayout
 import java.util.*
-import kotlin.collections.ArrayList
 
-class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val context: Activity, private val window: Window) : RecyclerView.Adapter<FeedModelViewHolder>() {
+class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val context: Activity) : RecyclerView.Adapter<FeedModelViewHolder>() {
 
     class FeedModelViewHolder(
         val card: View,
@@ -49,7 +50,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
         }, parent, false)
         val title = v.findViewById<TextView>(R.id.title)
         val source = v.findViewById<TextView>(R.id.source)
-        v.findViewById<View>(R.id.card).setOnLongClickListener(LauncherMenu(context, window))
+        v.findViewById<View>(R.id.card).setOnLongClickListener(LauncherMenu())
         v.findViewById<CardView>(R.id.card).setCardBackgroundColor(Settings["feed:card_bg", -0xdad9d9])
         source.setTextColor(Settings["feed:card_txt_color", -0x1])
         title.setTextColor(Settings["feed:card_txt_color", -0x1])

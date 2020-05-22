@@ -32,6 +32,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/pinch"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/pinch"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/long_press"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/longPress"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/back_button"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/back"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <TextView
                     style="@style/customcardtitle"
                     android:text="@string/settings_title_feed"

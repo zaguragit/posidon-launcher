@@ -94,7 +94,7 @@ class SearchActivity : AppCompatActivity() {
         val div = Div()
         val and = And()
         val or = Or()
-        val xor = Or()
+        val xor = Xor()
         val rem = Rem()
         val pow = Pow()
         operators["+"] = add

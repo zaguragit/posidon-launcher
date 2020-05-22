@@ -15,7 +15,9 @@ import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 
 class AlphabetScrollbar(
-        val listView: AbsListView, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    val listView: AbsListView,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(listView.context, attrs, defStyleAttr) {
 
     var sectionIndexer: SectionIndexer? = listView.adapter.let {

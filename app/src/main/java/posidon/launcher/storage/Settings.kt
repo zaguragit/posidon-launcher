@@ -3,13 +3,11 @@ package posidon.launcher.storage
 import android.content.Context
 import android.net.Uri
 import posidon.launcher.Main
-import posidon.launcher.tools.Tools
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 
 object Settings {
 
@@ -126,10 +124,10 @@ object Settings {
     }
 
     private class SettingsFile(
-            val ints: HashMap<String, Int>,
-            val floats: HashMap<String, Float>,
-            val bools: HashMap<String, Boolean>,
-            val strings: HashMap<String, String>,
-            val lists: HashMap<String, ArrayList<String>>
+        val ints: HashMap<String, Int>,
+        val floats: HashMap<String, Float>,
+        val bools: HashMap<String, Boolean>,
+        val strings: HashMap<String, String>,
+        val lists: HashMap<String, ArrayList<String>>
     ) : Serializable { companion object { private const val serialVersionUID = 0 } }
 }
