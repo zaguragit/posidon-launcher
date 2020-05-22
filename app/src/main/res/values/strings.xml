@@ -162,6 +162,9 @@
     <string name="settings_title_gestures">Gestures</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>
+    <string name="pinch">Pinch</string>
+    <string name="long_press">Long-press</string>
+    <string name="back_button">Back button</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

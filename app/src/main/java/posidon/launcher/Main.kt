@@ -60,7 +60,6 @@ import posidon.launcher.view.AlphabetScrollbar
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.ResizableLayout.OnResizeListener
-import java.io.Console
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -517,7 +516,7 @@ class Main : AppCompatActivity() {
                                 }
                             }
                             notifications.recycledViewPool.clear()
-                            notifications.adapter = NotificationAdapter(this@Main, window)
+                            notifications.adapter = NotificationAdapter(this@Main)
                             if (Settings["notif:badges", true]) {
                                 drawerGrid.invalidateViews()
                                 setDock()
@@ -717,7 +716,7 @@ class Main : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.parentNotification).apply {
-            setOnLongClickListener(LauncherMenu(this@Main, window))
+            setOnLongClickListener(LauncherMenu())
             setOnClickListener {
                 if (notifications.visibility == VISIBLE) {
                     desktop.scrollTo(0, 0)
@@ -748,7 +747,7 @@ class Main : AppCompatActivity() {
         }
         WidgetManager.host.startListening()
         WidgetManager.fromSettings(widgetLayout)
-        val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener(this@Main, window))
+        val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomSheetBehavior.STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Main).sendWallpaperCommand(
@@ -886,7 +885,7 @@ class Main : AppCompatActivity() {
         updateNavbarHeight(this)
         if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
             override fun onFinished(feedModels: ArrayList<FeedItem>) {
-                feedRecycler.adapter = FeedAdapter(feedModels, this@Main, window)
+                feedRecycler.adapter = FeedAdapter(feedModels, this@Main)
             }
         }).execute()
         if (Settings["notif:enabled", true]) {
@@ -996,8 +995,11 @@ class Main : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (behavior.state == BottomSheetBehavior.STATE_EXPANDED) behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-        else if (widgetLayout.resizing) widgetLayout.resizing = false
+        when {
+            behavior.state == STATE_EXPANDED -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            widgetLayout.resizing -> widgetLayout.resizing = false
+            else -> Gestures.performTrigger(Settings["gesture:back", ""])
+        }
     }
 
     fun openSearch(v: View?) = startActivity(

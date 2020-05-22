@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -15,7 +14,6 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.view.NestedScrollView
-import java.lang.StringBuilder
 
 class ConsoleActivity : AppCompatActivity() {
 

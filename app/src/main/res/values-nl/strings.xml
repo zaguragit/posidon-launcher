@@ -22,7 +22,7 @@
 
     <string name="defaultdateformat">d MMM | cccc</string>
     <string name="settingsdateformat">Datum</string>
-    <string name="searchbarhint">Zoeken...</string>
+    <string name="searchbarhint">Zoeken…</string>
     <string name="feed_sources">Bronnen</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
     <string name="settings_icon_count">Pictogrambadges</string>
@@ -39,7 +39,7 @@
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
-    <string name="surprise_me">Verras me...</string>
+    <string name="surprise_me">Verras me…</string>
     <string name="preset_chooser_title">Kies een globaal thema</string>
     <string name="done">Klaar</string>
     <string name="explanation">Houd je startscherm lang ingedrukt om aanpassingen te doen en de achtergrond te wijzigen</string>
@@ -162,6 +162,9 @@
     <string name="settings_title_gestures">Gestures</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>
+    <string name="pinch">Pinch</string>
+    <string name="long_press">Long-press</string>
+    <string name="back_button">Back button</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>

@@ -13,7 +13,6 @@ import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Device
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 import kotlin.math.abs

@@ -11,10 +11,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.LauncherMenu
@@ -26,7 +24,7 @@ import posidon.launcher.tools.dp
 import posidon.launcher.view.SwipeableLayout
 
 
-class NotificationAdapter(private val context: Context, private val window: Window) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+class NotificationAdapter(private val context: Context) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
     class NotificationViewHolder(internal val view: ViewGroup, internal val card: SwipeableLayout, internal val linearLayout: LinearLayout) : RecyclerView.ViewHolder(view)
 
@@ -197,7 +195,7 @@ class NotificationAdapter(private val context: Context, private val window: Wind
             view.findViewById<TextView>(R.id.txt).setTextColor(Settings["notificationtxtcolor", -0xdad9d9])
 
             view.setOnClickListener { notification.open() }
-            view.setOnLongClickListener(LauncherMenu(context, window))
+            view.setOnLongClickListener(LauncherMenu())
             holder.linearLayout.addView(retView)
         }
     }

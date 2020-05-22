@@ -15,7 +15,6 @@ import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.sp
-import kotlin.math.max
 import kotlin.math.min
 
 class Spinner : AppCompatTextView {

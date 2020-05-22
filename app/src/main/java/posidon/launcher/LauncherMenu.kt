@@ -20,32 +20,32 @@ import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
+import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 import posidon.launcher.wall.Gallery
 import java.util.*
 
-class LauncherMenu(private val context: Context, private val window: Window) : OnLongClickListener {
+class LauncherMenu : OnLongClickListener {
 
     override fun onLongClick(v: View): Boolean {
-        openOverview(context, window)
+        Gestures.performTrigger(Settings["gesture:long_press", Gestures.OPEN_OVERVIEW])
         return true
     }
 
-    internal class PinchListener(private val context: Context, private val window: Window) : SimpleOnScaleGestureListener() {
+    internal class PinchListener : SimpleOnScaleGestureListener() {
         override fun onScale(d: ScaleGestureDetector) = true
         override fun onScaleEnd(d: ScaleGestureDetector) {
-            openOverview(context, window)
+            Gestures.performTrigger(Settings["gesture:pinch", Gestures.OPEN_OVERVIEW])
         }
     }
 
     companion object {
         var isActive = false
         var dialog: Dialog? = null
-        fun openOverview() = openOverview(Tools.publicContext!!, Main.instance.window)
-        fun openOverview(context: Context, window: Window) {
+        fun openOverview() {
             if (!isActive) {
-                open(context, window)
+                open(Tools.publicContext!!, Main.instance.window)
             }
         }
         private inline fun open(context: Context, window: Window) {
