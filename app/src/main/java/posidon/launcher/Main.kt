@@ -253,7 +253,6 @@ class Main : AppCompatActivity() {
                 container.addView(view)
                 i++
             }
-            val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(findViewById<View>(R.id.drawer))
             val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp * rowCount else 0f).toInt() * rowCount
             dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) containerHeight + 84.dp.toInt() else containerHeight + 14.dp.toInt()
             container.layoutParams.height = containerHeight
@@ -570,9 +569,8 @@ class Main : AppCompatActivity() {
     private lateinit var notifications: RecyclerView
     private lateinit var blurBg: LayerDrawable
     private lateinit var widgetLayout: ResizableLayout
-    private lateinit var widgetsArea: FrameLayout
     private var dockHeight = 0
-    private lateinit var behavior: BottomSheetBehavior<*>
+    lateinit var behavior: BottomSheetBehavior<*>
     private lateinit var batteryBar: ProgressBar
 
     @SuppressLint("ClickableViewAccessibility")
@@ -618,8 +616,16 @@ class Main : AppCompatActivity() {
         desktop = findViewById<NestedScrollView>(R.id.desktop).apply {
             isNestedScrollingEnabled = false
             isSmoothScrollingEnabled = false
-            onTopOverScroll = { if (!LauncherMenu.isActive) pullStatusbar() }
-            onBottomOverScroll = { if (!LauncherMenu.isActive) behavior.state = STATE_EXPANDED }
+            onTopOverScroll = {
+                if (!LauncherMenu.isActive && behavior.state != STATE_EXPANDED) {
+                    Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
+                }
+            }
+            onBottomOverScroll = {
+                if (!LauncherMenu.isActive) {
+                    Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
+                }
+            }
         }
         updateNavbarHeight(this@Main)
         drawerGrid = findViewById(R.id.drawergrid)

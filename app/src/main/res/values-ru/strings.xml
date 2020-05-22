@@ -159,6 +159,9 @@
     <string name="console">Console</string>
     <string name="inter">Inter</string>
     <string name="search_as_home">Search as home</string>
+    <string name="settings_title_gestures">Gestures</string>
+    <string name="gesture_top_overscroll">Top overscroll</string>
+    <string name="gesture_bottom_overscroll">Bottom overscroll</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -201,5 +204,13 @@
         <item>In browser</item>
         <item>In web view</item>
         <!--item>In article view (experimental)</item-->
+    </array>
+
+    <array name="gestureTriggers">
+        <item>Nothing</item>
+        <item>Pull down notifications</item>
+        <item>Open app drawer</item>
+        <item>Open search</item>
+        <item>Open overview</item>
     </array>
 </resources>
