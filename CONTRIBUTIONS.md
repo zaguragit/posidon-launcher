@@ -1,5 +1,6 @@
 # Contribution guidelines
 
+#### If you implement quickstep, you can code in whatever style or language you want, quickstep compensates for it!!
 I do accept Java contributions, since Kotlin's fully interoperable with Java, but I'll still translate them.
 
 #### Code style rules:
