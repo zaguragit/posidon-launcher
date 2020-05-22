@@ -54,6 +54,13 @@ class CustomOther : AppCompatActivity() {
                 "clip_reveal" -> 1
                 else -> 0
             }
+            setSelectionChangedListener {
+                Settings["anim:app_open"] = when(selectionI) {
+                    2 -> "scale_up"
+                    1 -> "clip_reveal"
+                    else -> "posidon"
+                }
+            }
         }
         Main.customized = true
     }
@@ -63,11 +70,6 @@ class CustomOther : AppCompatActivity() {
         Settings.apply {
             putNotSave("hidestatus", findViewById<Switch>(R.id.hidestatus).isChecked)
             putNotSave("mnmlstatus", findViewById<Switch>(R.id.mnmlstatus).isChecked)
-            putNotSave("anim:app_open", when(findViewById<Spinner>(R.id.animationOptions).selectionI) {
-                2 -> "scale_up"
-                1 -> "clip_reveal"
-                else -> "posidon"
-            })
             apply()
         }
         super.onPause()

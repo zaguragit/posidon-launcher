@@ -158,6 +158,10 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
+            android:name=".customizations.CustomGestures"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings" />
+        <activity
             android:name=".customizations.IconPackPicker"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />

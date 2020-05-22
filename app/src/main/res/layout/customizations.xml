@@ -113,6 +113,11 @@
                 android:onClick="openTheme"
                 android:text="@string/settings_title_ui" />
             <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_gestures"
+                android:onClick="openGestures"
+                android:text="@string/settings_title_gestures" />
+            <TextView
                 android:id="@+id/quickStepOptions"
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_quickstep"

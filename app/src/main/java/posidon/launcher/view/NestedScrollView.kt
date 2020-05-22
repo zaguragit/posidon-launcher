@@ -18,11 +18,10 @@ class NestedScrollView : NestedScrollView {
         val oldScrollY = this.scrollY
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
         if (clampedY &&
-            scrollY == 0 &&
-            oldScrollY == 0 &&
-            superOldScrollY == 0 &&
+            System.currentTimeMillis() - timeSincePress < 240 &&
             pointerCount == 1 &&
-            System.currentTimeMillis() - timeSincePress < 240) {
+            oldScrollY == scrollY &&
+            superOldScrollY == oldScrollY) {
             if (oldPointerY < newPointerY) {
                 onTopOverScroll()
             } else if (oldPointerY > newPointerY) {

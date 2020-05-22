@@ -45,6 +45,7 @@ class Customizations : AppCompatActivity() {
     fun openSearch  (v: View) = startActivity(Intent(this, CustomSearch        ::class.java))
     fun openFolders (v: View) = startActivity(Intent(this, CustomFolders       ::class.java))
     fun openTheme   (v: View) = startActivity(Intent(this, CustomTheme         ::class.java))
+    fun openGestures(v: View) = startActivity(Intent(this, CustomGestures      ::class.java))
     fun openQStep   (v: View) = startActivity(Intent(this, CustomQuickStep     ::class.java))
     fun openOther   (v: View) = startActivity(Intent(this, CustomOther         ::class.java))
     fun openDev     (v: View) = startActivity(Intent(this, CustomDev           ::class.java))

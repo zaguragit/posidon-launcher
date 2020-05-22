@@ -28,21 +28,27 @@ import java.util.*
 class LauncherMenu(private val context: Context, private val window: Window) : OnLongClickListener {
 
     override fun onLongClick(v: View): Boolean {
-        if (!isActive) menu(context, window)
+        openOverview(context, window)
         return true
     }
 
     internal class PinchListener(private val context: Context, private val window: Window) : SimpleOnScaleGestureListener() {
         override fun onScale(d: ScaleGestureDetector) = true
         override fun onScaleEnd(d: ScaleGestureDetector) {
-            if (!isActive) menu(context, window)
+            openOverview(context, window)
         }
     }
 
     companion object {
         var isActive = false
         var dialog: Dialog? = null
-        private fun menu(context: Context, window: Window) {
+        fun openOverview() = openOverview(Tools.publicContext!!, Main.instance.window)
+        fun openOverview(context: Context, window: Window) {
+            if (!isActive) {
+                open(context, window)
+            }
+        }
+        private inline fun open(context: Context, window: Window) {
             isActive = true
             context.vibrate()
             val homescreen = window.decorView.findViewById<View>(android.R.id.content)
