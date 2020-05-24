@@ -438,29 +438,30 @@ class Main : AppCompatActivity() {
                 }
                 desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
                     val a = 6.dp
+                    val distance = oldY - y
                     if (y > a) {
                         if (wasHiddenLastTime) {
                             feedRecycler.translationX = 0f
                             feedRecycler.animate().setListener(fadeInAnimListener).alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.duration = 200L
                         }
-                    } else if (y < a && oldY >= a) {
-                        if (!wasHiddenLastTime) {
-                            feedRecycler.animate().setListener(fadeOutAnimListener).alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.duration = 180L
-                        }
-                    }
-                    if (!LauncherMenu.isActive) {
-                        if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
-                            val distance = oldY - y
-                            if (y < a || distance > a) {
+                        if (distance > a || y >= findViewById<View>(R.id.desktopContent).height - dockHeight - desktop.height) {
+                            if (!LauncherMenu.isActive) {
                                 behavior.state = BottomSheetBehavior.STATE_COLLAPSED
                                 behavior.isHideable = false
-                            } else if (distance < -a) {
-                                behavior.isHideable = true
-                                behavior.state = BottomSheetBehavior.STATE_HIDDEN
                             }
-                        } else {
+                        } else if (distance < -a) {
+                            behavior.isHideable = true
+                            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        }
+                    } else {
+                        if (!LauncherMenu.isActive) {
                             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
                             behavior.isHideable = false
+                        }
+                        if (y < a && oldY >= a) {
+                            if (!wasHiddenLastTime) {
+                                feedRecycler.animate().setListener(fadeOutAnimListener).alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.duration = 180L
+                            }
                         }
                     }
                 })
@@ -468,21 +469,16 @@ class Main : AppCompatActivity() {
                 feedRecycler.translationX = 0f
                 feedRecycler.alpha = 1f
                 desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
-                    if (!LauncherMenu.isActive) {
-                        if (y + desktop.height < findViewById<View>(R.id.desktopContent).height - dockHeight) {
-                            val a = 6.dp
-                            val distance = oldY - y
-                            if (y < a || distance > a) {
-                                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.isHideable = false
-                            } else if (distance < -a) {
-                                behavior.isHideable = true
-                                behavior.state = BottomSheetBehavior.STATE_HIDDEN
-                            }
-                        } else {
+                    val a = 6.dp
+                    val distance = oldY - y
+                    if (distance > a || y < a || y + desktop.height >= findViewById<View>(R.id.desktopContent).height - dockHeight) {
+                        if (!LauncherMenu.isActive) {
                             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
                             behavior.isHideable = false
                         }
+                    } else if (distance < -a) {
+                        behavior.isHideable = true
+                        behavior.state = BottomSheetBehavior.STATE_HIDDEN
                     }
                 })
             }
