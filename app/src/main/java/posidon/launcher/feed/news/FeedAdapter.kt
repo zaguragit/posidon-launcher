@@ -141,10 +141,12 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 when (Settings["feed:openLinks", "browse"]) {
                     "webView" -> context.startActivity(Intent(context, WebViewActivity::class.java).apply {
                         putExtra("url", feedItem.link)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
                     }, activityOptions)
                     "app" -> context.startActivity(Intent(context, ArticleActivity::class.java).apply {
                         putExtra("url", feedItem.link)
                         putExtra("sourceName", feedItem.source.name)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
                     }, activityOptions)
                     else -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), activityOptions)
                 }

@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView
 import posidon.launcher.R
 import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -64,20 +65,21 @@ class SwipeableLayout(
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (ev.action) {
             MotionEvent.ACTION_MOVE -> {
-                if (xOffset > 0) {
-                    closeIcon.translationX = 18.dp
-                    closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                } else {
-                    closeIcon.translationX = measuredWidth - 50.dp
-                    closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                }
                 xOffset = ev.x - initX
-                if (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat())) {
+                if (abs(xOffset * 1.2) > 1.dp) {
                     parent.requestDisallowInterceptTouchEvent(true)
                     frontView.translationX = xOffset
                     backView.clipBounds =
-                        if (xOffset > 0) Rect(0, 0, xOffset.toInt(), measuredHeight)
-                        else Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
+                        if (xOffset > 0) {
+                            closeIcon.translationX = 18.dp
+                            closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                            Rect(0, 0, xOffset.toInt(), measuredHeight)
+                        }
+                        else {
+                            closeIcon.translationX = measuredWidth - 50.dp
+                            closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                            Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
+                        }
                     return true
                 }
             }
@@ -143,10 +145,11 @@ class SwipeableLayout(
     override fun onInterceptTouchEvent(ev: MotionEvent) = when (ev.action) {
         MotionEvent.ACTION_MOVE -> {
             xOffset = ev.x - initX
-            if (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat()) && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) true
-            else super.onInterceptTouchEvent(ev)
+            (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat()) && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) || super.onInterceptTouchEvent(ev)
         }
-        MotionEvent.ACTION_UP -> if (abs(xOffset) < 8.dp || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) super.onInterceptTouchEvent(ev) else true
+        MotionEvent.ACTION_UP -> if (abs(xOffset) < 12.dp || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) {
+            super.onInterceptTouchEvent(ev)
+        } else true
         else -> {
             if (ev.action == MotionEvent.ACTION_DOWN) {
                 initX = ev.x

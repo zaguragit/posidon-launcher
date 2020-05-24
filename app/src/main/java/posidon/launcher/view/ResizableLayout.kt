@@ -107,7 +107,8 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     var startY = 0f
     var startRawX = 0f
     var startRawY = 0f
-    override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
                 startX = event.x
@@ -118,6 +119,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                     longPressHandler.removeCallbacksAndMessages(null)
                     longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
                 }
+                return true
             }
             MotionEvent.ACTION_UP -> {
                 if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout() && hasWindowFocus())
@@ -127,11 +129,13 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
             MotionEvent.ACTION_CANCEL -> {
                 longPressHandler.removeCallbacksAndMessages(null)
             }
-            MotionEvent.ACTION_MOVE ->
-                if (!(isAClick(startX, event.x, startY, event.y) && isAClick(startRawX, event.rawX, startRawY, event.rawY) && hasWindowFocus()))
+            MotionEvent.ACTION_MOVE -> {
+                if (!(isAClick(startX, event.x, startY, event.y) && isAClick(startRawX, event.rawX, startRawY, event.rawY))) {
                     longPressHandler.removeCallbacksAndMessages(null)
+                }
+            }
         }
-        return super.onInterceptTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
