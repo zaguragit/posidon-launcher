@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import kotlin.math.*
@@ -81,16 +82,17 @@ object Tools {
 
     var publicContext: Context? = null
 
-    fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap? {
-        if (radius < 1) return null
-        var bitmap = bitmap
+    fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap {
+        if (radius < 1) {
+            return bitmap
+        }
+        val initWidth = bitmap.width
+        val initHeight = bitmap.height
         val d = radius.toFloat()
-        val width = (bitmap.width / d).roundToInt()
-        val height = (bitmap.height / d).roundToInt()
-        bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+        val w = (initWidth / d).roundToInt()
+        val h = (initHeight / d).roundToInt()
+        var bitmap = Bitmap.createScaledBitmap(bitmap, w, h, false)
         bitmap = bitmap.copy(bitmap.config, true)
-        val w = bitmap.width
-        val h = bitmap.height
         val pix = IntArray(w * h)
         bitmap.getPixels(pix, 0, w, 0, 0, w, h)
         val wm = w - 1
@@ -279,47 +281,43 @@ object Tools {
             x++
         }
         bitmap.setPixels(pix, 0, w, 0, 0, w, h)
-        return bitmap
+        return Bitmap.createScaledBitmap(bitmap, initWidth, initHeight, true)
     }
 
 	inline fun canBlurWall(context: Context?) = Settings["blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 	fun blurredWall(context: Context, radius: Float): Bitmap? {
         try {
-            @SuppressLint("MissingPermission") var bitmap: Bitmap? = WallpaperManager.getInstance(context).peekFastDrawable().toBitmap()
+            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(context).peekFastDrawable().toBitmapThatDoesntBreakTheBounds()
             val displayWidth = Device.displayWidth
-            val displayHeight = Device.displayHeight + navbarHeight
-            if (bitmap!!.width > radius && bitmap.height > radius) {
-                when {
-                    bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
-                        bitmap = Bitmap.createScaledBitmap(
-                                bitmap,
-                                displayHeight * bitmap.width / bitmap.height,
-                                displayHeight,
-                                false)
-                        bitmap.config = Bitmap.Config.ARGB_8888
-                        bitmap = Bitmap.createBitmap(
-                                bitmap, 0, 0,
-                                displayWidth,
-                                displayHeight)
-                    }
-                    bitmap.height / bitmap.width.toFloat() > displayHeight / displayWidth.toFloat() -> {
-                        bitmap = Bitmap.createScaledBitmap(
-                                bitmap,
-                                displayWidth,
-                                displayWidth * bitmap.height / bitmap.width,
-                                false)
-                        bitmap.config = Bitmap.Config.ARGB_8888
-                        bitmap = Bitmap.createBitmap(
-                                bitmap, 0, bitmap.height - displayHeight shr 1,
-                                displayWidth,
-                                displayHeight)
-                    }
-                    else -> bitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, displayHeight, false)
+            val displayHeight = Device.displayHeight
+            when {
+                bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
+                    bitmap = Bitmap.createScaledBitmap(
+                        bitmap,
+                        displayHeight * bitmap.width / bitmap.height,
+                        displayHeight,
+                        false)
+                    bitmap = Bitmap.createBitmap(
+                        bitmap, 0, 0,
+                        displayWidth,
+                        displayHeight)
                 }
-                if (radius > 0) try { bitmap = fastBlur(bitmap, radius.toInt()) }
-                catch (e: Exception) { e.printStackTrace() }
+                bitmap.height / bitmap.width.toFloat() > displayHeight / displayWidth.toFloat() -> {
+                    bitmap = Bitmap.createScaledBitmap(
+                        bitmap,
+                        displayWidth,
+                        displayWidth * bitmap.height / bitmap.width,
+                        false)
+                    bitmap = Bitmap.createBitmap(
+                        bitmap, 0, bitmap.height - displayHeight shr 1,
+                        displayWidth,
+                        displayHeight)
+                }
+                else -> bitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, displayHeight, false)
             }
+            if (radius > 0) try { bitmap = fastBlur(bitmap, radius.toInt()) }
+            catch (e: Exception) { e.printStackTrace() }
             return bitmap
         } catch (e: OutOfMemoryError) {
             Toast.makeText(context, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
@@ -328,7 +326,7 @@ object Tools {
     }
 
 	fun centerCropWallpaper(context: Context, wallpaper: Bitmap): Bitmap {
-        val scaledWidth = context.resources.displayMetrics.heightPixels * wallpaper.width / wallpaper.height
+        val scaledWidth = Device.displayHeight * wallpaper.width / wallpaper.height
         var scaledWallpaper = Bitmap.createScaledBitmap(
                 wallpaper,
                 scaledWidth,
@@ -466,6 +464,16 @@ inline fun Activity.applyFontSetting() {
         "inter" -> theme.applyStyle(R.style.font_inter, true)
         "openDyslexic" -> theme.applyStyle(R.style.font_open_dyslexic, true)
     }
+}
+
+inline fun Drawable.toBitmapThatDoesntBreakTheBounds(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
+    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
+    val bitmap: Bitmap = if (intrinsicWidth <= 0 || intrinsicHeight <= 0) Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    else Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    try { draw(canvas) }
+    catch (e: Exception) {}
+    return bitmap
 }
 
 inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
