@@ -641,10 +641,24 @@ class Main : AppCompatActivity() {
                 val floats = FloatArray(1)
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
-                        colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
-                        colors[1] = Settings["dock:background_color", -0x78000000]
+                    when (newState) {
+                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                            drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
+                            colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
+                            colors[1] = Settings["dock:background_color", -0x78000000]
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                val list = ArrayList<Rect>()
+                                list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
+                            }
+                        }
+                        STATE_EXPANDED -> {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                val list = ArrayList<Rect>()
+                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
+                            }
+                        }
                     }
                     colors[2] = Settings["drawer:background_color", -0x78000000]
                     floats[0] = dockHeight.toFloat() / (Device.displayHeight + dockHeight)
@@ -679,7 +693,9 @@ class Main : AppCompatActivity() {
                             }
                             if (things[4] == 1) {
                                 val repetitive = (slideOffset * 255).toInt() * things[0]
-                                for (i in 0 until things[0]) blurBg.getDrawable(i).alpha = max(min(repetitive - (i shl 8) + i, 255), 0)
+                                for (i in 0 until things[0]) {
+                                    blurBg.getDrawable(i).alpha = max(min(repetitive - (i shl 8) + i, 255), 0)
+                                }
                             }
                         } catch (e: Exception) {}
                     } else if (!Settings["feed:show_behind_dock", false]) {
@@ -893,7 +909,8 @@ class Main : AppCompatActivity() {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["blurradius", 15f]
                 for (i in 0 until blurLayers) {
-                    val bd = BitmapDrawable(resources, blurredWall(this@Main, radius / blurLayers * (i + 1)))
+                    val bmp = blurredWall(this@Main, radius / blurLayers * (i + 1))
+                    val bd = FastBitmapDrawable(bmp)
                     if (shouldHide) bd.alpha = 0
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)
                     else {
