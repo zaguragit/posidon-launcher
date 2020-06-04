@@ -288,9 +288,9 @@ object Tools {
 
 	fun blurredWall(context: Context, radius: Float): Bitmap? {
         try {
-            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(context).peekFastDrawable().toBitmapThatDoesntBreakTheBounds()
+            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(context).peekFastDrawable().toBitmap()
             val displayWidth = Device.displayWidth
-            val displayHeight = Device.displayHeight
+            val displayHeight = Device.displayHeight + navbarHeight
             when {
                 bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
                     bitmap = Bitmap.createScaledBitmap(
@@ -325,19 +325,19 @@ object Tools {
         return null
     }
 
-	fun centerCropWallpaper(context: Context, wallpaper: Bitmap): Bitmap {
+	fun centerCropWallpaper(wallpaper: Bitmap): Bitmap {
         val scaledWidth = Device.displayHeight * wallpaper.width / wallpaper.height
         var scaledWallpaper = Bitmap.createScaledBitmap(
-                wallpaper,
-                scaledWidth,
-                context.resources.displayMetrics.heightPixels,
-                false)
+            wallpaper,
+            scaledWidth,
+            Device.displayHeight,
+            false)
         scaledWallpaper = Bitmap.createBitmap(
-                scaledWallpaper,
-                scaledWidth - context.resources.displayMetrics.widthPixels shr 1,
-                0,
-                context.resources.displayMetrics.widthPixels,
-                context.resources.displayMetrics.heightPixels)
+            scaledWallpaper,
+            scaledWidth - Device.displayWidth shr 1,
+            0,
+            Device.displayWidth,
+            Device.displayHeight)
         return scaledWallpaper
     }
 
@@ -358,7 +358,9 @@ object Tools {
 	@RequiresApi(api = Build.VERSION_CODES.O)
     fun adaptic(context: Context, drawable: Drawable): Drawable {
         val icShape = Settings["icshape", 4]
-        return if (icShape == 0) drawable else if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
+        return if (icShape == 0) {
+            drawable
+        } else if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val drr = arrayOfNulls<Drawable>(2)
             if (drawable is AdaptiveIconDrawable) {
                 drr[0] = drawable.background
@@ -425,8 +427,12 @@ object Tools {
                         val radius = (min(width, height) shr 1) - 2
                         val radiusToPow = radius * radius * radius.toDouble()
                         path.moveTo(-radius.toFloat(), 0f)
-                        for (x in -radius..radius) path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
-                        for (x in radius downTo -radius) path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
+                        for (x in -radius..radius) {
+                            path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
+                        }
+                        for (x in radius downTo -radius) {
+                            path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
+                        }
                         path.close()
                         val matrix = Matrix()
                         matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
@@ -444,12 +450,11 @@ object Tools {
         } else drawable
     }
 
-    inline val isDefaultLauncher: Boolean
-        get() {
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.addCategory(Intent.CATEGORY_HOME)
-            return publicContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
-        }
+    inline val isDefaultLauncher: Boolean get() {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        return publicContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+    }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.075f))).toFloat()
 }
@@ -464,16 +469,6 @@ inline fun Activity.applyFontSetting() {
         "inter" -> theme.applyStyle(R.style.font_inter, true)
         "openDyslexic" -> theme.applyStyle(R.style.font_open_dyslexic, true)
     }
-}
-
-inline fun Drawable.toBitmapThatDoesntBreakTheBounds(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
-    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
-    val bitmap: Bitmap = if (intrinsicWidth <= 0 || intrinsicHeight <= 0) Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-    else Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    try { draw(canvas) }
-    catch (e: Exception) {}
-    return bitmap
 }
 
 inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
@@ -541,10 +536,18 @@ inline fun Context.vibrate() {
     }
 }
 
-
 inline fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     var view = currentFocus
-    if (view == null) view = View(this)
+    if (view == null) {
+        view = View(this)
+    }
     imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+inline fun Activity.setWallpaperOffset(x: Float, y: Float) {
+    val wallManager = WallpaperManager.getInstance(this)
+    //wallManager.setWallpaperOffsets(window.attributes.token, x, y)
+    wallManager.setWallpaperOffsetSteps(0f, 0f);
+    wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight);
 }

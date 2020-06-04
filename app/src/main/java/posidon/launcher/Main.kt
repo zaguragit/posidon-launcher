@@ -25,15 +25,13 @@ import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.*
+import android.widget.GridView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.palette.graphics.Palette
-import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
@@ -56,16 +54,11 @@ import posidon.launcher.tools.Tools.isInstalled
 import posidon.launcher.tools.isTablet
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
-import posidon.launcher.view.AlphabetScrollbar
-import posidon.launcher.view.NestedScrollView
-import posidon.launcher.view.ResizableLayout
+import posidon.launcher.view.*
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.util.*
 import kotlin.concurrent.thread
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
+import kotlin.math.*
 import kotlin.system.exitProcess
 
 class Main : AppCompatActivity() {
@@ -268,7 +261,7 @@ class Main : AppCompatActivity() {
                 findViewById<View>(R.id.desktopContent).setPadding(0, 6.dp.toInt(), 0, 24.dp.toInt())
             }
             if (Settings["dock:background_type", 0] == 1) {
-                val bg = findViewById<View>(R.id.drawer).background as LayerDrawable
+                val bg = drawer.background as LayerDrawable
                 bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
                 bg.setLayerInset(1, 0, behavior.peekHeight, 0, 0)
             }
@@ -284,7 +277,7 @@ class Main : AppCompatActivity() {
                         val y = abs(event.y - location[1] - icon.height / 2f)
                         if (x > icon.width / 3.5f || y > icon.height / 3.5f) {
                             (objs[2] as PopupWindow).dismiss()
-                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                     }
                     DragEvent.ACTION_DRAG_STARTED -> {
@@ -298,7 +291,7 @@ class Main : AppCompatActivity() {
                     }
                     DragEvent.ACTION_DROP -> {
                         ((event.localState as Array<*>)[1] as View).visibility = VISIBLE
-                        if (behavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                        if (behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
                             if (event.y > Device.displayHeight - dockHeight) {
                                 val item = (event.localState as Array<*>)[0] as LauncherItem?
                                 val location = IntArray(2)
@@ -356,12 +349,12 @@ class Main : AppCompatActivity() {
             applyFontSetting()
 
             when (Settings["dock:background_type", 0]) {
-                0 -> { findViewById<View>(R.id.drawer).background = ShapeDrawable().apply {
+                0 -> { drawer.background = ShapeDrawable().apply {
                     val tr = Settings["dockradius", 30].dp
                     shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
                     paint.color = Settings["dock:background_color", -0x78000000]
                 }}
-                1 -> { findViewById<View>(R.id.drawer).background = LayerDrawable(arrayOf(
+                1 -> { drawer.background = LayerDrawable(arrayOf(
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
                         Settings["dock:background_color", -0x78000000] and 0x00ffffff,
                         Settings["dock:background_color", -0x78000000])),
@@ -446,17 +439,17 @@ class Main : AppCompatActivity() {
                         }
                         if (distance > a || y >= findViewById<View>(R.id.desktopContent).height - dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
-                                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                                behavior.isHideable = false
+                                behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                                //behavior.isHideable = false
                             }
                         } else if (distance < -a) {
-                            behavior.isHideable = true
-                            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+                            //behavior.isHideable = true
+                            behavior.state = BottomDrawerBehavior.STATE_HIDDEN
                         }
                     } else {
                         if (!LauncherMenu.isActive) {
-                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                            behavior.isHideable = false
+                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            //behavior.isHideable = false
                         }
                         if (y < a && oldY >= a) {
                             if (!wasHiddenLastTime) {
@@ -473,12 +466,12 @@ class Main : AppCompatActivity() {
                     val distance = oldY - y
                     if (distance > a || y < a || y + desktop.height >= findViewById<View>(R.id.desktopContent).height - dockHeight) {
                         if (!LauncherMenu.isActive) {
-                            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                            behavior.isHideable = false
+                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            //behavior.isHideable = false
                         }
                     } else if (distance < -a) {
-                        behavior.isHideable = true
-                        behavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        //behavior.isHideable = true
+                        behavior.state = BottomDrawerBehavior.STATE_HIDDEN
                     }
                 })
             }
@@ -556,17 +549,24 @@ class Main : AppCompatActivity() {
     }
 
     private lateinit var drawerGrid: GridView
+    private lateinit var drawer: View
     private lateinit var drawerScrollBar: AlphabetScrollbar
+    lateinit var behavior: BottomDrawerBehavior<View>
+    private var dockHeight = 0
+
+    private lateinit var blurBg: LayerDrawable
+
     private lateinit var searchBar: View
-    private lateinit var powerManager: PowerManager
+
     private lateinit var desktop: NestedScrollView
     private lateinit var feedRecycler: RecyclerView
+
     private lateinit var notifications: RecyclerView
-    private lateinit var blurBg: LayerDrawable
     private lateinit var widgetLayout: ResizableLayout
-    private var dockHeight = 0
-    lateinit var behavior: BottomSheetBehavior<*>
+
     private lateinit var batteryBar: ProgressBar
+
+    private lateinit var powerManager: PowerManager
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -612,7 +612,7 @@ class Main : AppCompatActivity() {
             isNestedScrollingEnabled = false
             isSmoothScrollingEnabled = false
             onTopOverScroll = {
-                if (!LauncherMenu.isActive && behavior.state != STATE_EXPANDED) {
+                if (!LauncherMenu.isActive && behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
                     Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
                 }
             }
@@ -630,8 +630,9 @@ class Main : AppCompatActivity() {
                 drawerGrid.requestDisallowInterceptTouchEvent(true)
             false
         }
-        behavior = BottomSheetBehavior.from<View>(findViewById(R.id.drawer)).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
+        drawer = findViewById(R.id.drawer)
+        behavior = BottomDrawerBehavior.from<View>(findViewById(R.id.drawer)).apply {
+            state = BottomDrawerBehavior.STATE_COLLAPSED
             isHideable = false
             addBottomSheetCallback(object : BottomSheetCallback() {
 
@@ -642,7 +643,7 @@ class Main : AppCompatActivity() {
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
-                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                        BottomDrawerBehavior.STATE_COLLAPSED -> {
                             drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
                             colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
                             colors[1] = Settings["dock:background_color", -0x78000000]
@@ -653,7 +654,7 @@ class Main : AppCompatActivity() {
                                 window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
                             }
                         }
-                        STATE_EXPANDED -> {
+                        BottomDrawerBehavior.STATE_EXPANDED -> {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 val list = ArrayList<Rect>()
                                 window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
@@ -662,12 +663,10 @@ class Main : AppCompatActivity() {
                     }
                     colors[2] = Settings["drawer:background_color", -0x78000000]
                     floats[0] = dockHeight.toFloat() / (Device.displayHeight + dockHeight)
-                    things[0] = Settings["blurLayers", 1]
-                    things[1] = Settings["dockradius", 30]
+                    things[0] = if (canBlurWall(this@Main)) Settings["blurLayers", 1] else 0
+                    things[1] = Settings["dock:background_color", -0x78000000]
                     things[2] = Settings["dock:background_type", 0]
-                    things[3] = Settings["dock:background_color", -0x78000000]
-                    things[4] = if (canBlurWall(this@Main)) 1 else 0
-                    val tr = things[1].dp
+                    val tr = Settings["dockradius", 30].dp
                     radii[0] = tr
                     radii[1] = tr
                     radii[2] = tr
@@ -681,28 +680,26 @@ class Main : AppCompatActivity() {
                     desktop.alpha = inverseOffset.pow(1.2f)
                     if (slideOffset >= 0) {
                         try {
-                            if (things[2] == 0) {
-                                val bg = findViewById<View>(R.id.drawer).background as ShapeDrawable
-                                bg.paint.color = ColorTools.blendColors(colors[2], things[3], slideOffset)
+                            val bg = drawer.background
+                            if (bg is ShapeDrawable) {
+                                bg.paint.color = ColorTools.blendColors(colors[2], things[1], slideOffset)
                                 bg.shape = RoundRectShape(radii, null, null)
-                            } else if (things[2] == 1) {
-                                val bg = findViewById<View>(R.id.drawer).background as LayerDrawable
-                                colors[1] = ColorTools.blendColors(colors[2], things[3], slideOffset)
+                            } else if (bg is LayerDrawable) {
+                                colors[1] = ColorTools.blendColors(colors[2], things[1], slideOffset)
                                 (bg.getDrawable(0) as GradientDrawable).colors = intArrayOf(colors[0], colors[1])
                                 (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(colors[1], colors[2])
                             }
-                            if (things[4] == 1) {
-                                val repetitive = (slideOffset * 255).toInt() * things[0]
-                                for (i in 0 until things[0]) {
+                            val blurLayers = things[0]
+                            if (blurLayers != 0) {
+                                val repetitive = (slideOffset * 255).roundToInt() * blurLayers
+                                for (i in 0 until blurLayers) {
                                     blurBg.getDrawable(i).alpha = max(min(repetitive - (i shl 8) + i, 255), 0)
                                 }
                             }
-                        } catch (e: Exception) {}
+                        } catch (e: Exception) { e.printStackTrace() }
                     } else if (!Settings["feed:show_behind_dock", false]) {
-                        (desktop.layoutParams as CoordinatorLayout.LayoutParams).bottomMargin =
-                                ((1 + slideOffset) * (dockHeight + Tools.navbarHeight +
-                                        (Settings["dockbottompadding", 10] - 18).dp)).toInt()
-                        desktop.layoutParams = desktop.layoutParams
+                        (desktop.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
+                        desktop.requestLayout()
                     }
                     findViewById<View>(R.id.realdock).alpha = inverseOffset
                 }
@@ -761,7 +758,7 @@ class Main : AppCompatActivity() {
         WidgetManager.fromSettings(widgetLayout)
         val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+            if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomDrawerBehavior.STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Main).sendWallpaperCommand(
                     v.windowToken,
                     WallpaperManager.COMMAND_TAP,
@@ -889,6 +886,7 @@ class Main : AppCompatActivity() {
         super.onResume()
         WidgetManager.host.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
+        //setWallpaperOffset(0.5f, 0.5f)
         onUpdate()
     }
 
@@ -904,7 +902,7 @@ class Main : AppCompatActivity() {
             NotificationService.onUpdate()
         }
         if (canBlurWall(this)) {
-            val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
+            val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["blurradius", 15f]
@@ -940,7 +938,7 @@ class Main : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (LauncherMenu.isActive) LauncherMenu.dialog!!.dismiss()
-        if (behavior.state != BottomSheetBehavior.STATE_COLLAPSED) behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (behavior.state != BottomDrawerBehavior.STATE_COLLAPSED) behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
         desktop.scrollTo(0, 0)
         WidgetManager.host.stopListening()
         if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
@@ -973,7 +971,7 @@ class Main : AppCompatActivity() {
 
     override fun onDestroy() {
         try { unregisterReceiver(receiver) }
-        catch (ignore: Exception) {}
+        catch (e: Exception) {}
         unregisterReceiver(batteryInfoReceiver)
         super.onDestroy()
     }
@@ -993,9 +991,11 @@ class Main : AppCompatActivity() {
                 AppLoader(this@Main, onAppLoaderEnd).execute()
             }
             val playBtn = findViewById<ImageView>(R.id.musicPlay)
-            if ((getSystemService(Context.AUDIO_SERVICE) as AudioManager).isMusicActive)
+            if ((getSystemService(Context.AUDIO_SERVICE) as AudioManager).isMusicActive) {
                 playBtn.setImageResource(R.drawable.ic_pause)
-            else playBtn.setImageResource(R.drawable.ic_play)
+            } else {
+                playBtn.setImageResource(R.drawable.ic_play)
+            }
         } else window.decorView.systemUiVisibility =
                 SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1009,7 +1009,7 @@ class Main : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            behavior.state == STATE_EXPANDED -> behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            behavior.state == BottomDrawerBehavior.STATE_EXPANDED -> behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
             widgetLayout.resizing -> widgetLayout.resizing = false
             else -> Gestures.performTrigger(Settings["gesture:back", ""])
         }

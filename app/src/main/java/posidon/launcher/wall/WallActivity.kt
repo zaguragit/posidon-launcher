@@ -35,7 +35,7 @@ class WallActivity : AppCompatActivity() {
         setContentView(R.layout.wall_preview)
         loading = findViewById(R.id.loading)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        if (img != null && img!!.height / img!!.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, img!!)
+        if (img != null && img!!.height / img!!.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(img!!)
         findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
         val extras = intent.extras
         if (extras == null) {
@@ -63,7 +63,7 @@ class WallActivity : AppCompatActivity() {
                         it.toBitmap(width, height).let {
                             img = it
                             if (it.height / it.width < displayHeight / displayWidth)
-                                img = centerCropWallpaper(this@WallActivity, it)
+                                img = centerCropWallpaper(it)
                         }
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
                     }
@@ -73,7 +73,7 @@ class WallActivity : AppCompatActivity() {
                 loading!!.visibility = View.GONE
                 if (it != null) {
                     img = it
-                    if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(this@WallActivity, it)
+                    if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(it)
                     findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
                 }
             }.execute()

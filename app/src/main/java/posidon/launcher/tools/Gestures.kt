@@ -1,10 +1,10 @@
 package posidon.launcher.tools
 
 import android.content.Intent
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.search.SearchActivity
+import posidon.launcher.view.BottomDrawerBehavior
 
 object Gestures {
 
@@ -16,7 +16,7 @@ object Gestures {
     fun performTrigger(key: String) {
         when (key) {
             PULL_DOWN_NOTIFICATIONS -> Tools.publicContext!!.pullStatusbar()
-            OPEN_APP_DRAWER -> Main.instance.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            OPEN_APP_DRAWER -> Main.instance.behavior.state = BottomDrawerBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.publicContext!!.startActivity(Intent(Tools.publicContext, SearchActivity::class.java))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
         }

@@ -204,10 +204,11 @@ object ItemLongPress {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(data, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(data, myShadow, arrayOf(app, view, popupWindow), 0)
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
-            if (location[1] < Device.displayHeight / 2f) popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight) else popupWindow.showAtLocation(
-                    icon, Gravity.BOTTOM or gravity, x,
-                    Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight
-            )
+            if (location[1] < Device.displayHeight / 2f) {
+                popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight + 4.dp.toInt())
+            } else popupWindow.showAtLocation(
+                icon, Gravity.BOTTOM or gravity, x,
+                Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
         } catch (ignore: Exception) {}
         true
     }
@@ -230,7 +231,7 @@ object ItemLongPress {
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
             if (location[1] < Device.displayHeight / 2f) {
-                popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight)
+                popupWindow.showAtLocation(icon, Gravity.TOP or gravity, x, location[1] + icon.measuredHeight + 4.dp.toInt())
             } else {
                 popupWindow.showAtLocation(icon, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
             }

@@ -170,7 +170,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             }*/
         }
 
-        if (Settings["drawer:sections_enabled", false]) {
+        //if (Settings["drawer:sections_enabled", false]) {
             var currentChar = tmpApps[0].label!![0].toUpperCase()
             var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
             for (app in tmpApps) {
@@ -181,7 +181,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     currentChar = app.label!![0].toUpperCase()
                 }
             }
-        }
+        //}
         return null
     }
 

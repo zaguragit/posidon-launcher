@@ -45,6 +45,8 @@ class CustomSearch : AppCompatActivity() {
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
 
         findViewById<Switch>(R.id.asHome).isChecked = Settings["search:asHome", false]
+
+        findViewById<SeekBar>(R.id.iconSizeSlider).progress = Settings["search:ic_size", 0]
     }
 
     fun picksearchcolor(v: View) = ColorTools.pickColor(this, Settings["searchcolor", 0x33000000]) {
@@ -85,7 +87,11 @@ class CustomSearch : AppCompatActivity() {
         Main.setDockSearchBarVisible(findViewById<Switch>(R.id.docksearchbar).isChecked)
         Main.setDockSearchbarBelowApps(findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked)
         Main.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
-        Settings["search:asHome"] = findViewById<Switch>(R.id.asHome).isChecked
+        Settings.apply {
+            putNotSave("search:asHome", findViewById<Switch>(R.id.asHome).isChecked)
+            putNotSave("search:ic_size", findViewById<SeekBar>(R.id.iconSizeSlider).progress)
+            apply()
+        }
         super.onPause()
     }
 }

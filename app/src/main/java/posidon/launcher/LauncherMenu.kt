@@ -15,14 +15,11 @@ import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.Window
 import android.view.animation.PathInterpolator
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
-import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.vibrate
+import posidon.launcher.tools.*
+import posidon.launcher.view.BottomDrawerBehavior
 import posidon.launcher.wall.Gallery
 import java.util.*
 
@@ -54,9 +51,9 @@ class LauncherMenu : OnLongClickListener {
             val homescreen = window.decorView.findViewById<View>(android.R.id.content)
             val page = homescreen.findViewById<View>(R.id.desktop)
             page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
-            val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(homescreen.findViewById<View>(R.id.drawer))
+            val behavior: BottomDrawerBehavior<*> = BottomDrawerBehavior.from(homescreen.findViewById<View>(R.id.drawer))
             behavior.isHideable = true
-            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            behavior.state = BottomDrawerBehavior.STATE_HIDDEN
             dialog = Dialog(context, R.style.longpressmenusheet)
             dialog!!.setContentView(R.layout.menu)
             dialog!!.window!!.setGravity(Gravity.BOTTOM)
@@ -87,8 +84,8 @@ class LauncherMenu : OnLongClickListener {
             }
         }
 
-        private fun exit(homescreen: View, window: Window, behavior: BottomSheetBehavior<*>) {
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        private fun exit(homescreen: View, window: Window, behavior: BottomDrawerBehavior<*>) {
+            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
             val page = homescreen.findViewById<View>(R.id.desktop)
             page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
             page.setBackgroundColor(0x0)

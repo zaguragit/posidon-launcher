@@ -33,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private val operators: MutableMap<String, Arithmetic> = HashMap()
     private lateinit var smartBox: View
     private lateinit var grid: GridView
+    private lateinit var searchTxt: EditText
 
     private var bottomPaddingWhenSmartBoxIsShown = 0
 
@@ -42,7 +43,7 @@ class SearchActivity : AppCompatActivity() {
         applyFontSetting()
         smartBox = findViewById(R.id.smartbox)
         bottomPaddingWhenSmartBoxIsShown = (146.dp + 46.sp).toInt()
-        val searchTxt = findViewById<EditText>(R.id.searchTxt)
+        searchTxt = findViewById(R.id.searchTxt)
         searchTxt.requestFocus()
         grid = findViewById(R.id.searchgrid)
         grid.isStackFromBottom = Settings["search:start_from_bottom", false]
@@ -155,6 +156,12 @@ class SearchActivity : AppCompatActivity() {
     private var stillWantIP = false
 
     private fun search(string: String) {
+        if (string.isEmpty()) {
+            grid.adapter = SearchAdapter(this, arrayListOf())
+            //grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
+            //grid.onItemLongClickListener = ItemLongPress.search(this, results)
+            return
+        }
         stillWantIP = false
         val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
         val results = ArrayList<App>()
@@ -229,7 +236,7 @@ class SearchActivity : AppCompatActivity() {
                 smartBox.visibility = View.VISIBLE
                 grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
                 findViewById<TextView>(R.id.type).setText(R.string.value_of_pi)
-                findViewById<TextView>(R.id.result).text = "\u03c0 = " + Math.PI
+                findViewById<TextView>(R.id.result).text = "\u03c0 = ${Math.PI}"
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else {
                 smartBox.visibility = View.GONE
@@ -244,7 +251,7 @@ class SearchActivity : AppCompatActivity() {
     internal class Mul : Arithmetic { override fun apply(x: Double, y: Double): Double = x * y }
     internal class Div : Arithmetic { override fun apply(x: Double, y: Double): Double = x / y }
     internal class And : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
-    internal class Or : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
+    internal class Or  : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
     internal class Xor : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() xor y.toInt()).toDouble() }
     internal class Rem : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() % y.toInt()).toDouble() }
     internal class Pow : Arithmetic { override fun apply(x: Double, y: Double): Double = x.pow(y) }
@@ -254,6 +261,12 @@ class SearchActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         hideKeyboard()
         finish()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        if (hasFocus) {
+            search(searchTxt.text.toString())
+        }
     }
 
     private fun cook(s: String) = s.toLowerCase()
