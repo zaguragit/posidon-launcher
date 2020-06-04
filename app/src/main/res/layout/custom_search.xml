@@ -240,7 +240,6 @@
                         android:id="@+id/uiBgColorPrev"
                         style="@style/colorPreview"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -256,6 +255,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/iconSize" />
+                    <posidon.launcher.view.Seekbar
+                        android:id="@+id/iconSizeSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:max="2"
+                        android:progress="1" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

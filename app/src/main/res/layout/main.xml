@@ -87,9 +87,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="0dp">
+        app:layout_behavior="posidon.launcher.view.BottomDrawerBehavior"
+        app:hideable="false"
+        app:peekHeight="0dp">
         <include layout="@layout/dock"/>
         <FrameLayout
             android:id="@+id/drawercontent"

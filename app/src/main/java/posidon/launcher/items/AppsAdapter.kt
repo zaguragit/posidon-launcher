@@ -8,49 +8,59 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
+import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.toBitmap
 
-class AppsAdapter(private val context: Context, private val apps: Array<App>) : BaseAdapter(), SectionIndexer {
+class AppsAdapter(
+    private val context: Context,
+    private val apps: Array<App>
+) : BaseAdapter(), SectionIndexer {
 
     override fun getCount(): Int = apps.size
     override fun getItem(position: Int) = null
     override fun getItemId(position: Int): Long = 0
 
-    internal class ViewHolder {
-        var icon: ImageView? = null
-        var text: TextView? = null
-    }
+    class ViewHolder(
+        var icon: ImageView,
+        var iconFrame: View,
+        var text: TextView)
 
     override fun getView(position: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
         val viewHolder: ViewHolder
-        val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (convertView == null) {
+            val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
                 convertView = li.inflate(R.layout.list_item, null)
                 if (Settings["drawer:columns", 4] == 2) convertView.findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
-            viewHolder = ViewHolder()
-            viewHolder.icon = convertView.findViewById(R.id.iconimg)
-            viewHolder.text = convertView.findViewById(R.id.icontxt)
+            viewHolder = ViewHolder(
+                convertView.findViewById(R.id.iconimg),
+                convertView.findViewById(R.id.iconFrame),
+                convertView.findViewById(R.id.icontxt))
             convertView.tag = viewHolder
         } else viewHolder = convertView.tag as ViewHolder
-        viewHolder.icon!!.setImageDrawable(apps[position].icon)
+
+        val app = apps[position]
+        viewHolder.icon.setImageDrawable(app.icon)
         if (Settings["labelsenabled", false]) {
-            viewHolder.text!!.text = apps[position].label
-            viewHolder.text!!.visibility = View.VISIBLE
-            viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
-        } else viewHolder.text!!.visibility = View.INVISIBLE
+            viewHolder.text.text = app.label
+            viewHolder.text.visibility = View.VISIBLE
+            viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
+        } else viewHolder.text.visibility = View.INVISIBLE
+
         var appSize = 0
         when (Settings["icsize", 1]) {
             0 -> appSize = 64.dp.toInt()
             1 -> appSize = 74.dp.toInt()
             2 -> appSize = 84.dp.toInt()
         }
-        viewHolder.icon!!.layoutParams.height = appSize
-        viewHolder.icon!!.layoutParams.width = appSize
+        viewHolder.iconFrame.layoutParams.height = appSize
+        viewHolder.iconFrame.layoutParams.width = appSize
         return convertView
     }
 

@@ -3,8 +3,10 @@ package posidon.launcher.wall
 import android.Manifest
 import android.app.Activity
 import android.app.ActivityOptions
+import android.app.WallpaperManager
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
@@ -16,10 +18,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
+import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.ColorTools.pickWallColor
+import posidon.launcher.tools.ColorTools.pickColorNoAlpha
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.clearAnimation
@@ -48,9 +51,25 @@ class Gallery : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) pickFile()
                 else requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
-            } else Toast.makeText(this@Gallery, "Please, grant the 'read external files' permission in settings", Toast.LENGTH_LONG).show()
+            } else Toast.makeText(this, "Please, grant the 'read external files' permission in settings", Toast.LENGTH_LONG).show()
         }
-        findViewById<View>(R.id.colorwallbtn).setOnClickListener { pickWallColor(this@Gallery) }
+        findViewById<View>(R.id.colorwallbtn).setOnClickListener {
+            pickColorNoAlpha(this, 0) {
+                val wallManager = WallpaperManager.getInstance(this)
+                val c = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                c.eraseColor(0xff000000.toInt() or it)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (wallManager.isWallpaperSupported) {
+                        try { wallManager.setBitmap(c) }
+                        catch (e: Exception) {}
+                    } else Toast.makeText(this, "For some reason wallpapers are not supported.", Toast.LENGTH_LONG).show()
+                } else {
+                    try { wallManager.setBitmap(c) }
+                    catch (e: Exception) {}
+                }
+                startActivity(Intent(this, Main::class.java))
+            }
+        }
         val loading = findViewById<ImageView>(R.id.loading)
         animate(loading.drawable)
         val gallery = findViewById<GridView>(R.id.gallery)

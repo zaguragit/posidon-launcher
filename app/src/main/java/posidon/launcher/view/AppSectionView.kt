@@ -75,7 +75,7 @@ class AppSectionView(context: Context) : LinearLayout(context) {
                     }
                 } else { visibility = View.GONE }
             }
-            setOnTouchListener { v, event ->
+            setOnTouchListener { _, event ->
                 val parentContainer = this@AppSectionView.parent as View
                 if (parentContainer.canScrollVertically(-1))
                     parentContainer.parent.requestDisallowInterceptTouchEvent(true)
