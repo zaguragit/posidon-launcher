@@ -43,7 +43,6 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import androidx.core.view.accessibility.AccessibilityViewCommand;
 import androidx.customview.view.AbsSavedState;
-import androidx.customview.widget.ViewDragHelper;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -329,7 +328,7 @@ public class BottomDrawerBehavior<V extends View> extends CoordinatorLayout.Beha
       ViewCompat.offsetTopAndBottom(child, getExpandedOffset());
     } else if (state == STATE_HALF_EXPANDED) {
       ViewCompat.offsetTopAndBottom(child, halfExpandedOffset);
-    } else if (hideable && state == STATE_HIDDEN) {
+    } else if (state == STATE_HIDDEN) {
       ViewCompat.offsetTopAndBottom(child, parentHeight);
     } else if (state == STATE_COLLAPSED) {
       ViewCompat.offsetTopAndBottom(child, collapsedOffset);
@@ -342,8 +341,7 @@ public class BottomDrawerBehavior<V extends View> extends CoordinatorLayout.Beha
   }
 
   @Override
-  public boolean onInterceptTouchEvent(
-      @NonNull CoordinatorLayout parent, @NonNull V child, @NonNull MotionEvent event) {
+  public boolean onInterceptTouchEvent(@NonNull CoordinatorLayout parent, @NonNull V child, @NonNull MotionEvent event) {
     if (!child.isShown()) {
       ignoreEvents = true;
       return false;

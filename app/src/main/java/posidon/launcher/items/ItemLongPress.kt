@@ -30,6 +30,7 @@ import posidon.launcher.tools.*
 import java.util.*
 
 object ItemLongPress {
+
     var currentPopup: PopupWindow? = null
     private fun popupWindow(context: Context, methods: Methods, showRemove: Boolean, item: LauncherItem): PopupWindow {
         context.vibrate()
