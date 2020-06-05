@@ -92,18 +92,32 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
             if (images.containsKey(feedItem.img)) {
                 holder.image.setImageBitmap(images[feedItem.img])
                 if (Settings["feed:card_text_shadow", true]) {
-                    val gradientDrawable = GradientDrawable()
-                    gradientDrawable.colors = intArrayOf(0x0, Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0x1000000))
-                    holder.source.backgroundTintList = ColorStateList.valueOf(Palette.from(images[feedItem.img]!!).generate().getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
-                    holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
+                    Palette.from(images[feedItem.img]!!).generate {
+                        val gradientDrawable = GradientDrawable()
+                        if (it == null) {
+                            gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
+                            holder.source.backgroundTintList = ColorStateList.valueOf(-0xdad9d9 and 0x00ffffff or -0x78000000)
+                        } else {
+                            gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
+                            holder.source.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        }
+                        holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
+                    }
                 } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
             } else {
                 fun onImageLoadEnd(img: Bitmap) {
                     if (Settings["feed:card_text_shadow", true]) {
-                        val gradientDrawable = GradientDrawable()
-                        gradientDrawable.colors = intArrayOf(0x0, Palette.from(img).generate().getDarkMutedColor(-0x1000000))
-                        holder.source.backgroundTintList = ColorStateList.valueOf(Palette.from(img).generate().getDarkVibrantColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
-                        holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
+                        Palette.from(images[feedItem.img]!!).generate {
+                            val gradientDrawable = GradientDrawable()
+                            if (it == null) {
+                                gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
+                                holder.source.backgroundTintList = ColorStateList.valueOf(-0xdad9d9 and 0x00ffffff or -0x78000000)
+                            } else {
+                                gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
+                                holder.source.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                            }
+                            holder.card.findViewById<View>(R.id.gradient).background = gradientDrawable
+                        }
                     } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
                 }
                 Loader.nullableBitmap(feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {

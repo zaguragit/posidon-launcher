@@ -74,23 +74,6 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
         return convertView
     }
 
-
-    /*private val savedSections = ArrayList<Char>().apply {
-        for (i in Main.apps.indices) {
-            val label0 = Main.apps[i].label!!
-            val char0 = if (label0.isEmpty()) ' ' else label0[0].toUpperCase()
-            if (i == 0) {
-                add(char0)
-                return@apply
-            }
-            val label1 = Main.apps[i - 1].label!!
-            val char1 = if (label1.isEmpty()) ' ' else label1[0].toUpperCase()
-            if (char0 != char1) {
-                add(char0)
-            }
-        }
-    }.toTypedArray()*/
-
     private val savedSections = Array(Main.appSections.size) { Main.appSections[it][0].label!![0].toUpperCase() }
 
     override fun getSections(): Array<Char> = savedSections
