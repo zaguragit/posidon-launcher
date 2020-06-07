@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2019 Leo Shneyderis
- * All rights reserved
- */
-
 package posidon.launcher.customizations
 
 import android.content.Context

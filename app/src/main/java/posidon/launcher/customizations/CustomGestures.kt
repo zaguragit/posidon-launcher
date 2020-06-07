@@ -1,16 +1,9 @@
-/*
- * Copyright (c) 2019 Leo Shneyderis
- * All rights reserved
- */
-
 package posidon.launcher.customizations
 
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures

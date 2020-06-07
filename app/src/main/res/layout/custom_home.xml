@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2019 Leo Shneyderis
-  ~ All rights reserved
-  -->
+
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -56,6 +54,7 @@
                         android:max="50" />
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -79,6 +78,7 @@
                         android:max="32" />
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -107,10 +107,11 @@
                     android:layout_marginTop="-12dp"/>
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -140,6 +141,7 @@
                         android:maxWidth="180dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -176,16 +178,22 @@
                 </FrameLayout>
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_label"
-                    android:text="@string/feed_sources"
-                    android:onClick="chooseFeeds"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_label"
+                        android:text="@string/feed_sources"
+                        android:onClick="chooseFeeds"/>
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -208,13 +216,19 @@
                         android:layout_weight="1"
                         android:max="50" />
                 </LinearLayout>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_apps"
-                    android:text="@string/layout"
-                    android:onClick="chooseLayouts"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/layout"
+                        android:onClick="chooseLayouts"/>
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -231,6 +245,7 @@
                         android:padding="12dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -246,6 +261,7 @@
                         style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -261,6 +277,7 @@
                         style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -277,6 +294,7 @@
                         android:padding="12dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -293,6 +311,7 @@
                         android:padding="12dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -308,13 +327,19 @@
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
                 </LinearLayout>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_visible"
-                    android:text="@string/removed"
-                    android:onClick="seeRemovedArticles"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_visible"
+                        android:text="@string/removed"
+                        android:onClick="seeRemovedArticles"/>
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

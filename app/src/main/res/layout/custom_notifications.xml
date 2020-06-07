@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2019 Leo Shneyderis
-  ~ All rights reserved
-  -->
+
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,14 +41,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"/>
+                        android:padding="12dp"
+                        android:layout_marginEnd="12dp"/>
                 </FrameLayout>
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -67,6 +66,7 @@
                         style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -82,6 +82,7 @@
                         style="@style/colorPreview"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -96,8 +97,8 @@
                         android:id="@+id/notificationbgprev"
                         style="@style/colorPreview"/>
                 </LinearLayout>
-
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -113,8 +114,8 @@
                         android:layout_height="match_parent"
                         android:padding="12dp"/>
                 </LinearLayout>
-
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -129,8 +130,8 @@
                         android:id="@+id/actionBGPreview"
                         style="@style/colorPreview"/>
                 </LinearLayout>
-
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -145,8 +146,8 @@
                         android:id="@+id/actionTextColorPreview"
                         style="@style/colorPreview"/>
                 </LinearLayout>
-
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -163,6 +164,7 @@
                         android:padding="12dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -177,12 +179,17 @@
                         android:id="@+id/notificationGrouping"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="openHideApps"
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_visible"
-                    android:text="@string/hidden_apps"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="openHideApps"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_visible"
+                        android:text="@string/hidden_apps"/>
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -190,6 +197,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

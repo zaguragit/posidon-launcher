@@ -66,6 +66,12 @@ class About : Activity() {
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     } catch (ignore: Exception) {} }
 
+    fun openGitHub(v: View) { try {
+        val uri = Uri.parse("https://github.com/leoxshn/posidonLauncher")
+        val i = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
+    } catch (ignore: Exception) {} }
+
     fun openWebsite(v: View) {
         val uri = Uri.parse("https://posidon.io/launcher")
         val i = Intent(Intent.ACTION_VIEW, uri)

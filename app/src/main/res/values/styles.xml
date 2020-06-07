@@ -85,10 +85,11 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">start|center_vertical</item>
-        <item name="android:paddingStart">18dp</item>
-        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:clipToPadding">false</item>
         <item name="android:textColor">@color/cardtxt</item>
-        <item name="android:textColorHint">#33ffffff</item>
+        <item name="android:textColorHint">#111213</item>
         <item name="android:background">@drawable/input_bg</item>
     </style>
 
@@ -117,7 +118,13 @@
     <style name="settingscard">
         <item name="android:background">@drawable/settings_card</item>
         <item name="android:layout_margin">8dp</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <style name="settingsEntry">
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">12dp</item>
     </style>
 
     <style name="wallgallery" parent="Theme.AppCompat.NoActionBar">

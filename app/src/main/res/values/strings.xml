@@ -22,7 +22,7 @@
 
     <string name="defaultdateformat">d MMM | cccc</string>
     <string name="settingsdateformat">Date</string>
-    <string name="searchbarhint">Search..</string>
+    <string name="searchbarhint">Search…</string>
     <string name="feed_sources">Sources</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
     <string name="settings_icon_count">Icon count</string>
@@ -39,7 +39,7 @@
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
-    <string name="surprise_me">Surprise me..</string>
+    <string name="surprise_me">Surprise me…</string>
     <string name="preset_chooser_title">Choose a preset</string>
     <string name="done">Done</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
@@ -165,6 +165,7 @@
     <string name="pinch">Pinch</string>
     <string name="long_press">Long-press</string>
     <string name="back_button">Back button</string>
+    <string name="github">GitHub</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
