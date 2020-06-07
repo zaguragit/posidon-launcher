@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <LinearLayout
+                style="@style/settingsEntry"
                 android:id="@+id/systemicons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,8 +46,13 @@
                     android:textColor="@color/cardtxt"
                     android:layout_marginStart="12dp"/>
             </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/cardSeparator" android:layout_margin="12dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/card_separator"
+                android:layout_marginBottom="12dp"/>
             <posidon.launcher.view.GridView
+                style="@style/settingsEntry"
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

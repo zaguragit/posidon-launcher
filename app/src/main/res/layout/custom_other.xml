@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2019 Leo Shneyderis
-  ~ All rights reserved
-  -->
+
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -38,10 +35,11 @@
                     android:layout_marginTop="-12dp"/>
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -58,6 +56,7 @@
                         android:padding="12dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -85,10 +84,11 @@
                     android:layout_marginTop="-12dp"/>
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/cardSeparator"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
                 <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -109,13 +109,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="openHideApps"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_visible"
-                    android:text="@string/setting_title_hide_apps" />
                 <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="openHideApps"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_visible"
+                        android:text="@string/setting_title_hide_apps" />
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -136,30 +142,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="chooseLauncher"
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_apps"
-                    android:text="@string/choose_a_launcher" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="chooseLauncher"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/choose_a_launcher" />
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="mkBackup"
+                <LinearLayout
+                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_apps"
-                    android:text="@string/mk_backup" />
-                <TextView
-                    style="@style/settingsbtn"
-                    android:onClick="useBackup"
-                    android:layout_width="match_parent"
-                    android:drawableStart="@drawable/ic_apps"
-                    android:text="@string/use_backup" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="mkBackup"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/mk_backup" />
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="useBackup"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/use_backup" />
+                </LinearLayout>
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"

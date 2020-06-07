@@ -165,6 +165,7 @@
     <string name="pinch">Pinch</string>
     <string name="long_press">Long-press</string>
     <string name="back_button">Back button</string>
+    <string name="github">GitHub</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>

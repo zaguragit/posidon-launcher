@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:topLeftRadius="30dp" android:topRightRadius="30dp"/>
-            <gradient android:startColor="#0d0e0f" android:endColor="#111213" android:angle="90"/>
+            <corners android:topLeftRadius="35dp" android:topRightRadius="35dp"/>
+            <gradient android:startColor="#050607" android:endColor="#141617" android:angle="90"/>
         </shape>
     </item>
     <item
@@ -13,7 +13,7 @@
         android:top="1dp">
         <shape>
             <solid android:color="#0d0e0f"/>
-            <corners android:topLeftRadius="29dp" android:topRightRadius="29dp"/>
+            <corners android:topLeftRadius="34dp" android:topRightRadius="34dp"/>
         </shape>
     </item>
 </layer-list>

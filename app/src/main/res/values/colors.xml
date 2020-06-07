@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2019 Leo Shneyderis
-  ~ All rights reserved
-  -->
 
 <resources>
     <color name="accent">#1155ff</color>

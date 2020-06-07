@@ -23,7 +23,7 @@
 
     <string name="defaultdateformat">d MMM | cccc</string>
     <string name="settingsdateformat">Fecha</string>
-    <string name="searchbarhint">Buscar..</string>
+    <string name="searchbarhint">Buscar…</string>
     <string name="feed_sources">Fuentes</string>
     <string name="example_feed_url">andro4all.com/feed</string>
     <string name="settings_icon_count">Numero de iconos</string>
@@ -40,7 +40,7 @@
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
-    <string name="surprise_me">Sorprende me..</string>
+    <string name="surprise_me">Sorprende me…</string>
     <string name="preset_chooser_title">Escoge una plantilla</string>
     <string name="done">Done</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
@@ -166,6 +166,7 @@
     <string name="pinch">Pinch</string>
     <string name="long_press">Long-press</string>
     <string name="back_button">Back button</string>
+    <string name="github">GitHub</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

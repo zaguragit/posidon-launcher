@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2019 Leo Shneyderis
- * All rights reserved
- */
-
 package posidon.launcher.customizations
 
 import android.animation.Animator
@@ -90,6 +85,5 @@ class Customizations : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        overridePendingTransition(R.anim.fadein, R.anim.slidedown)
     }
 }
