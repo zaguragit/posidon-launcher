@@ -37,10 +37,81 @@
         android:fadingEdge="vertical"
         android:requiresFadingEdge="vertical"/>
     <LinearLayout
+        android:id="@+id/instantAnswer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:paddingTop="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
+        android:background="@drawable/search_card"
+        android:visibility="gone"
+        android:layout_marginBottom="68dp">
+        <TextView
+            android:id="@+id/instantAnswerTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColor="@color/cardtitle"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingBottom="4dp"
+            android:includeFontPadding="false"/>
+        <TextView
+            android:id="@+id/instantAnswerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/cardtxt"
+            android:paddingTop="8dp"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingBottom="15dp"
+            android:includeFontPadding="false"
+            android:maxLines="8"
+            android:ellipsize="end"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/card_separator"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+            <TextView
+                android:id="@+id/instantAnswerSource"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textColor="@color/cardtxt"
+                android:textStyle="bold"
+                android:includeFontPadding="false"/>
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/dax"
+                android:padding="8dp"/>
+            <TextView
+                android:id="@+id/instantAnswerDuckDuckGoLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/duckduckgo_results"
+                android:textSize="14sp"
+                android:textColor="@color/cardtxt"
+                android:includeFontPadding="false"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/smartbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="top"
         android:orientation="vertical"
         android:padding="12dp"
         android:layout_marginTop="12dp"

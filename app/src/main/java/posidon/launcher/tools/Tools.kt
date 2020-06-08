@@ -21,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import kotlin.math.*
@@ -548,6 +547,6 @@ inline fun Activity.hideKeyboard() {
 inline fun Activity.setWallpaperOffset(x: Float, y: Float) {
     val wallManager = WallpaperManager.getInstance(this)
     //wallManager.setWallpaperOffsets(window.attributes.token, x, y)
-    wallManager.setWallpaperOffsetSteps(0f, 0f);
-    wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight);
+    wallManager.setWallpaperOffsetSteps(0f, 0f)
+    wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight)
 }

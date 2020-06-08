@@ -13,7 +13,6 @@ import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.toBitmap
-import kotlin.math.max
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer {
 
