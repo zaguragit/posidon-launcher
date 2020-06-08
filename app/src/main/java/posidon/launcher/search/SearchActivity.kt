@@ -1,11 +1,13 @@
 package posidon.launcher.search
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,6 +34,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val operators: MutableMap<String, Arithmetic> = HashMap()
     private lateinit var smartBox: View
+    private lateinit var answerBox: View
     private lateinit var grid: GridView
     private lateinit var searchTxt: EditText
 
@@ -42,7 +45,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.search_layout)
         applyFontSetting()
         smartBox = findViewById(R.id.smartbox)
-        bottomPaddingWhenSmartBoxIsShown = (146.dp + 46.sp).toInt()
+        answerBox = findViewById(R.id.instantAnswer)
+        bottomPaddingWhenSmartBoxIsShown = (82.dp + 46.sp).toInt()
         searchTxt = findViewById(R.id.searchTxt)
         searchTxt.requestFocus()
         grid = findViewById(R.id.searchgrid)
@@ -154,8 +158,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private var stillWantIP = false
+    private var currentString = ""
 
     private fun search(string: String) {
+        currentString = string
         if (string.isEmpty()) {
             grid.adapter = SearchAdapter(this, arrayListOf())
             //grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
@@ -193,6 +199,7 @@ class SearchActivity : AppCompatActivity() {
             grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
             grid.onItemLongClickListener = ItemLongPress.search(this, results)
         } catch (e: Exception) { e.printStackTrace() }
+        var isShowingSmartCard = false
         try {
             var tmp = string.trim { it <= ' ' }
                     .replace(" ", "")
@@ -211,7 +218,8 @@ class SearchActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     bufferNum = operators[math[i]]!!.apply(bufferNum, java.lang.Double.valueOf(math[i + 1]))
                     smartBox.visibility = View.VISIBLE
-                    grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
+                    isShowingSmartCard = true
+                    grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
                     findViewById<TextView>(R.id.type).setText(R.string.math_operation)
                     findViewById<TextView>(R.id.result).text = "$tmp = $bufferNum"
                     findViewById<View>(R.id.fail).visibility = View.GONE
@@ -225,22 +233,54 @@ class SearchActivity : AppCompatActivity() {
             if (string.contains("ip", ignoreCase = true)) {
                 stillWantIP = true
                 smartBox.visibility = View.VISIBLE
-                grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
-                findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
-                findViewById<TextView>(R.id.result).text = ""
+                isShowingSmartCard = true
+                grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
+                smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
+                smartBox.findViewById<TextView>(R.id.result).text = ""
                 Loader.text("https://checkip.amazonaws.com") {
-                    if (stillWantIP) findViewById<TextView>(R.id.result).text = it.trimEnd()
+                    if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (string.contains("pi", ignoreCase = true) || string.contains("π", ignoreCase = true)) {
                 smartBox.visibility = View.VISIBLE
-                grid.setPadding(0, 0, 0, bottomPaddingWhenSmartBoxIsShown)
+                isShowingSmartCard = true
+                grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
                 findViewById<TextView>(R.id.type).setText(R.string.value_of_pi)
                 findViewById<TextView>(R.id.result).text = "\u03c0 = ${Math.PI}"
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else {
                 smartBox.visibility = View.GONE
                 grid.setPadding(0, 0, 0, 64.dp.toInt())
+            }
+        }
+        answerBox.visibility = View.GONE
+        grid.setPadding(0, 0, 0, 64.dp.toInt())
+        if (results.size < 6 && !isShowingSmartCard) {
+            DuckInstantAnswer.load(string) { instantAnswer ->
+                if (currentString == string) {
+                    runOnUiThread {
+                        answerBox.visibility = View.VISIBLE
+                        findViewById<View>(R.id.fail).visibility = View.GONE
+                        answerBox.findViewById<TextView>(R.id.instantAnswerTitle).text = instantAnswer.title
+                        answerBox.findViewById<TextView>(R.id.instantAnswerText).text = instantAnswer.description
+                        answerBox.findViewById<TextView>(R.id.instantAnswerSource).apply {
+                            text = instantAnswer.sourceName
+                            setOnClickListener {
+                                val uri = Uri.parse(instantAnswer.sourceUrl)
+                                val i = Intent(Intent.ACTION_VIEW, uri)
+                                startActivity(i, ActivityOptions.makeCustomAnimation(this@SearchActivity, R.anim.slideup, R.anim.slidedown).toBundle())
+                            }
+                        }
+                        answerBox.findViewById<View>(R.id.instantAnswerDuckDuckGoLink).setOnClickListener {
+                            val uri = Uri.parse(instantAnswer.searchUrl)
+                            val i = Intent(Intent.ACTION_VIEW, uri)
+                            startActivity(i, ActivityOptions.makeCustomAnimation(this@SearchActivity, R.anim.slideup, R.anim.slidedown).toBundle())
+                        }
+                        answerBox.post {
+                            grid.setPadding(0, answerBox.measuredHeight + 16.dp.toInt(), 0, 64.dp.toInt())
+                        }
+                    }
+                }
             }
         }
     }

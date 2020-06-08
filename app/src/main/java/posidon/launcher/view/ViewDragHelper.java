@@ -50,7 +50,7 @@ public class ViewDragHelper {
     /**
      * Edge flag indicating that the left edge should be affected.
      */
-    public static final int EDGE_LEFT = 1 << 0;
+    public static final int EDGE_LEFT = 1;
 
     /**
      * Edge flag indicating that the right edge should be affected.
@@ -75,7 +75,7 @@ public class ViewDragHelper {
     /**
      * Indicates that a check should occur along the horizontal axis
      */
-    public static final int DIRECTION_HORIZONTAL = 1 << 0;
+    public static final int DIRECTION_HORIZONTAL = 1;
 
     /**
      * Indicates that a check should occur along the vertical axis
@@ -990,7 +990,7 @@ public class ViewDragHelper {
                     final float dy = y - mInitialMotionY[pointerId];
 
                     final View toCapture = findTopChildUnder((int) x, (int) y);
-                    final boolean pastSlop = toCapture != null && checkTouchSlop(toCapture, dx, dy);
+                    final boolean pastSlop = checkTouchSlop(toCapture, dx, dy);
                     if (pastSlop) {
                         // check the callback's
                         // getView[Horizontal|Vertical]DragRange methods to know
@@ -1115,7 +1115,9 @@ public class ViewDragHelper {
             case MotionEvent.ACTION_MOVE: {
                 if (mDragState == STATE_DRAGGING) {
                     // If pointer is invalid then skip the ACTION_MOVE.
-                    if (!isValidPointerForActionMove(mActivePointerId)) break;
+                    if (!isValidPointerForActionMove(mActivePointerId)) {
+                        break;
+                    }
 
                     final int index = ev.findPointerIndex(mActivePointerId);
                     final float x = ev.getX(index);
@@ -1125,7 +1127,6 @@ public class ViewDragHelper {
 
                     dragTo(mCapturedView.getLeft() + idx, mCapturedView.getTop() + idy, idx, idy);
 
-                    saveLastMotion(ev);
                 } else {
                     // Check to see if any pointer is now over a draggable view.
                     final int pointerCount = ev.getPointerCount();
@@ -1152,8 +1153,8 @@ public class ViewDragHelper {
                             break;
                         }
                     }
-                    saveLastMotion(ev);
                 }
+                saveLastMotion(ev);
                 break;
             }
 

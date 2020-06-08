@@ -166,6 +166,7 @@
     <string name="long_press">Long-press</string>
     <string name="back_button">Back button</string>
     <string name="github">GitHub</string>
+    <string name="duckduckgo_results">DuckDuckGo results</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>

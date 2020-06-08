@@ -15,7 +15,6 @@ import androidx.cardview.widget.CardView
 import posidon.launcher.R
 import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
-import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.min
 

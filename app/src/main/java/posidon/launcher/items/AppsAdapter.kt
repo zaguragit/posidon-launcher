@@ -8,12 +8,9 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
-import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.toBitmap
 
 class AppsAdapter(
     private val context: Context,

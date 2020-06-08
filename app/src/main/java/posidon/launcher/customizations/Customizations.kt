@@ -82,8 +82,4 @@ class Customizations : AppCompatActivity() {
                 else View.GONE
         cardThing()
     }
-
-    override fun onPause() {
-        super.onPause()
-    }
 }
