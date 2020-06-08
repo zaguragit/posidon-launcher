@@ -27,7 +27,11 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer {
     override fun getSectionForPosition(i: Int): Int = savedSections.indexOf(Main.appSections[i][0].label!![0].toUpperCase())
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
-        for (j in Main.appSections.indices) if (Main.appSections[j][0].label!![0].toUpperCase() == char) return j
+        for (j in Main.appSections.indices) {
+            if (Main.appSections[j][0].label!![0].toUpperCase() == char) {
+                return j
+            }
+        }
         return 0
     }
 }

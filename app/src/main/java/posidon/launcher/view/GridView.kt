@@ -3,6 +3,7 @@ package posidon.launcher.view
 import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
+import android.view.View
 import android.widget.GridView
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
@@ -27,7 +28,7 @@ class GridView : GridView {
         if ((scrollY + deltaY >= scrollRangeY || scrollY + deltaY <= 0) && !isTouchEvent) {
             mo = maxOverScroll
             val elapsedTime: Long = System.currentTimeMillis() - startTime
-            val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 600f)
+            val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 1000f)
             deltaY = (deltaY * interpolation).toInt()
         } else {
             startTime = System.currentTimeMillis()

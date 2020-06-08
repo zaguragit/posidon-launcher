@@ -163,7 +163,10 @@ class SearchActivity : AppCompatActivity() {
     private fun search(string: String) {
         currentString = string
         if (string.isEmpty()) {
-            grid.adapter = SearchAdapter(this, arrayListOf())
+            grid.adapter = SearchAdapter(this, listOf())
+            findViewById<View>(R.id.fail).visibility = View.GONE
+            answerBox.visibility = View.GONE
+            grid.setPadding(0, 0, 0, 64.dp.toInt())
             //grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
             //grid.onItemLongClickListener = ItemLongPress.search(this, results)
             return
