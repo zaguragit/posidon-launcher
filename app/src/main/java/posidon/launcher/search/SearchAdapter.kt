@@ -17,7 +17,7 @@ import posidon.launcher.tools.toBitmap
 
 internal class SearchAdapter(
     private val context: Context,
-    private val results: ArrayList<App>
+    private val results: List<App>
 ) : BaseAdapter() {
 
     override fun getCount(): Int = results.size

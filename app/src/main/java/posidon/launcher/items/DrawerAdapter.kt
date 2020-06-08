@@ -35,8 +35,9 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
         val holder: ViewHolder
-        val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val app = Main.apps[i]
         if (convertView == null) {
+            val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
             else li.inflate(R.layout.list_item, parent, false).apply {
                 if (Settings["drawer:columns", 4] == 2)
@@ -50,14 +51,22 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
             holder.iconFrame.layoutParams.height = appSize
             holder.iconFrame.layoutParams.width = appSize
             convertView.tag = holder
-        } else holder = convertView.tag as ViewHolder
-        val app = Main.apps[i]
+
+            if (Settings["labelsenabled", false]) {
+                holder.text.text = app.label
+                holder.text.visibility = View.VISIBLE
+                holder.text.setTextColor(Settings["labelColor", -0x11111112])
+            } else holder.text.visibility = View.INVISIBLE
+
+        } else {
+            holder = convertView.tag as ViewHolder
+
+            if (Settings["labelsenabled", false]) {
+                holder.text.text = app.label
+                holder.text.setTextColor(Settings["labelColor", -0x11111112])
+            }
+        }
         holder.icon.setImageDrawable(app.icon)
-        if (Settings["labelsenabled", false]) {
-            holder.text.text = app.label
-            holder.text.visibility = View.VISIBLE
-            holder.text.setTextColor(Settings["labelColor", -0x11111112])
-        } else holder.text.visibility = View.INVISIBLE
         if (Settings["notif:badges", true] && app.notificationCount != 0) {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
