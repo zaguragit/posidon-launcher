@@ -79,7 +79,7 @@ class NotificationService : NotificationListenerService() {
                                 continue
                             }
 
-                            if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
@@ -120,7 +120,7 @@ class NotificationService : NotificationListenerService() {
                                 continue
                             }
 
-                            if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
@@ -154,7 +154,7 @@ class NotificationService : NotificationListenerService() {
                             continue
                         }
 
-                        if (notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                        if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
                             i++

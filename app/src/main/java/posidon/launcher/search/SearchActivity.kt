@@ -233,7 +233,8 @@ class SearchActivity : AppCompatActivity() {
                 findViewById<View>(R.id.fail).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
             }
-            if (string.contains("ip", ignoreCase = true)) {
+            val words = string.split(' ', ',', '.', '-')
+            if (words.contains("ip")) {
                 stillWantIP = true
                 smartBox.visibility = View.VISIBLE
                 isShowingSmartCard = true
@@ -244,7 +245,11 @@ class SearchActivity : AppCompatActivity() {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
-            } else if (string.contains("pi", ignoreCase = true) || string.contains("π", ignoreCase = true)) {
+            } else if (
+                words.contains("pi") ||
+                words.contains("PI") ||
+                words.contains("π")
+            ) {
                 smartBox.visibility = View.VISIBLE
                 isShowingSmartCard = true
                 grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
