@@ -3,6 +3,7 @@ package posidon.launcher
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -36,6 +37,7 @@ import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
+import posidon.launcher.external.quickstep.QuickStepService
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -440,16 +442,13 @@ class Main : AppCompatActivity() {
                         if (distance > a || y >= findViewById<View>(R.id.desktopContent).height - dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
                                 behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-                                //behavior.isHideable = false
                             }
                         } else if (distance < -a) {
-                            //behavior.isHideable = true
                             behavior.state = BottomDrawerBehavior.STATE_HIDDEN
                         }
                     } else {
                         if (!LauncherMenu.isActive) {
                             behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-                            //behavior.isHideable = false
                         }
                         if (y < a && oldY >= a) {
                             if (!wasHiddenLastTime) {
@@ -467,10 +466,8 @@ class Main : AppCompatActivity() {
                     if (distance > a || y < a || y + desktop.height >= findViewById<View>(R.id.desktopContent).height - dockHeight) {
                         if (!LauncherMenu.isActive) {
                             behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-                            //behavior.isHideable = false
                         }
                     } else if (distance < -a) {
-                        //behavior.isHideable = true
                         behavior.state = BottomDrawerBehavior.STATE_HIDDEN
                     }
                 })
@@ -882,6 +879,7 @@ class Main : AppCompatActivity() {
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
             finish()
+            return
         }
         super.onResume()
         WidgetManager.host.startListening()
@@ -937,8 +935,10 @@ class Main : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (LauncherMenu.isActive) LauncherMenu.dialog!!.dismiss()
-        if (behavior.state != BottomDrawerBehavior.STATE_COLLAPSED) behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+        if (LauncherMenu.isActive) {
+            LauncherMenu.dialog!!.dismiss()
+        }
+        behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
         desktop.scrollTo(0, 0)
         WidgetManager.host.stopListening()
         if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
