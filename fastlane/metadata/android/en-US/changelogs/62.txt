@@ -1,0 +1,8 @@
+- Added gesture settings
+- Improved search:
+   - Added DuckDuckGo instant answers
+   - Added icon size setting
+   - Notification badges now show in search
+- Improved app drawer opening and closing speed
+- Fixed a very bad bug that caused crashes on many devices
+- Slightly improved settings look
