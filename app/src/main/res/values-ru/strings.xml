@@ -167,6 +167,7 @@
     <string name="back_button">Back button</string>
     <string name="github">GitHub</string>
     <string name="duckduckgo_results">DuckDuckGo results</string>
+    <string name="media_player">Media player</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

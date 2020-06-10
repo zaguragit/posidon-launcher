@@ -65,6 +65,7 @@ class NotificationService : NotificationListenerService() {
             val groups = ArrayList<ArrayList<Notification>>()
             var i = 0
             var notificationsAmount2 = 0
+            val useMusicPlayer = Settings["notif:usePlayer", true]
             try {
                 for (app in Main.apps) {
                     app.notificationCount = 0
@@ -79,7 +80,7 @@ class NotificationService : NotificationListenerService() {
                                 continue
                             }
 
-                            if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
@@ -120,7 +121,7 @@ class NotificationService : NotificationListenerService() {
                                 continue
                             }
 
-                            if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                                 handleMusicNotification(notification)
                                 hasMusic = true
                                 i++; continue
@@ -154,7 +155,7 @@ class NotificationService : NotificationListenerService() {
                             continue
                         }
 
-                        if (!hasMusic && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                        if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
                             i++

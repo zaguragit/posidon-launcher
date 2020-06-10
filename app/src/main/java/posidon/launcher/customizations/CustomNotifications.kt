@@ -36,6 +36,8 @@ class CustomNotifications : AppCompatActivity() {
         findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
         findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
 
+        findViewById<Switch>(R.id.useMediaPlayer).isChecked = Settings["notif:usePlayer", true]
+
         findViewById<Switch>(R.id.badgesEnabled).isChecked = Settings["notif:badges", true]
 
         Main.customized = true
@@ -80,6 +82,7 @@ class CustomNotifications : AppCompatActivity() {
             putNotSave("notificationActionsEnabled", findViewById<Switch>(R.id.actionButtonSwitch).isChecked)
             putNotSave("collapseNotifications", findViewById<Switch>(R.id.collapseNotificationSwitch).isChecked)
             putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) { 0 -> "os"; 1 -> "byApp"; else -> "none" })
+            putNotSave("notif:usePlayer", findViewById<Switch>(R.id.useMediaPlayer).isChecked)
             putNotSave("notif:badges", findViewById<Switch>(R.id.badgesEnabled).isChecked)
             apply()
         }

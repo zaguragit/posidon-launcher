@@ -247,7 +247,7 @@ class Main : AppCompatActivity() {
                 container.addView(view)
                 i++
             }
-            val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp * rowCount else 0f).toInt() * rowCount
+            val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp else 0f).toInt() * rowCount
             dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) containerHeight + 84.dp.toInt() else containerHeight + 14.dp.toInt()
             container.layoutParams.height = containerHeight
             behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
