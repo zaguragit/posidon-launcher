@@ -1,11 +1,10 @@
 package posidon.launcher.tools
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import com.pixplicity.sharp.Sharp
-import posidon.launcher.tools.Loader.bitmap.Companion.AUTO
+import posidon.launcher.tools.Loader.Bitmap.Companion.AUTO
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -15,7 +14,7 @@ import kotlin.concurrent.thread
 
 object Loader {
 
-    class text(
+    class Text(
         private val url: String,
         private val onFinished: (string: String) -> Unit
     ) : AsyncTask<Unit?, String?, String?>() {
@@ -53,15 +52,15 @@ object Loader {
         } catch (e: Exception) { e.printStackTrace() }
     }
 
-    class bitmap(
+    class Bitmap(
         private val url: String,
         private var width: Int = AUTO,
         private var height: Int = AUTO,
         private val scaleIfSmaller: Boolean = true,
-        private val onFinished: (img: Bitmap) -> Unit
+        private val onFinished: (img: android.graphics.Bitmap) -> Unit
     ) : AsyncTask<Unit?, Unit?, Unit?>() {
 
-        private var img: Bitmap? = null
+        private var img: android.graphics.Bitmap? = null
         override fun doInBackground(vararg params: Unit?): Unit? {
             try {
                 val input = URL(url).openConnection().getInputStream()
@@ -74,7 +73,7 @@ object Loader {
                     !scaleIfSmaller && (width > tmp.width || height > tmp.height) && width > tmp.width && height == AUTO || height > tmp.height && width == AUTO -> img = tmp
                     else -> {
                         if (width == AUTO) width = height * tmp.width / tmp.height else if (height == AUTO) height = width * tmp.height / tmp.width
-                        img = Bitmap.createScaledBitmap(tmp, width, height, true)
+                        img = android.graphics.Bitmap.createScaledBitmap(tmp, width, height, true)
                     }
                 }
             }
@@ -95,15 +94,15 @@ object Loader {
         }
     }
 
-    class nullableBitmap(
+    class NullableBitmap(
         private val url: String,
         private var width: Int = AUTO,
         private var height: Int = AUTO,
         private val scaleIfSmaller: Boolean = true,
-        private val onFinished: (img: Bitmap?) -> Unit
+        private val onFinished: (img: android.graphics.Bitmap?) -> Unit
     ) : AsyncTask<Unit?, Unit?, Unit?>() {
 
-        private var img: Bitmap? = null
+        private var img: android.graphics.Bitmap? = null
         override fun doInBackground(vararg u: Unit?): Unit? {
             try {
                 val input = URL(url).openConnection().getInputStream()
@@ -116,7 +115,7 @@ object Loader {
                     !scaleIfSmaller && (width > tmp.width || height > tmp.height) && width > tmp.width && height == AUTO || height > tmp.height && width == AUTO -> img = tmp
                     else -> {
                         if (width == AUTO) width = height * tmp.width / tmp.height else if (height == AUTO) height = width * tmp.height / tmp.width
-                        img = Bitmap.createScaledBitmap(tmp, width, height, true)
+                        img = android.graphics.Bitmap.createScaledBitmap(tmp, width, height, true)
                     }
                 }
             }
@@ -133,7 +132,7 @@ object Loader {
         override fun onPostExecute(u: Unit?) = onFinished(img)
     }
 
-    class nullableSvg(
+    class NullableSvg(
         private val url: String,
         private val onFinished: (img: Drawable?) -> Unit
     ) : AsyncTask<Unit?, Unit?, Unit?>() {

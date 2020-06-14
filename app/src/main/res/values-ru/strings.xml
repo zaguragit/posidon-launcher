@@ -159,15 +159,15 @@
     <string name="console">Console</string>
     <string name="inter">Inter</string>
     <string name="search_as_home">Search as home</string>
-    <string name="settings_title_gestures">Gestures</string>
+    <string name="settings_title_gestures">Жесты</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>
     <string name="pinch">Pinch</string>
-    <string name="long_press">Long-press</string>
-    <string name="back_button">Back button</string>
+    <string name="long_press">Длинное нажатие</string>
+    <string name="back_button">Кнопка возврата</string>
     <string name="github">GitHub</string>
-    <string name="duckduckgo_results">DuckDuckGo results</string>
-    <string name="media_player">Media player</string>
+    <string name="duckduckgo_results">Результаты DuckDuckGo</string>
+    <string name="media_player">Медиа-плейер</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -201,22 +201,22 @@
     </array>
 
     <array name="namePositions">
-        <item>Top</item>
-        <item>Left</item>
-        <item>Hide</item>
+        <item>Сверху</item>
+        <item>Слева</item>
+        <item>Скрыть</item>
     </array>
 
     <array name="articleReadingMethods">
-        <item>In browser</item>
-        <item>In web view</item>
+        <item>В браузере</item>
+        <item>В web view</item>
         <!--item>In article view (experimental)</item-->
     </array>
 
     <array name="gestureTriggers">
-        <item>Nothing</item>
-        <item>Pull down notifications</item>
-        <item>Open app drawer</item>
-        <item>Open search</item>
-        <item>Open overview</item>
+        <item>Ничего</item>
+        <item>Опустить уведомления</item>
+        <item>Открыть app drawer</item>
+        <item>Открыть поиск</item>
+        <item>Открыть обзор</item>
     </array>
 </resources>

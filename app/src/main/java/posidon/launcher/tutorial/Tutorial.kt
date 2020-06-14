@@ -21,6 +21,7 @@ import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import java.lang.ref.WeakReference
 
 
 class Tutorial : AppCompatActivity() {
@@ -30,7 +31,7 @@ class Tutorial : AppCompatActivity() {
     private var done = false
 
     init {
-        Tools.publicContext = this
+        Tools.publicContextReference = WeakReference(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

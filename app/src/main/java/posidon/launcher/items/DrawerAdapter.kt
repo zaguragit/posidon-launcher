@@ -13,8 +13,9 @@ import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.toBitmap
+import posidon.launcher.view.HighlightAdapter
 
-class DrawerAdapter : BaseAdapter(), SectionIndexer {
+class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
     override fun getCount(): Int = Main.apps.size
     override fun getItem(i: Int) = Main.apps[i]
@@ -66,6 +67,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
                 holder.text.setTextColor(Settings["labelColor", -0x11111112])
             }
         }
+        convertView!!.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
         holder.icon.setImageDrawable(app.icon)
         if (Settings["notif:badges", true] && app.notificationCount != 0) {
             val badge = holder.notificationBadge
@@ -100,5 +102,15 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer {
             }
         }
         return 0
+    }
+
+    private var highlightI = -1
+
+    override fun highlight(i: Int) {
+        highlightI = i
+    }
+
+    override fun unhighlight() {
+        highlightI = -1
     }
 }
