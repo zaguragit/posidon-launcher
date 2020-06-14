@@ -20,6 +20,7 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import java.lang.ref.WeakReference
 import java.util.*
 
 class NotificationService : NotificationListenerService() {
@@ -33,7 +34,9 @@ class NotificationService : NotificationListenerService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         instance = this
-        if (Tools.publicContext == null) Tools.publicContext = baseContext
+        if (Tools.publicContext == null) {
+            Tools.publicContextReference = WeakReference(this)
+        }
         if (!Settings.isInitialized) Settings.init(baseContext)
         update()
         return super.onStartCommand(intent, flags, startId)

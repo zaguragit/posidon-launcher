@@ -1,6 +1,5 @@
 package posidon.launcher.items
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -12,7 +11,10 @@ import android.os.PowerManager
 import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.ThemeTools
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 
 class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
@@ -57,28 +59,24 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         var back: Bitmap? = null
         var mask: Bitmap? = null
         var front: Bitmap? = null
+        var areUnthemedIconsChanged = false
         if (themeRes != null) {
             if (intresiconback != 0) {
                 back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
+                areUnthemedIconsChanged = true
             }
             if (intresiconmask != 0) {
                 mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
+                areUnthemedIconsChanged = true
             }
             if (intresiconfront != 0) {
                 front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
+                areUnthemedIconsChanged = true
             }
         }
         for (i in pacslist.indices) {
             val app = App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                try {
-                    app.icon = Tools.adaptic(context.get()!!, packageManager.getActivityIcon(ComponentName(
-                        pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name)))
-                } catch (e: Exception) {
-                    app.icon = pacslist[i].loadIcon(packageManager)
-                    e.printStackTrace()
-                }
-            } else app.icon = pacslist[i].loadIcon(packageManager)
+            app.icon = pacslist[i].loadIcon(packageManager)
             var customLabel = Settings[app.packageName + "/" + app.name + "?label", pacslist[i].loadLabel(packageManager).toString()]
             if (customLabel.isEmpty()) {
                 Settings[app.packageName + "/" + app.name + "?label"] = pacslist[i].loadLabel(packageManager).toString()
@@ -91,11 +89,9 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                 intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
             }
             if (intres != 0) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.icon = Tools.adaptic(context.get()!!, themeRes!!.getDrawable(intres)!!)
-                    else app.icon = themeRes!!.getDrawable(intres)
-                } catch (e: Exception) { e.printStackTrace() }
-            } else {
+                try { app.icon = themeRes!!.getDrawable(intres) }
+                catch (e: Exception) { e.printStackTrace() }
+            } else if (areUnthemedIconsChanged) {
                 try {
                     var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
                     app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
@@ -128,11 +124,12 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     app.icon = t.getDrawable(intRes)
                 } catch (e: Exception) { e.printStackTrace() }
             }
-            try {
-                if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
-                    Tools.animate(app.icon!!)
-                }
-            } catch (ignore: Exception) {}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                app.icon = Tools.adaptic(context.get()!!, app.icon!!)
+            }
+            if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
+                Tools.animate(app.icon!!)
+            }
             App.putInSecondMap(app.packageName, app.name!!, app)
             if (Settings[pacslist[i].activityInfo.packageName + "/" + pacslist[i].activityInfo.name + "?hidden", false]) {
                 App.hidden.add(app)
@@ -140,48 +137,29 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                 tmpApps.add(app)
             }
         }
-        if (Settings["drawer:sorting", 0] == 1) {
-            tmpApps.sortWith(Comparator { o1, o2 ->
-                val iHsv = floatArrayOf(0f, 0f, 0f)
-                val jHsv = floatArrayOf(0f, 0f, 0f)
-                Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
-                Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
-                (iHsv[0] - jHsv[0]).toInt()
-            })
-        }
-        else {
-            tmpApps.sortWith(Comparator { o1, o2 ->
-                o1.label!!.compareTo(o2.label!!, ignoreCase = true)
-            })
-            /*var i = 0
-            var j: Int
-            var temp: App
-            while (i < tmpApps.size - 1) {
-                j = i + 1
-                while (j < tmpApps.size) {
-                    if (tmpApps[i]!!.label!!.compareTo(tmpApps[j]!!.label!!, ignoreCase = true) > 0) {
-                        temp = tmpApps[i]!!
-                        tmpApps[i] = tmpApps[j]
-                        tmpApps[j] = temp
-                    }
-                    j++
-                }
-                i++
-            }*/
-        }
+        if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith(Comparator { o1, o2 ->
+            val iHsv = floatArrayOf(0f, 0f, 0f)
+            val jHsv = floatArrayOf(0f, 0f, 0f)
+            Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
+            Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
+            (iHsv[0] - jHsv[0]).toInt()
+        })
+        else tmpApps.sortWith(Comparator { o1, o2 ->
+            o1.label!!.compareTo(o2.label!!, ignoreCase = true)
+        })
 
-        //if (Settings["drawer:sections_enabled", false]) {
-            var currentChar = tmpApps[0].label!![0].toUpperCase()
-            var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
-            for (app in tmpApps) {
-                if (app.label!!.startsWith(currentChar, ignoreCase = true)) currentSection.add(app)
-                else currentSection = ArrayList<App>().apply {
-                    add(app)
-                    tmpAppSections.add(this)
-                    currentChar = app.label!![0].toUpperCase()
-                }
+        var currentChar = tmpApps[0].label!![0].toUpperCase()
+        var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
+        for (app in tmpApps) {
+            if (app.label!!.startsWith(currentChar, ignoreCase = true)) {
+                currentSection.add(app)
             }
-        //}
+            else currentSection = ArrayList<App>().apply {
+                add(app)
+                tmpAppSections.add(this)
+                currentChar = app.label!![0].toUpperCase()
+            }
+        }
         return null
     }
 

@@ -45,7 +45,7 @@ class WallActivity : AppCompatActivity() {
             animate(loading!!.drawable)
             index = extras.getInt("index")
             if (Gallery.walls[index].type == Wall.Type.SVG) {
-                Loader.nullableSvg(Gallery.walls[index].url!!) {
+                Loader.NullableSvg(Gallery.walls[index].url!!) {
                     Tools.clearAnimation(loading!!.drawable)
                     loading!!.visibility = View.GONE
                     if (it != null) {
@@ -68,7 +68,7 @@ class WallActivity : AppCompatActivity() {
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
                     }
                 }.execute()
-            } else Loader.nullableBitmap(Gallery.walls[index].url!!) {
+            } else Loader.NullableBitmap(Gallery.walls[index].url!!) {
                 Tools.clearAnimation(loading!!.drawable)
                 loading!!.visibility = View.GONE
                 if (it != null) {

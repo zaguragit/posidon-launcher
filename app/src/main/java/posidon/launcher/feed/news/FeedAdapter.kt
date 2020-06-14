@@ -120,7 +120,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                         }
                     } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
                 }
-                Loader.nullableBitmap(feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {
+                Loader.NullableBitmap(feedItem.img, maxWidth, Loader.Bitmap.AUTO, false) {
                     var worked = false
                     if (it != null) try {
                         images[feedItem.img] = it
@@ -128,7 +128,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                         onImageLoadEnd(it)
                         worked = true
                     } catch (e: Exception) { e.printStackTrace() }
-                    if (!worked) Loader.nullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.bitmap.AUTO, false) {
+                    if (!worked) Loader.NullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.Bitmap.AUTO, false) {
                         if (it != null) try {
                             images[feedItem.img] = it
                             holder.image.setImageBitmap(images[feedItem.img])

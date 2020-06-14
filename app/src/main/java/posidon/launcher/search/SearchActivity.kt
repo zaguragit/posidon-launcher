@@ -172,19 +172,19 @@ class SearchActivity : AppCompatActivity() {
             return
         }
         stillWantIP = false
-        val showHidden = cook(string) == cook("hidden") || cook(string) == cook("hiddenapps")
+        val showHidden = searchOptimize(string) == searchOptimize("hidden") || searchOptimize(string) == searchOptimize("hiddenapps")
         val results = ArrayList<App>()
         findViewById<View>(R.id.fail).visibility = View.GONE
         for (app in Main.apps) {
-            if (cook(app.label!!).contains(cook(string)) ||
+            if (searchOptimize(app.label!!).contains(searchOptimize(string)) ||
                 app.label!!.contains(string) ||
-                cook(app.packageName).contains(cook(string)) ||
+                searchOptimize(app.packageName).contains(searchOptimize(string)) ||
                 app.packageName.contains(string)) {
                 results.add(app)
                 continue
             }
             for (word in app.label!!.split(" ").toTypedArray()) {
-                if (cook(word).contains(cook(string)) || word.contains(string)) {
+                if (searchOptimize(word).contains(searchOptimize(string)) || word.contains(string)) {
                     results.add(app)
                     break
                 }
@@ -241,7 +241,7 @@ class SearchActivity : AppCompatActivity() {
                 grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
                 smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 smartBox.findViewById<TextView>(R.id.result).text = ""
-                Loader.text("https://checkip.amazonaws.com") {
+                Loader.Text("https://checkip.amazonaws.com") {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }.execute()
                 findViewById<View>(R.id.fail).visibility = View.GONE
@@ -263,7 +263,7 @@ class SearchActivity : AppCompatActivity() {
         }
         answerBox.visibility = View.GONE
         grid.setPadding(0, 0, 0, 64.dp.toInt())
-        if (results.size < 6 && !isShowingSmartCard) {
+        if (results.size < 6 && !isShowingSmartCard && string.length > 3 && !showHidden) {
             DuckInstantAnswer.load(string) { instantAnswer ->
                 if (currentString == string) {
                     runOnUiThread {
@@ -317,19 +317,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun cook(s: String) = s.toLowerCase()
+    companion object {
+        fun searchOptimize(s: String) = s.toLowerCase()
             .replace('ñ', 'n')
-            .replace('k', 'c')
-            .replace("cc", "c")
-            .replace('z', 's')
-            .replace("ts", "s")
-            .replace("sc", "s")
-            .replace("cs", "s")
-            .replace("tz", "s")
-            .replace("gh", "h")
-            .replace("wh", "h")
             .replace('e', '3')
             .replace('a', '4')
             .replace('i', '1')
-            .replace(Regex("[-'&/_,.:;*\"!]"), "")
+            .replace('¿', '?')
+            .replace('¡', '!')
+            .replace(Regex("(k|cc|ck)"), "c")
+            .replace(Regex("(z|ts|sc|cs|tz)"), "s")
+            .replace(Regex("(gh|wh)"), "h")
+            .replace(Regex("[-'&/_,.:;*\"]"), "")
+    }
 }

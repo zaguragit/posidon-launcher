@@ -3,7 +3,6 @@ package posidon.launcher
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -32,12 +31,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.WidgetManager
 import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
-import posidon.launcher.external.quickstep.QuickStepService
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -51,13 +48,13 @@ import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.blurredWall
 import posidon.launcher.tools.Tools.canBlurWall
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.Tools.isInstalled
-import posidon.launcher.tools.isTablet
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
+import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.ResizableLayout.OnResizeListener
+import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.*
@@ -66,7 +63,7 @@ import kotlin.system.exitProcess
 class Main : AppCompatActivity() {
 
     init {
-        Tools.publicContext = this
+        Tools.publicContextReference = WeakReference(this)
         instance = this
 
         setDock = {
@@ -501,7 +498,6 @@ class Main : AppCompatActivity() {
                                     notifications.visibility = VISIBLE
                                 }
                             }
-                            notifications.recycledViewPool.clear()
                             notifications.adapter = NotificationAdapter(this@Main)
                             if (Settings["notif:badges", true]) {
                                 drawerGrid.invalidateViews()

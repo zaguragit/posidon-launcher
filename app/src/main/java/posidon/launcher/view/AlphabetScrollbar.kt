@@ -8,11 +8,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.AbsListView
 import android.widget.SectionIndexer
-import androidx.core.content.res.ResourcesCompat
-import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
+import posidon.launcher.tools.mainFont
 
 class AlphabetScrollbar(
     val listView: AbsListView,
@@ -31,8 +30,7 @@ class AlphabetScrollbar(
 
     init {
         listView.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScroll(v: AbsListView?, visItem0: Int, visItems: Int, items: Int) =
-                    this@AlphabetScrollbar.invalidate()
+            override fun onScroll(v: AbsListView?, visItem0: Int, visItems: Int, items: Int) = this@AlphabetScrollbar.invalidate()
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
         })
         update()
@@ -51,7 +49,7 @@ class AlphabetScrollbar(
             color = fg
             alpha = 180
             isAntiAlias = true
-            typeface = ResourcesCompat.getFont(context, R.font.posidon_sans)
+            typeface = context.mainFont
             textSize = 16.dp
         }
         invalidate()
@@ -74,22 +72,40 @@ class AlphabetScrollbar(
         }
     }
 
-    fun getLetterIToHighlight(): Int {
-        return sectionIndexer?.getSectionForPosition(listView.firstVisiblePosition) ?: -1
-    }
+    private inline fun getLetterIToHighlight() = sectionIndexer?.getSectionForPosition(listView.firstVisiblePosition) ?: -1
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
-                sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 -> listView.smoothScrollToPositionFromTop(it1, topPadding.toInt()) }
+                sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let {
+                    listView.smoothScrollToPositionFromTop(it, topPadding.toInt(), 150)
+                    if (sectionIndexer is HighlightAdapter) {
+                        (sectionIndexer as HighlightAdapter).highlight(it)
+                        listView.invalidateViews()
+                    }
+                }
                 invalidate()
             }
             MotionEvent.ACTION_DOWN -> {
                 parent.requestDisallowInterceptTouchEvent(true)
                 listView.adapter.let {
-                    if (it is SectionIndexer && it.sections.isArrayOf<Char>()) sectionIndexer = it
-                    sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 -> listView.smoothScrollToPosition(it1, topPadding.toInt()) }
+                    if (it is SectionIndexer && it.sections.isArrayOf<Char>()) {
+                        sectionIndexer = it
+                    }
+                    sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 ->
+                        listView.smoothScrollToPositionFromTop(it1, topPadding.toInt(), 150)
+                        if (sectionIndexer is HighlightAdapter) {
+                            (sectionIndexer as HighlightAdapter).highlight(it1)
+                            listView.invalidateViews()
+                        }
+                    }
                     invalidate()
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                if (sectionIndexer is HighlightAdapter) {
+                    (sectionIndexer as HighlightAdapter).unhighlight()
+                    listView.invalidateViews()
                 }
             }
         }

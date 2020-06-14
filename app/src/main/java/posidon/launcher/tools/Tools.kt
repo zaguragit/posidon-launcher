@@ -23,6 +23,8 @@ import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import java.lang.ref.Reference
+import java.lang.ref.WeakReference
 import kotlin.math.*
 
 object Tools {
@@ -79,7 +81,8 @@ object Tools {
         return found
     }
 
-    var publicContext: Context? = null
+    var publicContextReference = WeakReference<Context>(null)
+    inline val publicContext get() = publicContextReference.get()
 
     fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap {
         if (radius < 1) {
@@ -356,26 +359,24 @@ object Tools {
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
     fun adaptic(context: Context, drawable: Drawable): Drawable {
-        val icShape = Settings["icshape", 4]
-        return if (icShape == 0) {
-            drawable
-        } else if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
+        return if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
+            val icShape = Settings["icshape", 4]
             val drr = arrayOfNulls<Drawable>(2)
             if (drawable is AdaptiveIconDrawable) {
                 drr[0] = drawable.background
                 drr[1] = drawable.foreground
                 if (Settings["icon:tint_white_bg", true]) {
-                    val bg = drr[0]
+                    val bg = drr[0]!!
                     if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
                             (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)!!.apply {
-                                val tmp = bg!!.bounds
+                                val tmp = bg.bounds
                                 bg.bounds = Rect(0, 0, 1, 1)
                                 bg.draw(Canvas(this))
                                 bg.bounds = tmp
                             }.getPixel(0, 0) and 0xffffff).let {
-                                Color.red(it) > 0xdd &&
-                                Color.green(it) > 0xdd &&
-                                Color.blue(it) > 0xdd
+                                ColorTools.red(it) > 0xdd &&
+                                ColorTools.green(it) > 0xdd &&
+                                ColorTools.blue(it) > 0xdd
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
                         when(Settings["icon:background_type", "custom"]) {
@@ -389,10 +390,9 @@ object Tools {
                     }
                 }
             } else {
-                val d = drawable as BitmapDrawable
-                val b = Bitmap.createBitmap(d.intrinsicWidth, d.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val b = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val c = Canvas(b)
-                d.setBounds(c.width / 4, c.height / 4, c.width / 4 * 3, c.height / 4 * 3)
+                drawable.setBounds(c.width / 4, c.height / 4, c.width / 4 * 3, c.height / 4 * 3)
                 drawable.draw(c)
                 drr[1] = BitmapDrawable(context.resources, b)
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
@@ -408,6 +408,7 @@ object Tools {
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
             val height = layerDrawable.intrinsicHeight
+            val minSize = min(width, height)
             var bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             var canvas = Canvas(bitmap!!)
             layerDrawable.setBounds(-canvas.width / 4, -canvas.height / 4, canvas.width / 4 * 5, canvas.height / 4 * 5)
@@ -415,15 +416,28 @@ object Tools {
             val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
-            if (icShape != 3) {
+
+            if (icShape == 0) {
+                val path = AdaptiveIconDrawable(null, null).iconMask
+                val rect = RectF()
+                path.computeBounds(rect, true)
+                val matrix = Matrix()
+                matrix.setScale(minSize / rect.right, minSize / rect.bottom)
+                path.transform(matrix)
+                path.fillType = Path.FillType.INVERSE_EVEN_ODD
+                canvas.drawPath(path, Paint().apply {
+                    isAntiAlias = true
+                    xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+                })
+            } else if (icShape != 3) {
                 val path = Path()
                 when (icShape) {
-                    1 -> path.addCircle(width.toFloat() / 2f + 1, height.toFloat() / 2f + 1, min(width.toFloat(), height.toFloat() / 2f) - 2, Path.Direction.CCW)
-                    2 -> path.addRoundRect(2f, 2f, width - 2.toFloat(), height - 2.toFloat(), min(width, height).toFloat() / 4f, min(width, height).toFloat() / 4f, Path.Direction.CCW)
+                    1 -> path.addCircle(width / 2f, height / 2f,  minSize / 2f - 2, Path.Direction.CCW)
+                    2 -> path.addRoundRect(2f, 2f, width - 2f, height - 2f, minSize / 4f, minSize / 4f, Path.Direction.CCW)
                     4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
                         val xx = 2
                         val yy = 2
-                        val radius = (min(width, height) shr 1) - 2
+                        val radius = minSize / 2 - 2
                         val radiusToPow = radius * radius * radius.toDouble()
                         path.moveTo(-radius.toFloat(), 0f)
                         for (x in -radius..radius) {

@@ -80,7 +80,7 @@ class ConsoleActivity : AppCompatActivity() {
                         }
                         "hidden" -> startActivity(Intent(this, HiddenAppsActivity::class.java))
                         "ip" -> {
-                            Loader.text("https://checkip.amazonaws.com") {
+                            Loader.Text("https://checkip.amazonaws.com") {
                                 printEquation(getText(R.string.ip_address_external), it.trimEnd())
                             }.execute()
                         }

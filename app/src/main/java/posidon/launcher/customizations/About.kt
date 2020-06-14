@@ -27,7 +27,7 @@ class About : Activity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
-        Loader.text("https://posidon.io/launcher/contributors/pictureUrls") {
+        Loader.Text("https://posidon.io/launcher/contributors/pictureUrls") {
             var leoLink: String? = null
             var sajidShaikLink: String? = null
             for (line in it.split('\n')) {
@@ -36,8 +36,8 @@ class About : Activity() {
                 else if (line.startsWith("SajidShaik: "))
                     sajidShaikLink = line.substring(12)
             }
-            leoLink?.let { link -> Loader.bitmap(link) { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }.execute() }
-            sajidShaikLink?.let { link -> Loader.bitmap(link) { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }.execute() }
+            leoLink?.let { link -> Loader.Bitmap(link) { img -> findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }.execute() }
+            sajidShaikLink?.let { link -> Loader.Bitmap(link) { img -> findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }.execute() }
         }.execute()
 
         findViewById<View>(R.id.maincard).setOnLongClickListener {

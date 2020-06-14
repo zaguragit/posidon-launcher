@@ -2,6 +2,7 @@ package posidon.launcher.items
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
@@ -33,7 +35,11 @@ class CustomAppIcon : AppCompatActivity() {
         setContentView(LinearLayout(this).apply {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, null).apply {
-                try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(packageManager.getApplicationIcon("com.android.systemui")) }
+                try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Tools.adaptic(this@CustomAppIcon, packageManager.getApplicationIcon("com.android.systemui"))
+                } else {
+                    packageManager.getApplicationIcon("com.android.systemui")
+                }) }
                 catch (ignore: Exception) {}
                 findViewById<TextView>(R.id.icontxt).text = "Default"
                 setOnClickListener {
@@ -69,7 +75,11 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName))
-            iconPacks[i].icon = pacslist[i].loadIcon(packageManager)
+            iconPacks[i].icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Tools.adaptic(this, pacslist[i].loadIcon(packageManager))
+            } else {
+                pacslist[i].loadIcon(packageManager)
+            }
             iconPacks[i].label = pacslist[i].loadLabel(packageManager).toString()
         }
 
@@ -89,10 +99,7 @@ class CustomAppIcon : AppCompatActivity() {
         override fun getItem(position: Int): Any? = null
         override fun getItemId(position: Int): Long = 0
 
-        inner class ViewHolder {
-            var icon: ImageView? = null
-            var text: TextView? = null
-        }
+        inner class ViewHolder(val icon: ImageView, val text: TextView)
 
         override fun getView(position: Int, cv: View?, parent: ViewGroup): View? {
             var convertView = cv
@@ -100,23 +107,23 @@ class CustomAppIcon : AppCompatActivity() {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (convertView == null) {
                 convertView = li.inflate(R.layout.list_item, null)
-                viewHolder = ViewHolder()
-                viewHolder.icon = convertView.findViewById(R.id.iconimg)
-                viewHolder.text = convertView.findViewById(R.id.icontxt)
+                viewHolder = ViewHolder(
+                    convertView.findViewById(R.id.iconimg),
+                    convertView.findViewById(R.id.icontxt))
                 convertView.tag = viewHolder
             } else viewHolder = convertView.tag as ViewHolder
-            viewHolder.icon!!.setImageDrawable(iconPacks[position].icon)
-            viewHolder.text!!.text = iconPacks[position].label
-            viewHolder.text!!.visibility = View.VISIBLE
-            viewHolder.text!!.setTextColor(Settings["labelColor", -0x11111112])
+            viewHolder.icon.setImageDrawable(iconPacks[position].icon)
+            viewHolder.text.text = iconPacks[position].label
+            viewHolder.text.visibility = View.VISIBLE
+            viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
             var appSize = 0
             when (Settings["icsize", 1]) {
                 0 -> appSize = 64.dp.toInt()
                 1 -> appSize = 74.dp.toInt()
                 2 -> appSize = 84.dp.toInt()
             }
-            viewHolder.icon!!.layoutParams.height = appSize
-            viewHolder.icon!!.layoutParams.width = appSize
+            viewHolder.icon.layoutParams.height = appSize
+            viewHolder.icon.layoutParams.width = appSize
             return convertView
         }
     }
@@ -129,68 +136,59 @@ class CustomAppIcon : AppCompatActivity() {
 
         init {
             icons = try { ThemeTools.getResourceNames(themeRes, iconPack) }
-            catch (ignore: Exception) { ArrayList() }
-            search("")
+                    catch (e: Exception) { ArrayList() }
+            searchResults.addAll(icons)
         }
 
         fun search(term: String) {
             searchResults.clear()
-            for (string in icons) if (cook(string).contains(cook(term))) searchResults.add(string)
+            for (string in icons) {
+                if (SearchActivity.searchOptimize(string).contains(SearchActivity.searchOptimize(term))) {
+                    searchResults.add(string)
+                }
+            }
             notifyDataSetChanged()
-        }
-
-        private fun cook(s: String): String {
-            return s.toLowerCase()
-                    .replace(",", "")
-                    .replace(".", "")
-                    .replace("ñ", "n")
-                    .replace("ck", "c")
-                    .replace("cc", "c")
-                    .replace("z", "s")
-                    .replace("wh", "w")
-                    .replace("ts", "s")
-                    .replace("tz", "s")
-                    .replace("gh", "g")
-                    .replace("-", "")
-                    .replace("_", "")
-                    .replace("/", "")
-                    .replace("&", "")
         }
 
         override fun getCount(): Int = searchResults.size
         override fun getItem(position: Int): Any? = null
         override fun getItemId(position: Int): Long = 0
 
-        inner class ViewHolder { var icon: ImageView? = null }
+        inner class ViewHolder(val icon: ImageView)
 
         override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
             var convertView = cv
             val viewHolder: ViewHolder
-            val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (convertView == null) {
-                convertView = li.inflate(R.layout.drawer_item, null)
-                viewHolder = ViewHolder()
+                convertView = LayoutInflater.from(this@CustomAppIcon).inflate(R.layout.drawer_item, null)
+                viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg))
                 convertView.findViewById<View>(R.id.icontxt).visibility = View.GONE
-                viewHolder.icon = convertView.findViewById(R.id.iconimg)
+                viewHolder.icon.layoutParams.run {
+                    val appSize = when (Settings["icsize", 1]) {
+                        0 -> 64.dp.toInt()
+                        2 -> 84.dp.toInt()
+                        else -> 74.dp.toInt()
+                    }
+                    width = appSize
+                    height = appSize
+                }
                 convertView.tag = viewHolder
-            } else viewHolder = convertView.tag as ViewHolder
-
-            try {
-                val intRes = themeRes.getIdentifier(searchResults[i], "drawable", iconPack)
-                viewHolder.icon!!.setImageDrawable(Tools.animate(themeRes.getDrawable(intRes)))
-            } catch (ignore: Exception) {}
-            var appSize = 0
-            when (Settings["icsize", 1]) {
-                0 -> appSize = 64.dp.toInt()
-                1 -> appSize = 74.dp.toInt()
-                2 -> appSize = 84.dp.toInt()
+            } else {
+                viewHolder = convertView.tag as ViewHolder
             }
-            viewHolder.icon!!.layoutParams.height = appSize
-            viewHolder.icon!!.layoutParams.width = appSize
-            viewHolder.icon!!.setOnClickListener {
-                Settings["app:$app:icon"] = "ref:$iconPack|${searchResults[i]}"
-                Main.shouldSetApps = true
-                finish()
+
+            val intRes = themeRes.getIdentifier(searchResults[i], "drawable", iconPack)
+            if (intRes != 0) {
+                viewHolder.icon.setImageDrawable(Tools.animate(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Tools.adaptic(this@CustomAppIcon, themeRes.getDrawable(intRes))
+                } else {
+                    themeRes.getDrawable(intRes)
+                }))
+                viewHolder.icon.setOnClickListener {
+                    Settings["app:$app:icon"] = "ref:$iconPack|${searchResults[i]}"
+                    Main.shouldSetApps = true
+                    finish()
+                }
             }
             return convertView
         }

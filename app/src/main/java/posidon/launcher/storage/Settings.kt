@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import posidon.launcher.Main
 import java.io.Serializable
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -16,7 +17,7 @@ object Settings {
     private lateinit var bools: HashMap<String, Boolean>
     private lateinit var strings: HashMap<String, String>
     private lateinit var lists: HashMap<String, ArrayList<String>>
-    private lateinit var context: Context
+    private lateinit var context: WeakReference<Context>
 
     var isInitialized: Boolean = false
         private set
@@ -59,7 +60,7 @@ object Settings {
         if (!isBeingSaved) {
             isBeingSaved = true
             while (saveRequests != 0) {
-                PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context, "settings")
+                PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get()!!, "settings")
                 saveRequests--
             }
             isBeingSaved = false
@@ -75,7 +76,7 @@ object Settings {
 
 
     fun init(context: Context) {
-        Settings.context = context
+        Settings.context = WeakReference(context)
         PrivateStorage.readAny(context, "settings").let {
             if (it != null) {
                 if (it is SettingsFile) {
@@ -101,10 +102,10 @@ object Settings {
     }
 
     fun saveBackup() = ExternalStorage.writeDataOutsideScope(
-            SettingsFile(ints, floats, bools, strings, lists), context,
+            SettingsFile(ints, floats, bools, strings, lists), context.get()!!,
             "${SimpleDateFormat("MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
 
-    fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context, uri)?.let {
+    fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context.get()!!, uri)?.let {
         if (it is SettingsFile) {
             ints = it.ints
             floats = it.floats

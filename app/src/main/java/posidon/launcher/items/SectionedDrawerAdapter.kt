@@ -7,8 +7,9 @@ import android.widget.SectionIndexer
 import posidon.launcher.Main
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.AppSectionView
+import posidon.launcher.view.HighlightAdapter
 
-class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer {
+class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
     override fun getCount(): Int = Main.appSections.size
     override fun getItem(i: Int) = Main.appSections[i]
@@ -17,6 +18,7 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer {
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         val section = Main.appSections[i]
         val convertView = cv as AppSectionView? ?: AppSectionView(Tools.publicContext!!)
+        convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
         convertView.setApps(section)
         convertView.title = section[0].label!![0].toUpperCase().toString()
         return convertView
@@ -33,5 +35,15 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer {
             }
         }
         return 0
+    }
+
+    private var highlightI = -1
+
+    override fun highlight(i: Int) {
+        highlightI = i
+    }
+
+    override fun unhighlight() {
+        highlightI = -1
     }
 }
