@@ -366,9 +366,9 @@ object Tools {
                 drr[0] = drawable.background
                 drr[1] = drawable.foreground
                 if (Settings["icon:tint_white_bg", true]) {
-                    val bg = drr[0]!!
+                    val bg = drr[0] ?: ColorDrawable(0)
                     if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
-                            (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)!!.apply {
+                            (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).apply {
                                 val tmp = bg.bounds
                                 bg.bounds = Rect(0, 0, 1, 1)
                                 bg.draw(Canvas(this))
@@ -379,7 +379,7 @@ object Tools {
                                 ColorTools.blue(it) > 0xdd
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                        when(Settings["icon:background_type", "custom"]) {
+                        when (Settings["icon:background_type", "custom"]) {
                             "dominant" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getDominantColor(bgColor) ?: bgColor) }
                             "lv" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getLightVibrantColor(bgColor) ?: bgColor) }
                             "dv" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getDarkVibrantColor(bgColor) ?: bgColor) }
@@ -390,13 +390,15 @@ object Tools {
                     }
                 }
             } else {
-                val b = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val w = drawable.intrinsicWidth
+                val h = drawable.intrinsicHeight
+                val b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
                 val c = Canvas(b)
-                drawable.setBounds(c.width / 4, c.height / 4, c.width / 4 * 3, c.height / 4 * 3)
+                drawable.setBounds(w / 4, h / 4, w * 3 / 4, h * 3 / 4)
                 drawable.draw(c)
                 drr[1] = BitmapDrawable(context.resources, b)
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                when(Settings["icon:background_type", "custom"]) {
+                when (Settings["icon:background_type", "custom"]) {
                     "dominant" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getDominantColor(bgColor) ?: bgColor) }
                     "lv" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getLightVibrantColor(bgColor) ?: bgColor) }
                     "dv" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getDarkVibrantColor(bgColor) ?: bgColor) }

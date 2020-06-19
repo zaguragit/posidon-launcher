@@ -65,22 +65,20 @@ class SwipeableLayout(
         when (ev.action) {
             MotionEvent.ACTION_MOVE -> {
                 xOffset = ev.x - initX
-                if (abs(xOffset * 1.2) > 1.dp) {
-                    parent.requestDisallowInterceptTouchEvent(true)
-                    frontView.translationX = xOffset
-                    backView.clipBounds =
-                        if (xOffset > 0) {
-                            closeIcon.translationX = 18.dp
-                            closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                            Rect(0, 0, xOffset.toInt(), measuredHeight)
-                        }
-                        else {
-                            closeIcon.translationX = measuredWidth - 50.dp
-                            closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                            Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
-                        }
-                    return true
-                }
+                parent.requestDisallowInterceptTouchEvent(true)
+                frontView.translationX = xOffset
+                backView.clipBounds =
+                    if (xOffset > 0) {
+                        closeIcon.translationX = 18.dp
+                        closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                        Rect(0, 0, xOffset.toInt(), measuredHeight)
+                    }
+                    else {
+                        closeIcon.translationX = measuredWidth - 50.dp
+                        closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                        Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
+                    }
+                return true
             }
             MotionEvent.ACTION_UP -> {
                 when {
@@ -144,7 +142,15 @@ class SwipeableLayout(
     override fun onInterceptTouchEvent(ev: MotionEvent) = when (ev.action) {
         MotionEvent.ACTION_MOVE -> {
             xOffset = ev.x - initX
-            (abs(xOffset * 1.2) > min(abs(ev.y - initY), measuredHeight.toFloat()) && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) || super.onInterceptTouchEvent(ev)
+            val absYOffset = abs(ev.y - initY)
+            val absXOffset = abs(xOffset)
+            if (abs(absXOffset - absYOffset) > 2.dp && absXOffset > absYOffset && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) {
+                true
+            } else {
+                initX = ev.x
+                initY = ev.y
+                super.onInterceptTouchEvent(ev)
+            }
         }
         MotionEvent.ACTION_UP -> if (abs(xOffset) < 12.dp || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) {
             super.onInterceptTouchEvent(ev)

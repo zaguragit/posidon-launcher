@@ -7,6 +7,7 @@ import java.io.Serializable
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -51,20 +52,11 @@ object Settings {
     }
     fun putNotSave(key: String, value: ArrayList<String>) { lists[key] = value }
 
-    private var saveRequests = 0
-    private var isBeingSaved = false
-
-    inline fun apply() = Main.instance.runOnUiThread(::applyOnThisThread)
-    fun applyOnThisThread() {
-        saveRequests++
-        if (!isBeingSaved) {
-            isBeingSaved = true
-            while (saveRequests != 0) {
-                PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get()!!, "settings")
-                saveRequests--
-            }
-            isBeingSaved = false
-        }
+    val lock = ReentrantLock()
+    fun apply() {
+        lock.lock()
+        PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get()!!, "settings")
+        lock.unlock()
     }
 
     operator fun get(key: String, default: Int) = ints[key] ?: default

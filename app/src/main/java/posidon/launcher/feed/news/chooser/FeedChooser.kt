@@ -38,7 +38,7 @@ class FeedChooser : AppCompatActivity() {
         if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
             feedUrls.removeAt(0)
             Settings.putNotSave("feedUrls", "")
-            Settings.applyOnThisThread()
+            Settings.apply()
         }
 
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
@@ -57,7 +57,7 @@ class FeedChooser : AppCompatActivity() {
                 feedUrls.add(dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' '))
                 grid.adapter!!.notifyDataSetChanged()
                 Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
-                Settings.applyOnThisThread()
+                Settings.apply()
             }
             dialog.findViewById<TextView>(R.id.remove)!!.visibility = View.GONE
             dialog.show()
