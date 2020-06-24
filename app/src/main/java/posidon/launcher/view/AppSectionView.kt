@@ -70,7 +70,7 @@ class AppSectionView(context: Context) : LinearLayout(context) {
                     text = app.notificationCount.toString()
                     Palette.from(app.icon!!.toBitmap()).generate {
                         val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                        background = ColorTools.notificationBadge(color)
+                        background = ColorTools.iconBadge(color)
                         setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
                     }
                 } else { visibility = View.GONE }

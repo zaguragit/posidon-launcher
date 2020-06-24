@@ -48,6 +48,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
 
     interface OnResizeListener {
         fun onUpdate(newHeight: Int)
+        fun onMajorUpdate(newHeight: Int)
         fun onStop(newHeight: Int)
         fun onCrossPress()
     }
@@ -63,22 +64,36 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
         dragHandle.visibility = if (resizing) VISIBLE else GONE
         dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Main.accentColor))
         dragHandle.backgroundTintMode = PorterDuff.Mode.MULTIPLY
+        var oldHeight = 0
+        var oldMillis = System.currentTimeMillis()
         dragHandle.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_MOVE -> {
                     val location = intArrayOf(0, 0)
                     getLocationOnScreen(location)
                     if (location[1] + event.rawY >= MIN_HEIGHT.dp && location[1] + event.rawY <= maxHeight) {
-                        layoutParams.height = (event.rawY - y).toInt()
+                        val height = (event.rawY - y).toInt()
+                        layoutParams.height = height
                         layoutParams = layoutParams
-                        onResizeListener?.onUpdate(layoutParams.height)
+                        onResizeListener?.run {
+                            onUpdate(layoutParams.height)
+                            val currentMillis = System.currentTimeMillis()
+                            if (currentMillis - oldMillis > 45 && abs(height - oldHeight) > 5) {
+                                onMajorUpdate(layoutParams.height)
+                                oldHeight = height
+                                oldMillis = currentMillis
+                            }
+                        }
                         invalidate()
                     }
                 }
                 MotionEvent.ACTION_UP -> {
                     longPressHandler.removeCallbacks(onLongPress)
                     if (stopResizingOnFingerLift) resizing = false
-                    onResizeListener?.onStop(layoutParams.height)
+                    onResizeListener?.run {
+                        onStop(layoutParams.height)
+                        onMajorUpdate(layoutParams.height)
+                    }
                     invalidate()
                 }
             }
@@ -108,24 +123,8 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
     var startRawX = 0f
     var startRawY = 0f
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        when (event?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                startX = event.x
-                startY = event.y
-                startRawX = event.rawX
-                startRawY = event.rawY
-                if (!resizing) {
-                    longPressHandler.removeCallbacksAndMessages(null)
-                    longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
-                }
-                return true
-            }
-            MotionEvent.ACTION_UP -> {
-                if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout() && hasWindowFocus())
-                    return true
-                longPressHandler.removeCallbacksAndMessages(null)
-            }
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
             MotionEvent.ACTION_CANCEL -> {
                 longPressHandler.removeCallbacksAndMessages(null)
             }
@@ -136,6 +135,27 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_UP -> {
+                if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout() && hasWindowFocus())
+                    return true
+                longPressHandler.removeCallbacksAndMessages(null)
+            }
+            MotionEvent.ACTION_DOWN -> {
+                startX = event.x
+                startY = event.y
+                startRawX = event.rawX
+                startRawY = event.rawY
+                if (!resizing) {
+                    longPressHandler.removeCallbacksAndMessages(null)
+                    longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
+                }
+            }
+        }
+        return super.onInterceptTouchEvent(event)
     }
 
     inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {

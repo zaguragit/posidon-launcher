@@ -14,6 +14,7 @@ import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.dp
 
 class IconPackPicker : AppCompatActivity() {
 
@@ -71,30 +72,25 @@ class IconPackPicker : AppCompatActivity() {
         override fun getItem(position: Int): Any? = null
         override fun getItemId(position: Int): Long = 0
 
-        internal inner class ViewHolder {
-            var icon: ImageView? = null
-            var text: TextView? = null
-        }
+        internal inner class ViewHolder(var icon: ImageView, var text: TextView)
 
         override fun getView(position: Int, cv: View?, parent: ViewGroup): View {
             var convertView = cv
             val viewHolder: ViewHolder
-            val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
             if (convertView == null) {
-                convertView = li.inflate(R.layout.list_item, null)
-                viewHolder = ViewHolder()
-                viewHolder.icon = convertView!!.findViewById(R.id.iconimg)
-                viewHolder.text = convertView.findViewById(R.id.icontxt)
+                val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                convertView = li.inflate(R.layout.list_item, parent, false)!!
+                viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg), convertView.findViewById(R.id.icontxt))
+                val appSize = when (Settings["dockicsize", 1]) {
+                    0 -> 64.dp.toInt()
+                    2 -> 84.dp.toInt()
+                    else -> 74.dp.toInt()
+                }
+                viewHolder.icon.layoutParams = FrameLayout.LayoutParams(appSize, appSize)
                 convertView.tag = viewHolder
             } else viewHolder = convertView.tag as ViewHolder
-            viewHolder.icon!!.setImageDrawable(pacsForAdapter[position].icon)
-            viewHolder.text!!.text = pacsForAdapter[position].label
-            when (Settings["icsize", 1]) {
-                0 -> viewHolder.icon!!.setPadding(64, 64, 64, 64)
-                1 -> viewHolder.icon!!.setPadding(32, 32, 32, 32)
-                2 -> viewHolder.icon!!.setPadding(0, 0, 0, 0)
-            }
+            viewHolder.icon.setImageDrawable(pacsForAdapter[position].icon)
+            viewHolder.text.text = pacsForAdapter[position].label
             if (Settings["iconpack", "system"] == pacsForAdapter[position].packageName) {
                 convertView.background = getDrawable(R.drawable.selection)
                 lastclicked = convertView

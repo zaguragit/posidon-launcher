@@ -151,7 +151,7 @@ class CustomTheme : AppCompatActivity() {
         Main.customized = true
     }
 
-    fun pickIconBGColor(v: View) = ColorTools.pickColor(this, Settings["icon:background", -0x1]) {
+    fun pickIconBGColor(v: View) = ColorTools.pickColor(this, Settings["icon:background", 0xff252627.toInt()]) {
         v as ViewGroup
         v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["icon:background"] = it

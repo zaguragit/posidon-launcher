@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import java.lang.ref.Reference
@@ -360,7 +361,6 @@ object Tools {
 	@RequiresApi(api = Build.VERSION_CODES.O)
     fun adaptic(context: Context, drawable: Drawable): Drawable {
         return if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
-            val icShape = Settings["icshape", 4]
             val drr = arrayOfNulls<Drawable>(2)
             if (drawable is AdaptiveIconDrawable) {
                 drr[0] = drawable.background
@@ -379,13 +379,13 @@ object Tools {
                                 ColorTools.blue(it) > 0xdd
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                        when (Settings["icon:background_type", "custom"]) {
-                            "dominant" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getDominantColor(bgColor) ?: bgColor) }
-                            "lv" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getLightVibrantColor(bgColor) ?: bgColor) }
-                            "dv" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getDarkVibrantColor(bgColor) ?: bgColor) }
-                            "lm" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getLightMutedColor(bgColor) ?: bgColor) }
-                            "dm" -> Palette.from(drr[1]!!.toBitmap()).generate { drr[0] = ColorDrawable(it?.getDarkMutedColor(bgColor) ?: bgColor) }
-                            else -> drr[0] = ColorDrawable(bgColor)
+                        drr[0] = when (Settings["icon:background_type", "custom"]) {
+                            "dominant" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDominantColor(bgColor))
+                            "lv" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getLightVibrantColor(bgColor))
+                            "dv" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDarkVibrantColor(bgColor))
+                            "lm" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getLightMutedColor(bgColor))
+                            "dm" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDarkMutedColor(bgColor))
+                            else -> ColorDrawable(bgColor)
                         }
                     }
                 }
@@ -398,19 +398,18 @@ object Tools {
                 drawable.draw(c)
                 drr[1] = BitmapDrawable(context.resources, b)
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                when (Settings["icon:background_type", "custom"]) {
-                    "dominant" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getDominantColor(bgColor) ?: bgColor) }
-                    "lv" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getLightVibrantColor(bgColor) ?: bgColor) }
-                    "dv" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getDarkVibrantColor(bgColor) ?: bgColor) }
-                    "lm" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getLightMutedColor(bgColor) ?: bgColor) }
-                    "dm" -> Palette.from(b).generate { drr[0] = ColorDrawable(it?.getDarkMutedColor(bgColor) ?: bgColor) }
-                    else -> drr[0] = ColorDrawable(bgColor)
+                drr[0] = when (Settings["icon:background_type", "custom"]) {
+                    "dominant" -> ColorDrawable(Palette.from(b).generate().getDominantColor(bgColor))
+                    "lv" -> ColorDrawable(Palette.from(b).generate().getLightVibrantColor(bgColor))
+                    "dv" -> ColorDrawable(Palette.from(b).generate().getDarkVibrantColor(bgColor))
+                    "lm" -> ColorDrawable(Palette.from(b).generate().getLightMutedColor(bgColor))
+                    "dm" -> ColorDrawable(Palette.from(b).generate().getDarkMutedColor(bgColor))
+                    else -> ColorDrawable(bgColor)
                 }
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
             val height = layerDrawable.intrinsicHeight
-            val minSize = min(width, height)
             var bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             var canvas = Canvas(bitmap!!)
             layerDrawable.setBounds(-canvas.width / 4, -canvas.height / 4, canvas.width / 4 * 5, canvas.height / 4 * 5)
@@ -419,43 +418,9 @@ object Tools {
             canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
 
-            if (icShape == 0) {
-                val path = AdaptiveIconDrawable(null, null).iconMask
-                val rect = RectF()
-                path.computeBounds(rect, true)
-                val matrix = Matrix()
-                matrix.setScale(minSize / rect.right, minSize / rect.bottom)
-                path.transform(matrix)
-                path.fillType = Path.FillType.INVERSE_EVEN_ODD
-                canvas.drawPath(path, Paint().apply {
-                    isAntiAlias = true
-                    xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-                })
-            } else if (icShape != 3) {
-                val path = Path()
-                when (icShape) {
-                    1 -> path.addCircle(width / 2f, height / 2f,  minSize / 2f - 2, Path.Direction.CCW)
-                    2 -> path.addRoundRect(2f, 2f, width - 2f, height - 2f, minSize / 4f, minSize / 4f, Path.Direction.CCW)
-                    4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
-                        val xx = 2
-                        val yy = 2
-                        val radius = minSize / 2 - 2
-                        val radiusToPow = radius * radius * radius.toDouble()
-                        path.moveTo(-radius.toFloat(), 0f)
-                        for (x in -radius..radius) {
-                            path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
-                        }
-                        for (x in radius downTo -radius) {
-                            path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
-                        }
-                        path.close()
-                        val matrix = Matrix()
-                        matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
-                        path.transform(matrix)
-                    }
-                }
-                path.fillType = Path.FillType.INVERSE_EVEN_ODD
-                canvas.drawPath(path, Paint().apply {
+            val icShape = Settings["icshape", 4]
+            if (icShape != 3) {
+                canvas.drawPath(getAdaptiveIconPath(icShape, width, height), Paint().apply {
                     isAntiAlias = true
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 })
@@ -465,6 +430,45 @@ object Tools {
         } else drawable
     }
 
+    fun getAdaptiveIconPath(icShape: Int, width: Int, height: Int): Path {
+        val minSize = min(width, height)
+        if (icShape == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val path = AdaptiveIconDrawable(null, null).iconMask
+            val rect = RectF()
+            path.computeBounds(rect, true)
+            val matrix = Matrix()
+            matrix.setScale(minSize / rect.right, minSize / rect.bottom)
+            path.transform(matrix)
+            path.fillType = Path.FillType.INVERSE_EVEN_ODD
+            return path
+        } else {
+            val path = Path()
+            when (icShape) {
+                1 -> path.addCircle(width / 2f, height / 2f, minSize / 2f - 2, Path.Direction.CCW)
+                2 -> path.addRoundRect(2f, 2f, width - 2f, height - 2f, minSize / 4f, minSize / 4f, Path.Direction.CCW)
+                4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
+                    val xx = 2
+                    val yy = 2
+                    val radius = minSize / 2 - 2
+                    val radiusToPow = radius * radius * radius.toDouble()
+                    path.moveTo(-radius.toFloat(), 0f)
+                    for (x in -radius..radius) {
+                        path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
+                    }
+                    for (x in radius downTo -radius) {
+                        path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
+                    }
+                    path.close()
+                    val matrix = Matrix()
+                    matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
+                    path.transform(matrix)
+                }
+            }
+            path.fillType = Path.FillType.INVERSE_EVEN_ODD
+            return path
+        }
+    }
+
     inline val isDefaultLauncher: Boolean get() {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_HOME)
@@ -472,6 +476,28 @@ object Tools {
     }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.01f)) / 0.4).toFloat()
+
+    fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
+        val layers = if (isWork) {
+            val badge = publicContext!!.resources.getDrawable(R.drawable.work_badge, publicContext!!.theme)
+            badge.setTint(Main.accentColor)
+            badge.setTintMode(PorterDuff.Mode.MULTIPLY)
+            arrayOf(icon, badge)
+        } else arrayOf(icon)
+        val drawable = LayerDrawable(layers)
+        val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
+        val p = 8 * diameter / when (Settings["icsize", 1]) {
+            0 -> 64; 2 -> 84; else -> 74
+        }
+        drawable.setLayerInset(0, p, p, p, p)
+        if (isWork) {
+            val o = diameter - (20.sp * diameter / when (Settings["icsize", 1]) {
+                0 -> 64.dp; 2 -> 84.dp; else -> 74.dp
+            }).toInt()
+            drawable.setLayerInset(1, o, o, 0, 0)
+        }
+        return drawable
+    }
 }
 
 inline fun Activity.applyFontSetting() {

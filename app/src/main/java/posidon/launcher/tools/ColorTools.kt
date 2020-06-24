@@ -57,7 +57,7 @@ object ColorTools {
         return d
     }
 
-    inline fun notificationBadge(@ColorInt color: Int): Drawable {
+    inline fun iconBadge(@ColorInt color: Int): Drawable {
         val d = GradientDrawable()
         d.shape = GradientDrawable.OVAL
         d.setColor(color)

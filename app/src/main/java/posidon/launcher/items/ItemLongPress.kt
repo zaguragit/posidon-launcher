@@ -141,10 +141,7 @@ object ItemLongPress {
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
-                    var data = Settings["dock", ""].split("\n").toTypedArray()
-                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                    data[i] = ""
-                    Settings["dock"] = TextUtils.join("\n", data)
+                    Dock[i] = null
                     Main.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -152,11 +149,12 @@ object ItemLongPress {
             popupWindow.isFocusable = false
             val myShadow = View.DragShadowBuilder(icon)
             val clipData = ClipData.newPlainText("", "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(app, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
-            var data = Settings["dock", ""].split("\n").toTypedArray()
-            if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-            data[i] = ""
-            Settings["dock"] = TextUtils.join("\n", data)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                icon.startDragAndDrop(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
+            } else {
+                icon.startDrag(clipData, myShadow, arrayOf(app, view, popupWindow), 0)
+            }
+            Dock[i] = null
             var y = -view.y.toInt() + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp.toInt()
             if (Settings["dock:search:below_apps", false] && !context.isTablet) {
                 y += 68.dp.toInt()
@@ -166,7 +164,7 @@ object ItemLongPress {
         true
     }
 
-	fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow) = View.OnLongClickListener { view ->
+    fun insideFolder(context: Context, app: App, i: Int, v: View?, folderIndex: Int, folderWindow: PopupWindow) = View.OnLongClickListener { view ->
         if (currentPopup == null) {
             val location = IntArray(2)
             view.getLocationOnScreen(location)
@@ -175,12 +173,9 @@ object ItemLongPress {
             popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     folderWindow.dismiss()
-                    var data = Settings["dock", ""].split("\n").toTypedArray()
-                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                    val f = Folder(data[i])
+                    val f = Dock[i] as Folder
                     f.apps.removeAt(folderIndex)
-                    data[i] = if (f.apps.size == 1) f.apps[0].packageName + "/" + f.apps[0].name else f.toString()
-                    Settings["dock"] = TextUtils.join("\n", data)
+                    Dock[i] = if (f.apps.size == 1) f.apps[0] else f
                     Main.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -210,7 +205,7 @@ object ItemLongPress {
             } else popupWindow.showAtLocation(
                 icon, Gravity.BOTTOM or gravity, x,
                 Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
-        } catch (ignore: Exception) {}
+        } catch (e: Exception) { e.printStackTrace() }
         true
     }
 
@@ -236,7 +231,7 @@ object ItemLongPress {
             } else {
                 popupWindow.showAtLocation(icon, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight)
             }
-        } catch (ignore: Exception) {}
+        } catch (e: Exception) { e.printStackTrace() }
         true
     }
 
@@ -276,13 +271,9 @@ object ItemLongPress {
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
-                    var data = Settings["dock", ""].split("\n").toTypedArray()
-                    if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-                    data[i] = ""
-                    Settings["dock"] = TextUtils.join("\n", data)
+                    Dock[i] = null
                     Main.setDock()
                 }
-
                 override fun onEdit(v: View) {
                     val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
                     val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
@@ -291,10 +282,8 @@ object ItemLongPress {
                     editContent.findViewById<View>(R.id.edit).visibility = View.GONE
                     editLabel.setText(folder.label)
                     editWindow.setOnDismissListener {
-                        folder.label = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
-                        val data = Settings["dock", ""].split("\n").toTypedArray()
-                        data[i] = folder.toString()
-                        Settings["dock"] = TextUtils.join("\n", data)
+                        folder.label = editLabel.text.toString().replace('\t', ' ')
+                        Dock[i] = folder
                         Main.setDock()
                     }
                     editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
@@ -302,15 +291,19 @@ object ItemLongPress {
             }, true, folder)
             val myShadow = View.DragShadowBuilder(icon)
             val clipData = ClipData.newPlainText("", "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) icon.startDragAndDrop(clipData, myShadow, arrayOf(folder, view, popupWindow), 0) else icon.startDrag(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
-            var data = Settings["dock", ""].split("\n").toTypedArray()
-            if (data.size <= i) data = Arrays.copyOf(data, i + 1)
-            data[i] = ""
-            Settings["dock"] = TextUtils.join("\n", data)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                icon.startDragAndDrop(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
+            } else {
+                icon.startDrag(clipData, myShadow, arrayOf(folder, view, popupWindow), 0)
+            }
+
+            Dock[i] = null
+
             var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp).toInt()
             if (Settings["dock:search:below_apps", false] && !context.isTablet) {
                 y += 68.dp.toInt()
             }
+
             popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
         }
         true
@@ -330,7 +323,7 @@ object ItemLongPress {
         }
         editLabel.setText(Settings[app.packageName + "/" + app.name + "?label", app.label!!])
         editWindow.setOnDismissListener {
-            Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\n', ' ').replace('¬', ' ')
+            Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\t', ' ')
             Main.shouldSetApps = true
             Main.setDock()
         }

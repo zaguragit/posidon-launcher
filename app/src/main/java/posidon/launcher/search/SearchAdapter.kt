@@ -57,7 +57,7 @@ internal class SearchAdapter(
             badge.text = app.notificationCount.toString()
             Palette.from(app.icon!!.toBitmap()).generate {
                 val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                badge.background = ColorTools.notificationBadge(color)
+                badge.background = ColorTools.iconBadge(color)
                 badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
             }
         } else {

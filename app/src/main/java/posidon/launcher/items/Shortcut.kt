@@ -2,6 +2,7 @@ package posidon.launcher.items
 
 import android.app.ActivityOptions
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.os.Build
 import android.os.Process
@@ -10,6 +11,7 @@ import androidx.annotation.RequiresApi
 import posidon.launcher.Main.Companion.launcherApps
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
 
 @RequiresApi(Build.VERSION_CODES.O)
 class Shortcut : LauncherItem {
@@ -31,9 +33,7 @@ class Shortcut : LauncherItem {
         icon = null
     }
 
-    override fun toString(): String {
-        return "shortcut:$packageName/$id"
-    }
+    override fun toString() = "shortcut:$packageName/$id"
 
     fun open(context: Context, view: View) {
         try {
@@ -49,3 +49,5 @@ class Shortcut : LauncherItem {
         }
     }
 }
+
+inline fun Shortcut.isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
