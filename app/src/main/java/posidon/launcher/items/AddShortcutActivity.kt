@@ -56,7 +56,7 @@ class AddShortcutActivity : AppCompatActivity() {
             val img = view.findViewById<ImageView>(R.id.iconimg)
             img.layoutParams.height = appSize
             img.layoutParams.width = appSize
-            if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
+            if (data[i].startsWith("folder:")) {
                 val folder = Folder(data[i])
                 img.setImageDrawable(folder.icon)
                 if (showLabels) {
@@ -73,16 +73,14 @@ class AddShortcutActivity : AppCompatActivity() {
                     }
                     img.setImageDrawable(shortcut.icon)
                 } else {
-                    data[i] = ""
-                    Settings["dock"] = TextUtils.join("\n", data)
+                    Dock[i] = null
                 }
             } else {
                 val app = App[string]
                 if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = View.GONE
                 if (app == null) {
                     if (!Tools.isInstalled(string.split('/')[0], packageManager)) {
-                        data[i] = ""
-                        Settings["dock"] = TextUtils.join("\n", data)
+                        Dock[i] = null
                     }
                 } else {
                     if (showLabels) {
@@ -94,6 +92,7 @@ class AddShortcutActivity : AppCompatActivity() {
             }
             view.setOnClickListener {
                 Dock.add(Shortcut(shortcut!!), i)
+                Main.setDock()
                 //finish()
             }
             container.addView(view)

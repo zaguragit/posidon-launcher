@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
@@ -92,6 +93,8 @@ class App(
 
     override fun toString() = "$packageName/$name"
 
+    inline fun isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
+
     companion object {
         private var appsByName = HashMap<String, ArrayList<App>>()
         private var appsByName2 = HashMap<String, ArrayList<App>>()
@@ -100,12 +103,12 @@ class App(
         operator fun get(component: String): App? {
             val a = component.split('/')
             val list = appsByName[a[0]] ?: return null
-            return list.firstOrNull { it.name == a[1] }
+            return list.find { it.name == a[1] }
         }
 
         operator fun get(packageName: String, name: String): App? {
             val list = appsByName[packageName] ?: return null
-            return list.firstOrNull { it.name == name }
+            return list.find { it.name == name }
         }
 
         fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
@@ -131,5 +134,10 @@ class App(
         }
 
         fun clearSecondMap() = appsByName2.clear()
+
+        fun removePackage(packageName: String) {
+            hidden.removeAll { it.packageName == packageName }
+            appsByName.remove(packageName)
+        }
     }
 }

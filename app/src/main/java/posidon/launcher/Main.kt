@@ -19,7 +19,6 @@ import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
 import android.media.AudioManager
 import android.os.*
-import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
@@ -32,9 +31,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.LauncherMenu.PinchListener
-import posidon.launcher.external.WidgetManager
-import posidon.launcher.external.WidgetManager.REQUEST_CREATE_APPWIDGET
-import posidon.launcher.external.WidgetManager.REQUEST_PICK_APPWIDGET
+import posidon.launcher.external.Widget
+import posidon.launcher.external.Widget.REQUEST_CREATE_APPWIDGET
+import posidon.launcher.external.Widget.REQUEST_PICK_APPWIDGET
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
@@ -48,7 +47,6 @@ import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.animate
 import posidon.launcher.tools.Tools.blurredWall
 import posidon.launcher.tools.Tools.canBlurWall
-import posidon.launcher.tools.Tools.isInstalled
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
@@ -67,7 +65,6 @@ class Main : AppCompatActivity() {
         instance = this
 
         setDock = {
-            val data = Settings["dock", ""].split("\n").toTypedArray()
             val columnCount = Settings["dock:columns", 5]
             val appSize = min(when (Settings["dockicsize", 1]) {
                 0 -> 64.dp.toInt()
@@ -82,31 +79,31 @@ class Main : AppCompatActivity() {
             container.columnCount = columnCount
             container.rowCount = rowCount
             var i = 0
-            while (i < data.size && i < columnCount * rowCount) {
-                val string = data[i]
+            while (i < columnCount * rowCount) {
                 val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, container, false)
                 val img = view.findViewById<ImageView>(R.id.iconimg)
                 view.findViewById<View>(R.id.iconFrame).run {
                     layoutParams.height = appSize
                     layoutParams.width = appSize
                 }
-                if (data[i].startsWith("folder(") && data[i].endsWith(")")) {
-                    val folder = Folder(data[i])
-                    img.setImageDrawable(folder.icon)
+                val item = Dock[i]
+                if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
+                if (item is Folder) {
+                    img.setImageDrawable(item.icon)
                     if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = folder.label
+                        view.findViewById<TextView>(R.id.icontxt).text = item.label
                         view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                    } else view.findViewById<View>(R.id.icontxt).visibility = GONE
+                    }
                     if (notifBadgesEnabled) {
                         var notificationCount = 0
-                        for (app in folder.apps) {
+                        for (app in item.apps) {
                             notificationCount += app.notificationCount
                         }
                         if (notificationCount != 0) {
                             val badge = view.findViewById<TextView>(R.id.notificationBadge)
                             badge.visibility = View.VISIBLE
                             badge.text = notificationCount.toString()
-                            badge.background = ColorTools.notificationBadge(accentColor)
+                            badge.background = ColorTools.iconBadge(accentColor)
                             badge.setTextColor(if (ColorTools.useDarkText(accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
                         } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
                     } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
@@ -124,20 +121,19 @@ class Main : AppCompatActivity() {
                         if (Settings["folder:show_title", true]) {
                             val title = content.findViewById<TextView>(R.id.title)
                             title.setTextColor(Settings["folder:title_color", 0xffffffff.toInt()])
-                            title.text = folder.label
+                            title.text = item.label
                         } else {
                             content.findViewById<View>(R.id.title).visibility = View.GONE
                             content.findViewById<View>(R.id.separator).visibility = View.GONE
                         }
-                        val appList: List<App?> = folder.apps
+                        val appList: List<App?> = item.apps
                         var i1 = 0
                         val appListSize = appList.size
                         while (i1 < appListSize) {
                             val app = appList[i1]
                             if (app == null) {
-                                folder.apps.removeAt(i1)
-                                data[finalI] = folder.toString()
-                                Settings["dock"] = TextUtils.join("\n", data)
+                                item.apps.removeAt(i1)
+                                Dock[finalI] = item
                             } else {
                                 val appIcon = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
                                 val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
@@ -157,7 +153,7 @@ class Main : AppCompatActivity() {
                                     badge.text = app.notificationCount.toString()
                                     Palette.from(app.icon!!.toBitmap()).generate {
                                         val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                                        badge.background = ColorTools.notificationBadge(color)
+                                        badge.background = ColorTools.iconBadge(color)
                                         badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
                                     }
                                 } else { appIcon.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
@@ -166,6 +162,7 @@ class Main : AppCompatActivity() {
                                     popupWindow.dismiss()
                                 }
                                 appIcon.setOnLongClickListener(ItemLongPress.insideFolder(this@Main, app, finalI, view, i1, popupWindow))
+                                //appIcon.setOnLongClickListener(ItemLongPress.insideFolderNew(this@Main, app, finalI, view, i1, popupWindow))
                                 container.addView(appIcon)
                             }
                             i1++
@@ -187,49 +184,41 @@ class Main : AppCompatActivity() {
                         }
                         popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
                     }}
-                    view.setOnLongClickListener(ItemLongPress.folder(this@Main, folder, i))
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
+                    view.setOnLongClickListener(ItemLongPress.folder(this@Main, item, i))
+                } else if (item is Shortcut) {
                     println("SHORTCUTT!!")
-                    val shortcut = Shortcut(string)
-                    if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
-                    if (isInstalled(shortcut.packageName, packageManager)) {
+                    if (item.isInstalled(packageManager)) {
                         if (showLabels) {
-                            view.findViewById<TextView>(R.id.icontxt).text = shortcut.label
+                            view.findViewById<TextView>(R.id.icontxt).text = item.label
                             view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                         }
-                        img.setImageDrawable(shortcut.icon)
-                        view.setOnClickListener { view -> shortcut.open(this@Main, view) }
+                        img.setImageDrawable(item.icon)
+                        view.setOnClickListener { item.open(this@Main, it) }
                     } else {
-                        data[i] = ""
-                        Settings["dock"] = TextUtils.join("\n", data)
+                        Dock[i] = null
                     }
-                } else {
-                    val app = App[string]
-                    if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
-                    if (app == null) {
-                        if (!isInstalled(string.split('/')[0], packageManager)) {
-                            data[i] = ""
-                            Settings["dock"] = TextUtils.join("\n", data)
-                        }
-                    } else {
-                        if (showLabels) {
-                            view.findViewById<TextView>(R.id.icontxt).text = app.label
-                            view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                        }
-                        if (notifBadgesEnabled && app.notificationCount != 0) {
-                            val badge = view.findViewById<TextView>(R.id.notificationBadge)
-                            badge.visibility = View.VISIBLE
-                            badge.text = app.notificationCount.toString()
-                            Palette.from(app.icon!!.toBitmap()).generate {
-                                val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                                badge.background = ColorTools.notificationBadge(color)
-                                badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
-                            }
-                        } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
-                        img.setImageDrawable(app.icon)
-                        view.setOnClickListener { view -> app.open(this@Main, view) }
-                        view.setOnLongClickListener(ItemLongPress.dock(this@Main, app, i))
+                } else if (item is App) {
+                    if (!item.isInstalled(packageManager)) {
+                        Dock[i] = null
+                        continue
                     }
+                    if (showLabels) {
+                        view.findViewById<TextView>(R.id.icontxt).text = item.label
+                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
+                    }
+                    if (notifBadgesEnabled && item.notificationCount != 0) {
+                        val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                        badge.visibility = View.VISIBLE
+                        badge.text = item.notificationCount.toString()
+                        Palette.from(item.icon!!.toBitmap()).generate {
+                            val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                            badge.background = ColorTools.iconBadge(color)
+                            badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                        }
+                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                    img.setImageDrawable(item.icon)
+                    view.setOnClickListener { item.open(this@Main, it) }
+                    view.setOnLongClickListener(ItemLongPress.dock(this@Main, item, i))
                 }
                 container.addView(view)
                 i++
@@ -269,12 +258,14 @@ class Main : AppCompatActivity() {
                 when (event.action) {
                     DragEvent.ACTION_DRAG_LOCATION -> {
                         val objs = event.localState as Array<*>
-                        val icon = objs[1] as View
+                        val view = objs[1] as View
                         val location = IntArray(2)
-                        icon.getLocationOnScreen(location)
-                        val x = abs(event.x - location[0] - icon.width / 2f)
-                        val y = abs(event.y - location[1] - icon.height / 2f)
-                        if (x > icon.width / 3.5f || y > icon.height / 3.5f) {
+                        view.getLocationOnScreen(location)
+                        println("loc: ${location[0]}, ${location[1]}")
+                        println("drag: ${event.x}, ${event.y}")
+                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
+                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
+                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
                             (objs[2] as PopupWindow).dismiss()
                             behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
@@ -292,49 +283,17 @@ class Main : AppCompatActivity() {
                         ((event.localState as Array<*>)[1] as View).visibility = VISIBLE
                         if (behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
                             if (event.y > Device.displayHeight - dockHeight) {
-                                val item = (event.localState as Array<*>)[0] as LauncherItem?
+                                val item = (event.localState as Array<*>)[0] as LauncherItem
                                 val location = IntArray(2)
                                 var i = 0
-                                if (item is App) {
-                                    while (i < container.childCount) {
-                                        container.getChildAt(i).getLocationOnScreen(location)
-                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
-                                        if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
-                                            var data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
-                                            if (data.size <= i) data = data.copyOf(i + 1)
-                                            if (data[i] == null || data[i] == "" || data[i] == "null") {
-                                                data[i] = item.packageName + "/" + item.name
-                                                Settings["dock"] = TextUtils.join("\n", data)
-                                            } else {
-                                                if (data[i]!!.startsWith("folder(") && data[i]!!.endsWith(")")) data[i] = "folder(" + data[i]!!.substring(7, data[i]!!.length - 1) + "¬" + item.packageName + "/" + item.name + ")" else data[i] = "folder(" + "folder¬" + data[i] + "¬" + item.packageName + "/" + item.name + ")"
-                                                Settings["dock"] = TextUtils.join("\n", data)
-                                            }
-                                            break
-                                        }
-                                        i++
+                                while (i < container.childCount) {
+                                    container.getChildAt(i).getLocationOnScreen(location)
+                                    val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
+                                    if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
+                                        Dock.add(item, i)
+                                        break
                                     }
-                                } else if (item is Folder) {
-                                    while (i < container.childCount) {
-                                        container.getChildAt(i).getLocationOnScreen(location)
-                                        val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
-                                        if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
-                                            var data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
-                                            if (data.size <= i) data = data.copyOf(i + 1)
-                                            if (data[i] == null || data[i] == "" || data[i] == "null") {
-                                                data[i] = item.toString()
-                                                Settings["dock"] = TextUtils.join("\n", data)
-                                            } else {
-                                                var folderContent = item.toString().substring(7, item.toString().length - 1)
-                                                if (data[i]!!.startsWith("folder(") && data[i]!!.endsWith(")")) {
-                                                    folderContent = folderContent.substring(folderContent.indexOf('¬') + 1)
-                                                    data[i] = "folder(" + data[i]!!.substring(7, data[i]!!.length - 1) + "¬" + folderContent + ")"
-                                                } else data[i] = "folder(" + folderContent + "¬" + data[i] + ")"
-                                                Settings["dock"] = TextUtils.join("\n", data)
-                                            }
-                                            break
-                                        }
-                                        i++
-                                    }
+                                    i++
                                 }
                             }
                             setDock()
@@ -570,6 +529,10 @@ class Main : AppCompatActivity() {
             finish()
             exitProcess(0)
         }
+        if (Settings["dock:isOld", true]) {
+            Dock.convert()
+            Settings["dock:isOld"] = false
+        }
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("posidonLauncher", "uncaught exception", throwable)
@@ -579,19 +542,46 @@ class Main : AppCompatActivity() {
             exitProcess(0)
         }
 
-        WidgetManager.init()
+        Widget.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         setContentView(R.layout.main)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
 
-        val filter = IntentFilter()
+        /*val filter = IntentFilter()
         filter.addAction(Intent.ACTION_PACKAGE_ADDED)
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
         filter.addDataScheme("package")
-        receiver = AppChangeReceiver()
-        registerReceiver(receiver, filter)
+        *///receiver = AppChangeReceiver()
+        //registerReceiver(receiver, filter)
+
+        launcherApps.registerCallback(object : LauncherApps.Callback() {
+            override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
+                AppLoader(this@Main, onAppLoaderEnd).execute()
+            }
+
+            override fun onPackageChanged(packageName: String, user: UserHandle?) {
+                AppLoader(this@Main, onAppLoaderEnd).execute()
+            }
+
+            override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
+                AppLoader(this@Main, onAppLoaderEnd).execute()
+            }
+
+            override fun onPackageAdded(packageName: String, user: UserHandle?) {
+                AppLoader(this@Main, onAppLoaderEnd).execute()
+            }
+
+            override fun onPackageRemoved(packageName: String, user: UserHandle?) {
+                apps.removeAll { it.packageName == packageName }
+                for (section in appSections) {
+                    section.removeAll { it.packageName == packageName }
+                }
+                App.removePackage(packageName)
+                onAppLoaderEnd()
+            }
+        })
 
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
@@ -741,15 +731,17 @@ class Main : AppCompatActivity() {
             layoutParams = layoutParams
             onResizeListener = object : OnResizeListener {
                 override fun onStop(newHeight: Int) { Settings["widgetHeight"] = newHeight }
-                override fun onCrossPress() = WidgetManager.deleteWidget(widgetLayout)
+                override fun onCrossPress() = Widget.deleteWidget(widgetLayout)
+                override fun onMajorUpdate(newHeight: Int) = Widget.resize(newHeight)
+
                 override fun onUpdate(newHeight: Int) {
                     layoutParams.height = newHeight
                     layoutParams = layoutParams
                 }
             }
         }
-        WidgetManager.host.startListening()
-        WidgetManager.fromSettings(widgetLayout)
+        Widget.host.startListening()
+        Widget.fromSettings(widgetLayout)
         val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomDrawerBehavior.STATE_COLLAPSED)
@@ -835,12 +827,12 @@ class Main : AppCompatActivity() {
                         intent.component = widgetInfo.configure
                         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                         startActivityForResult(intent, REQUEST_CREATE_APPWIDGET)
-                    } else WidgetManager.fromIntent(widgetLayout, data)
+                    } else Widget.fromIntent(widgetLayout, data)
                 }
-            } else if (requestCode == REQUEST_CREATE_APPWIDGET) WidgetManager.fromIntent(widgetLayout, data)
+            } else if (requestCode == REQUEST_CREATE_APPWIDGET) Widget.fromIntent(widgetLayout, data)
         } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
             val appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-            if (appWidgetId != -1) WidgetManager.host.deleteAppWidgetId(appWidgetId)
+            if (appWidgetId != -1) Widget.host.deleteAppWidgetId(appWidgetId)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -879,7 +871,7 @@ class Main : AppCompatActivity() {
             return
         }
         super.onResume()
-        WidgetManager.host.startListening()
+        Widget.host.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         //setWallpaperOffset(0.5f, 0.5f)
         onUpdate()
@@ -937,7 +929,7 @@ class Main : AppCompatActivity() {
         }
         behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
         desktop.scrollTo(0, 0)
-        WidgetManager.host.stopListening()
+        Widget.host.stopListening()
         if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
             notifications.visibility = GONE
             findViewById<View>(R.id.arrowUp).visibility = GONE
@@ -947,12 +939,12 @@ class Main : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        WidgetManager.host.stopListening()
+        Widget.host.stopListening()
     }
 
     override fun onStart() {
         super.onStart()
-        WidgetManager.host.startListening()
+        Widget.host.startListening()
 
         if (Settings["drawer:sections_enabled", false]) {
             drawerGrid.adapter = SectionedDrawerAdapter()
@@ -967,8 +959,8 @@ class Main : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        try { unregisterReceiver(receiver) }
-        catch (e: Exception) {}
+        //try { unregisterReceiver(receiver) }
+        //catch (e: Exception) {}
         unregisterReceiver(batteryInfoReceiver)
         super.onDestroy()
     }
@@ -1022,7 +1014,7 @@ class Main : AppCompatActivity() {
         var customized = false
         var apps = ArrayList<App>()
         var accentColor = -0xeeaa01
-        var receiver: AppChangeReceiver? = null
+        //var receiver: AppChangeReceiver? = null
         lateinit var instance: Main private set
         lateinit var setCustomizations: () -> Unit private set
         lateinit var setDock: () -> Unit private set

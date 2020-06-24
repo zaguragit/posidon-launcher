@@ -78,7 +78,8 @@ class Gallery : AppCompatActivity() {
         thread(isDaemon = true) {
             try {
                 var currentWall = Wall()
-                val bufferReader = BufferedReader(InputStreamReader(URL(REPO + INDEX_FILE).openStream()))
+                val input = InputStreamReader(URL(REPO + INDEX_FILE).openStream())
+                val bufferReader = BufferedReader(input)
                 bufferReader.forEachLine {
                     if (it.isEmpty()) {
                         walls.add(currentWall)
@@ -93,30 +94,34 @@ class Gallery : AppCompatActivity() {
                                 else -> Wall.Type.Bitmap
                             }
                             'd' -> {
-                                val d = REPO + IMG_PATH + it.substring(2)
+                                val dir = it.substring(2)
+                                val builder = StringBuilder(REPO).append(IMG_PATH).append(dir)
                                 when (currentWall.type) {
                                     Wall.Type.Bitmap -> {
-                                        val stream = URL("$d/thumb.jpg").openConnection().getInputStream()
+                                        val stream = URL(builder.append("/thumb.jpg").toString()).openConnection().getInputStream()
                                         currentWall.img = BitmapFactory.decodeStream(stream)
                                         stream.close()
-                                        currentWall.url = "$d/img.png"
+                                        currentWall.url = dir
                                     }
                                     Wall.Type.SVG -> {
-                                        val stream = URL("$d/img.svg").openConnection().getInputStream()
+                                        val stream = URL(builder.append("/img.svg").toString()).openConnection().getInputStream()
                                         val drawable = Sharp.loadInputStream(stream).drawable
                                         stream.close()
-                                        if (drawable != null) currentWall.img = drawable.toBitmap(420, (420f * drawable.intrinsicHeight / drawable.intrinsicWidth).toInt())
-                                        currentWall.url = "$d/img.svg"
+                                        if (drawable != null) {
+                                            currentWall.img = drawable.toBitmap(420, (420f * drawable.intrinsicHeight / drawable.intrinsicWidth).toInt())
+                                        }
+                                        currentWall.url = dir
                                     }
                                 }
                             }
                         }
                     }
                 }
+                input.close()
                 runOnUiThread {
-                    if (loading.drawable is AnimatedVectorDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) (loading.drawable as AnimatedVectorDrawable).clearAnimationCallbacks() else clearAnimation(loading.drawable)
                     loading.visibility = View.GONE
                     gallery.adapter = WallAdapter(this@Gallery)
+                    clearAnimation(loading.drawable)
                     gallery.setOnItemClickListener { _, _, i, _ ->
                         val intent = Intent(this, WallActivity::class.java)
                         intent.putExtra("index", i)
@@ -126,9 +131,9 @@ class Gallery : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    if (loading.drawable is AnimatedVectorDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) (loading.drawable as AnimatedVectorDrawable).clearAnimationCallbacks() else clearAnimation(loading.drawable)
                     loading.visibility = View.GONE
                     findViewById<View>(R.id.fail).visibility = View.VISIBLE
+                    clearAnimation(loading.drawable)
                 }
                 e.printStackTrace()
             }
@@ -144,7 +149,10 @@ class Gallery : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 2 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) pickFile()
+        if (requestCode == 2 && grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            pickFile()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

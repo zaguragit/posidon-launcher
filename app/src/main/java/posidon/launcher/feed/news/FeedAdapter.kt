@@ -85,7 +85,6 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
                 Settings.getStrings("feed:deleted_articles").add("$day:" + feedItem.link + ':' + feedItem.title)
                 Settings.apply()
-                println("ARTICLE DELETED")
             }
         }
         if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {

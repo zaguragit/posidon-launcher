@@ -6,13 +6,17 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Intent
 import android.os.Parcelable
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import posidon.launcher.Main
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.ResizableLayout
 
-object WidgetManager {
+object Widget {
 
     const val REQUEST_PICK_APPWIDGET = 0
     const val REQUEST_CREATE_APPWIDGET = 1
@@ -36,7 +40,11 @@ object WidgetManager {
         try {
             val id = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             val providerInfo = widgetManager.getAppWidgetInfo(id)
-            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo)
+            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo).apply {
+                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.CENTER
+                }
+            }
             widgetLayout.addView(hostView)
             if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo.provider)) {
                 val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
@@ -46,6 +54,7 @@ object WidgetManager {
             }
             Settings["widget"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
             widgetLayout.addView(hostView)
+            resize(Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT])
         } catch (e: Exception) { e.printStackTrace() }
     }
 
@@ -78,9 +87,14 @@ object WidgetManager {
                     Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
             }
-            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo)
+            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo).apply {
+                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.CENTER
+                }
+            }
             hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
+            resize(Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT])
         } else widgetLayout.visibility = View.GONE
     }
 
@@ -101,5 +115,12 @@ object WidgetManager {
         hostView = null
         widgetLayout.visibility = View.GONE
         Settings["widget"] = ""
+    }
+
+    fun resize(newHeight: Int) {
+        val density = Tools.publicContext!!.resources.displayMetrics.density
+        val width = (Device.displayWidth / density).toInt()
+        val height = (newHeight / density).toInt()
+        hostView!!.updateAppWidgetSize(null, width, height, width, height)
     }
 }

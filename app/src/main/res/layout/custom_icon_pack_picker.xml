@@ -35,8 +35,7 @@
                     android:id="@+id/iconimg"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    android:padding="8dp"
-                    android:src="@android:drawable/sym_def_app_icon"/>
+                    android:padding="8dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,7 +49,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@drawable/card_separator"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"/>
             <posidon.launcher.view.GridView
                 style="@style/settingsEntry"
                 android:id="@+id/grid"

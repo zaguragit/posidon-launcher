@@ -45,7 +45,8 @@ class WallActivity : AppCompatActivity() {
             animate(loading!!.drawable)
             index = extras.getInt("index")
             if (Gallery.walls[index].type == Wall.Type.SVG) {
-                Loader.NullableSvg(Gallery.walls[index].url!!) {
+                val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.svg"
+                Loader.NullableSvg(url) {
                     Tools.clearAnimation(loading!!.drawable)
                     loading!!.visibility = View.GONE
                     if (it != null) {
@@ -68,15 +69,18 @@ class WallActivity : AppCompatActivity() {
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
                     }
                 }.execute()
-            } else Loader.NullableBitmap(Gallery.walls[index].url!!) {
-                Tools.clearAnimation(loading!!.drawable)
-                loading!!.visibility = View.GONE
-                if (it != null) {
-                    img = it
-                    if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(it)
-                    findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
-                }
-            }.execute()
+            } else {
+                val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.png"
+                Loader.NullableBitmap(url) {
+                    Tools.clearAnimation(loading!!.drawable)
+                    loading!!.visibility = View.GONE
+                    if (it != null) {
+                        img = it
+                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(it)
+                        findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+                    }
+                }.execute()
+            }
             findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img!!, Gallery.walls[index].name!!) }
             findViewById<View>(R.id.downloadbtn).background = btnBG()
             try {
@@ -95,17 +99,17 @@ class WallActivity : AppCompatActivity() {
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundColor(0x0)
             dialog.findViewById<View>(R.id.home)!!.background = dialogBtnBG()
             dialog.findViewById<View>(R.id.home)!!.setOnClickListener {
-                SetWall(img!!, WeakReference(this@WallActivity), 0).execute()
+                SetWall(img!!, 0).execute()
                 dialog.dismiss()
             }
             dialog.findViewById<View>(R.id.lock)!!.background = dialogBtnBG()
             dialog.findViewById<View>(R.id.lock)!!.setOnClickListener {
-                SetWall(img!!, WeakReference(this@WallActivity), 1).execute()
+                SetWall(img!!, 1).execute()
                 dialog.dismiss()
             }
             dialog.findViewById<View>(R.id.both)!!.background = dialogBtnBG()
             dialog.findViewById<View>(R.id.both)!!.setOnClickListener {
-                SetWall(img!!, WeakReference(this@WallActivity), 2).execute()
+                SetWall(img!!, 2).execute()
                 dialog.dismiss()
             }
             dialog.setOnDismissListener { findViewById<View>(R.id.bottomstuff).animate().alpha(1f) }
