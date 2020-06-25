@@ -44,7 +44,7 @@ import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools.animate
+import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.blurredWall
 import posidon.launcher.tools.Tools.canBlurWall
 import posidon.launcher.tools.Tools.updateNavbarHeight
@@ -575,8 +575,14 @@ class Main : AppCompatActivity() {
 
             override fun onPackageRemoved(packageName: String, user: UserHandle?) {
                 apps.removeAll { it.packageName == packageName }
-                for (section in appSections) {
-                    section.removeAll { it.packageName == packageName }
+                val iter = appSections.iterator()
+                for (section in iter) {
+                    section.removeAll {
+                        it.packageName == packageName
+                    }
+                    if (section.isEmpty()) {
+                        iter.remove()
+                    }
                 }
                 App.removePackage(packageName)
                 onAppLoaderEnd()
@@ -917,7 +923,7 @@ class Main : AppCompatActivity() {
             }
         } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in apps) {
-                animate(app.icon!!)
+                tryAnimate(app.icon!!)
             }
         }
     }

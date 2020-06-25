@@ -11,12 +11,15 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Process
+import android.os.UserHandle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -27,25 +30,26 @@ import kotlin.collections.ArrayList
 
 class App(
     val packageName: String,
-    val name: String? = null
+    val name: String? = null,
+    val userHandle: UserHandle = Process.myUserHandle()
 ) : LauncherItem() {
 
     var notificationCount = 0
 
     inline fun open(context: Context, view: View) {
         try {
-            val launchintent = Intent(Intent.ACTION_MAIN)
-            launchintent.component = ComponentName(packageName, name!!)
-            launchintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            when (Settings["anim:app_open", "posidon"]) {
-                "scale_up" -> context.startActivity(launchintent, ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle())
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.component = ComponentName(packageName, name!!)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Main.launcherApps.startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
+                "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle()
                 "clip_reveal" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        context.startActivity(launchintent, ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle())
-                    else context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
+                        ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle()
+                    else ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()
                 }
-                else -> context.startActivity(launchintent, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
-            }
+                else -> ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()
+            })
         } catch (e: Exception) { e.printStackTrace() }
     }
 

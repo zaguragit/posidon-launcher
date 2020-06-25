@@ -5,6 +5,7 @@ import android.graphics.*
 import android.graphics.drawable.*
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.clone
 import posidon.launcher.tools.toBitmap
 import kotlin.collections.ArrayList
 import kotlin.math.min
@@ -39,8 +40,8 @@ class Folder(string: String) : LauncherItem() {
             val previewApps = min(apps.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
             drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
-            for (i in 0 until previewApps) {
-                drr[i + 1] = BitmapDrawable(context.resources, apps[i].icon!!.toBitmap())
+            for (i in 1..previewApps) {
+                drr[i] = BitmapDrawable(context.resources, apps[i - 1].icon!!.toBitmap())
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
@@ -67,13 +68,10 @@ class Folder(string: String) : LauncherItem() {
                     layerDrawable.setLayerInset(4, paddingFar, paddingFar, paddingNear, paddingNear)
                 }
             }
-            var bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            var canvas = Canvas(bitmap!!)
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap!!)
             layerDrawable.setBounds(0, 0, width, height)
             layerDrawable.draw(canvas)
-            val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            canvas = Canvas(outputBitmap)
-            canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
 
             val icShape = Settings["icshape", 4]
             if (icShape != 3) {
@@ -83,7 +81,6 @@ class Folder(string: String) : LauncherItem() {
                 })
             }
 
-            bitmap = outputBitmap
             return Tools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
         } catch (e: Exception) { e.printStackTrace() }
         return null

@@ -24,7 +24,6 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 import kotlin.math.*
 
@@ -50,29 +49,40 @@ object Tools {
         return matrix
     }
 
-	inline fun animate(d: Drawable): Drawable {
+	fun tryAnimate(d: Drawable): Drawable {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> {
                 d.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable) = d.start()
+                    override fun onAnimationEnd(drawable: Drawable) = Main.instance.runOnUiThread { d.start() }
                 })
                 d.start()
             }
             d is Animatable2Compat -> {
                 d.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable) = d.start()
+                    override fun onAnimationEnd(drawable: Drawable) = Main.instance.runOnUiThread { d.start() }
                 })
                 d.start()
             }
             d is AnimationDrawable -> d.start()
+            d is LayerDrawable -> {
+                for (i in 0 until d.numberOfLayers) {
+                    tryAnimate(d.getDrawable(i))
+                }
+            }
+            d is MaskedDrawable -> tryAnimate(d.drawable)
         }
         return d
     }
 
-	inline fun clearAnimation(d: Drawable?) { when {
+	fun clearAnimation(d: Drawable?) { when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> d.clearAnimationCallbacks()
         d is Animatable2Compat -> d.clearAnimationCallbacks()
         d is Animatable -> d.stop()
+        d is LayerDrawable -> {
+            for (i in 0 until d.numberOfLayers) {
+                clearAnimation(d.getDrawable(i))
+            }
+        }
     }}
 
 	inline fun isInstalled(packageName: String, packageManager: PackageManager): Boolean {
@@ -359,10 +369,10 @@ object Tools {
     }
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
-    fun adaptic(context: Context, drawable: Drawable): Drawable {
+    fun adaptic(drawable: Drawable): Drawable {
         return if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val drr = arrayOfNulls<Drawable>(2)
-            if (drawable is AdaptiveIconDrawable) {
+            val layerDrawable = if (drawable is AdaptiveIconDrawable) {
                 drr[0] = drawable.background
                 drr[1] = drawable.foreground
                 if (Settings["icon:tint_white_bg", true]) {
@@ -389,44 +399,53 @@ object Tools {
                         }
                     }
                 }
+                val tmp = LayerDrawable(drr)
+                val w = tmp.intrinsicWidth
+                val h = tmp.intrinsicHeight
+                tmp.setLayerInset(0, -w / 6, -h / 6, -w / 6, -h / 6)
+                tmp.setLayerInset(1, -w / 6, -h / 6, -w / 6, -h / 6)
+                tmp
             } else {
                 val w = drawable.intrinsicWidth
                 val h = drawable.intrinsicHeight
-                val b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-                val c = Canvas(b)
-                drawable.setBounds(w / 4, h / 4, w * 3 / 4, h * 3 / 4)
-                drawable.draw(c)
-                drr[1] = BitmapDrawable(context.resources, b)
+                drr[1] = drawable
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
                 drr[0] = when (Settings["icon:background_type", "custom"]) {
-                    "dominant" -> ColorDrawable(Palette.from(b).generate().getDominantColor(bgColor))
-                    "lv" -> ColorDrawable(Palette.from(b).generate().getLightVibrantColor(bgColor))
-                    "dv" -> ColorDrawable(Palette.from(b).generate().getDarkVibrantColor(bgColor))
-                    "lm" -> ColorDrawable(Palette.from(b).generate().getLightMutedColor(bgColor))
-                    "dm" -> ColorDrawable(Palette.from(b).generate().getDarkMutedColor(bgColor))
+                    "dominant" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDominantColor(bgColor))
+                    "lv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightVibrantColor(bgColor))
+                    "dv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkVibrantColor(bgColor))
+                    "lm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightMutedColor(bgColor))
+                    "dm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkMutedColor(bgColor))
                     else -> ColorDrawable(bgColor)
                 }
+                val tmp = LayerDrawable(drr)
+                tmp.setLayerInset(1, w / 4, h / 4, w / 4, h / 4)
+                tmp
             }
-            val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
             val height = layerDrawable.intrinsicHeight
-            var bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            var canvas = Canvas(bitmap!!)
-            layerDrawable.setBounds(-canvas.width / 4, -canvas.height / 4, canvas.width / 4 * 5, canvas.height / 4 * 5)
-            layerDrawable.draw(canvas)
-            val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            canvas = Canvas(outputBitmap)
-            canvas.drawBitmap(bitmap, 0f, 0f, Paint().apply { isAntiAlias = true })
+            //layerDrawable.setBounds(-width / 4, -height / 4, width * 5 / 4, height * 5 / 4)
+            layerDrawable.setBounds(0, 0, width, height)
+            //val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            //val canvas = Canvas(bitmap!!)
+            //layerDrawable.setBounds(-canvas.width / 4, -canvas.height / 4, canvas.width / 4 * 5, canvas.height / 4 * 5)
+            //layerDrawable.draw(canvas)
 
             val icShape = Settings["icshape", 4]
-            if (icShape != 3) {
+            /*if (icShape != 3) {
                 canvas.drawPath(getAdaptiveIconPath(icShape, width, height), Paint().apply {
                     isAntiAlias = true
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 })
             }
-            bitmap = outputBitmap
-            BitmapDrawable(context.resources, bitmap)
+            BitmapDrawable(context.resources, bitmap)*/
+            //val d = BitmapDrawable(context.resources, bitmap)
+            //d.setBounds(0, 0, bitmap.width, bitmap.height)
+            if (icShape == 3) {
+                layerDrawable
+            } else {
+                MaskedDrawable(layerDrawable, getAdaptiveIconPath(icShape, width, height))
+            }
         } else drawable
     }
 
@@ -532,6 +551,8 @@ inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable:
     catch (e: Exception) { e.printStackTrace() }
     return bitmap
 }
+
+inline fun Drawable.clone() = constantState?.newDrawable()?.mutate()
 
 inline val Number.dp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
 inline val Number.sp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()

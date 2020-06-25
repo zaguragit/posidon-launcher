@@ -72,7 +72,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         for (profile in userManager.userProfiles) {
             val appList = Main.launcherApps.getActivityList(null, profile)
             for (i in appList.indices) {
-                val app = App(appList[i].applicationInfo.packageName, appList[i].name)
+                val app = App(appList[i].applicationInfo.packageName, appList[i].name, profile)
                 app.icon = appList[i].getIcon(0)
                 var customLabel = Settings[app.packageName + "/" + app.name + "?label", appList[i].label.toString()]
                 if (customLabel.isEmpty()) {
@@ -122,11 +122,11 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     } catch (e: Exception) { e.printStackTrace() }
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    app.icon = Tools.adaptic(context.get()!!, app.icon!!)
+                    app.icon = Tools.adaptic(app.icon!!)
                 }
                 app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
                 if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
-                    Tools.animate(app.icon!!)
+                    Tools.tryAnimate(app.icon!!)
                 }
                 App.putInSecondMap(app.packageName, app.name!!, app)
                 if (Settings[appList[i].applicationInfo.packageName + "/" + appList[i].name + "?hidden", false]) {

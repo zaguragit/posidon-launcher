@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -23,7 +22,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickColorNoAlpha
-import posidon.launcher.tools.Tools.animate
+import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.clearAnimation
 import posidon.launcher.tools.getStatusBarHeight
@@ -71,7 +70,7 @@ class Gallery : AppCompatActivity() {
             }
         }
         val loading = findViewById<ImageView>(R.id.loading)
-        animate(loading.drawable)
+        tryAnimate(loading.drawable)
         val gallery = findViewById<GridView>(R.id.gallery)
 
 
