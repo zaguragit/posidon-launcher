@@ -20,11 +20,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.R
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools.animate
+import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.centerCropWallpaper
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.ref.WeakReference
 
 class WallActivity : AppCompatActivity() {
     private var loading: ImageView? = null
@@ -42,7 +41,7 @@ class WallActivity : AppCompatActivity() {
             loading!!.visibility = View.GONE
             findViewById<View>(R.id.downloadbtn).visibility = View.GONE
         } else {
-            animate(loading!!.drawable)
+            tryAnimate(loading!!.drawable)
             index = extras.getInt("index")
             if (Gallery.walls[index].type == Wall.Type.SVG) {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.svg"

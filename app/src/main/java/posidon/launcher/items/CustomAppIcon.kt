@@ -36,7 +36,7 @@ class CustomAppIcon : AppCompatActivity() {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, null).apply {
                 try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.adaptic(this@CustomAppIcon, packageManager.getApplicationIcon("com.android.systemui"))
+                    Tools.adaptic(packageManager.getApplicationIcon("com.android.systemui"))
                 } else {
                     packageManager.getApplicationIcon("com.android.systemui")
                 }) }
@@ -76,7 +76,7 @@ class CustomAppIcon : AppCompatActivity() {
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName))
             iconPacks[i].icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Tools.adaptic(this, pacslist[i].loadIcon(packageManager))
+                Tools.adaptic(pacslist[i].loadIcon(packageManager))
             } else {
                 pacslist[i].loadIcon(packageManager)
             }
@@ -179,8 +179,8 @@ class CustomAppIcon : AppCompatActivity() {
 
             val intRes = themeRes.getIdentifier(searchResults[i], "drawable", iconPack)
             if (intRes != 0) {
-                viewHolder.icon.setImageDrawable(Tools.animate(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.adaptic(this@CustomAppIcon, themeRes.getDrawable(intRes))
+                viewHolder.icon.setImageDrawable(Tools.tryAnimate(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Tools.adaptic(themeRes.getDrawable(intRes))
                 } else {
                     themeRes.getDrawable(intRes)
                 }))
