@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.items.App
+import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
@@ -17,7 +18,7 @@ import posidon.launcher.tools.toBitmap
 
 internal class SearchAdapter(
     private val context: Context,
-    private val results: List<App>
+    private val results: List<LauncherItem>
 ) : BaseAdapter() {
 
     override fun getCount(): Int = results.size
@@ -51,7 +52,7 @@ internal class SearchAdapter(
         icon.setImageDrawable(app.icon)
         text.text = app.label
         text.setTextColor(Settings["searchtxtcolor", -0x1])
-        if (Settings["notif:badges", true] && app.notificationCount != 0) {
+        if (app is App && Settings["notif:badges", true] && app.notificationCount != 0) {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
             badge.text = app.notificationCount.toString()

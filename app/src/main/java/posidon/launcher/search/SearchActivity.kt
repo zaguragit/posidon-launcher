@@ -18,11 +18,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.BuildConfig
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.App
+import posidon.launcher.items.InternalItem
 import posidon.launcher.items.ItemLongPress
+import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.util.*
@@ -30,9 +31,11 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.pow
 
+private typealias D = Double
+
 class SearchActivity : AppCompatActivity() {
 
-    private val operators: MutableMap<String, Arithmetic> = HashMap()
+    private val operators: MutableMap<String, C> = HashMap()
     private lateinit var smartBox: View
     private lateinit var answerBox: View
     private lateinit var grid: GridView
@@ -173,7 +176,7 @@ class SearchActivity : AppCompatActivity() {
         }
         stillWantIP = false
         val showHidden = searchOptimize(string) == searchOptimize("hidden") || searchOptimize(string) == searchOptimize("hiddenapps")
-        val results = ArrayList<App>()
+        val results = ArrayList<LauncherItem>()
         findViewById<View>(R.id.fail).visibility = View.GONE
         for (app in Main.apps) {
             if (searchOptimize(app.label!!).contains(searchOptimize(string)) ||
@@ -192,34 +195,45 @@ class SearchActivity : AppCompatActivity() {
         }
         if (showHidden) {
             findViewById<View>(R.id.fail).visibility = View.GONE
-            val app = App(BuildConfig.APPLICATION_ID, HiddenAppsActivity::class.java.name)
-            app.label = "Hidden apps"
-            app.icon = getDrawable(R.drawable.hidden_apps)
+            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
+                startActivity(Intent(this, HiddenAppsActivity::class.java))
+            }
             results.add(app)
         }
         try {
             grid.adapter = SearchAdapter(this, results)
-            grid.onItemClickListener = OnItemClickListener { _, view, i, _ -> results[i].open(this@SearchActivity, view) }
+            grid.onItemClickListener = OnItemClickListener { _, view, i, _ ->
+                when (val r = results[i]) {
+                    is App -> r.open(this@SearchActivity, view)
+                    is InternalItem -> r.open()
+                }
+            }
             grid.onItemLongClickListener = ItemLongPress.search(this, results)
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         var isShowingSmartCard = false
         try {
             var tmp = string.trim { it <= ' ' }
-                    .replace(" ", "")
-                    .replace("=", "")
-                    .replace("-+", "-")
-                    .replace("+-", "-")
-                    .replace("++", "+")
-                    .replace("--", "+")
-            for (op in operators.keys) tmp = tmp.replace(op, " $op ")
-            if (tmp[1] == '-') tmp = "-" + tmp.substring(3)
+                .replace(" ", "")
+                .replace("=", "")
+                .replace("-+", "-")
+                .replace("+-", "-")
+                .replace("++", "+")
+                .replace("--", "+")
+            for (op in operators.keys) {
+                tmp = tmp.replace(op, " $op ")
+            }
+            if (tmp[1] == '-') {
+                tmp = "-" + tmp.substring(3)
+            }
             val math = tmp.toLowerCase().split(" ").toTypedArray()
             var bufferNum = java.lang.Double.valueOf(math[0])
             for (i in math.indices) {
                 try {
                     math[i].toDouble()
                 } catch (e: Exception) {
-                    bufferNum = operators[math[i]]!!.apply(bufferNum, java.lang.Double.valueOf(math[i + 1]))
+                    bufferNum = operators[math[i]]!!.a(bufferNum, java.lang.Double.valueOf(math[i + 1]))
                     smartBox.visibility = View.VISIBLE
                     isShowingSmartCard = true
                     grid.setPadding(0, bottomPaddingWhenSmartBoxIsShown, 0, 64.dp.toInt())
@@ -293,16 +307,16 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    internal interface Arithmetic { fun apply(x: Double, y: Double): Double }
-    internal class Add : Arithmetic { override fun apply(x: Double, y: Double): Double = x + y }
-    internal class Sub : Arithmetic { override fun apply(x: Double, y: Double): Double = x - y }
-    internal class Mul : Arithmetic { override fun apply(x: Double, y: Double): Double = x * y }
-    internal class Div : Arithmetic { override fun apply(x: Double, y: Double): Double = x / y }
-    internal class And : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() and y.toInt()).toDouble() }
-    internal class Or  : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() or y.toInt()).toDouble() }
-    internal class Xor : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() xor y.toInt()).toDouble() }
-    internal class Rem : Arithmetic { override fun apply(x: Double, y: Double): Double = (x.toInt() % y.toInt()).toDouble() }
-    internal class Pow : Arithmetic { override fun apply(x: Double, y: Double): Double = x.pow(y) }
+    private interface C { fun a(x: D, y: D): D }
+    private class Add : C { override fun a(x: D, y: D) = x + y }
+    private class Sub : C { override fun a(x: D, y: D) = x - y }
+    private class Mul : C { override fun a(x: D, y: D) = x * y }
+    private class Div : C { override fun a(x: D, y: D) = x / y }
+    private class And : C { override fun a(x: D, y: D) = (x.toInt() and y.toInt()).toDouble() }
+    private class Or  : C { override fun a(x: D, y: D) = (x.toInt() or  y.toInt()).toDouble() }
+    private class Xor : C { override fun a(x: D, y: D) = (x.toInt() xor y.toInt()).toDouble() }
+    private class Rem : C { override fun a(x: D, y: D) = (x.toInt() %   y.toInt()).toDouble() }
+    private class Pow : C { override fun a(x: D, y: D) = x.pow(y) }
 
     override fun onPause() {
         super.onPause()

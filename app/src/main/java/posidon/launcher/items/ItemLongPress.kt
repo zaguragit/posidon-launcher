@@ -235,9 +235,9 @@ object ItemLongPress {
         true
     }
 
-    fun search(activity: Activity, apps: ArrayList<App>) = OnItemLongClickListener { _, view, position, _ ->
-        if (currentPopup == null) try {
-            val app = apps[position]
+    fun search(activity: Activity, apps: ArrayList<LauncherItem>) = OnItemLongClickListener { _, view, i, _ ->
+        val app = apps[i]
+        if (currentPopup == null && app is App) try {
             val icon = view.findViewById<View>(R.id.iconimg)
             val location = IntArray(2)
             val popupWindow = popupWindow(activity, object : Methods {

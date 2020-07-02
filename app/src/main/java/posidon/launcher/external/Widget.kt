@@ -121,6 +121,8 @@ object Widget {
         val density = Tools.publicContext!!.resources.displayMetrics.density
         val width = (Device.displayWidth / density).toInt()
         val height = (newHeight / density).toInt()
-        hostView!!.updateAppWidgetSize(null, width, height, width, height)
+        try {
+            hostView!!.updateAppWidgetSize(null, width, height, width, height)
+        } catch (e: Exception) { e.printStackTrace() }
     }
 }
