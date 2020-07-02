@@ -89,8 +89,6 @@ class NotificationService : NotificationListenerService() {
                                 i++; continue
                             }
 
-                            showNotificationBadgeOnPackage(notification.packageName)
-
                             val group = ArrayList<Notification>()
                             if (notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
                                 val key = notification.groupKey
@@ -102,6 +100,7 @@ class NotificationService : NotificationListenerService() {
                                         last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
+                                        showNotificationBadgeOnPackage(notifications[i].packageName)
                                         group.add(formatNotification(notifications[i]))
                                         if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
                                     }
@@ -109,6 +108,7 @@ class NotificationService : NotificationListenerService() {
                                     i++
                                 }
                             } else {
+                                showNotificationBadgeOnPackage(notification.packageName)
                                 group.add(formatNotification(notification))
                                 notificationsAmount2++
                                 i++
@@ -130,8 +130,6 @@ class NotificationService : NotificationListenerService() {
                                 i++; continue
                             }
 
-                            showNotificationBadgeOnPackage(notification.packageName)
-
                             val group = ArrayList<Notification>()
                             val packageName = notification.packageName
                             var last: Bundle? = null
@@ -142,6 +140,7 @@ class NotificationService : NotificationListenerService() {
                                         last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
+                                    showNotificationBadgeOnPackage(notifications[i].packageName)
                                     group.add(formatNotification(notifications[i]))
                                     if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
                                 }

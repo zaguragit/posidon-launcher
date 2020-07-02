@@ -23,9 +23,7 @@ class DesktopMode : FragmentActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val menuBtn = findViewById<ImageView>(R.id.menuBtn)
         Tools.tryAnimate(menuBtn.drawable)
-        AppLoader(this) {
-
-        }.execute()
+        AppLoader(this) {}.execute()
     }
 
     fun showMenu(v: View?) = startActivity(Intent(this, AppList::class.java))
