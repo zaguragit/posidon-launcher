@@ -80,41 +80,43 @@ class Gallery : AppCompatActivity() {
                 val input = InputStreamReader(URL(REPO + INDEX_FILE).openStream())
                 val bufferReader = BufferedReader(input)
                 bufferReader.forEachLine {
-                    if (it.isEmpty()) {
-                        walls.add(currentWall)
-                        currentWall = Wall()
-                    } else {
-                        when (it[0]) {
-                            'n' -> currentWall.name = it.substring(2)
-                            'a' -> currentWall.author = it.substring(2)
-                            't' -> currentWall.type = when (it.substring(2)) {
-                                "svg" -> Wall.Type.SVG
-                                "varied" -> Wall.Type.Varied
-                                else -> Wall.Type.Bitmap
-                            }
-                            'd' -> {
-                                val dir = it.substring(2)
-                                val builder = StringBuilder(REPO).append(IMG_PATH).append(dir)
-                                when (currentWall.type) {
-                                    Wall.Type.Bitmap -> {
-                                        val stream = URL(builder.append("/thumb.jpg").toString()).openConnection().getInputStream()
-                                        currentWall.img = BitmapFactory.decodeStream(stream)
-                                        stream.close()
-                                        currentWall.url = dir
-                                    }
-                                    Wall.Type.SVG -> {
-                                        val stream = URL(builder.append("/img.svg").toString()).openConnection().getInputStream()
-                                        val drawable = Sharp.loadInputStream(stream).drawable
-                                        stream.close()
-                                        if (drawable != null) {
-                                            currentWall.img = drawable.toBitmap(420, (420f * drawable.intrinsicHeight / drawable.intrinsicWidth).toInt())
+                    try {
+                        if (it.isEmpty()) {
+                            walls.add(currentWall)
+                            currentWall = Wall()
+                        } else {
+                            when (it[0]) {
+                                'n' -> currentWall.name = it.substring(2)
+                                'a' -> currentWall.author = it.substring(2)
+                                't' -> currentWall.type = when (it.substring(2)) {
+                                    "svg" -> Wall.Type.SVG
+                                    "varied" -> Wall.Type.Varied
+                                    else -> Wall.Type.Bitmap
+                                }
+                                'd' -> {
+                                    val dir = it.substring(2)
+                                    val builder = StringBuilder(REPO).append(IMG_PATH).append(dir)
+                                    when (currentWall.type) {
+                                        Wall.Type.Bitmap -> {
+                                            val stream = URL(builder.append("/thumb.jpg").toString()).openConnection().getInputStream()
+                                            currentWall.img = BitmapFactory.decodeStream(stream)
+                                            stream.close()
+                                            currentWall.url = dir
                                         }
-                                        currentWall.url = dir
+                                        Wall.Type.SVG -> {
+                                            val stream = URL(builder.append("/img.svg").toString()).openConnection().getInputStream()
+                                            val drawable = Sharp.loadInputStream(stream).drawable
+                                            stream.close()
+                                            if (drawable != null) {
+                                                currentWall.img = drawable.toBitmap(420, (420f * drawable.intrinsicHeight / drawable.intrinsicWidth).toInt())
+                                            }
+                                            currentWall.url = dir
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
                 input.close()
                 runOnUiThread {

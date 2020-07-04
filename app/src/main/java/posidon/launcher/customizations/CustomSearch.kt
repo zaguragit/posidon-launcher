@@ -1,5 +1,6 @@
 package posidon.launcher.customizations
 
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,24 @@ class CustomSearch : AppCompatActivity() {
         findViewById<Switch>(R.id.asHome).isChecked = Settings["search:asHome", false]
 
         findViewById<SeekBar>(R.id.iconSizeSlider).progress = Settings["search:ic_size", 0]
+
+        findViewById<Switch>(R.id.blurswitch).isChecked = Settings["search:blur", true]
+        val rad = Settings["search:blur:rad", 15f].toInt()
+        val blurNum = findViewById<TextView>(R.id.blurNum).apply {
+            text = rad.toString()
+        }
+        findViewById<SeekBar>(R.id.blurSlider).run {
+            progress = rad
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    window.setBackgroundDrawable(BitmapDrawable(resources, Tools.blurredWall(progress.toFloat())))
+                    Settings["search:blur:rad"] = progress.toFloat()
+                    blurNum.text = progress.toString()
+                }
+            })
+        }
     }
 
     fun picksearchcolor(v: View) = ColorTools.pickColor(this, Settings["searchcolor", 0x33000000]) {
@@ -85,6 +104,7 @@ class CustomSearch : AppCompatActivity() {
         Settings.apply {
             putNotSave("search:asHome", findViewById<Switch>(R.id.asHome).isChecked)
             putNotSave("search:ic_size", findViewById<SeekBar>(R.id.iconSizeSlider).progress)
+            putNotSave("search:blur", findViewById<Switch>(R.id.blurswitch).isChecked)
             apply()
         }
         super.onPause()

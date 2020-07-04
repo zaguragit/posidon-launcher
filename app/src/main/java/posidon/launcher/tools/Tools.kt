@@ -297,11 +297,13 @@ object Tools {
         return Bitmap.createScaledBitmap(bitmap, initWidth, initHeight, true)
     }
 
-	inline fun canBlurWall(context: Context?) = Settings["blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    inline val canBlurDrawer get() = Settings["drawer:blur", true] && ContextCompat.checkSelfPermission(publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    inline val canBlurSearch get() = Settings["search:blur", true] && ContextCompat.checkSelfPermission(publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    //inline fun canBlurOverview(context: Context?) = Settings["drawer:blur", true] && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
-	fun blurredWall(context: Context, radius: Float): Bitmap? {
+	fun blurredWall(radius: Float): Bitmap? {
         try {
-            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(context).peekFastDrawable().toBitmap()
+            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(publicContext).peekFastDrawable().toBitmap()
             val displayWidth = Device.displayWidth
             val displayHeight = Device.displayHeight + navbarHeight
             when {
@@ -333,7 +335,7 @@ object Tools {
             catch (e: Exception) { e.printStackTrace() }
             return bitmap
         } catch (e: OutOfMemoryError) {
-            Toast.makeText(context, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(publicContext, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }

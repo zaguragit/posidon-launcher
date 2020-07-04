@@ -74,7 +74,11 @@ class LauncherMenu : OnLongClickListener {
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)
-            if (Tools.canBlurWall(context)) window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(context, Settings["blurradius", 15f])), context.getDrawable(R.drawable.black_gradient)))) else window.setBackgroundDrawableResource(R.drawable.black_gradient)
+            if (Tools.canBlurDrawer) {
+                window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(Settings["drawer:blur:rad", 15f])), context.getDrawable(R.drawable.black_gradient))))
+            } else {
+                window.setBackgroundDrawableResource(R.drawable.black_gradient)
+            }
             homescreen.setOnClickListener { dialog!!.dismiss() }
             dialog!!.setOnDismissListener { exit(homescreen, window, behavior) }
             dialog!!.show()
