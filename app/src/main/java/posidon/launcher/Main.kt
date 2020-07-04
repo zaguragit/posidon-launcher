@@ -44,9 +44,8 @@ import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.tryAnimate
-import posidon.launcher.tools.Tools.blurredWall
-import posidon.launcher.tools.Tools.canBlurWall
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
@@ -653,7 +652,7 @@ class Main : AppCompatActivity() {
                     }
                     colors[2] = Settings["drawer:background_color", -0x78000000]
                     floats[0] = dockHeight.toFloat() / (Device.displayHeight + dockHeight)
-                    things[0] = if (canBlurWall(this@Main)) Settings["blurLayers", 1] else 0
+                    things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
                     things[1] = Settings["dock:background_color", -0x78000000]
                     things[2] = Settings["dock:background_type", 0]
                     val tr = Settings["dockradius", 30].dp
@@ -894,13 +893,13 @@ class Main : AppCompatActivity() {
         if (Settings["notif:enabled", true]) {
             NotificationService.onUpdate()
         }
-        if (canBlurWall(this)) {
+        if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
-                val radius = Settings["blurradius", 15f]
+                val radius = Settings["drawer:blur:rad", 15f]
                 for (i in 0 until blurLayers) {
-                    val bmp = blurredWall(this@Main, radius / blurLayers * (i + 1))
+                    val bmp = Tools.blurredWall(radius / blurLayers * (i + 1))
                     val bd = FastBitmapDrawable(bmp)
                     if (shouldHide) bd.alpha = 0
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)

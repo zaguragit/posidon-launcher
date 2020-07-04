@@ -68,17 +68,17 @@ class CustomDrawer : AppCompatActivity() {
         findViewById<Spinner>(R.id.sortingOptions).data = resources.getStringArray(R.array.sortingAlgorithms)
         findViewById<Spinner>(R.id.sortingOptions).selectionI = Settings["drawer:sorting", 0]
 
-        findViewById<Switch>(R.id.blurswitch).isChecked = Settings["blur", true]
+        findViewById<Switch>(R.id.blurswitch).isChecked = Settings["drawer:blur", true]
         val blurSlider = findViewById<SeekBar>(R.id.blurSlider)
-        blurSlider.progress = Settings["blurradius", 15f].toInt()
+        blurSlider.progress = Settings["drawer:blur:rad", 15f].toInt()
         val blurNum = findViewById<TextView>(R.id.blurNum)
-        blurNum.text = Settings["blurradius", 15f].toInt().toString()
+        blurNum.text = Settings["drawer:blur:rad", 15f].toInt().toString()
         blurSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                window.setBackgroundDrawable(BitmapDrawable(resources, Tools.blurredWall(this@CustomDrawer, progress.toFloat())))
-                Settings["blurradius"] = progress.toFloat()
+                window.setBackgroundDrawable(BitmapDrawable(resources, Tools.blurredWall(progress.toFloat())))
+                Settings["drawer:blur:rad"] = progress.toFloat()
                 blurNum.text = progress.toString()
             }
         })
@@ -134,7 +134,7 @@ class CustomDrawer : AppCompatActivity() {
                 putNotSave("drawer:sec_name_pos", findViewById<Spinner>(R.id.sectionLetter).selectionI)
                 Main.shouldSetApps = true
             }
-            putNotSave("blur", findViewById<Switch>(R.id.blurswitch).isChecked)
+            putNotSave("drawer:blur", findViewById<Switch>(R.id.blurswitch).isChecked)
             apply()
         }
         super.onPause()

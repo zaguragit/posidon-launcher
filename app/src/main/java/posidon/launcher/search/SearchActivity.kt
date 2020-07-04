@@ -4,6 +4,9 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.graphics.drawable.shapes.RoundRectShape
@@ -68,15 +71,17 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-        var bg = ShapeDrawable()
-        val tr = Settings["searchradius", 0].dp
-        bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-        bg.paint.color = Settings["searchcolor", 0x33000000]
-        findViewById<View>(R.id.searchbar).background = bg
-        bg = ShapeDrawable()
-        bg.shape = RectShape()
-        bg.paint.color = Settings["searchUiBg", -0x78000000]
-        window.setBackgroundDrawable(bg)
+        findViewById<View>(R.id.searchbar).background = ShapeDrawable().apply {
+            val tr = Settings["searchradius", 0].dp
+            shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            paint.color = Settings["searchcolor", 0x33000000]
+        }
+        if (Tools.canBlurSearch) {
+            val arr = arrayOf(BitmapDrawable(Tools.blurredWall(Settings["search:blur:rad", 15f])), ColorDrawable(Settings["searchUiBg", -0x78000000]))
+            window.setBackgroundDrawable(LayerDrawable(arr))
+        } else {
+            window.setBackgroundDrawable(ColorDrawable(Settings["searchUiBg", -0x78000000]))
+        }
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         findViewById<TextView>(R.id.failtxt).setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
