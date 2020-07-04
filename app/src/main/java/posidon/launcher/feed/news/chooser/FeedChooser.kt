@@ -65,11 +65,6 @@ class FeedChooser : AppCompatActivity() {
         (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
     }
 
-    override fun onPause() {
-        super.onPause()
-        feedUrls.clear()
-    }
-
     companion object {
         const val defaultSources = "androidpolice.com/feed"
     }
