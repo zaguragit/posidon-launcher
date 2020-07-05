@@ -28,6 +28,7 @@ class CustomGestures : AppCompatActivity() {
                 Gestures.OPEN_APP_DRAWER -> 2
                 Gestures.OPEN_SEARCH -> 3
                 Gestures.OPEN_OVERVIEW -> 4
+                Gestures.REFRESH_FEED-> 5
                 else -> 0
             }
             setSelectionChangedListener {
@@ -36,6 +37,7 @@ class CustomGestures : AppCompatActivity() {
                     2 -> Gestures.OPEN_APP_DRAWER
                     3 -> Gestures.OPEN_SEARCH
                     4 -> Gestures.OPEN_OVERVIEW
+                    5 -> Gestures.REFRESH_FEED
                     else -> ""
                 }
             }
@@ -48,6 +50,7 @@ class CustomGestures : AppCompatActivity() {
                 Gestures.OPEN_APP_DRAWER -> 2
                 Gestures.OPEN_SEARCH -> 3
                 Gestures.OPEN_OVERVIEW -> 4
+                Gestures.REFRESH_FEED-> 5
                 else -> 0
             }
             setSelectionChangedListener {
@@ -56,6 +59,7 @@ class CustomGestures : AppCompatActivity() {
                     2 -> Gestures.OPEN_APP_DRAWER
                     3 -> Gestures.OPEN_SEARCH
                     4 -> Gestures.OPEN_OVERVIEW
+                    5 -> Gestures.REFRESH_FEED
                     else -> ""
                 }
             }
@@ -68,6 +72,7 @@ class CustomGestures : AppCompatActivity() {
                 Gestures.OPEN_APP_DRAWER -> 2
                 Gestures.OPEN_SEARCH -> 3
                 Gestures.OPEN_OVERVIEW -> 4
+                Gestures.REFRESH_FEED-> 5
                 else -> 0
             }
             setSelectionChangedListener {
@@ -76,6 +81,7 @@ class CustomGestures : AppCompatActivity() {
                     2 -> Gestures.OPEN_APP_DRAWER
                     3 -> Gestures.OPEN_SEARCH
                     4 -> Gestures.OPEN_OVERVIEW
+                    5 -> Gestures.REFRESH_FEED
                     else -> ""
                 }
             }
@@ -91,6 +97,7 @@ class CustomGestures : AppCompatActivity() {
                 Gestures.OPEN_APP_DRAWER -> 2
                 Gestures.OPEN_SEARCH -> 3
                 Gestures.OPEN_OVERVIEW -> 4
+                Gestures.REFRESH_FEED-> 5
                 else -> 0
             }
             setSelectionChangedListener {
@@ -99,6 +106,7 @@ class CustomGestures : AppCompatActivity() {
                     2 -> Gestures.OPEN_APP_DRAWER
                     3 -> Gestures.OPEN_SEARCH
                     4 -> Gestures.OPEN_OVERVIEW
+                    5 -> Gestures.REFRESH_FEED
                     else -> ""
                 }
             }
@@ -111,6 +119,7 @@ class CustomGestures : AppCompatActivity() {
                 Gestures.OPEN_APP_DRAWER -> 2
                 Gestures.OPEN_SEARCH -> 3
                 Gestures.OPEN_OVERVIEW -> 4
+                Gestures.REFRESH_FEED-> 5
                 else -> 0
             }
             setSelectionChangedListener {
@@ -119,6 +128,7 @@ class CustomGestures : AppCompatActivity() {
                     2 -> Gestures.OPEN_APP_DRAWER
                     3 -> Gestures.OPEN_SEARCH
                     4 -> Gestures.OPEN_OVERVIEW
+                    5 -> Gestures.REFRESH_FEED
                     else -> ""
                 }
             }

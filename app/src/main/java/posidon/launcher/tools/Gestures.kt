@@ -12,6 +12,7 @@ object Gestures {
     const val OPEN_APP_DRAWER = "drawer"
     const val OPEN_SEARCH = "search"
     const val OPEN_OVERVIEW = "overview"
+    const val REFRESH_FEED = "refresh"
 
     fun performTrigger(key: String) {
         when (key) {
@@ -19,6 +20,7 @@ object Gestures {
             OPEN_APP_DRAWER -> Main.instance.behavior.state = BottomDrawerBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.publicContext!!.startActivity(Intent(Tools.publicContext, SearchActivity::class.java))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
+            REFRESH_FEED -> Main.instance.updateFeed()
         }
     }
 }
