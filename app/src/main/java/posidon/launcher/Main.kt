@@ -511,6 +511,7 @@ class Main : AppCompatActivity() {
 
     private lateinit var desktop: NestedScrollView
     private lateinit var feedRecycler: RecyclerView
+    private lateinit var feedProgressBar: ProgressBar
 
     private lateinit var notifications: RecyclerView
     private lateinit var widgetLayout: ResizableLayout
@@ -707,6 +708,8 @@ class Main : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@Main)
             isNestedScrollingEnabled = false
         }
+        feedProgressBar = findViewById<ProgressBar>(R.id.feedProgressBar)
+        loadFeed()
 
         notifications = findViewById<RecyclerView>(R.id.notifications).apply {
             isNestedScrollingEnabled = false
@@ -862,11 +865,30 @@ class Main : AppCompatActivity() {
         setDock()
     }
 
+    fun updateFeed() {
+        feedProgressBar.visibility = VISIBLE
+        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
+            override fun onFinished(feedModels: ArrayList<FeedItem>) {
+                (feedRecycler.adapter as FeedAdapter).updateFeed(feedModels)
+                feedProgressBar.visibility = GONE
+            }
+        }).execute()
+    }
+
+    private fun loadFeed() {
+        feedProgressBar.indeterminateDrawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_IN );
+        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
+            override fun onFinished(feedModels: ArrayList<FeedItem>) {
+                feedRecycler.adapter = FeedAdapter(feedModels, this@Main)
+            }
+        }).execute()
+    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
         setDock()
+        loadFeed()
     }
 
     override fun onResume() {
@@ -885,11 +907,6 @@ class Main : AppCompatActivity() {
     private fun onUpdate() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
-        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
-            override fun onFinished(feedModels: ArrayList<FeedItem>) {
-                feedRecycler.adapter = FeedAdapter(feedModels, this@Main)
-            }
-        }).execute()
         if (Settings["notif:enabled", true]) {
             NotificationService.onUpdate()
         }

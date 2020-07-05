@@ -75,6 +75,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
+            <ProgressBar
+                android:id="@+id/feedProgressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/accent"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="gone" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/feedrecycler"
                 android:layout_width="match_parent"
