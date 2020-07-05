@@ -30,7 +30,7 @@ class Folder(string: String) : LauncherItem() {
     override fun toString(): String {
         val sb = StringBuilder()
         for (app in apps) {
-            sb.append("\t").append(app.packageName).append("/").append(app.name)
+            sb.append("\t").append(app.toString())
         }
         return "folder:$label$sb"
     }

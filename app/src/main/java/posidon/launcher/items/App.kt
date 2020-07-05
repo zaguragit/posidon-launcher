@@ -95,7 +95,7 @@ class App(
         d.show()
     }
 
-    override fun toString() = "$packageName/$name"
+    override fun toString() = "$packageName/$name/${userHandle.hashCode()}"
 
     inline fun isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
 
@@ -107,7 +107,12 @@ class App(
         operator fun get(component: String): App? {
             val a = component.split('/')
             val list = appsByName[a[0]] ?: return null
-            return list.find { it.name == a[1] }
+            return if (a.size == 3) list.find {
+                println("${it.userHandle.hashCode()} ${if (it.userHandle.hashCode() == a[2].toInt()) "==" else "!="} ${a[2]}")
+                it.name == a[1] && it.userHandle.hashCode() == a[2].toInt()
+            } else list.find {
+                it.name == a[1]
+            }
         }
 
         operator fun get(packageName: String, name: String): App? {
@@ -117,13 +122,15 @@ class App(
 
         fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
 
-        fun putInSecondMap(packageName: String, name: String, app: App) {
-            val list = appsByName2[packageName]
+        fun putInSecondMap(app: App) {
+            val list = appsByName2[app.packageName]
             if (list == null) {
-                appsByName2[packageName] = arrayListOf(app)
+                appsByName2[app.packageName] = arrayListOf(app)
                 return
             }
-            val thisAppI = list.indexOfFirst { it.name == name }
+            val thisAppI = list.indexOfFirst {
+                it.name == app.name && it.userHandle.hashCode() == app.userHandle.hashCode()
+            }
             if (thisAppI == -1) {
                 list.add(app)
                 return
