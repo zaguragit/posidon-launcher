@@ -53,6 +53,7 @@ import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.*
 import kotlin.system.exitProcess
@@ -866,8 +867,9 @@ class Main : AppCompatActivity() {
     }
 
     fun updateFeed() {
+        if (feedProgressBar.visibility == VISIBLE || !Settings["feed:enabled", true]) return
         feedProgressBar.visibility = VISIBLE
-        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
+        FeedLoader(object : FeedLoader.Listener {
             override fun onFinished(feedModels: ArrayList<FeedItem>) {
                 (feedRecycler.adapter as FeedAdapter).updateFeed(feedModels)
                 feedProgressBar.visibility = GONE
@@ -876,12 +878,11 @@ class Main : AppCompatActivity() {
     }
 
     private fun loadFeed() {
-        feedProgressBar.indeterminateDrawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_IN );
-        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
-            override fun onFinished(feedModels: ArrayList<FeedItem>) {
-                feedRecycler.adapter = FeedAdapter(feedModels, this@Main)
-            }
-        }).execute()
+        if (Settings["feed:enabled", true]) {
+            feedProgressBar.indeterminateDrawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_IN )
+            feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
+            updateFeed()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
