@@ -128,7 +128,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                 if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
                     Tools.tryAnimate(app.icon!!)
                 }
-                App.putInSecondMap(app.packageName, app.name!!, app)
+                App.putInSecondMap(app)
                 if (Settings[appList[i].applicationInfo.packageName + "/" + appList[i].name + "?hidden", false]) {
                     App.hidden.add(app)
                 } else {
