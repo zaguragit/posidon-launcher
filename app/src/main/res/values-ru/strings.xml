@@ -218,5 +218,6 @@
         <item>Открыть app drawer</item>
         <item>Открыть поиск</item>
         <item>Открыть обзор</item>
+        <item>Refresh feed</item>
     </array>
 </resources>

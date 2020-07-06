@@ -53,6 +53,7 @@ import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.*
 import kotlin.system.exitProcess
@@ -511,6 +512,7 @@ class Main : AppCompatActivity() {
 
     private lateinit var desktop: NestedScrollView
     private lateinit var feedRecycler: RecyclerView
+    private lateinit var feedProgressBar: ProgressBar
 
     private lateinit var notifications: RecyclerView
     private lateinit var widgetLayout: ResizableLayout
@@ -707,6 +709,8 @@ class Main : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@Main)
             isNestedScrollingEnabled = false
         }
+        feedProgressBar = findViewById<ProgressBar>(R.id.feedProgressBar)
+        loadFeed()
 
         notifications = findViewById<RecyclerView>(R.id.notifications).apply {
             isNestedScrollingEnabled = false
@@ -862,11 +866,30 @@ class Main : AppCompatActivity() {
         setDock()
     }
 
+    fun updateFeed() {
+        if (feedProgressBar.visibility == VISIBLE || !Settings["feed:enabled", true]) return
+        feedProgressBar.visibility = VISIBLE
+        FeedLoader(object : FeedLoader.Listener {
+            override fun onFinished(feedModels: ArrayList<FeedItem>) {
+                (feedRecycler.adapter as FeedAdapter).updateFeed(feedModels)
+                feedProgressBar.visibility = GONE
+            }
+        }).execute()
+    }
+
+    private fun loadFeed() {
+        if (Settings["feed:enabled", true]) {
+            feedProgressBar.indeterminateDrawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_IN )
+            feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
+            updateFeed()
+        }
+    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
         setDock()
+        loadFeed()
     }
 
     override fun onResume() {
@@ -885,11 +908,6 @@ class Main : AppCompatActivity() {
     private fun onUpdate() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
-        if (Settings["feed:enabled", true]) FeedLoader(object : FeedLoader.Listener {
-            override fun onFinished(feedModels: ArrayList<FeedItem>) {
-                feedRecycler.adapter = FeedAdapter(feedModels, this@Main)
-            }
-        }).execute()
         if (Settings["notif:enabled", true]) {
             NotificationService.onUpdate()
         }
