@@ -171,6 +171,12 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
 
     override fun getItemCount() = feedModels.size
 
+    fun updateFeed(feedModels: ArrayList<FeedItem>) {
+        this.feedModels.clear()
+        this.feedModels.addAll(feedModels)
+        this.notifyDataSetChanged()
+    }
+
     companion object {
         private val images: MutableMap<String?, Bitmap?> = HashMap()
     }

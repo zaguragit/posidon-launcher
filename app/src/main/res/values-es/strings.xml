@@ -219,5 +219,6 @@
         <item>Open app drawer</item>
         <item>Open search</item>
         <item>Open overview</item>
+        <item>Refresh feed</item>
     </array>
 </resources>
