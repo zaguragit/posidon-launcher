@@ -1,0 +1,8 @@
+- Added a gesture action to update the feed
+- Improved overscroll effect in app drawer
+- Tweaked icon theming
+- Added highlighting to sections while scrolling
+- Added an option to disable the media player, so that music notifications get treated like the other ones.
+- Added work profile apps to the app drawer
+- Added blur to search
+- Fixed a bunch of bugs
