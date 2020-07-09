@@ -242,10 +242,10 @@ class Main : AppCompatActivity() {
             findViewById<View>(R.id.drawercontent).layoutParams.height = metrics.heightPixels
             (findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
             if (Settings["feed:show_behind_dock", false]) {
-                (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, 0)
+                (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, 0)
                 findViewById<View>(R.id.desktopContent).setPadding(0, 0, 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
             } else {
-                (desktop.layoutParams as CoordinatorLayout.LayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
+                (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
                 findViewById<View>(R.id.desktopContent).setPadding(0, 6.dp.toInt(), 0, 24.dp.toInt())
             }
             if (Settings["dock:background_type", 0] == 1) {
@@ -357,6 +357,8 @@ class Main : AppCompatActivity() {
                 drawerGrid.numColumns = Settings["drawer:columns", 4]
                 drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
             }
+
+            feedProgressBar.indeterminateDrawable.setTint(accentColor)
             val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
             if (Settings["feed:enabled", true]) {
                 feedRecycler.visibility = VISIBLE
@@ -709,7 +711,7 @@ class Main : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@Main)
             isNestedScrollingEnabled = false
         }
-        feedProgressBar = findViewById<ProgressBar>(R.id.feedProgressBar)
+        feedProgressBar = findViewById(R.id.feedProgressBar)
         loadFeed()
 
         notifications = findViewById<RecyclerView>(R.id.notifications).apply {
@@ -869,17 +871,24 @@ class Main : AppCompatActivity() {
     fun updateFeed() {
         if (feedProgressBar.visibility == VISIBLE || !Settings["feed:enabled", true]) return
         feedProgressBar.visibility = VISIBLE
+        feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
         FeedLoader(object : FeedLoader.Listener {
             override fun onFinished(feedModels: ArrayList<FeedItem>) {
                 (feedRecycler.adapter as FeedAdapter).updateFeed(feedModels)
-                feedProgressBar.visibility = GONE
+                feedProgressBar.animate().translationY(-72.dp).alpha(0f).setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                    override fun onAnimationEnd(animation: Animator?) {
+                        feedProgressBar.visibility = GONE
+                    }
+                })
             }
         }).execute()
     }
 
     private fun loadFeed() {
         if (Settings["feed:enabled", true]) {
-            feedProgressBar.indeterminateDrawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_IN )
             feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
             updateFeed()
         }
