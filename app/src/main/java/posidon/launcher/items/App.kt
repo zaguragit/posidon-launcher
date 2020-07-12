@@ -108,7 +108,6 @@ class App(
             val a = component.split('/')
             val list = appsByName[a[0]] ?: return null
             return if (a.size == 3) list.find {
-                println("${it.userHandle.hashCode()} ${if (it.userHandle.hashCode() == a[2].toInt()) "==" else "!="} ${a[2]}")
                 it.name == a[1] && it.userHandle.hashCode() == a[2].toInt()
             } else list.find {
                 it.name == a[1]
