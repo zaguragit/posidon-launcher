@@ -104,26 +104,27 @@ class CustomAppIcon : AppCompatActivity() {
         override fun getView(position: Int, cv: View?, parent: ViewGroup): View? {
             var convertView = cv
             val viewHolder: ViewHolder
-            val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (convertView == null) {
+                val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 convertView = li.inflate(R.layout.list_item, null)
                 viewHolder = ViewHolder(
                     convertView.findViewById(R.id.iconimg),
                     convertView.findViewById(R.id.icontxt))
+                viewHolder.text.visibility = View.VISIBLE
+                viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
+                convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
+                    val appSize = when (Settings["icsize", 1]) {
+                        0 -> 64.dp.toInt()
+                        2 -> 84.dp.toInt()
+                        else -> 74.dp.toInt()
+                    }
+                    width = appSize
+                    height = appSize
+                }
                 convertView.tag = viewHolder
             } else viewHolder = convertView.tag as ViewHolder
             viewHolder.icon.setImageDrawable(iconPacks[position].icon)
             viewHolder.text.text = iconPacks[position].label
-            viewHolder.text.visibility = View.VISIBLE
-            viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
-            var appSize = 0
-            when (Settings["icsize", 1]) {
-                0 -> appSize = 64.dp.toInt()
-                1 -> appSize = 74.dp.toInt()
-                2 -> appSize = 84.dp.toInt()
-            }
-            viewHolder.icon.layoutParams.height = appSize
-            viewHolder.icon.layoutParams.width = appSize
             return convertView
         }
     }
@@ -163,7 +164,7 @@ class CustomAppIcon : AppCompatActivity() {
                 convertView = LayoutInflater.from(this@CustomAppIcon).inflate(R.layout.drawer_item, null)
                 viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg))
                 convertView.findViewById<View>(R.id.icontxt).visibility = View.GONE
-                viewHolder.icon.layoutParams.run {
+                convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
                     val appSize = when (Settings["icsize", 1]) {
                         0 -> 64.dp.toInt()
                         2 -> 84.dp.toInt()

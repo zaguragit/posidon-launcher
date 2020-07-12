@@ -131,31 +131,26 @@ class SearchActivity : AppCompatActivity() {
         operators["^"] = pow
 
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
-            //println("search: " + event.action)
-            //println("search.y: " + event.y)
             when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
-                    val objs = event.localState as Array<*>
-                    val icon = objs[1] as View
+                    val icon = event.localState as View
                     val location = IntArray(2)
                     icon.getLocationOnScreen(location)
-                    val x = abs(event.x - location[0] - icon.width / 2f)
-                    val y = abs(event.y - location[1] - icon.height / 2f)
-                    if (x > icon.width / 2f || y > icon.height / 2f) {
-                        (objs[2] as PopupWindow).dismiss()
+                    val y = abs(event.y - location[1])
+                    if (y > icon.height / 3.5f) {
+                        ItemLongPress.currentPopup?.dismiss()
                         finish()
                     }
                     true
                 }
                 DragEvent.ACTION_DRAG_STARTED -> {
-                    ((event.localState as Array<*>)[1] as View).visibility = View.INVISIBLE
+                    (event.localState as View).visibility = View.INVISIBLE
                     true
                 }
                 DragEvent.ACTION_DRAG_ENDED -> {
-                    val objs = event.localState as Array<*>
-                    (objs[1] as View).visibility = View.VISIBLE
-                    (objs[2] as PopupWindow).isFocusable = true
-                    (objs[2] as PopupWindow).update()
+                    (event.localState as View).visibility = View.VISIBLE
+                    ItemLongPress.currentPopup?.isFocusable = true
+                    ItemLongPress.currentPopup?.update()
                     true
                 }
                 else -> false

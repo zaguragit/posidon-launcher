@@ -111,10 +111,10 @@ class Main : AppCompatActivity() {
                     val bgColor = Settings["folderBG", -0x22eeeded]
                     val r = Settings["folderCornerRadius", 18].dp
                     val labelsEnabled = Settings["folderLabelsEnabled", false]
-                    view.setOnClickListener { if (!Folder.currentlyOpen) {
-                        Folder.currentlyOpen = true
+                    view.setOnClickListener { if (Folder.currentlyOpen == null) {
                         val content = LayoutInflater.from(this@Main).inflate(R.layout.folder_layout, null)
                         val popupWindow = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+                        Folder.currentlyOpen = popupWindow
                         popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
                         val container = content.findViewById<GridLayout>(R.id.container)
                         container.columnCount = Settings["folderColumns", 3]
@@ -162,12 +162,11 @@ class Main : AppCompatActivity() {
                                     popupWindow.dismiss()
                                 }
                                 appIcon.setOnLongClickListener(ItemLongPress.insideFolder(this@Main, app, finalI, view, i1, popupWindow))
-                                //appIcon.setOnLongClickListener(ItemLongPress.insideFolderNew(this@Main, app, finalI, view, i1, popupWindow))
                                 container.addView(appIcon)
                             }
                             i1++
                         }
-                        popupWindow.setOnDismissListener { Folder.currentlyOpen = false }
+                        popupWindow.setOnDismissListener { Folder.currentlyOpen = null }
                         val bg = ShapeDrawable()
                         bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                         bg.paint.color = bgColor
@@ -181,6 +180,42 @@ class Main : AppCompatActivity() {
                         var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
                         if (Settings["dock:search:below_apps", false] && !isTablet) {
                             y += 68.dp.toInt()
+                        }
+                        popupWindow.contentView.setOnDragListener { _, event ->
+                            when (event.action) {
+                                DragEvent.ACTION_DRAG_LOCATION -> {
+                                    val view = event.localState as View?
+                                    if (view != null) {
+                                        val location = IntArray(2)
+                                        view.getLocationInWindow(location)
+                                        println("loc: ${location[1]}")
+                                        println("drag: ${event.y}")
+                                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
+                                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
+                                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
+                                            ItemLongPress.currentPopup?.dismiss()
+                                            Folder.currentlyOpen?.dismiss()
+                                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                                        }
+                                    }
+                                }
+                                DragEvent.ACTION_DRAG_STARTED -> {
+                                    (event.localState as View).visibility = View.INVISIBLE
+                                }
+                                DragEvent.ACTION_DRAG_ENDED -> {
+                                    (event.localState as View).visibility = View.VISIBLE
+                                    ItemLongPress.currentPopup?.isFocusable = true
+                                    ItemLongPress.currentPopup?.update()
+                                }
+                                DragEvent.ACTION_DROP -> {
+                                    val i = event.clipData.getItemAt(0).text.toString().toInt(16)
+                                    val folderI = event.clipData.getItemAt(1).text.toString().toInt(16)
+                                    val f = Dock[i] as Folder
+                                    App[event.clipData.description.label.toString()]?.let { app -> f.apps.add(folderI, app) }
+                                    Dock[i] = if (f.apps.size == 1) f.apps[0] else f
+                                }
+                            }
+                            true
                         }
                         popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
                     }}
@@ -257,33 +292,32 @@ class Main : AppCompatActivity() {
             window.decorView.setOnDragListener { _, event ->
                 when (event.action) {
                     DragEvent.ACTION_DRAG_LOCATION -> {
-                        val objs = event.localState as Array<*>
-                        val view = objs[1] as View
-                        val location = IntArray(2)
-                        view.getLocationOnScreen(location)
-                        println("loc: ${location[0]}, ${location[1]}")
-                        println("drag: ${event.x}, ${event.y}")
-                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
-                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
-                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
-                            (objs[2] as PopupWindow).dismiss()
-                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                        val view = event.localState as View?
+                        if (view != null) {
+                            val location = IntArray(2)
+                            view.getLocationOnScreen(location)
+                            val x = abs(event.x - location[0] - view.measuredWidth / 2f)
+                            val y = abs(event.y - location[1] - view.measuredHeight / 2f)
+                            if (x > view.width / 3.5f || y > view.height / 3.5f) {
+                                ItemLongPress.currentPopup?.dismiss()
+                                Folder.currentlyOpen?.dismiss()
+                                behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            }
                         }
                     }
                     DragEvent.ACTION_DRAG_STARTED -> {
-                        ((event.localState as Array<*>)[1] as View).visibility = INVISIBLE
+                        (event.localState as View?)?.visibility = INVISIBLE
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
-                        val objs = event.localState as Array<*>
-                        (objs[1] as View).visibility = VISIBLE
-                        (objs[2] as PopupWindow).isFocusable = true
-                        (objs[2] as PopupWindow).update()
+                        (event.localState as View?)?.visibility = VISIBLE
+                        ItemLongPress.currentPopup?.isFocusable = true
+                        ItemLongPress.currentPopup?.update()
                     }
                     DragEvent.ACTION_DROP -> {
-                        ((event.localState as Array<*>)[1] as View).visibility = VISIBLE
+                        (event.localState as View?)?.visibility = VISIBLE
                         if (behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
                             if (event.y > Device.displayHeight - dockHeight) {
-                                val item = (event.localState as Array<*>)[0] as LauncherItem
+                                val item = LauncherItem(event.clipData.description.label.toString())!!
                                 val location = IntArray(2)
                                 var i = 0
                                 while (i < container.childCount) {

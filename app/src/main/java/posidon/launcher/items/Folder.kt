@@ -3,6 +3,7 @@ package posidon.launcher.items
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
+import android.widget.PopupWindow
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.clone
@@ -91,6 +92,6 @@ class Folder(string: String) : LauncherItem() {
     }
 
     companion object {
-        var currentlyOpen = false
+        var currentlyOpen: PopupWindow? = null
     }
 }

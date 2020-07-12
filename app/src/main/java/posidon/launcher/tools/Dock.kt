@@ -46,12 +46,7 @@ object Dock {
     }
 
     operator fun get(i: Int): LauncherItem? {
-        val string = Settings.getString("dock:icon:$i") ?: return null
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
-            string.startsWith("folder:") -> Folder(string)
-            else -> App[string]
-        }
+        return LauncherItem(Settings.getString("dock:icon:$i") ?: return null)
     }
 
     operator fun iterator() = object : Iterator<LauncherItem?> {
