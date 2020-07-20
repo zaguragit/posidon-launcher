@@ -8,7 +8,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Switch
+import posidon.launcher.view.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -78,6 +78,16 @@ class Tutorial : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
+            }
+            checkDone()
+        } else
+            Toast.makeText(this, "Storage access already granted", Toast.LENGTH_LONG).show()
+    }
+
+    fun grantContactsAccess(v: View) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 0)
             }
             checkDone()
         } else
@@ -190,10 +200,15 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
-        findViewById<Switch>(R.id.enableNews).setOnCheckedChangeListener { _, checked -> Settings.apply {
-            putNotSave("feed:enabled", checked)
-            apply()
-        }}
+        findViewById<Switch>(R.id.enableNews).apply {
+            accentColor = resources.getColor(R.color.secondaryAccent)
+            setOnCheckedChangeListener { _, checked ->
+                Settings.apply {
+                    putNotSave("feed:enabled", checked)
+                    apply()
+                }
+            }
+        }
         Tools.updateNavbarHeight(this)
     }
 
