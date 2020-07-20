@@ -9,14 +9,14 @@
     <string name="columns">Столбы</string>
 
     <string name="settings_title">Персонализация</string>
-    <string name="settings_title_apps">Список приложений</string>
+    <string name="settings_title_drawer">Список приложений</string>
     <string name="settings_title_desktop">Лента</string>
     <string name="settings_title_clock_format">Время</string>
     <string name="settings_title_search">Поиск</string>
     <string name="settings_title_dev">Разработчики</string>
     <string name="settings_title_dock">Док</string>
     <string name="settings_title_feed">Лента</string>
-    <string name="settings_title_ui">Тема</string>
+    <string name="settings_title_theme">Тема</string>
     <string name="settings_title_other">Другое</string>
     <string name="settings_title_icons">Иконки</string>
 
@@ -168,6 +168,12 @@
     <string name="github">GitHub</string>
     <string name="duckduckgo_results">Результаты DuckDuckGo</string>
     <string name="media_player">Медиа-плейер</string>
+    <string name="show_feed_spinner">Show feed spinner</string>
+    <string name="stack_results_from_bottom">Stack results from bottom</string>
+    <string name="airplane_mode">Airplane mode</string>
+    <string name="power_usage">Power usage</string>
+    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
+    <string name="device_info">Device info</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

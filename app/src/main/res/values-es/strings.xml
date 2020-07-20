@@ -10,14 +10,14 @@
     <string name="columns">Columnas</string>
 
     <string name="settings_title">Personalizacion</string>
-    <string name="settings_title_apps">Cajon de apps</string>
+    <string name="settings_title_drawer">Cajon de apps</string>
     <string name="settings_title_desktop">Feed</string>
     <string name="settings_title_clock_format">Reloj</string>
     <string name="settings_title_search">Busqueda</string>
     <string name="settings_title_dev">Desarrollador</string>
     <string name="settings_title_dock">Dock</string>
     <string name="settings_title_feed">Feed</string>
-    <string name="settings_title_ui">Tema</string>
+    <string name="settings_title_theme">Tema</string>
     <string name="settings_title_other">Otro</string>
     <string name="settings_title_icons">Iconos</string>
 
@@ -169,6 +169,12 @@
     <string name="github">GitHub</string>
     <string name="duckduckgo_results">resultados DuckDuckGo</string>
     <string name="media_player">Media player</string>
+    <string name="show_feed_spinner">Show feed spinner</string>
+    <string name="stack_results_from_bottom">Stack results from bottom</string>
+    <string name="airplane_mode">Airplane mode</string>
+    <string name="power_usage">Power usage</string>
+    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
+    <string name="device_info">Device info</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

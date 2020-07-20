@@ -1,10 +1,8 @@
 package posidon.launcher.items
 
-import android.content.pm.LauncherApps
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.GridLayout
@@ -12,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -25,89 +24,98 @@ class AddShortcutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.add_shortcut_activity)
-        val launcherApps = getSystemService(LauncherApps::class.java)!!
-        val shortcut = launcherApps.getPinItemRequest(intent).shortcutInfo
+        val shortcut = Main.launcherApps.getPinItemRequest(intent).shortcutInfo
         if (shortcut != null) {
-            Main.launcherApps.pinShortcuts(shortcut.`package`, ArrayList<String>().apply { add(shortcut.id) }, Process.myUserHandle())
+            Main.launcherApps.pinShortcuts(
+                shortcut.`package`,
+                listOf(shortcut.id),
+                Process.myUserHandle()
+            )
         }
 
         findViewById<View>(R.id.docksearchbar).visibility = View.GONE
         findViewById<View>(R.id.battery).visibility = View.GONE
 
-        var appSize = 0
-        when (Settings["dockicsize", 1]) {
-            0 -> appSize = 64.dp.toInt()
-            1 -> appSize = 74.dp.toInt()
-            2 -> appSize = 84.dp.toInt()
-        }
-        val data = Settings["dock", ""].split("\n").toTypedArray()
         val container = findViewById<GridLayout>(R.id.dockContainer)
         container.removeAllViews()
         val columnCount = Settings["dock:columns", 5]
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
+        val notifBadgesEnabled = Settings["notif:badges", true]
         container.columnCount = columnCount
         container.rowCount = rowCount
-        appSize = min(appSize, ((Device.displayWidth - 32.dp) / columnCount).toInt())
+        val appSize = min(when (Settings["dockicsize", 1]) {
+            0 -> 64.dp.toInt()
+            2 -> 84.dp.toInt()
+            else -> 74.dp.toInt()
+        }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
         var i = 0
-        while (i < data.size && i < columnCount * rowCount) {
-            val string = data[i]
+        while (i < columnCount * rowCount) {
             val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
             val img = view.findViewById<ImageView>(R.id.iconimg)
-            img.layoutParams.height = appSize
-            img.layoutParams.width = appSize
-            if (data[i].startsWith("folder:")) {
-                val folder = Folder(data[i])
-                img.setImageDrawable(folder.icon)
+            view.findViewById<View>(R.id.iconFrame).run {
+                layoutParams.height = appSize
+                layoutParams.width = appSize
+            }
+            val item = Dock[i]
+            if (item is Folder) {
+                img.setImageDrawable(item.icon)
                 if (showLabels) {
-                    view.findViewById<TextView>(R.id.icontxt).text = folder.label
+                    view.findViewById<TextView>(R.id.icontxt).text = item.label
                     view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                } else view.findViewById<View>(R.id.icontxt).visibility = View.GONE
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && data[i].startsWith("shortcut:")) {
-                val shortcut = Shortcut(string)
-                if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = View.GONE
-                if (Tools.isInstalled(shortcut.packageName, packageManager)) {
+                }
+                if (notifBadgesEnabled) {
+                    var notificationCount = 0
+                    for (app in item.apps) {
+                        notificationCount += app.notificationCount
+                    }
+                    if (notificationCount != 0) {
+                        val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                        badge.visibility = View.VISIBLE
+                        badge.text = notificationCount.toString()
+                        badge.background = ColorTools.iconBadge(Main.accentColor)
+                        badge.setTextColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
+                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+            } else if (item is Shortcut) {
+                if (item.isInstalled(packageManager)) {
                     if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = shortcut.label
+                        view.findViewById<TextView>(R.id.icontxt).text = item.label
                         view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
-                    img.setImageDrawable(shortcut.icon)
+                    img.setImageDrawable(item.icon)
                 } else {
                     Dock[i] = null
                 }
-            } else {
-                val app = App[string]
-                if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = View.GONE
-                if (app == null) {
-                    if (!Tools.isInstalled(string.split('/')[0], packageManager)) {
-                        Dock[i] = null
-                    }
-                } else {
-                    if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = app.label
-                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                    }
-                    img.setImageDrawable(app.icon)
+            } else if (item is App) {
+                if (!item.isInstalled(packageManager)) {
+                    Dock[i] = null
+                    continue
                 }
+                if (showLabels) {
+                    view.findViewById<TextView>(R.id.icontxt).text = item.label
+                    view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
+                }
+                if (notifBadgesEnabled && item.notificationCount != 0) {
+                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                    badge.visibility = View.VISIBLE
+                    badge.text = item.notificationCount.toString()
+                    Palette.from(item.icon!!.toBitmap()).generate {
+                        val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
+                        badge.background = ColorTools.iconBadge(color)
+                        badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                    }
+                } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                img.setImageDrawable(item.icon)
             }
             view.setOnClickListener {
                 Dock.add(Shortcut(shortcut!!), i)
                 Main.setDock()
-                //finish()
+                finishAffinity()
             }
             container.addView(view)
             i++
         }
-        while (i < columnCount * rowCount) {
-            val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
-            val img = view.findViewById<ImageView>(R.id.iconimg)
-            img.layoutParams.height = appSize
-            img.layoutParams.width = appSize
-            if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = View.GONE
-            container.addView(view)
-            i++
-        }
-        val containerHeight = appSize * rowCount + if (Settings["dockLabelsEnabled", false]) (18.dp * rowCount).toInt() else 0
-        container.layoutParams.height = containerHeight
+        container.layoutParams.height = appSize * rowCount + if (Settings["dockLabelsEnabled", false]) (18.dp * rowCount).toInt() else 0
     }
 }

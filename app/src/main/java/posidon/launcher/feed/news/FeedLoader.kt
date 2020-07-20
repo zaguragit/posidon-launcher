@@ -10,18 +10,27 @@ import posidon.launcher.storage.Settings
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
-class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean>() {
+class FeedLoader(
+    private val onFinished: (items: ArrayList<FeedItem>) -> Unit
+) : AsyncTask<Unit, Unit, Boolean>() {
 
     private val feedModels: ArrayList<FeedItem> = ArrayList()
     val deleted = Settings.getStrings("feed:deleted_articles")
     val pullParserFactory = XmlPullParserFactory.newInstance()
 
     companion object {
-        private val endStrings = arrayOf("", "/feed", "/rss", "/feed.xml", "/rss.xml", "/atom", "/atom.xml")
+        private val endStrings = arrayOf("",
+            "/feed",
+            "/rss",
+            "/feed.xml",
+            "/rss.xml",
+            "/atom",
+            "/atom.xml")
     }
 
     override fun doInBackground(vararg Units: Unit): Boolean? {
@@ -82,11 +91,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
     }
 
     override fun onPostExecute(success: Boolean?) {
-        if (success!!) listener.onFinished(feedModels)
-    }
-
-    interface Listener {
-        fun onFinished(feedModels: ArrayList<FeedItem>)
+        if (success!!) onFinished(feedModels)
     }
 
     fun urlToName(url: String): String {
@@ -105,7 +110,7 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
         var title: String? = null
         var link: String? = null
         var img: String? = null
-        var date: String? = null
+        var time: Date? = null
         var isItem = 0
         inputStream.use {
             val parser: XmlPullParser = pullParserFactory.newPullParser()
@@ -124,13 +129,13 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                                     for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
                                         show = false; break
                                     }
-                                    if (show) feedModels.add(FeedItem(title!!, link!!, img, date, source))
-                                } else feedModels.add(FeedItem(title!!, link!!, img, date, source))
+                                    if (show) feedModels.add(FeedItem(title!!, link!!, img, time!!, source))
+                                } else feedModels.add(FeedItem(title!!, link!!, img, time!!, source))
                             }
                             title = null
                             link = null
                             img = null
-                            date = null
+                            time = null
                         }
                     }
                     XmlPullParser.START_TAG -> when {
@@ -139,7 +144,11 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                         isItem == 1 -> when { //RSS
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
-                            name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
+                            name.equals("pubDate", ignoreCase = true) -> {
+                                val text = getText(parser).trim()
+                                val format = SimpleDateFormat("ccc, dd MMM yyyy HH:mm:ss Z", Locale.ROOT)
+                                time = try { format.parse(text.replace("GMT", "+0000"))!! } catch (e: Exception) { Date(0) }
+                            }
                             img == null -> when (name) {
                                 "description", "content:encoded" -> {
                                     val result = getText(parser)
@@ -168,7 +177,12 @@ class FeedLoader(private val listener: Listener) : AsyncTask<Unit, Unit, Boolean
                         isItem == 2 -> when { //Atom
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("id", ignoreCase = true) -> link = getText(parser)
-                            name.equals("pubDate", ignoreCase = true) -> date = getText(parser)
+                            name.equals("published", ignoreCase = true) ||
+                            name.equals("updated", ignoreCase = true)-> {
+                                val text = getText(parser).trim()
+                                val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
+                                time = try { format.parse(text)!! } catch (e: Exception) { Date(0) }
+                            }
                             (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true)) && img == null -> {
                                 val result = getText(parser)
                                 if (result.contains("src=\"")) {

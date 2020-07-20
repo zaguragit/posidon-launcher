@@ -4,8 +4,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 
 open class LauncherItem {
-    var icon: Drawable? = null
-    var label: String? = null
+    open var icon: Drawable? = null
+    open var label: String? = null
 
     companion object {
         operator fun invoke(string: String): LauncherItem? {

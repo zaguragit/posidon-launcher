@@ -77,7 +77,7 @@
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_drawer"
                 android:onClick="openApps"
-                android:text="@string/settings_title_apps"
+                android:text="@string/settings_title_drawer"
                 android:layout_marginTop="12dp"/>
             <TextView
                 style="@style/customcategory"
@@ -108,7 +108,7 @@
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_theme"
                 android:onClick="openTheme"
-                android:text="@string/settings_title_ui" />
+                android:text="@string/settings_title_theme" />
             <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_gestures"

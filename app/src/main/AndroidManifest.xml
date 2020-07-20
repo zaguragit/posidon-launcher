@@ -125,19 +125,39 @@
         <activity
             android:name=".customizations.CustomDrawer"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
-        <activity
-            android:name=".customizations.CustomDock"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.DRAWER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".customizations.CustomHome"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.FEED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".customizations.CustomNotifications"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.NOTIFICATIONS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".customizations.CustomDock"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.DOCK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".feed.news.chooser.FeedChooser"
             android:configChanges="keyboardHidden|screenSize|orientation"
@@ -147,21 +167,41 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomSearch"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
-        <activity
             android:name=".customizations.CustomFolders"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.FOLDERS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".customizations.CustomSearch"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.SEARCH"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".customizations.CustomTheme"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.THEME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".customizations.CustomGestures"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.GESTURES"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".customizations.IconPackPicker"
             android:configChanges="keyboardHidden|screenSize|orientation"
@@ -205,7 +245,9 @@
             android:taskAffinity="posidon.launcher.wall.Gallery"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/wallgallery">
-            <intent-filter><action android:name="android.intent.action.MAIN" /></intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".wall.WallActivity"
