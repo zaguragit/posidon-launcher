@@ -40,9 +40,11 @@ class CustomSearch : AppCompatActivity() {
         findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorCircle(Settings["searchhintcolor", -0x1])
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
 
+        findViewById<SeekBar>(R.id.iconSizeSlider).progress = Settings["search:ic_size", 0]
+
         findViewById<Switch>(R.id.asHome).isChecked = Settings["search:asHome", false]
 
-        findViewById<SeekBar>(R.id.iconSizeSlider).progress = Settings["search:ic_size", 0]
+        findViewById<Switch>(R.id.stackFromBottom).isChecked = Settings["search:start_from_bottom", false]
 
         findViewById<Switch>(R.id.blurswitch).isChecked = Settings["search:blur", true]
         val rad = Settings["search:blur:rad", 15f].toInt()
@@ -102,9 +104,10 @@ class CustomSearch : AppCompatActivity() {
         Main.setDockSearchbarBelowApps(findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked)
         Main.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
         Settings.apply {
-            putNotSave("search:asHome", findViewById<Switch>(R.id.asHome).isChecked)
             putNotSave("search:ic_size", findViewById<SeekBar>(R.id.iconSizeSlider).progress)
             putNotSave("search:blur", findViewById<Switch>(R.id.blurswitch).isChecked)
+            putNotSave("search:start_from_bottom", findViewById<Switch>(R.id.stackFromBottom).isChecked)
+            putNotSave("search:asHome", findViewById<Switch>(R.id.asHome).isChecked)
             apply()
         }
         super.onPause()

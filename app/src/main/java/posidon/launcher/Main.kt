@@ -904,11 +904,11 @@ class Main : AppCompatActivity() {
 
     fun updateFeed() {
         if (feedProgressBar.visibility == VISIBLE || !Settings["feed:enabled", true]) return
-        feedProgressBar.visibility = VISIBLE
-        feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
-        FeedLoader(object : FeedLoader.Listener {
-            override fun onFinished(feedModels: ArrayList<FeedItem>) {
-                (feedRecycler.adapter as FeedAdapter).updateFeed(feedModels)
+        if (Settings["feed:show_spinner", true]) {
+            feedProgressBar.visibility = VISIBLE
+            feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
+            FeedLoader {
+                (feedRecycler.adapter as FeedAdapter).updateFeed(it)
                 feedProgressBar.animate().translationY(-72.dp).alpha(0f).setListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {}
                     override fun onAnimationCancel(animation: Animator?) {}
@@ -917,8 +917,10 @@ class Main : AppCompatActivity() {
                         feedProgressBar.visibility = GONE
                     }
                 })
-            }
-        }).execute()
+            }.execute()
+        } else FeedLoader {
+            (feedRecycler.adapter as FeedAdapter).updateFeed(it)
+        }.execute()
     }
 
     private fun loadFeed() {

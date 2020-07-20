@@ -23,6 +23,7 @@ import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import java.lang.ref.WeakReference
 import kotlin.math.*
@@ -496,27 +497,33 @@ object Tools {
         return publicContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
     }
 
-    inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.01f)) / 0.4).toFloat()
+    inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.065f)) / 0.4).toFloat()
 
     fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
-        val layers = if (isWork) {
+        val drawable = if (isWork) {
             val badge = publicContext!!.resources.getDrawable(R.drawable.work_badge, publicContext!!.theme)
             badge.setTint(Main.accentColor)
             badge.setTintMode(PorterDuff.Mode.MULTIPLY)
-            arrayOf(icon, badge)
-        } else arrayOf(icon)
-        val drawable = LayerDrawable(layers)
+            badge(icon, badge, when (Settings["icsize", 1]) {
+                0 -> 64; 2 -> 84; else -> 74
+            })
+        } else LayerDrawable(arrayOf(icon)).apply {
+            val diameter = max(intrinsicWidth, intrinsicHeight)
+            val p = 8 * diameter / when (Settings["icsize", 1]) {
+                0 -> 64; 2 -> 84; else -> 74
+            }
+            setLayerInset(0, p, p, p, p)
+        }
+        return drawable
+    }
+
+    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): LayerDrawable {
+        val drawable = LayerDrawable(arrayOf(icon, badge))
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
-        val p = 8 * diameter / when (Settings["icsize", 1]) {
-            0 -> 64; 2 -> 84; else -> 74
-        }
+        val p = 8 * diameter / icSizeDP
         drawable.setLayerInset(0, p, p, p, p)
-        if (isWork) {
-            val o = diameter - (20.sp * diameter / when (Settings["icsize", 1]) {
-                0 -> 64.dp; 2 -> 84.dp; else -> 74.dp
-            }).toInt()
-            drawable.setLayerInset(1, o, o, 0, 0)
-        }
+        val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
+        drawable.setLayerInset(1, o, o, 0, 0)
         return drawable
     }
 }

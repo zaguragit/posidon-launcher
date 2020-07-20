@@ -120,6 +120,8 @@ class CustomHome : AppCompatActivity() {
             }
         }
 
+        findViewById<Switch>(R.id.showFeedSpinner).isChecked = Settings["feed:show_spinner", true]
+
         Main.customized = true
     }
 
@@ -175,6 +177,7 @@ class CustomHome : AppCompatActivity() {
             putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
+            putNotSave("feed:show_spinner", findViewById<Switch>(R.id.showFeedSpinner).isChecked)
             apply()
         }
         super.onPause()

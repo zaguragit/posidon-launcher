@@ -87,7 +87,7 @@
                 android:id="@+id/feedProgressBar"
                 style="@style/Widget.AppCompat.ProgressBar"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="72dp"
                 android:indeterminateDrawable="@drawable/progress"
                 android:indeterminateDuration="500"

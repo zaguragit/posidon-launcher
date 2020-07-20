@@ -83,7 +83,7 @@
                 android:gravity="center_horizontal"
                 android:drawableTop="@drawable/custom_drawer"
                 android:onClick="openApps"
-                android:text="@string/settings_title_apps"
+                android:text="@string/settings_title_drawer"
                 android:padding="12dp"
                 android:paddingStart="12dp"/>
             <TextView
@@ -143,7 +143,7 @@
                 android:drawableTop="@drawable/custom_theme"
                 android:gravity="center_horizontal"
                 android:onClick="openTheme"
-                android:text="@string/settings_title_ui"
+                android:text="@string/settings_title_theme"
                 android:padding="12dp"
                 android:paddingStart="12dp"/>
             <TextView

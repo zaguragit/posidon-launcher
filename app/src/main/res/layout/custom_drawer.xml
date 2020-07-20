@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
                 android:gravity="center"
-                android:text="@string/settings_title_apps"
+                android:text="@string/settings_title_drawer"
                 android:textColor="#ffffff"
                 android:textSize="32sp"/>
             <LinearLayout

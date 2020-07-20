@@ -2,21 +2,21 @@ package posidon.launcher.tools
 
 import android.graphics.Color
 import androidx.palette.graphics.Palette
-import posidon.launcher.items.App
+import posidon.launcher.items.LauncherItem
 
 object Sort {
 
-    fun labelSort(apps: Array<App?>) {
+    fun <T : LauncherItem> labelSort(items: Array<T?>) {
         var i = 0
         var j: Int
-        var temp: App
-        while (i < apps.size - 1) {
+        var temp: T
+        while (i < items.size - 1) {
             j = i + 1
-            while (j < apps.size) {
-                if (apps[i]!!.label!!.compareTo(apps[j]!!.label!!, ignoreCase = true) > 0) {
-                    temp = apps[i]!!
-                    apps[i] = apps[j]
-                    apps[j] = temp
+            while (j < items.size) {
+                if (items[i]!!.label!!.compareTo(items[j]!!.label!!, ignoreCase = true) > 0) {
+                    temp = items[i]!!
+                    items[i] = items[j]
+                    items[j] = temp
                 }
                 j++
             }
@@ -24,17 +24,17 @@ object Sort {
         }
     }
 
-    fun labelSort(apps: ArrayList<App>) {
+    fun <T : LauncherItem> labelSort(items: ArrayList<T>) {
         var i = 0
         var j: Int
-        var temp: App
-        while (i < apps.size - 1) {
+        var temp: T
+        while (i < items.size - 1) {
             j = i + 1
-            while (j < apps.size) {
-                if (apps[i].label!!.compareTo(apps[j].label!!, ignoreCase = true) > 0) {
-                    temp = apps[i]
-                    apps[i] = apps[j]
-                    apps[j] = temp
+            while (j < items.size) {
+                if (items[i].label!!.compareTo(items[j].label!!, ignoreCase = true) > 0) {
+                    temp = items[i]
+                    items[i] = items[j]
+                    items[j] = temp
                 }
                 j++
             }
@@ -42,21 +42,21 @@ object Sort {
         }
     }
 
-    fun colorSort(apps: Array<App?>) {
+    fun <T : LauncherItem> colorSort(items: Array<T?>) {
         var i = 0
         var j: Int
-        var temp: App
+        var temp: T
         val iHsv = floatArrayOf(0f , 0f, 0f)
         val jHsv = floatArrayOf(0f , 0f, 0f)
-        while (i < apps.size - 1) {
+        while (i < items.size - 1) {
             j = i + 1
-            while (j < apps.size) {
-                Color.colorToHSV(Palette.from(apps[i]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
-                Color.colorToHSV(Palette.from(apps[j]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
+            while (j < items.size) {
+                Color.colorToHSV(Palette.from(items[i]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
+                Color.colorToHSV(Palette.from(items[j]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
                 if (iHsv[0] < jHsv[0]) {
-                    temp = apps[i]!!
-                    apps[i] = apps[j]
-                    apps[j] = temp
+                    temp = items[i]!!
+                    items[i] = items[j]
+                    items[j] = temp
                 }
                 j++
             }
@@ -64,21 +64,21 @@ object Sort {
         }
     }
 
-    fun colorSort(apps: ArrayList<App?>) {
+    fun <T : LauncherItem> colorSort(items: ArrayList<T?>) {
         var i = 0
         var j: Int
-        var temp: App
+        var temp: T
         val iHsv = floatArrayOf(0f , 0f, 0f)
         val jHsv = floatArrayOf(0f , 0f, 0f)
-        while (i < apps.size - 1) {
+        while (i < items.size - 1) {
             j = i + 1
-            while (j < apps.size) {
-                Color.colorToHSV(Palette.from(apps[i]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
-                Color.colorToHSV(Palette.from(apps[j]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
+            while (j < items.size) {
+                Color.colorToHSV(Palette.from(items[i]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
+                Color.colorToHSV(Palette.from(items[j]!!.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
                 if (iHsv[0] < jHsv[0]) {
-                    temp = apps[i]!!
-                    apps[i] = apps[j]
-                    apps[j] = temp
+                    temp = items[i]!!
+                    items[i] = items[j]
+                    items[j] = temp
                 }
                 j++
             }

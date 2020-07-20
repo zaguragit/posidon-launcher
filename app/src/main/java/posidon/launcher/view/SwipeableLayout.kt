@@ -121,7 +121,7 @@ class SwipeableLayout(
                                 }
                             }
                             interpolator = SpringInterpolator()
-                            duration = 210L
+                            duration = 350L
                             addListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationCancel(animation: Animator?) {}
@@ -129,7 +129,7 @@ class SwipeableLayout(
                                 override fun onAnimationEnd(animation: Animator?) { backView.clipBounds = Rect(0, 0, 0, 0) }
                             })
                         }.start()
-                        frontView.animate().translationX(0f).setInterpolator(SpringInterpolator()).duration = 210L
+                        frontView.animate().translationX(0f).setInterpolator(SpringInterpolator()).duration = 350L
                     }
                 }
                 xOffset = 0f

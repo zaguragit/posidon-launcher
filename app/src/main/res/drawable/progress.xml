@@ -5,8 +5,8 @@
     android:pivotY="50%"
     android:toDegrees="360">
     <vector
-        android:width="64dp"
-        android:height="64dp"
+        android:width="48dp"
+        android:height="48dp"
         android:viewportWidth="67.73333"
         android:viewportHeight="67.73334">
         <path

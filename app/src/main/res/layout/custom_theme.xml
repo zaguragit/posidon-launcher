@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
                 android:gravity="center"
-                android:text="@string/settings_title_ui"
+                android:text="@string/settings_title_theme"
                 android:textColor="#ffffff"
                 android:textSize="32sp"/>
             <LinearLayout

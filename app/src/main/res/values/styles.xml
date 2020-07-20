@@ -159,8 +159,12 @@
         <item name="android:windowBackground">@color/hiddenAppsBG</item>
     </style>
 
-    <style name="floatingScreen" parent="Theme.AppCompat.NoActionBar">
+    <style name="floatingScreen" parent="Theme.AppCompat">
+        <item name="android:windowFrame">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/black_gradient</item>
+        <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>

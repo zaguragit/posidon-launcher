@@ -125,9 +125,9 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     app.icon = Tools.adaptic(app.icon!!)
                 }
                 app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
-                if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
+                if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) try {
                     Tools.tryAnimate(app.icon!!)
-                }
+                } catch (e: Exception) {}
                 App.putInSecondMap(app)
                 if (Settings[appList[i].applicationInfo.packageName + "/" + appList[i].name + "?hidden", false]) {
                     App.hidden.add(app)
