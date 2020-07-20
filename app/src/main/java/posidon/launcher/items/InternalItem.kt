@@ -3,9 +3,9 @@ package posidon.launcher.items
 import android.graphics.drawable.Drawable
 
 class InternalItem(
-        label: String,
-        icon: Drawable?,
-        val open: () -> Unit
+    label: String,
+    icon: Drawable?,
+    val open: () -> Unit
 ) : LauncherItem() {
 
     init {

@@ -1,7 +1,9 @@
 package posidon.launcher.search
 
+import android.Manifest
 import android.app.ActivityOptions
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
@@ -21,6 +23,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.items.*
@@ -202,7 +205,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-        try {
+        kotlin.runCatching {
             val settingList = SettingsItem.getList()
             for (setting in settingList) {
                 if (searchOptimize(setting.label!!).contains(searchOptimize(string)) ||
@@ -219,7 +222,25 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             }
-        } catch (e: Exception) {}
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) kotlin.runCatching {
+            val contactList = ContactItem.getList()
+            for (contact in contactList) {
+                if (searchOptimize(contact.label!!).contains(searchOptimize(string)) ||
+                    contact.label!!.contains(string) ||
+                    searchOptimize(contact.phone).contains(searchOptimize(string)) ||
+                    contact.phone.contains(string)) {
+                    results.add(contact)
+                    continue
+                }
+                for (word in contact.label!!.split(' ', '-')) {
+                    if (searchOptimize(word).contains(searchOptimize(string)) || word.contains(string)) {
+                        results.add(contact)
+                        break
+                    }
+                }
+            }
+        }
         if (showHidden) {
             findViewById<View>(R.id.fail).visibility = View.GONE
             val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
@@ -235,6 +256,7 @@ class SearchActivity : AppCompatActivity() {
                     is App -> r.open(this@SearchActivity, view)
                     is InternalItem -> r.open()
                     is SettingsItem -> r.open()
+                    is ContactItem -> r.open()
                 }
             }
             grid.onItemLongClickListener = ItemLongPress.search(this, results)

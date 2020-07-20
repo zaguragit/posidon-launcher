@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.items.App
+import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
@@ -47,16 +48,19 @@ internal class SearchAdapter(
         val icon = holder.icon
         val iconFrame = holder.iconFrame
         val text = holder.text
-        val app = results[position]
-
-        icon.setImageDrawable(app.icon)
-        text.text = app.label
+        val item = results[position]
+        if (item is ContactItem && item.icon == null) {
+            icon.setImageURI(item.iconUri)
+        } else {
+            icon.setImageDrawable(item.icon)
+        }
+        text.text = item.label
         text.setTextColor(Settings["searchtxtcolor", -0x1])
-        if (app is App && Settings["notif:badges", true] && app.notificationCount != 0) {
+        if (item is App && Settings["notif:badges", true] && item.notificationCount != 0) {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
-            badge.text = app.notificationCount.toString()
-            Palette.from(app.icon!!.toBitmap()).generate {
+            badge.text = item.notificationCount.toString()
+            Palette.from(item.icon!!.toBitmap()).generate {
                 val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
                 badge.background = ColorTools.iconBadge(color)
                 badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())

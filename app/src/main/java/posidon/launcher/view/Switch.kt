@@ -12,7 +12,18 @@ import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 
 
-class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(context, attrs) {
+class Switch(
+    context: Context?,
+    attrs: AttributeSet?
+) : android.widget.Switch(context, attrs) {
+
+    var accentColor = Main.accentColor
+        set(value) {
+            field = value
+            trackDrawable = generateTrackDrawable()
+            thumbDrawable = generateThumbDrawable()
+            refreshDrawableState()
+        }
 
     init {
         trackDrawable = generateTrackDrawable()
@@ -26,7 +37,7 @@ class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(co
 
     private fun generateThumbDrawable(): StateListDrawable {
         val out = StateListDrawable()
-        out.addState(intArrayOf(android.R.attr.state_checked), generateCircle(Main.accentColor))
+        out.addState(intArrayOf(android.R.attr.state_checked), generateCircle(accentColor))
         out.addState(StateSet.WILD_CARD, generateCircle(0xff252627.toInt()))
         return out
     }
@@ -41,7 +52,7 @@ class Switch(context: Context?, attrs: AttributeSet?) : android.widget.Switch(co
 
     private fun generateTrackDrawable(): StateListDrawable {
         val out = StateListDrawable()
-        out.addState(intArrayOf(android.R.attr.state_checked), generateBG(Main.accentColor and 0x00ffffff or 0x55000000))
+        out.addState(intArrayOf(android.R.attr.state_checked), generateBG(accentColor and 0x00ffffff or 0x55000000))
         out.addState(StateSet.WILD_CARD, generateBG(0xff08090a.toInt()))
         return out
     }

@@ -33,14 +33,14 @@
                     android:gravity="center"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/accent"
+                    android:textColor="@color/cardtitle"
                     android:text="@string/notification_access"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:textSize="18sp"
-                    android:textColor="#dddddd"
+                    android:textColor="@color/cardtxt"
                     android:text="@string/permission_notifications_description"/>
                 <TextView
                     android:onClick="grantNotificationAccess"
@@ -50,7 +50,7 @@
                     android:minWidth="64dp"
                     android:gravity="center_horizontal"
                     android:background="@drawable/button_bg_round"
-                    android:backgroundTint="@color/accent"
+                    android:backgroundTint="@color/secondaryAccent"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:paddingRight="30dp"
@@ -74,14 +74,14 @@
                     android:gravity="center"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/accent"
+                    android:textColor="@color/cardtitle"
                     android:text="@string/storage_access"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:textSize="18sp"
-                    android:textColor="#dddddd"
+                    android:textColor="@color/cardtxt"
                     android:text="@string/permission_storage_description"/>
                 <TextView
                     android:onClick="grantStorageAccess"
@@ -91,7 +91,48 @@
                     android:minWidth="64dp"
                     android:gravity="center_horizontal"
                     android:background="@drawable/button_bg_round"
-                    android:backgroundTint="@color/accent"
+                    android:backgroundTint="@color/secondaryAccent"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="30dp"
+                    android:paddingLeft="30dp"
+                    android:textSize="16sp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="#ddeeff"
+                    android:text="@string/grant"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:id="@+id/contactsCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="18dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/cardtitle"
+                    android:text="@string/contacts_access"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textSize="18sp"
+                    android:textColor="@color/cardtxt"
+                    android:text="@string/permission_contacts_description"/>
+                <TextView
+                    android:onClick="grantContactsAccess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:backgroundTint="@color/secondaryAccent"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:paddingRight="30dp"

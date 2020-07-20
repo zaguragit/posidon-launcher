@@ -23,10 +23,10 @@ import androidx.palette.graphics.Palette
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import java.lang.ref.WeakReference
 import kotlin.math.*
+import kotlin.random.Random
 
 object Tools {
 
@@ -525,6 +525,36 @@ object Tools {
         val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
         return drawable
+    }
+
+    private val pics = HashMap<Int, Drawable>()
+    fun generateContactPicture(name: String): Drawable = pics[(name[0].toInt() shl 16) + name[1].toInt()] ?: let {
+        val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val random = Random((name[0].toInt() shl 16) + name[1].toInt())
+        canvas.drawColor(Color.HSVToColor(180, floatArrayOf(
+            random.nextFloat() * 360,
+            (random.nextInt(4000) + 5000) / 10000f,
+            (random.nextInt(3000) + 5000) / 10000f
+        )))
+        val textP = Paint().apply {
+            color = 0xffffffff.toInt()
+            textAlign = Paint.Align.CENTER
+            typeface = publicContext!!.mainFont
+            textSize = 64f
+            isAntiAlias = true
+        }
+        val x = canvas.width / 2f
+        val y = (canvas.height / 2f - (textP.descent() + textP.ascent()) / 2f)
+        canvas.drawText(name[0].toString(), x, y, textP)
+        val icShape = Settings["icshape", 4]
+        if (icShape != 3) {
+            canvas.drawPath(getAdaptiveIconPath(icShape, 108, 108), Paint().apply {
+                isAntiAlias = true
+                xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+            })
+        }
+        badgeMaybe(BitmapDrawable(publicContext!!.resources, bitmap), false)
     }
 }
 
