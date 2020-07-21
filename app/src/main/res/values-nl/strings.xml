@@ -10,7 +10,6 @@
 
     <string name="settings_title">Aanpassingen</string>
     <string name="settings_title_drawer">App-lijst</string>
-    <string name="settings_title_desktop">Feed</string>
     <string name="settings_title_clock_format">Klok</string>
     <string name="settings_title_search">Zoeken</string>
     <string name="settings_title_dev">Ontwikkelaar</string>

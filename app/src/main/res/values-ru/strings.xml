@@ -10,7 +10,6 @@
 
     <string name="settings_title">Персонализация</string>
     <string name="settings_title_drawer">Список приложений</string>
-    <string name="settings_title_desktop">Лента</string>
     <string name="settings_title_clock_format">Время</string>
     <string name="settings_title_search">Поиск</string>
     <string name="settings_title_dev">Разработчики</string>

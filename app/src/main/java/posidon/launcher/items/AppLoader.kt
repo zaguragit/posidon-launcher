@@ -112,7 +112,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                         app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
                     } catch (e: Exception) { e.printStackTrace() }
                 }
-                val customIcon = Settings["app:" + app.packageName + ":icon", ""]
+                val customIcon = Settings["app:$app:icon", ""]
                 if (customIcon != "") {
                     try {
                         val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
@@ -136,70 +136,6 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                 }
             }
         }
-        /*
-        for (i in appList.indices) {
-            val app = App(appList[i].activityInfo.packageName, appList[i].activityInfo.name)
-            app.icon = appList[i].loadIcon(packageManager)
-            var customLabel = Settings[app.packageName + "/" + app.name + "?label", appList[i].loadLabel(packageManager).toString()]
-            if (customLabel.isEmpty()) {
-                Settings[app.packageName + "/" + app.name + "?label"] = appList[i].loadLabel(packageManager).toString()
-                customLabel = appList[i].loadLabel(packageManager).toString()
-            }
-            app.label = customLabel
-            var intres = 0
-            val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
-            if (iconResource != null) {
-                intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
-            }
-            if (intres != 0) {
-                try { app.icon = themeRes!!.getDrawable(intres) }
-                catch (e: Exception) { e.printStackTrace() }
-            } else if (areUnthemedIconsChanged) {
-                try {
-                    var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                    app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
-                    app.icon!!.draw(Canvas(orig))
-                    val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                    val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                    val canvas = Canvas(scaledBitmap)
-                    if (back != null) {
-                        canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
-                    }
-                    val origCanv = Canvas(scaledOrig)
-                    orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
-                    origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
-                    if (mask != null) {
-                        origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
-                    }
-                    canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
-                    if (front != null) {
-                        canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
-                    }
-                    app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
-                } catch (e: Exception) { e.printStackTrace() }
-            }
-            val customIcon = Settings["app:" + app.packageName + ":icon", ""]
-            if (customIcon != "") {
-                try {
-                    val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
-                    val t = packageManager.getResourcesForApplication(data[0])
-                    val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                    app.icon = t.getDrawable(intRes)
-                } catch (e: Exception) { e.printStackTrace() }
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                app.icon = Tools.adaptic(context.get()!!, app.icon!!)
-            }
-            if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
-                Tools.animate(app.icon!!)
-            }
-            App.putInSecondMap(app.packageName, app.name!!, app)
-            if (Settings[appList[i].activityInfo.packageName + "/" + appList[i].activityInfo.name + "?hidden", false]) {
-                App.hidden.add(app)
-            } else {
-                tmpApps.add(app)
-            }
-        }*/
         if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith(Comparator { o1, o2 ->
             val iHsv = floatArrayOf(0f, 0f, 0f)
             val jHsv = floatArrayOf(0f, 0f, 0f)

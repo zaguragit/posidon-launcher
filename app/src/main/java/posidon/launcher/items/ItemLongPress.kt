@@ -302,10 +302,16 @@ object ItemLongPress {
                     val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
                     val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
                     editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(folder.icon)
-                    editContent.findViewById<View>(R.id.edit).visibility = View.GONE
+                    editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
+                        val intent = Intent(context, CustomAppIcon::class.java)
+                        intent.putExtra("key", "folder:${folder.uid}:icon")
+                        context.startActivity(intent)
+                        editWindow.dismiss()
+                    }
                     editLabel.setText(folder.label)
                     editWindow.setOnDismissListener {
                         folder.label = editLabel.text.toString().replace('\t', ' ')
+                        Settings["folder:${folder.uid}:label"] = folder.label
                         Dock[i] = folder
                         Main.setDock()
                     }
@@ -340,7 +346,7 @@ object ItemLongPress {
         editContent.findViewById<View>(R.id.edit).backgroundTintList = ColorStateList.valueOf(Palette.from(app.icon!!.toBitmap()).generate().let { it.getDarkVibrantColor(it.getDarkMutedColor(0xff1155ff.toInt())) })
         editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
             val intent = Intent(context, CustomAppIcon::class.java)
-            intent.putExtra("packageName", app.packageName)
+            intent.putExtra("key", "app:$app:icon")
             context.startActivity(intent)
             editWindow.dismiss()
         }
