@@ -45,7 +45,9 @@ object Dock {
 
     operator fun get(i: Int) = Settings.getString("dock:icon:$i")?.let { LauncherItem(it).apply {
         if (this is Folder && uid.length != 8) {
+            val label = uid
             uid = Tools.generateUid()
+            Settings["folder:$uid:label"] = label
             Dock[i] = this
         }
     }}
