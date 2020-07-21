@@ -23,7 +23,7 @@ import posidon.launcher.tools.dp
 class CustomAppIcon : AppCompatActivity() {
 
     private val iconPacks = ArrayList<App>()
-    private lateinit var app: String
+    private lateinit var key: String
     private lateinit var gridView: GridView
     private lateinit var defaultOption: View
     private lateinit var searchBar: EditText
@@ -43,7 +43,7 @@ class CustomAppIcon : AppCompatActivity() {
                 catch (ignore: Exception) {}
                 findViewById<TextView>(R.id.icontxt).text = "Default"
                 setOnClickListener {
-                    Settings["app:$app:icon"] = ""
+                    Settings[key] = ""
                     finish()
                 }
                 defaultOption = this
@@ -68,7 +68,7 @@ class CustomAppIcon : AppCompatActivity() {
         })
         window.decorView.setBackgroundColor(0x55111213)
 
-        app = intent.extras!!.getString("packageName", null)
+        key = intent.extras!!.getString("key", null)
 
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory("com.anddoes.launcher.THEME")
@@ -186,7 +186,7 @@ class CustomAppIcon : AppCompatActivity() {
                     themeRes.getDrawable(intRes)
                 }))
                 viewHolder.icon.setOnClickListener {
-                    Settings["app:$app:icon"] = "ref:$iconPack|${searchResults[i]}"
+                    Settings[key] = "ref:$iconPack|${searchResults[i]}"
                     Main.shouldSetApps = true
                     finish()
                 }

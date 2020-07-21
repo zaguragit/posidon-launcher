@@ -556,6 +556,17 @@ object Tools {
         }
         badgeMaybe(BitmapDrawable(publicContext!!.resources, bitmap), false)
     }
+
+    private var uidCounter = -1
+    fun generateUid(): String {
+        if (uidCounter == -1) {
+            uidCounter = Settings["folder:uids:count", 0]
+        }
+        val str = uidCounter++.toString(16).padStart(8, '_')
+        Settings["folder:uids:count"] = uidCounter
+        return str
+    }
+
 }
 
 inline fun Activity.applyFontSetting() {

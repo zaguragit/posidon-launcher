@@ -83,7 +83,7 @@
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_feed"
                 android:onClick="openHome"
-                android:text="@string/settings_title_desktop" />
+                android:text="@string/settings_title_feed" />
             <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_notifications"

@@ -10,7 +10,6 @@
 
     <string name="settings_title">Customizations</string>
     <string name="settings_title_drawer">App drawer</string>
-    <string name="settings_title_desktop">Feed</string>
     <string name="settings_title_clock_format">Clock</string>
     <string name="settings_title_search">Search</string>
     <string name="settings_title_dev">Developer</string>

@@ -3,10 +3,10 @@ package posidon.launcher.items
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
+import android.os.Build
 import android.widget.PopupWindow
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.clone
 import posidon.launcher.tools.toBitmap
 import kotlin.collections.ArrayList
 import kotlin.math.min
@@ -15,17 +15,35 @@ class Folder(string: String) : LauncherItem() {
 
     val apps = ArrayList<App>()
 
+    var uid: String
+
     init {
         println(string)
         val appsList = string.substring(7, string.length).split('\t')
-        label = appsList[0]
+        uid = appsList[0]
         for (i in 1 until appsList.size) {
             val app = App[appsList[i]]
             if (app != null) {
                 apps.add(app)
             }
         }
-        icon = icon(Tools.publicContext!!)
+
+        label = Settings["folder:$uid:label", "folder"]
+
+        val customIcon = Settings["folder:$uid:icon", ""]
+        icon = if (customIcon != "") {
+            try {
+                val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
+                val t = Tools.publicContext!!.packageManager.getResourcesForApplication(data[0])
+                val intRes = t.getIdentifier(data[1], "drawable", data[0])
+                Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Tools.adaptic(t.getDrawable(intRes))
+                } else t.getDrawable(intRes), false)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                icon(Tools.publicContext!!)
+            }
+        } else icon(Tools.publicContext!!)
     }
 
     override fun toString(): String {
@@ -33,7 +51,7 @@ class Folder(string: String) : LauncherItem() {
         for (app in apps) {
             sb.append("\t").append(app.toString())
         }
-        return "folder:$label$sb"
+        return "folder:$uid$sb"
     }
 
     private fun icon(context: Context): Drawable? {

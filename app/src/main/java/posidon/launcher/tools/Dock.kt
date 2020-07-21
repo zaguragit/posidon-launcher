@@ -20,7 +20,7 @@ object Dock {
             item is App || item is Shortcut -> {
                 if (data.startsWith("folder:"))
                     Settings["dock:icon:$i"] = "folder:" + data.substring(7, data.length) + "\t" + item.toString()
-                else Settings["dock:icon:$i"] = "folder:folder\t$data\t$item"
+                else Settings["dock:icon:$i"] = "folder:${Tools.generateUid()}\t$data\t$item"
             }
             item is Folder -> {
                 var folderContent = item.toString().substring(7, item.toString().length)
@@ -33,7 +33,6 @@ object Dock {
     }
 
     fun convert() {
-        println("converting")
         val data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
         for (i in data.indices) {
             val string = data[i] ?: continue
@@ -42,12 +41,14 @@ object Dock {
                 else -> string
             }
         }
-        println("converted")
     }
 
-    operator fun get(i: Int): LauncherItem? {
-        return LauncherItem(Settings.getString("dock:icon:$i") ?: return null)
-    }
+    operator fun get(i: Int) = Settings.getString("dock:icon:$i")?.let { LauncherItem(it).apply {
+        if (this is Folder && uid.length != 8) {
+            uid = Tools.generateUid()
+            Dock[i] = this
+        }
+    }}
 
     operator fun iterator() = object : Iterator<LauncherItem?> {
 

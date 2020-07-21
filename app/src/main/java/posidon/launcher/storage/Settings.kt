@@ -77,11 +77,6 @@ object Settings {
                     bools = it.bools
                     strings = it.strings
                     lists = it.lists
-                } else if (it is posidon.launcher.tools.Settings.SettingsFile) {
-                    ints = it.ints
-                    floats = it.floats
-                    bools = it.bools
-                    strings = it.strings
                 }
             } else {
                 ints = HashMap()
@@ -104,13 +99,6 @@ object Settings {
             bools = it.bools
             strings = it.strings
             lists = it.lists
-            Main.customized = true
-            Main.shouldSetApps = true
-        } else if (it is posidon.launcher.tools.Settings.SettingsFile) {
-            ints = it.ints
-            floats = it.floats
-            bools = it.bools
-            strings = it.strings
             Main.customized = true
             Main.shouldSetApps = true
         }
