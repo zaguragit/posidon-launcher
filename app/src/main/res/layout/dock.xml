@@ -16,8 +16,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:onClick="openSearch"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
         <ImageView
@@ -44,13 +42,16 @@
             android:layout_marginEnd="8dp"
             android:progressDrawable="@drawable/battery_bar"/>
     </LinearLayout>
-    <GridLayout
-        android:id="@+id/dockContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"/>
+    <FrameLayout
+        android:id="@+id/dockContainerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <GridLayout
+            android:id="@+id/dockContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"/>
+    </FrameLayout>
 </LinearLayout>

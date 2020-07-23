@@ -127,6 +127,7 @@
     <string name="choose_a_launcher">Escoger un launcher</string>
     <string name="launchers">Launchers</string>
     <string name="horizontal_margin">Margen horizontal</string>
+    <string name="vertical_margin">Margen vertical</string>
     <string name="value_of_pi">Valor de π</string>
     <string name="settings_title_news">Noticias</string>
     <string name="show_behind_dock">Mostrar detrás del dock</string>
@@ -191,6 +192,8 @@
     <array name="bgModes">
         <item>solido</item>
         <item>brillo inferior</item>
+        <item>floating</item>
+        <item>floating split</item>
     </array>
 
     <array name="notificationGrouping">

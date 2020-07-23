@@ -30,12 +30,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.dock.*
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Widget
 import posidon.launcher.external.Widget.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.Widget.REQUEST_PICK_APPWIDGET
 import posidon.launcher.feed.news.FeedAdapter
-import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
@@ -188,8 +188,6 @@ class Main : AppCompatActivity() {
                                     if (view != null) {
                                         val location = IntArray(2)
                                         view.getLocationInWindow(location)
-                                        println("loc: ${location[1]}")
-                                        println("drag: ${event.y}")
                                         val x = abs(event.x - location[0] - view.measuredWidth / 2f)
                                         val y = abs(event.y - location[1] - view.measuredHeight / 2f)
                                         if (x > view.width / 3.5f || y > view.height / 3.5f) {
@@ -278,10 +276,10 @@ class Main : AppCompatActivity() {
             (findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
             if (Settings["feed:show_behind_dock", false]) {
                 (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, 0)
-                findViewById<View>(R.id.desktopContent).setPadding(0, 0, 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
+                findViewById<View>(R.id.desktopContent).setPadding(0, 12.dp.toInt(), 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
             } else {
                 (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
-                findViewById<View>(R.id.desktopContent).setPadding(0, 6.dp.toInt(), 0, 24.dp.toInt())
+                findViewById<View>(R.id.desktopContent).setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
             }
             if (Settings["dock:background_type", 0] == 1) {
                 val bg = drawer.background as LayerDrawable
@@ -354,6 +352,32 @@ class Main : AppCompatActivity() {
                         Settings["dock:background_color", -0x78000000],
                         Settings["drawer:background_color", -0x78000000]))
                 ))}
+                2 -> {
+                    drawer.background = ShapeDrawable().apply {
+                        val tr = Settings["dockradius", 30].dp
+                        shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                        paint.color = 0
+                    }
+                    dockContainerContainer.background = null
+                    realdock.background = ShapeDrawable().apply {
+                        val r = Settings["dockradius", 30].dp
+                        shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                        paint.color = Settings["dock:background_color", -0x78000000]
+                    }
+                }
+                3 -> {
+                    drawer.background = ShapeDrawable().apply {
+                        val tr = Settings["dockradius", 30].dp
+                        shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                        paint.color = 0
+                    }
+                    realdock.background = null
+                    dockContainerContainer.background = ShapeDrawable().apply {
+                        val r = Settings["dockradius", 30].dp
+                        shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                        paint.color = Settings["dock:background_color", -0x78000000]
+                    }
+                }
             }
 
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
@@ -383,6 +407,7 @@ class Main : AppCompatActivity() {
             setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
             setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
             setDockSearchbarRadius(Settings["dock:search:radius", 30])
+            setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
             if (Settings["drawer:sections_enabled", false]) {
                 drawerGrid.numColumns = 1
@@ -394,14 +419,18 @@ class Main : AppCompatActivity() {
 
             feedProgressBar.indeterminateDrawable.setTint(accentColor)
             val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+            val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
             if (Settings["feed:enabled", true]) {
                 feedRecycler.visibility = VISIBLE
                 (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
             } else {
                 feedRecycler.visibility = GONE
             }
-            (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
-            (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
+            (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).apply {
+                leftMargin = marginX
+                rightMargin = marginX
+                bottomMargin = marginY
+            }
             if (Settings["hidefeed", false]) {
                 feedRecycler.translationX = Device.displayWidth.toFloat()
                 feedRecycler.alpha = 0f
@@ -505,8 +534,12 @@ class Main : AppCompatActivity() {
                 }
                 try { startService(Intent(this, NotificationService::class.java)) }
                 catch (e: Exception) {}
-                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).leftMargin = marginX
-                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).rightMargin = marginX
+                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).apply {
+                    leftMargin = marginX
+                    rightMargin = marginX
+                    topMargin = marginY
+                    bottomMargin = marginY
+                }
                 val notificationBackground = ShapeDrawable()
                 val r = Settings["feed:card_radius", 15].dp
                 notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
@@ -708,13 +741,23 @@ class Main : AppCompatActivity() {
                     if (slideOffset >= 0) {
                         try {
                             val bg = drawer.background
-                            if (bg is ShapeDrawable) {
-                                bg.paint.color = ColorTools.blendColors(colors[2], things[1], slideOffset)
-                                bg.shape = RoundRectShape(radii, null, null)
-                            } else if (bg is LayerDrawable) {
-                                colors[1] = ColorTools.blendColors(colors[2], things[1], slideOffset)
-                                (bg.getDrawable(0) as GradientDrawable).colors = intArrayOf(colors[0], colors[1])
-                                (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(colors[1], colors[2])
+                            when (things[2]) {
+                                0 -> {
+                                    bg as ShapeDrawable
+                                    bg.paint.color = ColorTools.blendColors(colors[2], things[1], slideOffset)
+                                    bg.shape = RoundRectShape(radii, null, null)
+                                }
+                                1 -> {
+                                    bg as LayerDrawable
+                                    colors[1] = ColorTools.blendColors(colors[2], things[1], slideOffset)
+                                    (bg.getDrawable(0) as GradientDrawable).colors = intArrayOf(colors[0], colors[1])
+                                    (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(colors[1], colors[2])
+                                }
+                                2, 3 -> {
+                                    bg as ShapeDrawable
+                                    bg.paint.color = colors[2] and 0xffffff or (((colors[2] ushr 24).toFloat() * slideOffset).toInt() shl 24)
+                                    bg.shape = RoundRectShape(radii, null, null)
+                                }
                             }
                             val blurLayers = things[0]
                             if (blurLayers != 0) {
@@ -1178,7 +1221,7 @@ class Main : AppCompatActivity() {
             if (isBelow) {
                 instance.findViewById<View>(R.id.docksearchbar).bringToFront()
             } else {
-                instance.findViewById<View>(R.id.dockContainer).bringToFront()
+                instance.findViewById<View>(R.id.dockContainerContainer).bringToFront()
             }
         }
 
@@ -1196,6 +1239,12 @@ class Main : AppCompatActivity() {
                 (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
                 instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
             }
+        }
+
+        fun setDockHorizontalMargin(margin: Int) {
+            val m = margin.dp.toInt()
+            Settings["dock:margin_x"] = m
+            instance.realdock.setPadding(m, 0, m, 0)
         }
     }
 }

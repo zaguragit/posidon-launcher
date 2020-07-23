@@ -37,7 +37,7 @@ class Folder(string: String) : LauncherItem() {
                 val t = Tools.publicContext!!.packageManager.getResourcesForApplication(data[0])
                 val intRes = t.getIdentifier(data[1], "drawable", data[0])
                 Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.adaptic(t.getDrawable(intRes))
+                    Tools.generateAdaptiveIcon(t.getDrawable(intRes))
                 } else t.getDrawable(intRes), false)
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -122,7 +122,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                     } catch (e: Exception) { e.printStackTrace() }
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    app.icon = Tools.adaptic(app.icon!!)
+                    app.icon = Tools.generateAdaptiveIcon(app.icon!!)
                 }
                 app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
                 if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) try {

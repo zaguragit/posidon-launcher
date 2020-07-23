@@ -83,6 +83,30 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
+                        android:id="@+id/cardVerticalMarginNum"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="28sp"
+                        android:textColor="@color/cardtxticon"/>
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="wrap_content"
+                        android:text="@string/vertical_margin" />
+                    <posidon.launcher.view.Seekbar
+                        android:id="@+id/cardVerticalMarginSeekbar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:max="16" />
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
                         android:layout_weight="1"

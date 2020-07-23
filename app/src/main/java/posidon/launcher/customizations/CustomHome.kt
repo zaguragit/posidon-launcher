@@ -59,47 +59,68 @@ class CustomHome : AppCompatActivity() {
         findViewById<Switch>(R.id.feedenabled).isChecked = Settings["feed:enabled", true]
         findViewById<Switch>(R.id.hidefeed).isChecked = Settings["hidefeed", false]
 
-        val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
-        val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
-        newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.displayWidth.toFloat() * 6).toInt() - 1
-        newsCardMaxImageWidthSlider.max = 5
-        val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
-        newsCardMaxImageWidthNum.text = maxWidth.toString()
-        newsCardMaxImageWidthSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) { Settings.apply() }
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                val newVal: Int = Device.displayWidth / 6 * (progress + 1)
-                newsCardMaxImageWidthNum.text = newVal.toString()
-                Settings["feed:max_img_width"] = newVal
-            }
-        })
+        run {
+            val newscardradiusslider = findViewById<SeekBar>(R.id.newscardradiusslider)
+            newscardradiusslider.progress = Settings["feed:card_radius", 15]
+            val newscardradiusnum = findViewById<TextView>(R.id.newscardradiusnum)
+            newscardradiusnum.text = Settings["feed:card_radius", 15].toString()
+            newscardradiusslider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    newscardradiusnum.text = progress.toString()
+                    Settings["feed:card_radius"] = progress
+                }
+            })
+        }
 
-        val newscardradiusslider = findViewById<SeekBar>(R.id.newscardradiusslider)
-        newscardradiusslider.progress = Settings["feed:card_radius", 15]
-        val newscardradiusnum = findViewById<TextView>(R.id.newscardradiusnum)
-        newscardradiusnum.text = Settings["feed:card_radius", 15].toString()
-        newscardradiusslider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                newscardradiusnum.text = progress.toString()
-                Settings["feed:card_radius"] = progress
-            }
-        })
+        run {
+            val cardHorizontalMarginSeekbar = findViewById<SeekBar>(R.id.cardHorizontalMarginSeekbar)
+            cardHorizontalMarginSeekbar.progress = Settings["feed:card_margin_x", 16]
+            val cardHorizontalMarginNum = findViewById<TextView>(R.id.cardHorizontalMarginNum)
+            cardHorizontalMarginNum.text = Settings["feed:card_margin_x", 16].toString()
+            cardHorizontalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    cardHorizontalMarginNum.text = progress.toString()
+                    Settings["feed:card_margin_x"] = progress
+                }
+            })
+        }
 
-        val cardHorizontalMarginSeekbar = findViewById<SeekBar>(R.id.cardHorizontalMarginSeekbar)
-        cardHorizontalMarginSeekbar.progress = Settings["feed:card_margin_x", 16]
-        val cardHorizontalMarginNum = findViewById<TextView>(R.id.cardHorizontalMarginNum)
-        cardHorizontalMarginNum.text = Settings["feed:card_margin_x", 16].toString()
-        cardHorizontalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                cardHorizontalMarginNum.text = progress.toString()
-                Settings["feed:card_margin_x"] = progress
-            }
-        })
+        run {
+            val cardVerticalMarginSeekbar = findViewById<SeekBar>(R.id.cardVerticalMarginSeekbar)
+            cardVerticalMarginSeekbar.progress = Settings["feed:card_margin_y", 9]
+            val cardVerticalMarginNum = findViewById<TextView>(R.id.cardVerticalMarginNum)
+            cardVerticalMarginNum.text = Settings["feed:card_margin_y", 9].toString()
+            cardVerticalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    cardVerticalMarginNum.text = progress.toString()
+                    Settings["feed:card_margin_y"] = progress
+                }
+            })
+        }
+
+        run {
+            val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
+            val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
+            newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.displayWidth.toFloat() * 6).toInt() - 1
+            newsCardMaxImageWidthSlider.max = 5
+            val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
+            newsCardMaxImageWidthNum.text = maxWidth.toString()
+            newsCardMaxImageWidthSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) = Settings.apply()
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    val newVal: Int = Device.displayWidth / 6 * (progress + 1)
+                    newsCardMaxImageWidthNum.text = newVal.toString()
+                    Settings["feed:max_img_width"] = newVal
+                }
+            })
+        }
 
         findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorCircle(Settings["feed:card_bg", -0xdad9d9])
         findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorCircle(Settings["feed:card_txt_color", -0x1])

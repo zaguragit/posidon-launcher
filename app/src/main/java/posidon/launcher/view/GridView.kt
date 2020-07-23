@@ -27,10 +27,8 @@ class GridView : GridView {
         if (futureScroll > scrollRangeY) {
             if (isTouchEvent) {
                 deltaY = (deltaY * (1 - (scrollY - scrollRangeY) / maxOverScroll)).toInt()
-                println("222_Dsf4df: $deltaY")
                 startTime = System.currentTimeMillis()
             } else {
-                println("111_DaFefd")
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
                 val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
@@ -38,16 +36,13 @@ class GridView : GridView {
         } else if (futureScroll < 0) {
             if (isTouchEvent) {
                 deltaY = (deltaY * (1 + scrollY / maxOverScroll)).toInt()
-                println("444_Dsf4df: $deltaY")
                 startTime = System.currentTimeMillis()
             } else {
-                println("333_DaFefd")
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
                 val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
             }
         } else {
-            println("555_Dsf4df")
             startTime = System.currentTimeMillis()
         }
         return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY, mx, maxOverScroll.toInt(), isTouchEvent)

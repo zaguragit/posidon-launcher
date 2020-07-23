@@ -56,7 +56,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
         title.setTextColor(Settings["feed:card_txt_color", -0x1])
         var swipeableLayout: SwipeableLayout? = null
         return FeedModelViewHolder(FrameLayout(context).apply {
-            val tp = 9.dp.toInt()
+            val tp = Settings["feed:card_margin_y", 9].dp.toInt()
             setPadding(0, tp, 0, tp)
             addView(if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
                 setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
