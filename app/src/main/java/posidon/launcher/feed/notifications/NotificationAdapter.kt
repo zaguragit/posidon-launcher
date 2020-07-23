@@ -31,7 +31,7 @@ class NotificationAdapter(private val context: Context) : RecyclerView.Adapter<N
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val view = RelativeLayout(context)
         val hMargin = Settings["feed:card_margin_x", 16].dp.toInt()
-        val vMargin = 9.dp.toInt()
+        val vMargin = Settings["feed:card_margin_y", 9].dp.toInt()
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
         val ll = LinearLayout(context).apply {

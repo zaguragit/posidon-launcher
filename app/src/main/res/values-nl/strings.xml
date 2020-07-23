@@ -126,6 +126,7 @@
     <string name="choose_a_launcher">Kies een startscherm</string>
     <string name="launchers">Startschermen</string>
     <string name="horizontal_margin">Horizontale marge</string>
+    <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Waarde van 蟺</string>
     <string name="settings_title_news">Nieuws</string>
     <string name="show_behind_dock">Tonen achter dock</string>
@@ -190,6 +191,8 @@
     <array name="bgModes">
         <item>egaal</item>
         <item>gloeiende onderzijde</item>
+        <item>floating</item>
+        <item>floating split</item>
     </array>
 
     <array name="notificationGrouping">

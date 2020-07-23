@@ -14,6 +14,7 @@ import android.service.notification.StatusBarNotification
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
@@ -277,9 +278,10 @@ class NotificationService : NotificationListenerService() {
             if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
             Main.instance.runOnUiThread {
-                Main.instance.findViewById<View>(R.id.musicCard).apply {
+                Main.instance.findViewById<CardView>(R.id.musicCard).apply {
                     visibility = View.VISIBLE
                     setOnClickListener { notification.notification.contentIntent?.send() }
+                    radius = Settings["feed:card_radius", 15].dp
                 }
                 Main.instance.findViewById<ImageView>(R.id.musicCardImage).setImageDrawable(icon)
                 Main.instance.findViewById<TextView>(R.id.musicCardTrackTitle).apply {

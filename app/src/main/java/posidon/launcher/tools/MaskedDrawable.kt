@@ -10,8 +10,11 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 class MaskedDrawable(
     val drawable: Drawable,
     val path: Path
-) : Drawable() {
+) : Drawable(), Drawable.Callback {
 
+    init {
+        drawable.callback = this
+    }
 
     private val maskPaint = Paint().apply {
         isAntiAlias = true
@@ -22,9 +25,11 @@ class MaskedDrawable(
         isAntiAlias = true
     }
 
+    private val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+
+    private val c = Canvas(bitmap)
+
     override fun draw(canvas: Canvas) {
-        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val c = Canvas(bitmap)
         drawable.draw(c)
         c.drawPath(path, maskPaint)
         canvas.drawBitmap(bitmap, null, bounds, paint)
@@ -39,4 +44,19 @@ class MaskedDrawable(
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     override fun setColorFilter(colorFilter: ColorFilter?) { drawable.colorFilter = colorFilter }
+
+    override fun unscheduleDrawable(
+        who: Drawable,
+        what: Runnable
+    ) = unscheduleSelf(what)
+
+    override fun invalidateDrawable(
+        who: Drawable
+    ) = invalidateSelf()
+
+    override fun scheduleDrawable(
+        who: Drawable,
+        what: Runnable,
+        `when`: Long
+    ) = scheduleSelf(what, `when`)
 }

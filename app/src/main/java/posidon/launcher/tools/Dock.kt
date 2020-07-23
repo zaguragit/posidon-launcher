@@ -1,8 +1,6 @@
 package posidon.launcher.tools
 
 import android.os.Build
-import android.text.TextUtils
-import posidon.launcher.Main
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -20,7 +18,7 @@ object Dock {
             item is App || item is Shortcut -> {
                 if (data.startsWith("folder:"))
                     Settings["dock:icon:$i"] = "folder:" + data.substring(7, data.length) + "\t" + item.toString()
-                else Settings["dock:icon:$i"] = "folder:${Tools.generateUid()}\t$data\t$item"
+                else Settings["dock:icon:$i"] = "folder:${Tools.generateFolderUid()}\t$data\t$item"
             }
             item is Folder -> {
                 var folderContent = item.toString().substring(7, item.toString().length)
@@ -46,7 +44,7 @@ object Dock {
     operator fun get(i: Int) = Settings.getString("dock:icon:$i")?.let { LauncherItem(it).apply {
         if (this is Folder && uid.length != 8) {
             val label = uid
-            uid = Tools.generateUid()
+            uid = Tools.generateFolderUid()
             Settings["folder:$uid:label"] = label
             Dock[i] = this
         }

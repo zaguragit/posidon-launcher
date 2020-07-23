@@ -35,12 +35,15 @@ class CustomAppIcon : AppCompatActivity() {
         setContentView(LinearLayout(this).apply {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, null).apply {
-                try { findViewById<ImageView>(R.id.iconimg).setImageDrawable(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.adaptic(packageManager.getApplicationIcon("com.android.systemui"))
-                } else {
-                    packageManager.getApplicationIcon("com.android.systemui")
-                }) }
-                catch (ignore: Exception) {}
+                runCatching {
+                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(Tools.badgeMaybe(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Tools.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
+                        } else {
+                            packageManager.getApplicationIcon("com.android.systemui")
+                        }, false
+                    ))
+                }
                 findViewById<TextView>(R.id.icontxt).text = "Default"
                 setOnClickListener {
                     Settings[key] = ""
@@ -67,6 +70,7 @@ class CustomAppIcon : AppCompatActivity() {
             orientation = LinearLayout.VERTICAL
         })
         window.decorView.setBackgroundColor(0x55111213)
+        window.statusBarColor = 0xdd111213.toInt()
 
         key = intent.extras!!.getString("key", null)
 
@@ -75,11 +79,11 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName))
-            iconPacks[i].icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Tools.adaptic(pacslist[i].loadIcon(packageManager))
+            iconPacks[i].icon = Tools.tryAnimate(Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Tools.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
             } else {
                 pacslist[i].loadIcon(packageManager)
-            }
+            }, false))
             iconPacks[i].label = pacslist[i].loadLabel(packageManager).toString()
         }
 
@@ -143,8 +147,9 @@ class CustomAppIcon : AppCompatActivity() {
 
         fun search(term: String) {
             searchResults.clear()
+            val searchOptimizedTerm = Tools.searchOptimize(term)
             for (string in icons) {
-                if (SearchActivity.searchOptimize(string).contains(SearchActivity.searchOptimize(term))) {
+                if (Tools.searchOptimize(string).startsWith(searchOptimizedTerm)) {
                     searchResults.add(string)
                 }
             }
@@ -179,12 +184,15 @@ class CustomAppIcon : AppCompatActivity() {
             }
 
             val intRes = themeRes.getIdentifier(searchResults[i], "drawable", iconPack)
-            if (intRes != 0) {
-                viewHolder.icon.setImageDrawable(Tools.tryAnimate(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.adaptic(themeRes.getDrawable(intRes))
+            if (intRes == 0) {
+                viewHolder.icon.setImageDrawable(null)
+                viewHolder.icon.setOnClickListener(null)
+            } else {
+                viewHolder.icon.setImageDrawable(Tools.tryAnimate(Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Tools.generateAdaptiveIcon(themeRes.getDrawable(intRes))
                 } else {
                     themeRes.getDrawable(intRes)
-                }))
+                }, false)))
                 viewHolder.icon.setOnClickListener {
                     Settings[key] = "ref:$iconPack|${searchResults[i]}"
                     Main.shouldSetApps = true

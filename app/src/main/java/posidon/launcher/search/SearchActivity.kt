@@ -12,7 +12,6 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,6 +28,7 @@ import posidon.launcher.R
 import posidon.launcher.items.*
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.Tools.searchOptimize
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -43,6 +43,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var answerBox: View
     private lateinit var grid: GridView
     private lateinit var searchTxt: EditText
+    private var canReadContacts = false
 
     private var topPaddingWhenSmartBoxIsShown = 0
 
@@ -106,44 +107,99 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        fun add (x: D, y: D) = x + y
-        fun sub (x: D, y: D) = x - y
-        fun mul (x: D, y: D) = x * y
-        fun div (x: D, y: D) = x / y
+        abstract class Operation : (D, D) -> D { abstract val string: String }
 
-        fun rem (x: D, y: D) = x % y
-        fun pow (x: D, y: D) = x.pow(y)
+        val add = object : Operation() {
+            override
+            val string = "+"
+            override
+            fun invoke(x: D, y: D) = x + y
+        }
 
-        fun and (x: D, y: D) = (x.toInt() and y.toInt()).toDouble()
-        fun or  (x: D, y: D) = (x.toInt() or  y.toInt()).toDouble()
-        fun xor (x: D, y: D) = (x.toInt() xor y.toInt()).toDouble()
+        val sub = object : Operation() {
+            override
+            val string = "-"
+            override
+            fun invoke(x: D, y: D) = x - y
+        }
 
-        operators["+"] = ::add
-        operators["plus"] = ::add
-        operators["add"] = ::add
-        operators["-"] = ::sub
-        operators["minus"] = ::sub
-        operators["subtract"] = ::sub
-        operators["*"] = ::mul
-        operators["x"] = ::mul
-        operators["times"] = ::mul
-        operators["multiply"] = ::mul
-        operators["/"] = ::div
-        operators[":"] = ::div
-        operators["over"] = ::div
-        operators["divide"] = ::div
-        operators["&"] = ::and
-        operators["and"] = ::and
-        operators["|"] = ::or
-        operators["or"] = ::or
-        operators["xor"] = ::xor
-        operators["%"] = ::rem
-        operators["rem"] = ::rem
-        operators["remainder"] = ::rem
-        operators["mod"] = ::rem
-        operators["pow"] = ::pow
-        operators["^"] = ::pow
-        operators["power"] = ::pow
+        val mul = object : Operation() {
+            override
+            val string = "*"
+            override
+            fun invoke(x: D, y: D) = x * y
+        }
+
+        val div = object : Operation() {
+            override
+            val string = "/"
+            override
+            fun invoke(x: D, y: D) = x / y
+        }
+
+
+        val rem = object : Operation() {
+            override
+            val string = "%"
+            override
+            fun invoke(x: D, y: D) = x % y
+        }
+
+        val pow = object : Operation() {
+            override
+            val string = "^"
+            override
+            fun invoke(x: D, y: D) = x.pow(y)
+        }
+
+
+        val and = object : Operation() {
+            override
+            val string = "&"
+            override
+            fun invoke(x: D, y: D) = (x.toInt() and y.toInt()).toDouble()
+        }
+
+        val or  = object : Operation() {
+            override
+            val string = "|"
+            override
+            fun invoke(x: D, y: D) = (x.toInt() or  y.toInt()).toDouble()
+        }
+
+        val xor = object : Operation() {
+            override
+            val string = "xor"
+            override
+            fun invoke(x: D, y: D) = (x.toInt() xor y.toInt()).toDouble()
+        }
+
+        operators["+"] = add
+        operators["plus"] = add
+        operators["add"] = add
+        operators["-"] = sub
+        operators["minus"] = sub
+        operators["subtract"] = sub
+        operators["*"] = mul
+        operators["x"] = mul
+        operators["times"] = mul
+        operators["multiply"] = mul
+        operators["/"] = div
+        operators[":"] = div
+        operators["over"] = div
+        operators["divide"] = div
+        operators["&"] = and
+        operators["and"] = and
+        operators["|"] = or
+        operators["or"] = or
+        operators["xor"] = xor
+        operators["%"] = rem
+        operators["rem"] = rem
+        operators["remainder"] = rem
+        operators["mod"] = rem
+        operators["pow"] = pow
+        operators["^"] = pow
+        operators["power"] = pow
 
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
             when (event.action) {
@@ -172,6 +228,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        canReadContacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
         search("")
     }
 
@@ -180,6 +237,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search(string: String) {
         currentString = string
+        val searchOptimizedString = searchOptimize(string)
         if (string.isEmpty()) {
             grid.adapter = SearchAdapter(this, listOf())
             findViewById<View>(R.id.fail).visibility = View.GONE
@@ -187,19 +245,26 @@ class SearchActivity : AppCompatActivity() {
             return
         }
         stillWantIP = false
-        val showHidden = searchOptimize(string) == searchOptimize("hidden") || searchOptimize(string) == searchOptimize("hiddenapps")
         val results = ArrayList<LauncherItem>()
+        val showHidden = searchOptimizedString == searchOptimize("hidden") || searchOptimizedString == searchOptimize("hiddenapps")
+        if (showHidden) {
+            findViewById<View>(R.id.fail).visibility = View.GONE
+            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
+                startActivity(Intent(this, HiddenAppsActivity::class.java))
+            }
+            results.add(app)
+        }
         findViewById<View>(R.id.fail).visibility = View.GONE
         for (app in Main.apps) {
-            if (searchOptimize(app.label!!).contains(searchOptimize(string)) ||
+            if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
                 app.label!!.contains(string) ||
-                searchOptimize(app.packageName).contains(searchOptimize(string)) ||
+                searchOptimize(app.packageName).contains(searchOptimizedString) ||
                 app.packageName.contains(string)) {
                 results.add(app)
                 continue
             }
             for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
-                if (searchOptimize(word).contains(searchOptimize(string)) || word.contains(string)) {
+                if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                     results.add(app)
                     break
                 }
@@ -208,45 +273,38 @@ class SearchActivity : AppCompatActivity() {
         kotlin.runCatching {
             val settingList = SettingsItem.getList()
             for (setting in settingList) {
-                if (searchOptimize(setting.label!!).contains(searchOptimize(string)) ||
+                if (searchOptimize(setting.label!!).contains(searchOptimizedString) ||
                     setting.label!!.contains(string) ||
-                    searchOptimize(setting.action).contains(searchOptimize(string)) ||
+                    searchOptimize(setting.action).contains(searchOptimizedString) ||
                     setting.action.contains(string)) {
                     results.add(setting)
                     continue
                 }
-                for (word in setting.label!!.split(' ', '-')) {
-                    if (searchOptimize(word).contains(searchOptimize(string)) || word.contains(string)) {
+                for (word in setting.label!!.split(' ', '-', '_')) {
+                    if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                         results.add(setting)
                         break
                     }
                 }
             }
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) kotlin.runCatching {
+        if (canReadContacts) kotlin.runCatching {
             val contactList = ContactItem.getList()
             for (contact in contactList) {
-                if (searchOptimize(contact.label!!).contains(searchOptimize(string)) ||
+                if (searchOptimize(contact.label!!).contains(searchOptimizedString) ||
                     contact.label!!.contains(string) ||
-                    searchOptimize(contact.phone).contains(searchOptimize(string)) ||
+                    contact.phone.contains(searchOptimizedString) ||
                     contact.phone.contains(string)) {
                     results.add(contact)
                     continue
                 }
-                for (word in contact.label!!.split(' ', '-')) {
-                    if (searchOptimize(word).contains(searchOptimize(string)) || word.contains(string)) {
+                for (word in contact.label!!.split(' ', '-', '_')) {
+                    if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                         results.add(contact)
                         break
                     }
                 }
             }
-        }
-        if (showHidden) {
-            findViewById<View>(R.id.fail).visibility = View.GONE
-            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
-                startActivity(Intent(this, HiddenAppsActivity::class.java))
-            }
-            results.add(app)
         }
         try {
             Sort.labelSort(results)
@@ -294,7 +352,7 @@ class SearchActivity : AppCompatActivity() {
                 findViewById<View>(R.id.fail).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
             }
-            val words = string.split(' ', ',', '.', '-', '+', '&', '_')
+            val words = string.toLowerCase().split(' ', ',', '.', '-', '+', '&', '_')
             if (words.contains("ip")) {
                 stillWantIP = true
                 smartBox.visibility = View.VISIBLE
@@ -307,7 +365,6 @@ class SearchActivity : AppCompatActivity() {
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (
                 words.contains("pi") ||
-                words.contains("PI") ||
                 words.contains("π")
             ) {
                 smartBox.visibility = View.VISIBLE
@@ -358,19 +415,5 @@ class SearchActivity : AppCompatActivity() {
         if (hasFocus) {
             search(searchTxt.text.toString())
         }
-    }
-
-    companion object {
-        fun searchOptimize(s: String) = s.toLowerCase()
-            .replace('ñ', 'n')
-            .replace('e', '3')
-            .replace('a', '4')
-            .replace('i', '1')
-            .replace('¿', '?')
-            .replace('¡', '!')
-            .replace(Regex("(k|cc|ck)"), "c")
-            .replace(Regex("(z|ts|sc|cs|tz)"), "s")
-            .replace(Regex("(gh|wh)"), "h")
-            .replace(Regex("[-'&/_,.:;*\"]"), "")
     }
 }

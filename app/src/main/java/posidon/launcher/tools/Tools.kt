@@ -372,12 +372,16 @@ object Tools {
     }
 
 	@RequiresApi(api = Build.VERSION_CODES.O)
-    fun adaptic(drawable: Drawable): Drawable {
-        return if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
+    fun generateAdaptiveIcon(drawable: Drawable): Drawable {
+        var containsAnimatable = drawable is Animatable
+        val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val drr = arrayOfNulls<Drawable>(2)
             val layerDrawable = if (drawable is AdaptiveIconDrawable) {
                 drr[0] = drawable.background
                 drr[1] = drawable.foreground
+                if (drr[0] is Animatable || drr[1] is Animatable) {
+                    containsAnimatable = true
+                }
                 if (Settings["icon:tint_white_bg", true]) {
                     val bg = drr[0] ?: ColorDrawable(0)
                     if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
@@ -427,29 +431,18 @@ object Tools {
             }
             val width = layerDrawable.intrinsicWidth
             val height = layerDrawable.intrinsicHeight
-            //layerDrawable.setBounds(-width / 4, -height / 4, width * 5 / 4, height * 5 / 4)
             layerDrawable.setBounds(0, 0, width, height)
-            //val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            //val canvas = Canvas(bitmap!!)
-            //layerDrawable.setBounds(-canvas.width / 4, -canvas.height / 4, canvas.width / 4 * 5, canvas.height / 4 * 5)
-            //layerDrawable.draw(canvas)
 
             val icShape = Settings["icshape", 4]
-            /*if (icShape != 3) {
-                canvas.drawPath(getAdaptiveIconPath(icShape, width, height), Paint().apply {
-                    isAntiAlias = true
-                    xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-                })
-            }
-            BitmapDrawable(context.resources, bitmap)*/
-            //val d = BitmapDrawable(context.resources, bitmap)
-            //d.setBounds(0, 0, bitmap.width, bitmap.height)
             if (icShape == 3) {
                 layerDrawable
             } else {
                 MaskedDrawable(layerDrawable, getAdaptiveIconPath(icShape, width, height))
             }
         } else drawable
+        return if (containsAnimatable) d else {
+            BitmapDrawable(publicContext!!.resources, d.toBitmap())
+        }
     }
 
     fun getAdaptiveIconPath(icShape: Int, width: Int, height: Int): Path {
@@ -514,7 +507,11 @@ object Tools {
             }
             setLayerInset(0, p, p, p, p)
         }
-        return drawable
+        return if (icon is BitmapDrawable) {
+            BitmapDrawable(publicContext!!.resources, drawable.toBitmap()).also {
+                if (isWork) icon.bitmap.recycle()
+            }
+        } else drawable
     }
 
     fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): LayerDrawable {
@@ -558,7 +555,7 @@ object Tools {
     }
 
     private var uidCounter = -1
-    fun generateUid(): String {
+    fun generateFolderUid(): String {
         if (uidCounter == -1) {
             uidCounter = Settings["folder:uids:count", 0]
         }
@@ -567,6 +564,17 @@ object Tools {
         return str
     }
 
+    fun searchOptimize(s: String) = s.toLowerCase()
+            .replace('ñ', 'n')
+            .replace('e', '3')
+            .replace('a', '4')
+            .replace('i', '1')
+            .replace('¿', '?')
+            .replace('¡', '!')
+            .replace("wh", "w")
+            .replace(Regex("(k|cc|ck)"), "c")
+            .replace(Regex("(z|ts|sc|cs|tz)"), "s")
+            .replace(Regex("([-'&/_,.:;*\"]|gh)"), "")
 }
 
 inline fun Activity.applyFontSetting() {
@@ -600,6 +608,10 @@ inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable:
     try { draw(canvas) }
     catch (e: Exception) { e.printStackTrace() }
     return bitmap
+}
+
+inline fun Drawable.toBitmapDrawable(duplicateIfBitmapDrawable: Boolean = false) = if (this is BitmapDrawable && !duplicateIfBitmapDrawable) this else {
+    BitmapDrawable(Tools.publicContext!!.resources, toBitmap())
 }
 
 inline fun Drawable.clone() = constantState?.newDrawable()?.mutate()

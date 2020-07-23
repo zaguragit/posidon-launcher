@@ -126,6 +126,7 @@
     <string name="choose_a_launcher">Выберите лаунчер</string>
     <string name="launchers">Лаунчеры</string>
     <string name="horizontal_margin">Horizontal margin</string>
+    <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Значение π</string>
     <string name="settings_title_news">Новости</string>
     <string name="show_behind_dock">Показывать за доком</string>
@@ -190,6 +191,8 @@
     <array name="bgModes">
         <item>простой</item>
         <item>нижнее свечение</item>
+        <item>floating</item>
+        <item>floating split</item>
     </array>
 
     <array name="notificationGrouping">

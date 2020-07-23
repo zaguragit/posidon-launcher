@@ -9,6 +9,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
+import posidon.launcher.tools.toBitmapDrawable
 
 class SettingsItem private constructor(
     override var label: String?,
@@ -22,7 +23,7 @@ class SettingsItem private constructor(
 
     companion object {
         fun getList(): Array<SettingsItem> {
-            val posidonIcon = BitmapDrawable(Tools.publicContext!!.resources, App.getJustPackage("posidon.launcher")!![0].icon!!.toBitmap())
+            val posidonIcon = App.getJustPackage("posidon.launcher")!![0].icon!!.toBitmapDrawable(true)
             val settingsIcon = Tools.publicContext!!.getDrawable(R.drawable.ic_settings)!!.apply { setTintList(ColorStateList.valueOf(Main.accentColor)) }
             val searchIconSize = when (posidon.launcher.storage.Settings["search:ic_size", 0]) {
                 0 -> 64; 2 -> 84; else -> 74
