@@ -84,6 +84,7 @@ object Tools {
                 clearAnimation(d.getDrawable(i))
             }
         }
+        d is MaskedDrawable -> clearAnimation(d.drawable)
     }}
 
 	inline fun isInstalled(packageName: String, packageManager: PackageManager): Boolean {
@@ -375,10 +376,8 @@ object Tools {
     fun generateAdaptiveIcon(drawable: Drawable): Drawable {
         var containsAnimatable = drawable is Animatable
         val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
-            val drr = arrayOfNulls<Drawable>(2)
             val layerDrawable = if (drawable is AdaptiveIconDrawable) {
-                drr[0] = drawable.background
-                drr[1] = drawable.foreground
+                val drr = arrayOf(drawable.background, drawable.foreground)
                 if (drr[0] is Animatable || drr[1] is Animatable) {
                     containsAnimatable = true
                 }
@@ -415,17 +414,15 @@ object Tools {
             } else {
                 val w = drawable.intrinsicWidth
                 val h = drawable.intrinsicHeight
-                drr[1] = drawable
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                drr[0] = when (Settings["icon:background_type", "custom"]) {
+                val tmp = LayerDrawable(arrayOf(when (Settings["icon:background_type", "custom"]) {
                     "dominant" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDominantColor(bgColor))
                     "lv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightVibrantColor(bgColor))
                     "dv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkVibrantColor(bgColor))
                     "lm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightMutedColor(bgColor))
                     "dm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkMutedColor(bgColor))
                     else -> ColorDrawable(bgColor)
-                }
-                val tmp = LayerDrawable(drr)
+                }, drawable))
                 tmp.setLayerInset(1, w / 4, h / 4, w / 4, h / 4)
                 tmp
             }

@@ -24,9 +24,17 @@ import posidon.launcher.tools.dp
 import posidon.launcher.view.SwipeableLayout
 
 
-class NotificationAdapter(private val context: Context) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+class NotificationAdapter(
+    private val context: Context
+) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
-    class NotificationViewHolder(internal val view: ViewGroup, internal val card: SwipeableLayout, internal val linearLayout: LinearLayout) : RecyclerView.ViewHolder(view)
+    override fun getItemCount() = NotificationService.notificationGroups.size
+
+    class NotificationViewHolder(
+        internal val view: ViewGroup,
+        internal val card: SwipeableLayout,
+        internal val linearLayout: LinearLayout
+    ) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val view = RelativeLayout(context)
@@ -199,6 +207,4 @@ class NotificationAdapter(private val context: Context) : RecyclerView.Adapter<N
             holder.linearLayout.addView(retView)
         }
     }
-
-    override fun getItemCount() = NotificationService.notificationGroups.size
 }

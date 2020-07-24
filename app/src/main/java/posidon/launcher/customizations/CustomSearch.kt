@@ -34,7 +34,7 @@ class CustomSearch : AppCompatActivity() {
         findViewById<View>(R.id.docksearchcolorprev).background = ColorTools.colorCircle(Settings["docksearchcolor", -0x22000001])
         findViewById<View>(R.id.docksearchtxtcolorprev).background = ColorTools.colorCircle(Settings["docksearchtxtcolor", -0x1000000])
         findViewById<SeekBar>(R.id.docksearchradiusslider).progress = Settings["dock:search:radius", 30]
-        findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked = Settings["dock:search:below_apps", false]
+        findViewById<Switch>(R.id.dockSearchBarBelowAppsSwitch).isChecked = Settings["dock:search:below_apps", true]
 
         findViewById<View>(R.id.uiBgColorPrev).background = ColorTools.colorCircle(Settings["searchUiBg", -0x78000000])
         findViewById<View>(R.id.searchhintcolorprev).background = ColorTools.colorCircle(Settings["searchhintcolor", -0x1])

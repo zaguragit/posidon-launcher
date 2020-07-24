@@ -154,6 +154,30 @@
                         android:text="@string/choose_a_launcher" />
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/lock_home" />
+                    <posidon.launcher.view.Switch
+                        android:id="@+id/lock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"/>
+                </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
                 android:layout_width="match_parent"

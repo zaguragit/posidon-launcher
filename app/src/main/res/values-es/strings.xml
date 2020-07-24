@@ -166,7 +166,7 @@
     <string name="pinch">Pinch</string>
     <string name="long_press">Long-press</string>
     <string name="back_button">Boton atras</string>
-    <string name="github">GitHub</string>
+    <string name="github">Github</string>
     <string name="duckduckgo_results">resultados DuckDuckGo</string>
     <string name="media_player">Media player</string>
     <string name="show_feed_spinner">Show feed spinner</string>
@@ -177,6 +177,8 @@
     <string name="device_info">Sobre el dispositivo</string>
     <string name="contacts_access">Acceso a contactos</string>
     <string name="permission_contacts_description">El acceso a contactos es nesesario para enseñar contactos en la busqueda</string>
+    <string name="github_contributors">Contribuyentes de Github</string>
+    <string name="lock_home">Lock homescreen</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

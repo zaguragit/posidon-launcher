@@ -146,16 +146,18 @@ object ItemLongPress {
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
             popupWindow.isFocusable = false
-            val myShadow = View.DragShadowBuilder(icon)
-            val clipData = ClipData.newPlainText(app.toString(), "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(clipData, myShadow, view, 0)
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val clipData = ClipData.newPlainText(app.toString(), "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(clipData, myShadow, view, 0)
+                }
+                Dock[i] = null
             }
-            Dock[i] = null
             var y = -view.y.toInt() + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp.toInt()
-            if (Settings["dock:search:below_apps", false] && !context.isTablet) {
+            if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !context.isTablet) {
                 y += 68.dp.toInt()
             }
             popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
@@ -181,17 +183,19 @@ object ItemLongPress {
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
 
-            val myShadow = View.DragShadowBuilder(icon)
-            val clipData = ClipData.newPlainText(app.toString(), i.toString(16)).apply { addItem(ClipData.Item(folderI.toString(16))) }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(clipData, myShadow, view, 0)
-            }
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val clipData = ClipData.newPlainText(app.toString(), i.toString(16)).apply { addItem(ClipData.Item(folderI.toString(16))) }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(clipData, myShadow, view, 0)
+                }
 
-            val f = Dock[i] as Folder
-            f.apps.removeAt(folderI)
-            Dock[i] = if (f.apps.size == 1) f.apps[0] else f
+                val f = Dock[i] as Folder
+                f.apps.removeAt(folderI)
+                Dock[i] = if (f.apps.size == 1) f.apps[0] else f
+            }
 
             popupWindow.showAtLocation(v, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + Tools.navbarHeight)
         }
@@ -209,12 +213,14 @@ object ItemLongPress {
             }, false, app)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
-            val myShadow = View.DragShadowBuilder(icon)
-            val data = ClipData.newPlainText(app.toString(), "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(data, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(data, myShadow, view, 0)
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val data = ClipData.newPlainText(app.toString(), "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(data, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(data, myShadow, view, 0)
+                }
             }
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
@@ -237,12 +243,14 @@ object ItemLongPress {
             }, false, app)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
-            val myShadow = View.DragShadowBuilder(icon)
-            val data = ClipData.newPlainText(app.toString(), "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(data, myShadow, it, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(data, myShadow, it, 0)
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val data = ClipData.newPlainText(app.toString(), "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(data, myShadow, it, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(data, myShadow, it, 0)
+                }
             }
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
@@ -268,12 +276,14 @@ object ItemLongPress {
             }, false, app)
             popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
-            val myShadow = View.DragShadowBuilder(icon)
-            val data = ClipData.newPlainText(app.toString(), "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(data, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(data, myShadow, view, 0)
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val data = ClipData.newPlainText(app.toString(), "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(data, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(data, myShadow, view, 0)
+                }
             }
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - icon.measuredWidth else location[0]
@@ -318,18 +328,21 @@ object ItemLongPress {
                     editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
                 }
             }, true, folder)
-            val myShadow = View.DragShadowBuilder(icon)
-            val clipData = ClipData.newPlainText(folder.toString(), "")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-            } else {
-                icon.startDrag(clipData, myShadow, view, 0)
+
+            if (!Settings["locked", false]) {
+                val myShadow = View.DragShadowBuilder(icon)
+                val clipData = ClipData.newPlainText(folder.toString(), "")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+                } else {
+                    icon.startDrag(clipData, myShadow, view, 0)
+                }
+
+                Dock[i] = null
             }
 
-            Dock[i] = null
-
             var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 12).dp).toInt()
-            if (Settings["dock:search:below_apps", false] && !context.isTablet) {
+            if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !context.isTablet) {
                 y += 68.dp.toInt()
             }
 

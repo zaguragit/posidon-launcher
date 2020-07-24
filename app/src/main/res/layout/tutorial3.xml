@@ -31,6 +31,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <LinearLayout
+                        style="@style/settingsEntry"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -47,18 +48,28 @@
                             android:padding="12dp"
                             android:checked="true"/>
                     </LinearLayout>
-                    <TextView
-                        style="@style/settingsbtn"
+                    <LinearLayout
+                        style="@style/settingsEntry"
                         android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_label"
-                        android:text="@string/feed_sources"
-                        android:onClick="chooseFeeds"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="iconPackSelector"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/settingsbtn"
+                            android:layout_width="match_parent"
+                            android:drawableStart="@drawable/ic_label"
+                            android:text="@string/feed_sources"
+                            android:onClick="chooseFeeds"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        style="@style/settingsEntry"
                         android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/icon_pack" />
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/settingsbtn"
+                            android:onClick="iconPackSelector"
+                            android:layout_width="match_parent"
+                            android:drawableStart="@drawable/ic_apps"
+                            android:text="@string/icon_pack" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

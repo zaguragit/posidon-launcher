@@ -50,7 +50,7 @@ class CustomHiddenApps : AppCompatActivity() {
         list.adapter = ListAdapter(this, pacs)
     }
 
-    internal inner class ListAdapter(private val context: Context, private val apps: ArrayList<App>) : BaseAdapter() {
+    internal class ListAdapter(private val context: Context, private val apps: ArrayList<App>) : BaseAdapter() {
 
         override fun getCount() = apps.size
         override fun getItem(position: Int) = null

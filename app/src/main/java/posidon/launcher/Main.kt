@@ -178,7 +178,7 @@ class Main : AppCompatActivity() {
                             Device.displayWidth - location[0] - view.measuredWidth
                         } else location[0]
                         var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
-                        if (Settings["dock:search:below_apps", false] && !isTablet) {
+                        if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !isTablet) {
                             y += 68.dp.toInt()
                         }
                         popupWindow.contentView.setOnDragListener { _, event ->
@@ -403,7 +403,7 @@ class Main : AppCompatActivity() {
             setSearchHintText(Settings["searchhinttxt", "Search.."])
 
             setDockSearchBarVisible(Settings["docksearchbarenabled", false])
-            setDockSearchbarBelowApps(Settings["dock:search:below_apps", false])
+            setDockSearchbarBelowApps(Settings["dock:search:below_apps", true])
             setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
             setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
             setDockSearchbarRadius(Settings["dock:search:radius", 30])
@@ -615,7 +615,7 @@ class Main : AppCompatActivity() {
         Widget.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         setContentView(R.layout.main)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) launcherApps = getSystemService(LauncherApps::class.java)
+        launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
 
         /*val filter = IntentFilter()
@@ -996,9 +996,6 @@ class Main : AppCompatActivity() {
     private fun onUpdate() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
-        if (Settings["notif:enabled", true]) {
-            NotificationService.onUpdate()
-        }
         if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
@@ -1018,18 +1015,13 @@ class Main : AppCompatActivity() {
         }
         if (customized || tmp != Tools.navbarHeight) {
             setCustomizations()
-            if (Settings["notif:enabled", true]) {
-                try {
-                    notifications.recycledViewPool.clear()
-                    notifications.adapter!!.notifyDataSetChanged()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
         } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in apps) {
                 tryAnimate(app.icon!!)
             }
+        }
+        if (Settings["notif:enabled", true]) {
+            NotificationService.onUpdate()
         }
     }
 
