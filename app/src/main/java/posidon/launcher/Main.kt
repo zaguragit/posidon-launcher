@@ -1243,7 +1243,7 @@ class Main : AppCompatActivity() {
 
         fun setDockHorizontalMargin(margin: Int) {
             val m = margin.dp.toInt()
-            Settings["dock:margin_x"] = m
+            Settings["dock:margin_x"] = margin
             instance.realdock.setPadding(m, 0, m, 0)
         }
     }
