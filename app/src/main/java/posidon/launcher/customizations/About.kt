@@ -2,20 +2,27 @@ package posidon.launcher.customizations
 
 import android.app.Activity
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import org.json.JSONArray
 import posidon.launcher.BuildConfig
 import posidon.launcher.R
-import posidon.launcher.tools.Loader
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.*
+import posidon.launcher.view.LinearLayoutManager
+import java.net.URL
 
 class About : Activity() {
 
@@ -52,6 +59,30 @@ class About : Activity() {
         }
 
         try { findViewById<ImageView>(R.id.img).setImageResource(R.drawable.logo_wide) } catch (ignore: Exception) {}
+
+        val contributorList = findViewById<RecyclerView>(R.id.contributorList).apply {
+            layoutManager = LinearLayoutManager(this@About)
+            isNestedScrollingEnabled = false
+        }
+
+        Loader.threadText("https://api.github.com/repos/leoxshn/posidonLauncher/contributors") {
+            val array = JSONArray(it)
+            val contributors = ArrayList<Contributor>()
+            for (i in 0 until array.length()) {
+                val c = array.getJSONObject(i)
+                val name = c.getString("login")
+                if (name == "leoxshn") continue
+                contributors.add(Contributor(
+                    name,
+                    BitmapFactory.decodeStream(URL(c.getString("avatar_url")).openStream()),
+                    c.getString("html_url")
+                ))
+            }
+            runOnUiThread {
+                contributorList.adapter = ListAdapter(this, contributors)
+                findViewById<View>(R.id.title).visibility = View.VISIBLE
+            }
+        }
     }
 
     fun openTwitter(v: View) {
@@ -76,5 +107,50 @@ class About : Activity() {
         val uri = Uri.parse("https://posidon.io/launcher")
         val i = Intent(Intent.ACTION_VIEW, uri)
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
+    }
+
+    class Contributor(
+        val name: String,
+        val icon: Bitmap,
+        val url: String
+    )
+
+    class ListAdapter(
+        private val context: Context,
+        private val contributors: ArrayList<Contributor>
+    ) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+
+        class ViewHolder(
+            val view: View,
+            var icon: ImageView,
+            var text: TextView
+        ) : RecyclerView.ViewHolder(view)
+
+        override fun getItemCount() = contributors.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val v = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
+            return ViewHolder(v,
+                v.findViewById<ImageView>(R.id.iconimg).apply {
+                    val p = 8.dp.toInt()
+                    setPadding(p, p, p, p)
+                },
+                v.findViewById(R.id.icontxt)
+            )
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, i: Int) {
+
+            val contributor = contributors[i]
+            holder.icon.setImageBitmap(contributor.icon)
+            holder.text.text = contributor.name
+
+            holder.view.setOnClickListener {
+                context.startActivity(
+                    Intent(Intent.ACTION_VIEW, Uri.parse(contributor.url)),
+                    ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slidedown).toBundle()
+                )
+            }
+        }
     }
 }

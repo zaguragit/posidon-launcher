@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import posidon.launcher.LauncherMenu
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
@@ -112,7 +113,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
 
     private val longPressHandler = Handler()
     private val onLongPress = Runnable {
-        if (!LauncherMenu.isActive && hasWindowFocus()) {
+        if (!Settings["locked", false] && !LauncherMenu.isActive && hasWindowFocus()) {
             context.vibrate()
             resizing = true
         }

@@ -165,7 +165,7 @@
     <string name="pinch">Pinch</string>
     <string name="long_press">Длинное нажатие</string>
     <string name="back_button">Кнопка возврата</string>
-    <string name="github">GitHub</string>
+    <string name="github">Github</string>
     <string name="duckduckgo_results">Результаты DuckDuckGo</string>
     <string name="media_player">Медиа-плейер</string>
     <string name="show_feed_spinner">Show feed spinner</string>
@@ -176,6 +176,8 @@
     <string name="device_info">Device info</string>
     <string name="contacts_access">Contacts access</string>
     <string name="permission_contacts_description">Grant contact access so your contacts can show-up in search results</string>
+    <string name="github_contributors">Участники Github</string>
+    <string name="lock_home">Lock homescreen</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
