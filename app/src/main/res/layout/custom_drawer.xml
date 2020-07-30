@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:max="5" />
+                        android:max="6" />
                 </LinearLayout>
                 <LinearLayout
                     style="@style/settingsEntry"

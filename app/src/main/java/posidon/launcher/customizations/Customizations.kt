@@ -15,6 +15,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.onEnd
 import kotlin.math.max
 
 
@@ -27,8 +28,12 @@ class Customizations : AppCompatActivity() {
         setContentView(R.layout.customizations)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0) findViewById<View>(R.id.quickStepOptions).visibility = View.VISIBLE
-        if (Settings["dev:enabled", false]) findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
+        if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0) {
+            findViewById<View>(R.id.quickStepOptions).visibility = View.VISIBLE
+        }
+        if (Settings["dev:enabled", false]) {
+            findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
+        }
         findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, 24.dp.toInt()))
         cardThing()
     }
@@ -54,14 +59,9 @@ class Customizations : AppCompatActivity() {
                 .scaleY(0.95f)
                 .translationY(findViewById<View>(R.id.card).measuredHeight.toFloat())
                 .setDuration(200L)
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(a: Animator) {}
-                    override fun onAnimationCancel(a: Animator) {}
-                    override fun onAnimationStart(a: Animator) {}
-                    override fun onAnimationEnd(a: Animator) {
-                        findViewById<View>(R.id.card).visibility = View.GONE
-                    }
-                })
+                .onEnd {
+                    findViewById<View>(R.id.card).visibility = View.GONE
+                }
     }
 
     private fun cardThing() {

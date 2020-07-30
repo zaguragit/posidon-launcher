@@ -27,13 +27,19 @@
             android:src="@drawable/ic_search"
             android:tint="#ffffff"/>
     </LinearLayout>
-    <GridLayout
-        android:id="@+id/dockContainer"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/dockContainerContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_weight="1">
+        <GridLayout
+            android:id="@+id/dockContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+    </FrameLayout>
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:id="@+id/battery"

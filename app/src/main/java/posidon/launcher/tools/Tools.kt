@@ -1,6 +1,8 @@
 package posidon.launcher.tools
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
@@ -9,12 +11,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.*
+import android.graphics.drawable.shapes.RoundRectShape
 import android.media.AudioAttributes
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -572,6 +576,50 @@ object Tools {
             .replace(Regex("(k|cc|ck)"), "c")
             .replace(Regex("(z|ts|sc|cs|tz)"), "s")
             .replace(Regex("([-'&/_,.:;*\"]|gh)"), "")
+
+    fun setDockBG(drawer: View, realDock: View, dockContainerContainer: View) {
+        when (Settings["dock:background_type", 0]) {
+            0 -> { drawer.background = ShapeDrawable().apply {
+                val tr = Settings["dockradius", 30].dp
+                shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                paint.color = Settings["dock:background_color", -0x78000000]
+            }}
+            1 -> { drawer.background = LayerDrawable(arrayOf(
+                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                            Settings["dock:background_color", -0x78000000] and 0x00ffffff,
+                            Settings["dock:background_color", -0x78000000])),
+                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
+                            Settings["dock:background_color", -0x78000000],
+                            Settings["drawer:background_color", -0x78000000]))
+            ))}
+            2 -> {
+                drawer.background = ShapeDrawable().apply {
+                    val tr = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = 0
+                }
+                dockContainerContainer.background = null
+                realDock.background = ShapeDrawable().apply {
+                    val r = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                    paint.color = Settings["dock:background_color", -0x78000000]
+                }
+            }
+            3 -> {
+                drawer.background = ShapeDrawable().apply {
+                    val tr = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = 0
+                }
+                realDock.background = null
+                dockContainerContainer.background = ShapeDrawable().apply {
+                    val r = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                    paint.color = Settings["dock:background_color", -0x78000000]
+                }
+            }
+        }
+    }
 }
 
 inline fun Activity.applyFontSetting() {
@@ -672,3 +720,17 @@ inline fun Activity.setWallpaperOffset(x: Float, y: Float) {
     wallManager.setWallpaperOffsetSteps(0f, 0f)
     wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight)
 }
+
+inline fun ViewPropertyAnimator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = setListener(object : Animator.AnimatorListener {
+    override fun onAnimationRepeat(animation: Animator?) {}
+    override fun onAnimationCancel(animation: Animator?) {}
+    override fun onAnimationStart(animation: Animator?) {}
+    override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
+})
+
+inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = this.addListener(object : Animator.AnimatorListener {
+    override fun onAnimationRepeat(animation: Animator?) {}
+    override fun onAnimationCancel(animation: Animator?) {}
+    override fun onAnimationStart(animation: Animator?) {}
+    override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
+})

@@ -40,19 +40,21 @@ class CustomHome : AppCompatActivity() {
             else -> findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
         }
 
-        val dateformat = Settings["datef", resources.getString(R.string.defaultdateformat)]
-        val datefprev = findViewById<TextClock>(R.id.datefprev)
-        val dateftxt = findViewById<EditText>(R.id.dateformat)
-        dateftxt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                val i = dateftxt.text.toString()
-                datefprev.format12Hour = i
-                datefprev.format24Hour = i
-            }
-        })
-        dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
+        run {
+            val dateformat = Settings["datef", resources.getString(R.string.defaultdateformat)]
+            val datefprev = findViewById<TextClock>(R.id.datefprev)
+            val dateftxt = findViewById<EditText>(R.id.dateformat)
+            dateftxt.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    val i = dateftxt.text.toString()
+                    datefprev.format12Hour = i
+                    datefprev.format24Hour = i
+                }
+            })
+            dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
+        }
 
 
         findViewById<Switch>(R.id.showBehindDock).isChecked = Settings["feed:show_behind_dock", false]
@@ -143,6 +145,23 @@ class CustomHome : AppCompatActivity() {
 
         findViewById<Switch>(R.id.showFeedSpinner).isChecked = Settings["feed:show_spinner", true]
 
+        findViewById<Switch>(R.id.starredContactsSwitch).isChecked = Settings["contacts_card:enabled", false]
+
+        run {
+            val contactsCardColumns = findViewById<SeekBar>(R.id.contactsColumnSlider)
+            contactsCardColumns.progress = Settings["contacts_card:columns", 5] - 1
+            val contactsCardColumnNum = findViewById<TextView>(R.id.contactsColumnNum)
+            contactsCardColumnNum.text = Settings["contacts_card:columns", 5].toString()
+            contactsCardColumns.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    contactsCardColumnNum.text = (progress + 1).toString()
+                    Settings["contacts_card:columns"] = progress + 1
+                }
+            })
+        }
+
         Main.customized = true
     }
 
@@ -199,6 +218,7 @@ class CustomHome : AppCompatActivity() {
             putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
             putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
             putNotSave("feed:show_spinner", findViewById<Switch>(R.id.showFeedSpinner).isChecked)
+            putNotSave("contacts_card:enabled", findViewById<Switch>(R.id.starredContactsSwitch).isChecked)
             apply()
         }
         super.onPause()

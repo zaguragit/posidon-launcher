@@ -40,7 +40,7 @@
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
     <string name="surprise_me">Sorprende me…</string>
-    <string name="preset_chooser_title">Escoge una plantilla</string>
+    <string name="preset_chooser_title">Escoge donde comenzar</string>
     <string name="done">Hecho</string>
     <string name="explanation">To access the customizations or the wallpaper gallery, long-press or pinch on the homescreen</string>
     <string name="twitter">Twitter</string>
@@ -179,6 +179,7 @@
     <string name="permission_contacts_description">El acceso a contactos es nesesario para enseñar contactos en la busqueda</string>
     <string name="github_contributors">Contribuyentes de Github</string>
     <string name="lock_home">Lock homescreen</string>
+    <string name="starred_contacts">Starred contacts</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

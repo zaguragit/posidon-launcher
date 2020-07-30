@@ -1,6 +1,5 @@
 package posidon.launcher
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
@@ -25,12 +24,12 @@ import android.view.*
 import android.view.View.*
 import android.widget.*
 import android.widget.GridView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dock.*
+import kotlinx.android.synthetic.main.main.*
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Widget
 import posidon.launcher.external.Widget.REQUEST_CREATE_APPWIDGET
@@ -59,6 +58,27 @@ import kotlin.math.*
 import kotlin.system.exitProcess
 
 class Main : AppCompatActivity() {
+
+    private lateinit var drawerGrid: GridView
+    private lateinit var drawer: View
+    private lateinit var drawerScrollBar: AlphabetScrollbar
+    lateinit var behavior: BottomDrawerBehavior<View>
+    private var dockHeight = 0
+
+    private lateinit var blurBg: LayerDrawable
+
+    private lateinit var searchBar: View
+
+    private lateinit var desktop: NestedScrollView
+    private lateinit var feedRecycler: RecyclerView
+    private lateinit var feedProgressBar: ProgressBar
+
+    private lateinit var notifications: RecyclerView
+    private lateinit var widgetLayout: ResizableLayout
+
+    private lateinit var batteryBar: ProgressBar
+
+    private lateinit var powerManager: PowerManager
 
     init {
         Tools.publicContextReference = WeakReference(this)
@@ -266,8 +286,12 @@ class Main : AppCompatActivity() {
                 container.addView(view)
                 i++
             }
-            val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp else 0f).toInt() * rowCount
-            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) containerHeight + 84.dp.toInt() else containerHeight + 14.dp.toInt()
+            val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp.toInt() else 0) * rowCount
+            dockHeight = if (Settings["docksearchbarenabled", false] && !isTablet) {
+                containerHeight + 84.dp.toInt()
+            } else {
+                containerHeight + 14.dp.toInt()
+            }
             container.layoutParams.height = containerHeight
             behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
             val metrics = DisplayMetrics()
@@ -336,49 +360,6 @@ class Main : AppCompatActivity() {
             }
         }
         setCustomizations = {
-            applyFontSetting()
-
-            when (Settings["dock:background_type", 0]) {
-                0 -> { drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }}
-                1 -> { drawer.background = LayerDrawable(arrayOf(
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                        Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                        Settings["dock:background_color", -0x78000000])),
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                        Settings["dock:background_color", -0x78000000],
-                        Settings["drawer:background_color", -0x78000000]))
-                ))}
-                2 -> {
-                    drawer.background = ShapeDrawable().apply {
-                        val tr = Settings["dockradius", 30].dp
-                        shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                        paint.color = 0
-                    }
-                    dockContainerContainer.background = null
-                    realdock.background = ShapeDrawable().apply {
-                        val r = Settings["dockradius", 30].dp
-                        shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                        paint.color = Settings["dock:background_color", -0x78000000]
-                    }
-                }
-                3 -> {
-                    drawer.background = ShapeDrawable().apply {
-                        val tr = Settings["dockradius", 30].dp
-                        shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                        paint.color = 0
-                    }
-                    realdock.background = null
-                    dockContainerContainer.background = ShapeDrawable().apply {
-                        val r = Settings["dockradius", 30].dp
-                        shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                        paint.color = Settings["dock:background_color", -0x78000000]
-                    }
-                }
-            }
 
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
@@ -393,7 +374,22 @@ class Main : AppCompatActivity() {
                 setDock()
             }
 
-            if (Settings["hidestatus", false]) window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) else window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            if (Settings["drawer:sections_enabled", false]) {
+                drawerGrid.numColumns = 1
+                drawerGrid.verticalSpacing = 0
+            } else {
+                drawerGrid.numColumns = Settings["drawer:columns", 4]
+                drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+            }
+
+            applyFontSetting()
+            Tools.setDockBG(drawer, realdock, dockContainerContainer)
+
+            if (Settings["hidestatus", false]) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
 
             setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
             setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
@@ -409,24 +405,37 @@ class Main : AppCompatActivity() {
             setDockSearchbarRadius(Settings["dock:search:radius", 30])
             setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
-            if (Settings["drawer:sections_enabled", false]) {
-                drawerGrid.numColumns = 1
-                drawerGrid.verticalSpacing = 0
+            val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+            val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+
+            if (Settings["contacts_card:enabled", false]) {
+                contacts.visibility = View.VISIBLE
+                contacts.background = ShapeDrawable().apply {
+                    val r = Settings["feed:card_radius", 15].dp
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                    paint.color = Settings["notificationbgcolor", -0x1]
+                }
+                contacts.columns = Settings["contacts_card:columns", 5]
+                (contacts.layoutParams as ViewGroup.MarginLayoutParams).run {
+                    leftMargin = marginX
+                    rightMargin = marginX
+                    topMargin = marginY
+                    bottomMargin = marginY
+                }
             } else {
-                drawerGrid.numColumns = Settings["drawer:columns", 4]
-                drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+                contacts.visibility = View.GONE
             }
 
             feedProgressBar.indeterminateDrawable.setTint(accentColor)
-            val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-            val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
             if (Settings["feed:enabled", true]) {
                 feedRecycler.visibility = VISIBLE
+                feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
                 (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
             } else {
                 feedRecycler.visibility = GONE
+                feedRecycler.adapter = null
             }
-            (findViewById<View>(R.id.musicCard).layoutParams as LinearLayout.LayoutParams).apply {
+            (findViewById<View>(R.id.musicCard).layoutParams as ViewGroup.MarginLayoutParams).apply {
                 leftMargin = marginX
                 rightMargin = marginX
                 bottomMargin = marginY
@@ -435,30 +444,15 @@ class Main : AppCompatActivity() {
                 feedRecycler.translationX = Device.displayWidth.toFloat()
                 feedRecycler.alpha = 0f
                 var wasHiddenLastTime = true
-                val fadeOutAnimListener = object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {}
-                    override fun onAnimationCancel(animation: Animator?) {}
-                    override fun onAnimationStart(animation: Animator?) {}
-                    override fun onAnimationEnd(animation: Animator?) {
-                        feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                        wasHiddenLastTime = true
-                    }
-                }
-                val fadeInAnimListener = object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {}
-                    override fun onAnimationCancel(animation: Animator?) {}
-                    override fun onAnimationStart(animation: Animator?) {}
-                    override fun onAnimationEnd(animation: Animator?) {
-                        wasHiddenLastTime = false
-                    }
-                }
                 desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
                     val a = 6.dp
                     val distance = oldY - y
                     if (y > a) {
                         if (wasHiddenLastTime) {
                             feedRecycler.translationX = 0f
-                            feedRecycler.animate().setListener(fadeInAnimListener).alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.duration = 200L
+                            feedRecycler.animate().alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.onEnd {
+                                wasHiddenLastTime = false
+                            }.duration = 200L
                         }
                         if (distance > a || y >= findViewById<View>(R.id.desktopContent).height - dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
@@ -473,7 +467,10 @@ class Main : AppCompatActivity() {
                         }
                         if (y < a && oldY >= a) {
                             if (!wasHiddenLastTime) {
-                                feedRecycler.animate().setListener(fadeOutAnimListener).alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.duration = 180L
+                                feedRecycler.animate().alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.onEnd {
+                                    feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
+                                    wasHiddenLastTime = true
+                                }.duration = 180L
                             }
                         }
                     }
@@ -493,7 +490,9 @@ class Main : AppCompatActivity() {
                     }
                 })
             }
-            if (!Settings["hidestatus", false]) desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
+            if (!Settings["hidestatus", false]) {
+                desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
+            }
 
             shouldSetApps = false
             customized = false
@@ -507,8 +506,8 @@ class Main : AppCompatActivity() {
                                 if (NotificationService.notificationsAmount > 1) {
                                     findViewById<View>(R.id.parentNotification).visibility = VISIBLE
                                     parentNotificationTitle.text = resources.getString(
-                                            R.string.num_notifications,
-                                            NotificationService.notificationsAmount
+                                        R.string.num_notifications,
+                                        NotificationService.notificationsAmount
                                     )
                                     if (notifications.visibility == VISIBLE) {
                                         findViewById<View>(R.id.parentNotification).background.alpha = 127
@@ -569,27 +568,6 @@ class Main : AppCompatActivity() {
         }
     }
 
-    private lateinit var drawerGrid: GridView
-    private lateinit var drawer: View
-    private lateinit var drawerScrollBar: AlphabetScrollbar
-    lateinit var behavior: BottomDrawerBehavior<View>
-    private var dockHeight = 0
-
-    private lateinit var blurBg: LayerDrawable
-
-    private lateinit var searchBar: View
-
-    private lateinit var desktop: NestedScrollView
-    private lateinit var feedRecycler: RecyclerView
-    private lateinit var feedProgressBar: ProgressBar
-
-    private lateinit var notifications: RecyclerView
-    private lateinit var widgetLayout: ResizableLayout
-
-    private lateinit var batteryBar: ProgressBar
-
-    private lateinit var powerManager: PowerManager
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -615,49 +593,12 @@ class Main : AppCompatActivity() {
         Widget.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         setContentView(R.layout.main)
+
         launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        /*val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
-        filter.addDataScheme("package")
-        *///receiver = AppChangeReceiver()
-        //registerReceiver(receiver, filter)
-
-        launcherApps.registerCallback(object : LauncherApps.Callback() {
-            override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
-                AppLoader(this@Main, onAppLoaderEnd).execute()
-            }
-
-            override fun onPackageChanged(packageName: String, user: UserHandle?) {
-                AppLoader(this@Main, onAppLoaderEnd).execute()
-            }
-
-            override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
-                AppLoader(this@Main, onAppLoaderEnd).execute()
-            }
-
-            override fun onPackageAdded(packageName: String, user: UserHandle?) {
-                AppLoader(this@Main, onAppLoaderEnd).execute()
-            }
-
-            override fun onPackageRemoved(packageName: String, user: UserHandle?) {
-                apps.removeAll { it.packageName == packageName }
-                val iter = appSections.iterator()
-                for (section in iter) {
-                    section.removeAll {
-                        it.packageName == packageName
-                    }
-                    if (section.isEmpty()) {
-                        iter.remove()
-                    }
-                }
-                App.removePackage(packageName)
-                onAppLoaderEnd()
-            }
-        })
+        launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
 
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
@@ -682,6 +623,7 @@ class Main : AppCompatActivity() {
                 }
             }
         }
+
         updateNavbarHeight(this@Main)
         drawerGrid = findViewById(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
@@ -789,7 +731,6 @@ class Main : AppCompatActivity() {
             isNestedScrollingEnabled = false
         }
         feedProgressBar = findViewById(R.id.feedProgressBar)
-        loadFeed()
 
         notifications = findViewById<RecyclerView>(R.id.notifications).apply {
             isNestedScrollingEnabled = false
@@ -813,6 +754,7 @@ class Main : AppCompatActivity() {
         }
 
         setCustomizations()
+        loadFeed()
 
         widgetLayout = findViewById<ResizableLayout>(R.id.widgets).apply {
             layoutParams.height = Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT]
@@ -830,6 +772,7 @@ class Main : AppCompatActivity() {
         }
         Widget.host.startListening()
         Widget.fromSettings(widgetLayout)
+
         val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomDrawerBehavior.STATE_COLLAPSED)
@@ -858,6 +801,7 @@ class Main : AppCompatActivity() {
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val list = ArrayList<Rect>()
             list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
@@ -873,32 +817,26 @@ class Main : AppCompatActivity() {
         findViewById<ImageView>(R.id.blur).setImageDrawable(blurBg)
 
         findViewById<View>(R.id.musicPrev).setOnClickListener {
-            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).apply {
-                dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
-            }
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
         }
         findViewById<View>(R.id.musicPlay).setOnClickListener {
             it as ImageView
-            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).apply {
-                if (isMusicActive) {
-                    dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                    dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                    it.setImageResource(R.drawable.ic_play)
-                } else {
-                    dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
-                    dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
-                    it.setImageResource(R.drawable.ic_pause)
-                }
+            if (musicService.isMusicActive) {
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
+                it.setImageResource(R.drawable.ic_play)
+            } else {
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
+                it.setImageResource(R.drawable.ic_pause)
             }
         }
         findViewById<View>(R.id.musicNext).setOnClickListener {
-            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).apply {
-                dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-                dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
-                findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
-            }
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+            findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
         }
         System.gc()
     }
@@ -932,6 +870,7 @@ class Main : AppCompatActivity() {
     }
 
     private val onAppLoaderEnd = {
+        val s = drawerGrid.scrollY
         if (Settings["drawer:sections_enabled", false]) {
             drawerGrid.adapter = SectionedDrawerAdapter()
             drawerGrid.onItemClickListener = null
@@ -941,6 +880,7 @@ class Main : AppCompatActivity() {
             drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Main, v) }
             drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Main)
         }
+        drawerGrid.scrollY = s
         drawerScrollBar.updateAdapter()
         setDock()
     }
@@ -952,14 +892,9 @@ class Main : AppCompatActivity() {
             feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
             FeedLoader {
                 (feedRecycler.adapter as FeedAdapter).updateFeed(it)
-                feedProgressBar.animate().translationY(-72.dp).alpha(0f).setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {}
-                    override fun onAnimationCancel(animation: Animator?) {}
-                    override fun onAnimationStart(animation: Animator?) {}
-                    override fun onAnimationEnd(animation: Animator?) {
-                        feedProgressBar.visibility = GONE
-                    }
-                })
+                feedProgressBar.animate().translationY(-72.dp).alpha(0f).onEnd {
+                    feedProgressBar.visibility = GONE
+                }
             }.execute()
         } else FeedLoader {
             (feedRecycler.adapter as FeedAdapter).updateFeed(it)
@@ -968,7 +903,6 @@ class Main : AppCompatActivity() {
 
     private fun loadFeed() {
         if (Settings["feed:enabled", true]) {
-            feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
             updateFeed()
         }
     }
@@ -977,7 +911,6 @@ class Main : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
         onUpdate()
         setDock()
-        loadFeed()
     }
 
     override fun onResume() {
@@ -996,6 +929,7 @@ class Main : AppCompatActivity() {
     private fun onUpdate() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
+        loadFeed()
         if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
@@ -1009,6 +943,13 @@ class Main : AppCompatActivity() {
                     else {
                         blurBg.setId(i, i)
                         blurBg.setDrawableByLayerId(i, bd)
+                    }
+                }
+                if (Settings["contacts_card:enabled", false]) {
+                    ContactItem.getList(true).also {
+                        runOnUiThread {
+                            contacts.setItems(it)
+                        }
                     }
                 }
             }
@@ -1083,7 +1024,7 @@ class Main : AppCompatActivity() {
                 AppLoader(this@Main, onAppLoaderEnd).execute()
             }
             val playBtn = findViewById<ImageView>(R.id.musicPlay)
-            if ((getSystemService(Context.AUDIO_SERVICE) as AudioManager).isMusicActive) {
+            if (musicService.isMusicActive) {
                 playBtn.setImageResource(R.drawable.ic_pause)
             } else {
                 playBtn.setImageResource(R.drawable.ic_play)
@@ -1112,17 +1053,22 @@ class Main : AppCompatActivity() {
         ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle())
 
     companion object {
+
         var appSections = ArrayList<ArrayList<App>>()
+        var apps = ArrayList<App>()
+
         var shouldSetApps = true
         var customized = false
-        var apps = ArrayList<App>()
+
         var accentColor = -0xeeaa01
-        //var receiver: AppChangeReceiver? = null
+
         lateinit var instance: Main private set
+
         lateinit var setCustomizations: () -> Unit private set
         lateinit var setDock: () -> Unit private set
-        @RequiresApi(api = Build.VERSION_CODES.M)
+
         lateinit var launcherApps: LauncherApps
+        lateinit var musicService: AudioManager
 
         fun setSearchHintText(text: String) {
             Settings["searchhinttxt"] = text

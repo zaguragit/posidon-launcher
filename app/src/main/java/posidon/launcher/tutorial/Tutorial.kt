@@ -1,6 +1,7 @@
 package posidon.launcher.tutorial
 
 import android.Manifest
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +22,7 @@ import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 
 
@@ -40,20 +42,35 @@ class Tutorial : AppCompatActivity() {
         Settings.init(this)
         for (i in styleButtons.indices) {
             findViewById<View>(styleButtons[i]).setOnClickListener {
-                if (selectedStyle != -1)
-                    findViewById<TextView>(styleButtons[selectedStyle]).apply {
+                if (selectedStyle != -1) {
+                    findViewById<TextView>(if (selectedStyle == styleButtons.size) R.id.backup else styleButtons[selectedStyle]).apply {
                         background = getDrawable(R.drawable.button_bg_round)
                         setTextColor(0xffdddddd.toInt())
                     }
+                }
                 val d = getDrawable(R.drawable.button_bg_round)!!.mutate() as GradientDrawable
                 d.setColor(resources.getColor(R.color.accent))
-                findViewById<TextView>(styleButtons[i]).apply {
-                    background = d
-                    setTextColor(0xffddeeff.toInt())
-                }
+                it as TextView
+                it.background = d
+                it.setTextColor(0xffddeeff.toInt())
                 selectedStyle = i
                 checkDone()
             }
+        }
+        findViewById<View>(R.id.backup).setOnClickListener {
+            if (selectedStyle != -1) {
+                findViewById<TextView>(if (selectedStyle == styleButtons.size) R.id.backup else styleButtons[selectedStyle]).apply {
+                    background = getDrawable(R.drawable.button_bg_round)
+                    setTextColor(0xffdddddd.toInt())
+                }
+            }
+            val d = getDrawable(R.drawable.button_bg_round)!!.mutate() as GradientDrawable
+            d.setColor(resources.getColor(R.color.accent))
+            it as TextView
+            it.background = d
+            it.setTextColor(0xffddeeff.toInt())
+            selectedStyle = styleButtons.size
+            checkDone()
         }
     }
 
@@ -202,6 +219,13 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("icon:background", 0xffffffff.toInt())
                     apply()
                 }
+                4 -> {
+                    val intent = Intent()
+                    intent.action = Intent.ACTION_OPEN_DOCUMENT
+                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    intent.type = "application/*"
+                    startActivityForResult(intent, 1)
+                }
             }
             setContentView(R.layout.tutorial2)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -291,5 +315,18 @@ class Tutorial : AppCompatActivity() {
         selector.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(selector)
         packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1) {
+                try { data?.data?.let {
+                    Settings.restoreFromBackup(it)
+                    Toast.makeText(this, "Backup restored!", Toast.LENGTH_LONG).show()
+                }}
+                catch (e: FileNotFoundException) { e.printStackTrace() }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
