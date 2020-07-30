@@ -16,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
                 android:gravity="center"
-                android:textSize="48sp"
+                android:textSize="32sp"
                 android:textColor="#ffffff"
                 android:fontFamily="@font/posidon_sans"
                 android:text="@string/preset_chooser_title"
@@ -75,6 +75,18 @@
                     android:layout_margin="8dp"
                     android:textColor="#dddddd"
                     android:text="@string/surprise_me"/>
+                <TextView
+                    android:id="@+id/backup"
+                    android:layout_width="256dp"
+                    android:layout_height="wrap_content"
+                    android:minWidth="64dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/button_bg_round"
+                    android:padding="16dp"
+                    android:textSize="16sp"
+                    android:layout_margin="8dp"
+                    android:textColor="#dddddd"
+                    android:text="@string/use_backup"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

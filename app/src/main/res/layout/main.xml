@@ -34,6 +34,10 @@
                     android:id="@+id/widgets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+                <posidon.launcher.view.ContactCardView
+                    android:id="@+id/contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
                 <include
                     android:id="@+id/musicCard"
                     android:visibility="gone"

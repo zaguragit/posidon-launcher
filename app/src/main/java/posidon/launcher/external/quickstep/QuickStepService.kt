@@ -4,14 +4,13 @@ import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.app.Service
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.graphics.Region
 import android.os.*
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.hasNavbar
 
 @TargetApi(Build.VERSION_CODES.Q)
@@ -39,66 +38,56 @@ class QuickStepService : Service() {
         THREE_BUTTONS(false, 0), GESTURAL(true, 2);
     }
     
-    fun onNavigationModeChanged(newMode: NavigationMode) {
+    private fun onNavigationModeChanged(newMode: NavigationMode) {
         println(newMode.name)
         navigationMode = newMode
     }
 
     private val mMyBinder: IBinder = object : IOverviewProxy.Stub() {
 
-        override fun onActiveNavBarRegionChanges(activeRegion: Region?) {
-            println("QUICKSTEP.onActiveNavBarRegionChanges(${activeRegion!!.bounds})")
-            if (hasNavbar) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
-            else onNavigationModeChanged(NavigationMode.GESTURAL)
-        }
-
-        override fun onInitialize(params: Bundle?) {
-            println("QUICKSTEP.onInitialize($params)")
-            Main.instance.runOnUiThread {
-                Toast.makeText(this@QuickStepService, params.toString(), Toast.LENGTH_LONG).show()
-            }
-            systemUiProxy = ISystemUiProxy.Stub.asInterface(params!!.getBinder("extra_sysui_proxy"))
-            systemUiProxy!!.onSplitScreenInvoked()
-            systemUiProxy!!.monitorGestureInput("swipe-up", defaultDisplayId)
-        }
-
         override fun onOverviewToggle() {
-            println("QUICKSTEP.onOverviewToggle()")
-            if (QuickStepActivity.INSTANCE?.hasWindowFocus() == true) {
-                if (recentTasks.isEmpty()) startActivity(Intent(this@QuickStepService, Main::class.java))
-                else startActivity(recentTasks[0]!!.baseIntent)
-            } else {
-                recentTasks = activityManager.getRecentTasks(Int.MAX_VALUE, ActivityManager.RECENT_IGNORE_UNAVAILABLE)
-                startActivity(Intent(baseContext, QuickStepActivity::class.java).apply { addFlags(FLAG_ACTIVITY_NEW_TASK) })
-            }
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewToggle()", Toast.LENGTH_LONG).show()
+        }
+
+        override fun onQuickStep(event: MotionEvent?) {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickStep($event)", Toast.LENGTH_LONG).show()
+        }
+
+        override fun onBind(sysUiProxy: ISystemUiProxy?) {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onBind(sysUiProxy)", Toast.LENGTH_LONG).show()
+            systemUiProxy = sysUiProxy
         }
 
         override fun onOverviewShown(triggeredFromAltTab: Boolean) {
-            println("QUICKSTEP.onOverviewShown($triggeredFromAltTab)")
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewShown($triggeredFromAltTab)", Toast.LENGTH_LONG).show()
         }
 
         override fun onOverviewHidden(triggeredFromAltTab: Boolean, triggeredFromHomeKey: Boolean) {
-            println("QUICKSTEP.onOverviewHidden($triggeredFromAltTab, $triggeredFromHomeKey)")
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewHidden($triggeredFromAltTab, $triggeredFromHomeKey)", Toast.LENGTH_LONG).show()
         }
 
         override fun onTip(actionType: Int, viewType: Int) {
-            println("QUICKSTEP.onTip($actionType, $viewType)")
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onTip($actionType, $viewType)", Toast.LENGTH_LONG).show()
         }
 
-        override fun onAssistantAvailable(available: Boolean) {
-            println("QUICKSTEP.onAssistantAvailable($available)")
+        override fun onMotionEvent(event: MotionEvent?) {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onMotionEvent($event)", Toast.LENGTH_LONG).show()
         }
 
-        override fun onAssistantVisibilityChanged(visibility: Float) {
-            println("QUICKSTEP.onAssistantVisibilityChanged($visibility)")
+        override fun onPreMotionEvent(downHitTarget: Int) {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onPreMotionEvent($downHitTarget)", Toast.LENGTH_LONG).show()
         }
 
-        override fun onBackAction(completed: Boolean, downX: Int, downY: Int, isButton: Boolean, gestureSwipeLeft: Boolean) {
-            println("QUICKSTEP.onBackAction($completed, $downX, $downY, $isButton, $gestureSwipeLeft)")
+        override fun onQuickScrubStart() {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubStart()", Toast.LENGTH_LONG).show()
         }
 
-        override fun onSystemUiStateChanged(stateFlags: Int) {
-            println("QUICKSTEP.onSystemUiStateChanged($stateFlags)")
+        override fun onQuickScrubEnd() {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubEnd()", Toast.LENGTH_LONG).show()
+        }
+
+        override fun onQuickScrubProgress(progress: Float) {
+            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubProgress($progress)", Toast.LENGTH_LONG).show()
         }
     }
 

@@ -18,7 +18,6 @@ class Folder(string: String) : LauncherItem() {
     var uid: String
 
     init {
-        println(string)
         val appsList = string.substring(7, string.length).split('\t')
         uid = appsList[0]
         for (i in 1 until appsList.size) {

@@ -47,7 +47,7 @@ class ContactItem private constructor(
     override fun hashCode() = id
 
     companion object {
-        fun getList(): Iterable<ContactItem> {
+        fun getList(requiresStar: Boolean = false): Iterable<ContactItem> {
             val cur = Tools.publicContext!!.contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(ContactsContract.Contacts.LOOKUP_KEY,
@@ -65,24 +65,31 @@ class ContactItem private constructor(
                 val lookupIndex = cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)
                 val displayNameIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 val numberIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val starredIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED)
                 val photoIdIndex = cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)
                 val contactIdIndex = cur.getColumnIndex(ContactsContract.Contacts._ID)
 
-                if (cur.count != 0) while (cur.moveToNext()) {
-                    val lookupKey = cur.getString(lookupIndex)
-                    val name = cur.getString(displayNameIndex)
-                    if (name.isNullOrBlank()) continue
-                    val contactId = cur.getInt(contactIdIndex)
-                    val phone = cur.getString(numberIndex) ?: ""
-                    val photoId = cur.getString(photoIdIndex)
-                    val icon: Uri? = if (photoId != null) {
-                        ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
-                    } else null
+                if (cur.count != 0) {
+                    while (cur.moveToNext()) {
+                        val starred = cur.getInt(starredIndex) != 0
+                        if (requiresStar && !starred) {
+                            continue
+                        }
+                        val lookupKey = cur.getString(lookupIndex)
+                        val name = cur.getString(displayNameIndex)
+                        if (name.isNullOrBlank()) continue
+                        val contactId = cur.getInt(contactIdIndex)
+                        val phone = cur.getString(numberIndex) ?: ""
+                        val photoId = cur.getString(photoIdIndex)
+                        val icon: Uri? = if (photoId != null) {
+                            ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
+                        } else null
 
-                    val contact = ContactItem(name, icon, lookupKey, phone, contactId)
+                        val contact = ContactItem(name, icon, lookupKey, phone, contactId)
 
-                    if (!contactMap.containsKey(lookupKey)) {
-                        contactMap[lookupKey] = contact
+                        if (!contactMap.containsKey(lookupKey)) {
+                            contactMap[lookupKey] = contact
+                        }
                     }
                 }
                 cur.close()

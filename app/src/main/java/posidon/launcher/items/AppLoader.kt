@@ -1,6 +1,7 @@
 package posidon.launcher.items
 
 import android.content.Context
+import android.content.pm.LauncherApps
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
@@ -10,8 +11,42 @@ import posidon.launcher.Main
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
+import kotlin.concurrent.thread
 
 class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
+
+    class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
+        override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
+            AppLoader(context, onAppLoaderEnd).execute()
+        }
+
+        override fun onPackageChanged(packageName: String, user: UserHandle?) {
+            AppLoader(context, onAppLoaderEnd).execute()
+        }
+
+        override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
+            AppLoader(context, onAppLoaderEnd).execute()
+        }
+
+        override fun onPackageAdded(packageName: String, user: UserHandle?) {
+            AppLoader(context, onAppLoaderEnd).execute()
+        }
+
+        override fun onPackageRemoved(packageName: String, user: UserHandle?) {
+            Main.apps.removeAll { it.packageName == packageName }
+            val iter = Main.appSections.iterator()
+            for (section in iter) {
+                section.removeAll {
+                    it.packageName == packageName
+                }
+                if (section.isEmpty()) {
+                    iter.remove()
+                }
+            }
+            App.removePackage(packageName)
+            onAppLoaderEnd()
+        }
+    }
 
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
@@ -71,69 +106,84 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
         val userManager = Main.instance.getSystemService(Context.USER_SERVICE) as UserManager
         for (profile in userManager.userProfiles) {
             val appList = Main.launcherApps.getActivityList(null, profile)
+            var lastThread: Thread? = null
             for (i in appList.indices) {
                 val app = App(appList[i].applicationInfo.packageName, appList[i].name, profile)
-                app.icon = appList[i].getIcon(0)
+                val thread = thread (isDaemon = true) {
+                    app.icon = appList[i].getIcon(0)
+                    var intres = 0
+                    val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
+                    if (iconResource != null) {
+                        intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
+                    }
+                    if (intres != 0) {
+                        try {
+                            app.icon = themeRes!!.getDrawable(intres)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else if (areUnthemedIconsChanged) {
+                        try {
+                            var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                            app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
+                            app.icon!!.draw(Canvas(orig))
+                            val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                            val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                            val canvas = Canvas(scaledBitmap)
+                            if (back != null) {
+                                canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
+                            }
+                            val origCanv = Canvas(scaledOrig)
+                            orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
+                            origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
+                            if (mask != null) {
+                                origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
+                            }
+                            canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
+                            if (front != null) {
+                                canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
+                            }
+                            app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    val customIcon = Settings["app:$app:icon", ""]
+                    if (customIcon != "") {
+                        try {
+                            val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
+                            val t = packageManager.getResourcesForApplication(data[0])
+                            val intRes = t.getIdentifier(data[1], "drawable", data[0])
+                            app.icon = t.getDrawable(intRes)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        app.icon = Tools.generateAdaptiveIcon(app.icon!!)
+                    }
+                    app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
+                    if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode &&
+                        Settings["animatedicons", true]) {
+                        try {
+                            Tools.tryAnimate(app.icon!!)
+                        } catch (e: Exception) {}
+                    }
+                }
                 var customLabel = Settings[app.packageName + "/" + app.name + "?label", appList[i].label.toString()]
                 if (customLabel.isEmpty()) {
                     Settings[app.packageName + "/" + app.name + "?label"] = appList[i].label.toString()
                     customLabel = appList[i].label.toString()
                 }
                 app.label = customLabel
-                var intres = 0
-                val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
-                if (iconResource != null) {
-                    intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
-                }
-                if (intres != 0) {
-                    try { app.icon = themeRes!!.getDrawable(intres) }
-                    catch (e: Exception) { e.printStackTrace() }
-                } else if (areUnthemedIconsChanged) {
-                    try {
-                        var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                        app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
-                        app.icon!!.draw(Canvas(orig))
-                        val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                        val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                        val canvas = Canvas(scaledBitmap)
-                        if (back != null) {
-                            canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
-                        }
-                        val origCanv = Canvas(scaledOrig)
-                        orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
-                        origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
-                        if (mask != null) {
-                            origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
-                        }
-                        canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
-                        if (front != null) {
-                            canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
-                        }
-                        app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
-                    } catch (e: Exception) { e.printStackTrace() }
-                }
-                val customIcon = Settings["app:$app:icon", ""]
-                if (customIcon != "") {
-                    try {
-                        val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
-                        val t = packageManager.getResourcesForApplication(data[0])
-                        val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                        app.icon = t.getDrawable(intRes)
-                    } catch (e: Exception) { e.printStackTrace() }
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    app.icon = Tools.generateAdaptiveIcon(app.icon!!)
-                }
-                app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
-                if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) try {
-                    Tools.tryAnimate(app.icon!!)
-                } catch (e: Exception) {}
                 App.putInSecondMap(app)
                 if (Settings[appList[i].applicationInfo.packageName + "/" + appList[i].name + "?hidden", false]) {
                     App.hidden.add(app)
                 } else {
                     tmpApps.add(app)
                 }
+                lastThread?.join()
+                lastThread = thread
             }
         }
         if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith(Comparator { o1, o2 ->

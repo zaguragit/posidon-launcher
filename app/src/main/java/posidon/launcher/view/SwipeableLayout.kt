@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView
 import posidon.launcher.R
 import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.onEnd
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -122,12 +123,9 @@ class SwipeableLayout(
                             }
                             interpolator = SpringInterpolator()
                             duration = 350L
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(animation: Animator?) {}
-                                override fun onAnimationCancel(animation: Animator?) {}
-                                override fun onAnimationStart(animation: Animator?) {}
-                                override fun onAnimationEnd(animation: Animator?) { backView.clipBounds = Rect(0, 0, 0, 0) }
-                            })
+                            onEnd {
+                                backView.clipBounds = Rect(0, 0, 0, 0)
+                            }
                         }.start()
                         frontView.animate().translationX(0f).setInterpolator(SpringInterpolator()).duration = 350L
                     }
