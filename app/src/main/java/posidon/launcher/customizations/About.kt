@@ -65,7 +65,7 @@ class About : Activity() {
             isNestedScrollingEnabled = false
         }
 
-        Loader.threadText("https://api.github.com/repos/leoxshn/posidonLauncher/contributors") {
+        Loader.threadText("https://api.github.com/repos/lposidon/posidonLauncher/contributors") {
             val array = JSONArray(it)
             val contributors = ArrayList<Contributor>()
             for (i in 0 until array.length()) {
@@ -98,7 +98,7 @@ class About : Activity() {
     } catch (ignore: Exception) {} }
 
     fun openGitHub(v: View) { try {
-        val uri = Uri.parse("https://github.com/leoxshn/posidonLauncher")
+        val uri = Uri.parse("https://github.com/lposidon/posidonLauncher")
         val i = Intent(Intent.ACTION_VIEW, uri)
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     } catch (ignore: Exception) {} }
