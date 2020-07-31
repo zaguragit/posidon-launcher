@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.AbsListView
 import android.widget.SectionIndexer
+import posidon.launcher.items.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
@@ -31,7 +32,9 @@ class AlphabetScrollbar(
     init {
         listView.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScroll(v: AbsListView?, visItem0: Int, visItems: Int, items: Int) = this@AlphabetScrollbar.invalidate()
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
+                ItemLongPress.currentPopup?.dismiss()
+            }
         })
         update()
     }

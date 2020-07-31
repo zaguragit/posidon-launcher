@@ -13,7 +13,7 @@ import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 
-class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
+class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
 
     class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
         override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
@@ -55,7 +55,6 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
     override fun doInBackground(objects: Array<Unit?>): Unit? {
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
-        //val appList = packageManager.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
         val ICONSIZE = 65.dp.toInt()
         val iconpackName = Settings["iconpack", "system"]
         var intresiconback = 0
@@ -104,9 +103,9 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
             }
         }
         val userManager = Main.instance.getSystemService(Context.USER_SERVICE) as UserManager
+        var lastThread: Thread? = null
         for (profile in userManager.userProfiles) {
             val appList = Main.launcherApps.getActivityList(null, profile)
-            var lastThread: Thread? = null
             for (i in appList.indices) {
                 val app = App(appList[i].applicationInfo.packageName, appList[i].name, profile)
                 val thread = thread (isDaemon = true) {
@@ -186,6 +185,7 @@ class AppLoader(context: Context, private val onEnd: () -> Unit) : AsyncTask<Uni
                 lastThread = thread
             }
         }
+        lastThread?.join()
         if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith(Comparator { o1, o2 ->
             val iHsv = floatArrayOf(0f, 0f, 0f)
             val jHsv = floatArrayOf(0f, 0f, 0f)

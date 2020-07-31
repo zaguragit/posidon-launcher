@@ -1,0 +1,9 @@
+- Improved drag & drop
+- Added a starred contacts card
+- Added custom folder icon support
+- Added 2 new dock background types
+- Added setting to change feed card spacing
+- Added settings & contact results to search
+- Added an option to restore from a backup the first time you setup the launcher
+- Added a switch to lock the homescreen
+- Fixed bugs
