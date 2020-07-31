@@ -509,9 +509,7 @@ object Tools {
             setLayerInset(0, p, p, p, p)
         }
         return if (icon is BitmapDrawable) {
-            BitmapDrawable(publicContext!!.resources, drawable.toBitmap()).also {
-                if (isWork) icon.bitmap.recycle()
-            }
+            BitmapDrawable(publicContext!!.resources, drawable.toBitmap())
         } else drawable
     }
 

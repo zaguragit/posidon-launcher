@@ -174,7 +174,7 @@ class Gallery : AppCompatActivity() {
     }
 
     companion object {
-        const val REPO = "https://raw.githubusercontent.com/leoxshn/walls/master/"
+        const val REPO = "https://raw.githubusercontent.com/lposidon/walls/master/"
         const val INDEX_FILE = "index"
         const val IMG_PATH = "img/"
         var walls = ArrayList<Wall>()
