@@ -1,5 +1,6 @@
 package posidon.launcher
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
@@ -10,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -23,9 +25,9 @@ import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.*
-import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dock.*
@@ -49,9 +51,9 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
 import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
+import posidon.launcher.view.GridView
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.*
@@ -625,7 +627,7 @@ class Main : AppCompatActivity() {
         }
 
         updateNavbarHeight(this@Main)
-        drawerGrid = findViewById(R.id.drawergrid)
+        drawerGrid = findViewById<GridView>(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
         drawerGrid.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && drawerGrid.canScrollVertically(-1))
@@ -663,6 +665,7 @@ class Main : AppCompatActivity() {
                             }
                         }
                     }
+                    ItemLongPress.currentPopup?.dismiss()
                     colors[2] = Settings["drawer:background_color", -0x78000000]
                     floats[0] = dockHeight.toFloat() / (Device.displayHeight + dockHeight)
                     things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
@@ -945,7 +948,7 @@ class Main : AppCompatActivity() {
                         blurBg.setDrawableByLayerId(i, bd)
                     }
                 }
-                if (Settings["contacts_card:enabled", false]) {
+                if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                     ContactItem.getList(true).also {
                         runOnUiThread {
                             contacts.setItems(it)

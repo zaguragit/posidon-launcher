@@ -3,6 +3,7 @@ package posidon.launcher.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,6 +30,9 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             1 -> {
                 orientation = HORIZONTAL
+                textView.layoutParams.run {
+                    width = WRAP_CONTENT
+                }
                 textView.setPaddingRelative(12.dp.toInt(), 0, 0, 0)
             }
         }

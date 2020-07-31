@@ -107,6 +107,8 @@ object ItemLongPress {
             txtColor = -0x1
             content = LayoutInflater.from(context).inflate(R.layout.app_long_press_menu, null)
             val window = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+            currentPopup = window
+            window.setOnDismissListener { currentPopup = null }
             window.setBackgroundDrawable(ColorDrawable(0x0))
             content.findViewById<View>(R.id.appinfobtn).visibility = View.GONE
             content.findViewById<TextView>(R.id.title).text = item.label
