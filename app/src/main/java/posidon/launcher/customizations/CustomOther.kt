@@ -62,6 +62,9 @@ class CustomOther : AppCompatActivity() {
         }
 
         findViewById<Switch>(R.id.lock).isChecked = Settings["locked", false]
+
+        findViewById<Switch>(R.id.doKustomBroadcasts).isChecked = Settings["kustom:variables:enable", false]
+
         Main.customized = true
     }
 
@@ -71,6 +74,7 @@ class CustomOther : AppCompatActivity() {
             putNotSave("hidestatus", findViewById<Switch>(R.id.hidestatus).isChecked)
             putNotSave("mnmlstatus", findViewById<Switch>(R.id.mnmlstatus).isChecked)
             putNotSave("locked", findViewById<Switch>(R.id.lock).isChecked)
+            putNotSave("kustom:variables:enable", findViewById<Switch>(R.id.doKustomBroadcasts).isChecked)
             apply()
         }
         super.onPause()

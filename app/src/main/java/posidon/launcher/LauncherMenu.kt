@@ -32,19 +32,20 @@ class LauncherMenu : OnLongClickListener {
 
     internal class PinchListener : SimpleOnScaleGestureListener() {
         override fun onScale(d: ScaleGestureDetector) = true
-        override fun onScaleEnd(d: ScaleGestureDetector) {
+        override fun onScaleEnd(d: ScaleGestureDetector) =
             Gestures.performTrigger(Settings["gesture:pinch", Gestures.OPEN_OVERVIEW])
-        }
     }
 
     companion object {
         var isActive = false
         var dialog: Dialog? = null
+
         fun openOverview() {
             if (!isActive) {
                 open(Tools.publicContext!!, Main.instance.window)
             }
         }
+
         private inline fun open(context: Context, window: Window) {
             isActive = true
             context.vibrate()

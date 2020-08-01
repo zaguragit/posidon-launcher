@@ -51,6 +51,7 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
 import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
+import posidon.launcher.view.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.GridView
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
@@ -134,9 +135,16 @@ class Main : AppCompatActivity() {
                     val r = Settings["folderCornerRadius", 18].dp
                     val labelsEnabled = Settings["folderLabelsEnabled", false]
                     view.setOnClickListener { if (Folder.currentlyOpen == null) {
+
+                        if (Settings["kustom:variables:enable", false]) {
+                            Kustom["screen"] = "folder"
+                        }
+
                         val content = LayoutInflater.from(this@Main).inflate(R.layout.folder_layout, null)
                         val popupWindow = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+
                         Folder.currentlyOpen = popupWindow
+
                         popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
                         val container = content.findViewById<GridLayout>(R.id.container)
                         container.columnCount = Settings["folderColumns", 3]
@@ -648,6 +656,9 @@ class Main : AppCompatActivity() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomDrawerBehavior.STATE_COLLAPSED -> {
+                            if (Settings["kustom:variables:enable", false]) {
+                                Kustom["screen"] = "home"
+                            }
                             drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
                             colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
                             colors[1] = Settings["dock:background_color", -0x78000000]
@@ -659,6 +670,9 @@ class Main : AppCompatActivity() {
                             }
                         }
                         BottomDrawerBehavior.STATE_EXPANDED -> {
+                            if (Settings["kustom:variables:enable", false]) {
+                                Kustom["screen"] = "drawer"
+                            }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 val list = ArrayList<Rect>()
                                 window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
@@ -773,7 +787,7 @@ class Main : AppCompatActivity() {
                 }
             }
         }
-        Widget.host.startListening()
+        Widget.startListening()
         Widget.fromSettings(widgetLayout)
 
         val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
@@ -922,8 +936,11 @@ class Main : AppCompatActivity() {
             finish()
             return
         }
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "home"
+        }
         super.onResume()
-        Widget.host.startListening()
+        Widget.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         //setWallpaperOffset(0.5f, 0.5f)
         onUpdate()
@@ -976,22 +993,25 @@ class Main : AppCompatActivity() {
         }
         behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
         desktop.scrollTo(0, 0)
-        Widget.host.stopListening()
+        Widget.stopListening()
         if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
             notifications.visibility = GONE
             findViewById<View>(R.id.arrowUp).visibility = GONE
             findViewById<View>(R.id.parentNotification).background.alpha = 255
         }
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "?"
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        Widget.host.stopListening()
+        Widget.stopListening()
     }
 
     override fun onStart() {
         super.onStart()
-        Widget.host.startListening()
+        Widget.startListening()
 
         if (Settings["drawer:sections_enabled", false]) {
             drawerGrid.adapter = SectionedDrawerAdapter()
@@ -1006,8 +1026,6 @@ class Main : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        //try { unregisterReceiver(receiver) }
-        //catch (e: Exception) {}
         unregisterReceiver(batteryInfoReceiver)
         super.onDestroy()
     }
@@ -1032,9 +1050,19 @@ class Main : AppCompatActivity() {
             } else {
                 playBtn.setImageResource(R.drawable.ic_play)
             }
-        } else window.decorView.systemUiVisibility =
+
+            if (Settings["kustom:variables:enable", false]) {
+                if (behavior.state == STATE_EXPANDED) {
+                    Kustom["screen"] = "drawer"
+                } else {
+                    Kustom["screen"] = "home"
+                }
+            }
+        } else {
+            window.decorView.systemUiVisibility =
                 SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
     }
 
     inner class AppChangeReceiver : BroadcastReceiver() {

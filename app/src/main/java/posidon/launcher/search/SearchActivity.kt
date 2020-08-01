@@ -35,10 +35,11 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 private typealias D = Double
+private interface Op : (D, D) -> D { val string: String }
 
 class SearchActivity : AppCompatActivity() {
 
-    private val operators: MutableMap<String, (D, D) -> D> = HashMap()
+    private val operators: MutableMap<String, Op> = HashMap()
     private lateinit var smartBox: View
     private lateinit var answerBox: View
     private lateinit var grid: GridView
@@ -109,69 +110,51 @@ class SearchActivity : AppCompatActivity() {
 
         abstract class Operation : (D, D) -> D { abstract val string: String }
 
-        val add = object : Operation() {
-            override
-            val string = "+"
-            override
-            fun invoke(x: D, y: D) = x + y
+        val add = object : Op {
+            override val string = "+"
+            override fun invoke(x: D, y: D) = x + y
         }
 
-        val sub = object : Operation() {
-            override
-            val string = "-"
-            override
-            fun invoke(x: D, y: D) = x - y
+        val sub = object : Op {
+            override val string = "-"
+            override fun invoke(x: D, y: D) = x - y
         }
 
-        val mul = object : Operation() {
-            override
-            val string = "*"
-            override
-            fun invoke(x: D, y: D) = x * y
+        val mul = object : Op {
+            override val string = "*"
+            override fun invoke(x: D, y: D) = x * y
         }
 
-        val div = object : Operation() {
-            override
-            val string = "/"
-            override
-            fun invoke(x: D, y: D) = x / y
+        val div = object : Op {
+            override val string = "/"
+            override fun invoke(x: D, y: D) = x / y
         }
 
 
-        val rem = object : Operation() {
-            override
-            val string = "%"
-            override
-            fun invoke(x: D, y: D) = x % y
+        val rem = object : Op {
+            override val string = "%"
+            override fun invoke(x: D, y: D) = x % y
         }
 
-        val pow = object : Operation() {
-            override
-            val string = "^"
-            override
-            fun invoke(x: D, y: D) = x.pow(y)
+        val pow = object : Op {
+            override val string = "^"
+            override fun invoke(x: D, y: D) = x.pow(y)
         }
 
 
-        val and = object : Operation() {
-            override
-            val string = "&"
-            override
-            fun invoke(x: D, y: D) = (x.toInt() and y.toInt()).toDouble()
+        val and = object : Op {
+            override val string = "&"
+            override fun invoke(x: D, y: D) = (x.toInt() and y.toInt()).toDouble()
         }
 
-        val or  = object : Operation() {
-            override
-            val string = "|"
-            override
-            fun invoke(x: D, y: D) = (x.toInt() or  y.toInt()).toDouble()
+        val or  = object : Op {
+            override val string = "|"
+            override fun invoke(x: D, y: D) = (x.toInt() or  y.toInt()).toDouble()
         }
 
-        val xor = object : Operation() {
-            override
-            val string = "xor"
-            override
-            fun invoke(x: D, y: D) = (x.toInt() xor y.toInt()).toDouble()
+        val xor = object : Op {
+            override val string = "xor"
+            override fun invoke(x: D, y: D) = (x.toInt() xor y.toInt()).toDouble()
         }
 
         operators["+"] = add
@@ -339,11 +322,13 @@ class SearchActivity : AppCompatActivity() {
                 try {
                     math[i].toDouble()
                 } catch (e: Exception) {
-                    bufferNum = operators[math[i]]!!(bufferNum, java.lang.Double.valueOf(math[i + 1]))
+                    val op = operators[math[i]]!!
+                    bufferNum = op(bufferNum, java.lang.Double.valueOf(math[i + 1]))
+                    math[i] = op.string
                     smartBox.visibility = View.VISIBLE
                     isShowingSmartCard = true
                     findViewById<TextView>(R.id.type).setText(R.string.math_operation)
-                    findViewById<TextView>(R.id.result).text = "$tmp = $bufferNum"
+                    findViewById<TextView>(R.id.result).text = "${math.joinToString(" ")} = $bufferNum"
                     findViewById<View>(R.id.fail).visibility = View.GONE
                 }
             }
@@ -413,7 +398,9 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            search(searchTxt.text.toString())
+            if (Settings["kustom:variables:enable", false]) {
+                Kustom["screen"] = "search"
+            }
         }
     }
 }
