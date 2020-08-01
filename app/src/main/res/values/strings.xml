@@ -179,6 +179,7 @@
     <string name="github_contributors">Github contributors</string>
     <string name="lock_home">Lock homescreen</string>
     <string name="starred_contacts">Starred contacts</string>
+    <string name="kustom_variables">Kustom variables</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

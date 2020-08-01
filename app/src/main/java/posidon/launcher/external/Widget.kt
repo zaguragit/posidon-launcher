@@ -125,4 +125,12 @@ object Widget {
             hostView!!.updateAppWidgetSize(null, width, height, width, height)
         } catch (e: Exception) { e.printStackTrace() }
     }
+
+    fun startListening() {
+        host.startListening()
+    }
+
+    fun stopListening() {
+        host.stopListening()
+    }
 }

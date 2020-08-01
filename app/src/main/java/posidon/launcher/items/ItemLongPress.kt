@@ -36,6 +36,11 @@ object ItemLongPress {
         val content: View
         var color: Int
         val txtColor: Int
+
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "popup"
+        }
+
         return if (item is App) {
             color = Palette.from(item.icon!!.toBitmap()).generate().getDominantColor(-0xdad9d9)
             val hsv = FloatArray(3)

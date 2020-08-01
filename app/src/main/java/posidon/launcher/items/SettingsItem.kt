@@ -22,13 +22,19 @@ class SettingsItem private constructor(
     } catch (e: Exception) {}
 
     companion object {
+
+        private var list: Array<SettingsItem>? = null
+
         fun getList(): Array<SettingsItem> {
+            if (list != null) {
+                return list as Array<SettingsItem>
+            }
             val posidonIcon = App.getJustPackage("posidon.launcher")!![0].icon!!.toBitmapDrawable(true)
             val settingsIcon = Tools.publicContext!!.getDrawable(R.drawable.ic_settings)!!.apply { setTintList(ColorStateList.valueOf(Main.accentColor)) }
             val searchIconSize = when (posidon.launcher.storage.Settings["search:ic_size", 0]) {
                 0 -> 64; 2 -> 84; else -> 74
             }
-            return arrayOf(
+            list = arrayOf(
                 SettingsItem(
                     Tools.publicContext!!.getString(R.string.airplane_mode),
                     Tools.badge(Tools.publicContext!!.getDrawable(R.drawable.ic_airplane)!!, settingsIcon, searchIconSize),
@@ -78,6 +84,7 @@ class SettingsItem private constructor(
                     Tools.badge(Tools.publicContext!!.getDrawable(R.drawable.custom_gestures_icon)!!, posidonIcon, searchIconSize),
                     "posidon.launcher.settings.GESTURES")
             )
+            return list!!
         }
     }
 }
