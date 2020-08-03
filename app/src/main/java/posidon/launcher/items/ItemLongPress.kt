@@ -152,8 +152,8 @@ object ItemLongPress {
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
-            popupWindow.isFocusable = false
             if (!Settings["locked", false]) {
+                popupWindow.isFocusable = false
                 val myShadow = View.DragShadowBuilder(icon)
                 val clipData = ClipData.newPlainText(app.toString(), "")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -218,9 +218,9 @@ object ItemLongPress {
                 override fun onRemove(v: View) {}
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, false, app)
-            popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
             if (!Settings["locked", false]) {
+                popupWindow.isFocusable = false
                 val myShadow = View.DragShadowBuilder(icon)
                 val data = ClipData.newPlainText(app.toString(), "")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -248,9 +248,9 @@ object ItemLongPress {
                 override fun onRemove(v: View) {}
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, false, app)
-            popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
             if (!Settings["locked", false]) {
+                popupWindow.isFocusable = false
                 val myShadow = View.DragShadowBuilder(icon)
                 val data = ClipData.newPlainText(app.toString(), "")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -281,9 +281,9 @@ object ItemLongPress {
                     showAppEditDialog(activity, app, v)
                 }
             }, false, app)
-            popupWindow.isFocusable = false
             icon.getLocationInWindow(location)
             if (!Settings["locked", false]) {
+                popupWindow.isFocusable = false
                 val myShadow = View.DragShadowBuilder(icon)
                 val data = ClipData.newPlainText(app.toString(), "")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

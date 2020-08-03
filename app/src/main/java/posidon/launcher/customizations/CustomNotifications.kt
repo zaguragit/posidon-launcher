@@ -36,6 +36,8 @@ class CustomNotifications : AppCompatActivity() {
         findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
         findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
 
+        findViewById<View>(R.id.swipeBgPrev).background = ColorTools.colorCircle(Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()])
+
         findViewById<Switch>(R.id.useMediaPlayer).isChecked = Settings["notif:usePlayer", true]
 
         findViewById<Switch>(R.id.badgesEnabled).isChecked = Settings["notif:badges", true]
@@ -71,6 +73,12 @@ class CustomNotifications : AppCompatActivity() {
         v as ViewGroup
         v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["notificationActionTextColor"] = it
+    }
+
+    fun pickSwipeBGColor(v: View) = ColorTools.pickColor(this, Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
+        Settings["notif:card_swipe_bg_color"] = it
     }
 
     fun openHideApps(v: View) = startActivity(Intent(this, CustomHiddenAppNotifications::class.java))

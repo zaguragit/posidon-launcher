@@ -393,6 +393,11 @@ class SearchActivity : AppCompatActivity() {
         super.onPause()
         overridePendingTransition(R.anim.fadein, R.anim.fadeout)
         hideKeyboard()
+
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "?"
+        }
+
         finish()
     }
 

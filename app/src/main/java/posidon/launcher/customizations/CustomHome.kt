@@ -143,6 +143,8 @@ class CustomHome : AppCompatActivity() {
             }
         }
 
+        findViewById<View>(R.id.swipeBgPrev).background = ColorTools.colorCircle(Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()])
+
         findViewById<Switch>(R.id.showFeedSpinner).isChecked = Settings["feed:show_spinner", true]
 
         findViewById<Switch>(R.id.starredContactsSwitch).isChecked = Settings["contacts_card:enabled", false]
@@ -181,6 +183,12 @@ class CustomHome : AppCompatActivity() {
         v as ViewGroup
         v.getChildAt(1).background = ColorTools.colorCircle(it)
         Settings["feed:card_txt_color"] = it
+    }
+
+    fun pickSwipeBGColor(v: View) = ColorTools.pickColor(this, Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]) {
+        v as ViewGroup
+        v.getChildAt(1).background = ColorTools.colorCircle(it)
+        Settings["feed:card_swipe_bg_color"] = it
     }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))

@@ -59,8 +59,9 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
             val tp = Settings["feed:card_margin_y", 9].dp.toInt()
             setPadding(0, tp, 0, tp)
             addView(if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
-                setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
-                setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
+                val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
+                setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+                setSwipeColor(bg)
                 radius = Settings["feed:card_radius", 15].dp
                 v.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 swipeableLayout = this
