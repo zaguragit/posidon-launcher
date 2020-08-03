@@ -656,7 +656,7 @@ class Main : AppCompatActivity() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomDrawerBehavior.STATE_COLLAPSED -> {
-                            if (Settings["kustom:variables:enable", false]) {
+                            if (this@Main.hasWindowFocus() && Settings["kustom:variables:enable", false]) {
                                 Kustom["screen"] = "home"
                             }
                             drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)

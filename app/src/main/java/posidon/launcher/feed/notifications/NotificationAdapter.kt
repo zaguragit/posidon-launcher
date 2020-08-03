@@ -49,8 +49,9 @@ class NotificationAdapter(
         }
 
         val card = SwipeableLayout(ll).apply {
-            setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
-            setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
+            val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
+            setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setSwipeColor(bg)
             preventCornerOverlap = true
             elevation = 0f
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -97,8 +98,9 @@ class NotificationAdapter(
                     catch (e: Exception) { e.printStackTrace() }
                     NotificationService.update()
                 }.apply {
-                    setIconColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
-                    setSwipeColor(Main.accentColor and 0xffffff or 0xdd000000.toInt())
+                    val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
+                    setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+                    setSwipeColor(bg)
                 }
                 v1.apply {
                     val padding = 8.dp.toInt()

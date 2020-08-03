@@ -190,6 +190,22 @@
                         android:drawableStart="@drawable/ic_visible"
                         android:text="@string/hidden_apps"/>
                 </LinearLayout>
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:onClick="pickSwipeBGColor">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_color"
+                        android:layout_weight="1"
+                        android:text="@string/swipe_bg_color"/>
+                    <View
+                        android:id="@+id/swipeBgPrev"
+                        style="@style/colorPreview"/>
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
