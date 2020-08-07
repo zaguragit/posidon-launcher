@@ -54,6 +54,10 @@ class NotificationService : NotificationListenerService() {
 
     private class NotificationLoader(private val notifications: Array<StatusBarNotification>?) : Thread() {
 
+        init {
+            isDaemon = true
+        }
+
         private fun showNotificationBadgeOnPackage(packageName: String) {
             val apps = App.getJustPackage(packageName)
             if (apps != null) {
@@ -183,79 +187,31 @@ class NotificationService : NotificationListenerService() {
                 notificationsAmount2 = 0
                 System.gc()
             }
+            val tmp = notificationGroups
             notificationGroups = groups
+            tmp.clear()
             notificationsAmount = notificationsAmount2
             onUpdate()
             updating = false
-        }
-
-        private fun formatNotification(notification: StatusBarNotification): Notification {
-            val extras = notification.notification.extras
-            val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
-            var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
-            if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
-                catch (e: Exception) { e.printStackTrace() }
-            }
-            var icon: Drawable? = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
-            } catch (ignore: Exception) {}
-            if (icon == null) try {
-                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
-                Tools.tryAnimate(icon)
-                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
-                icon.setTintList(colorList)
-            } catch (e: Exception) { e.printStackTrace() }
-            var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
-            if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
-                if (messages != null) text = StringBuilder().apply {
-                    messages.forEach {
-                        val bundle = it as Bundle
-                        appendln(bundle.getCharSequence("text"))
-                    }
-                    delete(lastIndex, length)
-                }
-            }
-
-            //val progress = extras.getInt(android.app.Notification.EXTRA_PROGRESS, -1)
-            //println("PROGRESSSSSSSS: --->>>>>$progress")
-            //println("MAXXXX PROGRES: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX, -1))
-            //println("INTETERMINATTE: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, -1))
-
-            var bigPic: Drawable? = null
-            val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
-            if (b != null) {
-                try { bigPic = BitmapDrawable(Tools.publicContext!!.resources, b) }
-                catch (e: Exception) { e.printStackTrace() }
-            }
-            return Notification(
-                title, text, isSummary, bigPic, icon,
-                notification.notification.actions,
-                notification.notification.contentIntent,
-                notification.key, -1
-            )
         }
     }
 
     companion object {
 
         lateinit var instance: NotificationService private set
+
         var notificationGroups = ArrayList<ArrayList<Notification>>()
             private set
+
         var onUpdate = {}
-		//var contextReference: WeakReference<Context>? = null
+
 		var notificationsAmount = 0
         private var updating = false
-
 
         var update = {}
             private set
 
-        fun handleMusicNotification(notification: StatusBarNotification) {
+        private fun handleMusicNotification(notification: StatusBarNotification) {
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
                 icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
@@ -315,6 +271,57 @@ class NotificationService : NotificationListenerService() {
                 Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
                 Main.instance.findViewById<ImageView>(R.id.musicNext).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
             }
+        }
+
+        private fun formatNotification(notification: StatusBarNotification): Notification {
+            val extras = notification.notification.extras
+            val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
+            var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
+            if (title == null || title.toString().replace(" ", "").isEmpty()) {
+                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                catch (e: Exception) { e.printStackTrace() }
+            }
+            var icon: Drawable? = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
+                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
+            } catch (ignore: Exception) {}
+            if (icon == null) try {
+                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                Tools.tryAnimate(icon)
+                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
+                icon.setTintList(colorList)
+            } catch (e: Exception) { e.printStackTrace() }
+            var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
+            if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
+                if (messages != null) text = StringBuilder().apply {
+                    messages.forEach {
+                        val bundle = it as Bundle
+                        appendln(bundle.getCharSequence("text"))
+                    }
+                    delete(lastIndex, length)
+                }
+            }
+
+            //val progress = extras.getInt(android.app.Notification.EXTRA_PROGRESS, -1)
+            //println("PROGRESSSSSSSS: --->>>>>$progress")
+            //println("MAXXXX PROGRES: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX, -1))
+            //println("INTETERMINATTE: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, -1))
+
+            var bigPic: Drawable? = null
+            val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
+            if (b != null) {
+                try { bigPic = BitmapDrawable(Tools.publicContext!!.resources, b) }
+                catch (e: Exception) { e.printStackTrace() }
+            }
+            return Notification(
+                    title, text, isSummary, bigPic, icon,
+                    notification.notification.actions,
+                    notification.notification.contentIntent,
+                    notification.key, -1
+            )
         }
     }
 }

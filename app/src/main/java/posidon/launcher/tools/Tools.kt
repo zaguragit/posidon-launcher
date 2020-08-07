@@ -513,14 +513,16 @@ object Tools {
         } else drawable
     }
 
-    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): LayerDrawable {
+    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): Drawable {
         val drawable = LayerDrawable(arrayOf(icon, badge))
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val p = 8 * diameter / icSizeDP
         drawable.setLayerInset(0, p, p, p, p)
         val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
-        return drawable
+        return if (icon is BitmapDrawable) {
+            BitmapDrawable(publicContext!!.resources, drawable.toBitmap())
+        } else drawable
     }
 
     private val pics = HashMap<Int, Drawable>()
@@ -633,7 +635,11 @@ inline fun Activity.applyFontSetting() {
 }
 
 inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap {
-    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
+    if (this is BitmapDrawable && bitmap != null) {
+        return if (duplicateIfBitmapDrawable) {
+            Bitmap.createBitmap(bitmap)
+        } else bitmap
+    }
     val bitmap: Bitmap = if (intrinsicWidth <= 0 || intrinsicHeight <= 0) Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
     else Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -644,7 +650,11 @@ inline fun Drawable.toBitmap(duplicateIfBitmapDrawable: Boolean = false): Bitmap
 }
 
 inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable: Boolean = false): Bitmap {
-    if (this is BitmapDrawable && bitmap != null) return if (duplicateIfBitmapDrawable) Bitmap.createBitmap(bitmap) else bitmap
+    if (this is BitmapDrawable && bitmap != null) {
+        return if (duplicateIfBitmapDrawable) {
+            Bitmap.createBitmap(bitmap)
+        } else bitmap
+    }
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     setBounds(0, 0, canvas.width, canvas.height)
@@ -726,7 +736,7 @@ inline fun ViewPropertyAnimator.onEnd(crossinline onEnd: (animation: Animator?) 
     override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
 })
 
-inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = this.addListener(object : Animator.AnimatorListener {
+inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = addListener(object : Animator.AnimatorListener {
     override fun onAnimationRepeat(animation: Animator?) {}
     override fun onAnimationCancel(animation: Animator?) {}
     override fun onAnimationStart(animation: Animator?) {}
