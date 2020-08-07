@@ -151,7 +151,7 @@
     <string name="name_position">Posicion de nombre</string>
     <string name="swipe_to_remove">Desliza para eliminar</string>
     <string name="removed">Eliminados</string>
-    <string name="restore">Restore</string>
+    <string name="restore">Recuperar</string>
     <string name="reply">Responder</string>
     <string name="show_below_apps">Mostrar bajo apps</string>
     <string name="cards">Targetas</string>
@@ -169,7 +169,7 @@
     <string name="github">Github</string>
     <string name="duckduckgo_results">resultados DuckDuckGo</string>
     <string name="media_player">Media player</string>
-    <string name="show_feed_spinner">Show feed spinner</string>
+    <string name="show_feed_spinner">Mostrar feed spinner</string>
     <string name="stack_results_from_bottom">Stack results from bottom</string>
     <string name="airplane_mode">Modo avión</string>
     <string name="power_usage">Uso de energia</string>
@@ -178,9 +178,9 @@
     <string name="contacts_access">Acceso a contactos</string>
     <string name="permission_contacts_description">El acceso a contactos es nesesario para enseñar contactos en la busqueda</string>
     <string name="github_contributors">Contribuyentes de Github</string>
-    <string name="lock_home">Lock homescreen</string>
-    <string name="starred_contacts">Starred contacts</string>
-    <string name="kustom_variables">Kustom variables</string>
+    <string name="lock_home">Bloquear pantalla de inicio</string>
+    <string name="starred_contacts">Contactos escogidos</string>
+    <string name="kustom_variables">Variables Kustom</string>
     <string name="swipe_bg_color">Swipe background</string>
 
     <array name="sortingAlgorithms">
