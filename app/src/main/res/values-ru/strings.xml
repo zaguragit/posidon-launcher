@@ -181,6 +181,7 @@
     <string name="starred_contacts">Starred contacts</string>
     <string name="kustom_variables">Kustom variables</string>
     <string name="swipe_bg_color">Swipe background</string>
+    <string name="hide_crash_logs">Hide crash logs</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

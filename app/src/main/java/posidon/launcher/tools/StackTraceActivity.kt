@@ -1,5 +1,6 @@
 package posidon.launcher.tools
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -7,12 +8,22 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import posidon.launcher.BuildConfig
+import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.storage.Settings
 
 
 class StackTraceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        System.gc()
+        kotlin.runCatching {
+            if (Settings["dev:hide_crash_logs", true]) {
+                startActivity(Intent(this, Main::class.java))
+                finish()
+                return
+            }
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stack_trace_activity)
         val t = intent.extras!!["throwable"] as Throwable

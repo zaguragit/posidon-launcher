@@ -374,6 +374,7 @@ class Main : AppCompatActivity() {
         }
         setCustomizations = {
 
+            Tools.setDockBG(drawer, realdock, dockContainerContainer)
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
                     drawerGrid.adapter = SectionedDrawerAdapter()
@@ -396,7 +397,6 @@ class Main : AppCompatActivity() {
             }
 
             applyFontSetting()
-            Tools.setDockBG(drawer, realdock, dockContainerContainer)
 
             if (Settings["hidestatus", false]) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)

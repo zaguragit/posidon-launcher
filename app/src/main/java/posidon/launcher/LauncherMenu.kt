@@ -87,6 +87,9 @@ class LauncherMenu : OnLongClickListener {
                 val list = ArrayList<Rect>()
                 homescreen.systemGestureExclusionRects = list
             }
+            if (Settings["kustom:variables:enable", false]) {
+                Kustom["screen"] = "overview"
+            }
         }
 
         private fun exit(homescreen: View, window: Window, behavior: BottomDrawerBehavior<*>) {
@@ -102,6 +105,9 @@ class LauncherMenu : OnLongClickListener {
                 homescreen.systemGestureExclusionRects = list
             }
             isActive = false
+            if (Settings["kustom:variables:enable", false]) {
+                Kustom["screen"] = "home"
+            }
         }
     }
 }

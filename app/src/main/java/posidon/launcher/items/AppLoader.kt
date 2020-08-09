@@ -184,6 +184,9 @@ class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Un
                 if (app.label!!.isEmpty()) {
                     Settings[app.packageName + "/" + app.name + "?label"] = appList[i].label.toString()
                     app.label = appList[i].label.toString()
+                    if (app.label!!.isEmpty()) {
+                        app.label = app.packageName
+                    }
                 }
 
                 App.putInSecondMap(app)
