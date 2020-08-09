@@ -381,12 +381,12 @@ object Tools {
         var containsAnimatable = drawable is Animatable
         val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val layerDrawable = if (drawable is AdaptiveIconDrawable) {
-                val drr = arrayOf(drawable.background, drawable.foreground)
+                val drr = arrayOf(drawable.background ?: ColorDrawable(0), drawable.foreground ?: ColorDrawable(0))
                 if (drr[0] is Animatable || drr[1] is Animatable) {
                     containsAnimatable = true
                 }
                 if (Settings["icon:tint_white_bg", true]) {
-                    val bg = drr[0] ?: ColorDrawable(0)
+                    val bg = drr[0]
                     if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
                             (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).apply {
                                 val tmp = bg.bounds
@@ -400,11 +400,11 @@ object Tools {
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
                         drr[0] = when (Settings["icon:background_type", "custom"]) {
-                            "dominant" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDominantColor(bgColor))
-                            "lv" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getLightVibrantColor(bgColor))
-                            "dv" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDarkVibrantColor(bgColor))
-                            "lm" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getLightMutedColor(bgColor))
-                            "dm" -> ColorDrawable(Palette.from(drr[1]!!.toBitmap()).generate().getDarkMutedColor(bgColor))
+                            "dominant" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDominantColor(bgColor))
+                            "lv" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightVibrantColor(bgColor))
+                            "dv" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkVibrantColor(bgColor))
+                            "lm" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightMutedColor(bgColor))
+                            "dm" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkMutedColor(bgColor))
                             else -> ColorDrawable(bgColor)
                         }
                     }
