@@ -2,6 +2,31 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <scale
         android:interpolator="@android:interpolator/accelerate_decelerate"
+        android:duration="140"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:fromXScale="1"
+        android:fromYScale="1"
+        android:toXScale="72dp"
+        android:toYScale="72dp"/>
+    <translate
+        android:interpolator="@android:interpolator/accelerate_decelerate"
+        android:startOffset="40"
+        android:duration="100"
+        android:fromYDelta="0%"
+        android:toYDelta="30%"/>
+    <alpha
+        android:interpolator="@android:interpolator/accelerate_cubic"
+        android:startOffset="70"
+        android:duration="60"
+        android:fromAlpha="1"
+        android:toAlpha="0"/>
+</set>
+
+<!--
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale
+        android:interpolator="@android:interpolator/accelerate_decelerate"
         android:duration="130"
         android:pivotX="50%"
         android:pivotY="50%"
@@ -22,3 +47,4 @@
         android:fromAlpha="1"
         android:toAlpha="0"/>
 </set>
+-->
