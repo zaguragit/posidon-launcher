@@ -1,12 +1,10 @@
 package posidon.launcher.wall
 
 import android.app.WallpaperManager
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Build
 import posidon.launcher.tools.Tools
-import java.lang.ref.WeakReference
 
 class SetWall(
     private val img: Bitmap,

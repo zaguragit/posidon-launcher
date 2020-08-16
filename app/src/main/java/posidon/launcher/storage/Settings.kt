@@ -3,6 +3,7 @@ package posidon.launcher.storage
 import android.content.Context
 import android.net.Uri
 import posidon.launcher.Main
+import posidon.launcher.tools.Tools
 import java.io.Serializable
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -10,6 +11,7 @@ import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.concurrent.thread
 
 object Settings {
 
@@ -43,21 +45,45 @@ object Settings {
         putNotSave(key, value); apply()
     }
 
-    fun putNotSave(key: String, value: Int) { ints[key] = value }
-    fun putNotSave(key: String, value: Float) { floats[key] = value }
-    fun putNotSave(key: String, value: Boolean) { bools[key] = value }
-    fun putNotSave(key: String, value: String?) {
-        if (value == null) strings.keys.remove(key)
-        else strings[key] = value
-    }
-    fun putNotSave(key: String, value: ArrayList<String>) { lists[key] = value }
 
     val lock = ReentrantLock()
-    fun apply() {
+
+    fun putNotSave(key: String, value: Int) {
         lock.lock()
-        PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get()!!, "settings")
+        ints[key] = value
         lock.unlock()
     }
+
+    fun putNotSave(key: String, value: Float) {
+        lock.lock()
+        floats[key] = value
+        lock.unlock()
+    }
+
+    fun putNotSave(key: String, value: Boolean) {
+        lock.lock()
+        bools[key] = value
+        lock.unlock()
+    }
+
+    fun putNotSave(key: String, value: String?) {
+        lock.lock()
+        if (value == null) strings.keys.remove(key)
+        else strings[key] = value
+        lock.unlock()
+    }
+
+    fun putNotSave(key: String, value: ArrayList<String>) {
+        lock.lock()
+        lists[key] = value
+        lock.unlock()
+    }
+
+    fun apply() { thread {
+        lock.lock()
+        PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get() ?: Tools.publicContext!!, "settings")
+        lock.unlock()
+    }}
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default

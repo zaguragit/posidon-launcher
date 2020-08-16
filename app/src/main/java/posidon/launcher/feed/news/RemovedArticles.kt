@@ -32,11 +32,13 @@ class RemovedArticles : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
-    class Adapter(val context: Context) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+    class Adapter(
+        val context: Context
+    ) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
         class ViewHolder(layout: View, val label: TextView, val button: View) : RecyclerView.ViewHolder(layout)
 
-        val removedList = Settings.getStrings("feed:deleted_articles")
+        private val removedList = Settings.getStrings("feed:deleted_articles")
 
         override fun getItemCount() = removedList.size
 

@@ -1,11 +1,7 @@
 package posidon.launcher.tools
 
 import android.graphics.*
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 
 class MaskedDrawable(
     val drawable: Drawable,

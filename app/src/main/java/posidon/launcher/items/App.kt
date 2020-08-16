@@ -11,7 +11,6 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.os.Process
 import android.os.UserHandle
 import android.view.View
@@ -117,6 +116,11 @@ class App(
         operator fun get(packageName: String, name: String): App? {
             val list = appsByName[packageName] ?: return null
             return list.find { it.name == name }
+        }
+
+        operator fun get(packageName: String, name: String, userId: Int): App? {
+            val list = appsByName[packageName] ?: return null
+            return list.find { it.name == name && it.userHandle.hashCode() == userId }
         }
 
         fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]

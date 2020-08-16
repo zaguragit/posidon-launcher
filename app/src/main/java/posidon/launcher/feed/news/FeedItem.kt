@@ -1,7 +1,6 @@
 package posidon.launcher.feed.news
 
 import posidon.launcher.feed.news.chooser.Source
-import java.text.SimpleDateFormat
 import java.util.*
 
 class FeedItem(
@@ -21,4 +20,6 @@ class FeedItem(
     }
 
     override fun hashCode() = 31 * title.hashCode() + link.hashCode()
+
+    inline fun isBefore(other: FeedItem) = time.before(other.time)
 }

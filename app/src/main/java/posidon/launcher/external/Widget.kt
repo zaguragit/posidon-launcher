@@ -127,10 +127,14 @@ object Widget {
     }
 
     fun startListening() {
-        host.startListening()
+        kotlin.runCatching {
+            host.startListening()
+        }
     }
 
     fun stopListening() {
-        host.stopListening()
+        kotlin.runCatching {
+            host.stopListening()
+        }
     }
 }

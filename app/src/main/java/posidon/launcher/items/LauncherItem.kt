@@ -2,7 +2,6 @@ package posidon.launcher.items
 
 import android.graphics.drawable.Drawable
 import android.os.Build
-import posidon.launcher.tools.Tools
 
 open class LauncherItem {
     open var icon: Drawable? = null

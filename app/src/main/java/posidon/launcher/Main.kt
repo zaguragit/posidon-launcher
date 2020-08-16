@@ -73,6 +73,7 @@ class Main : AppCompatActivity() {
     private lateinit var searchBar: View
 
     private lateinit var desktop: NestedScrollView
+    private lateinit var desktopContent: View
     private lateinit var feedRecycler: RecyclerView
     private lateinit var feedProgressBar: ProgressBar
 
@@ -313,10 +314,10 @@ class Main : AppCompatActivity() {
             (findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
             if (Settings["feed:show_behind_dock", false]) {
                 (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, 0)
-                findViewById<View>(R.id.desktopContent).setPadding(0, 12.dp.toInt(), 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
+                desktopContent.setPadding(0, 12.dp.toInt(), 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
             } else {
                 (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
-                findViewById<View>(R.id.desktopContent).setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
+                desktopContent.setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
             }
             if (Settings["dock:background_type", 0] == 1) {
                 val bg = drawer.background as LayerDrawable
@@ -375,6 +376,7 @@ class Main : AppCompatActivity() {
         setCustomizations = {
 
             Tools.setDockBG(drawer, realdock, dockContainerContainer)
+
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
                     drawerGrid.adapter = SectionedDrawerAdapter()
@@ -457,7 +459,7 @@ class Main : AppCompatActivity() {
                 feedRecycler.translationX = Device.displayWidth.toFloat()
                 feedRecycler.alpha = 0f
                 var wasHiddenLastTime = true
-                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
+                desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                     val a = 6.dp
                     val distance = oldY - y
                     if (y > a) {
@@ -467,7 +469,7 @@ class Main : AppCompatActivity() {
                                 wasHiddenLastTime = false
                             }.duration = 200L
                         }
-                        if (distance > a || y >= findViewById<View>(R.id.desktopContent).height - dockHeight - desktop.height) {
+                        if (distance > a || y >= desktopContent.height - dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
                                 behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                             }
@@ -484,24 +486,35 @@ class Main : AppCompatActivity() {
                                     feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
                                     wasHiddenLastTime = true
                                 }.duration = 180L
+                                /*
+                                desktopContent.post {
+                                    println(Device.displayHeight - desktopContent.measuredHeight - (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
+                                    println(Device.displayHeight)
+                                    println(desktop.measuredHeight)
+                                    println(desktopContent.measuredHeight)
+                                    println((dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
+                                    println()
+                                    desktopContent.setPadding(0, 12.dp.toInt(), 0, Device.displayHeight - (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
+                                }
+                                */
                             }
                         }
                     }
-                })
+                }
             } else {
                 feedRecycler.translationX = 0f
                 feedRecycler.alpha = 1f
-                desktop.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, y, _, oldY ->
+                desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                     val a = 6.dp
                     val distance = oldY - y
-                    if (distance > a || y < a || y + desktop.height >= findViewById<View>(R.id.desktopContent).height - dockHeight) {
+                    if (distance > a || y < a || y + desktop.height >= desktopContent.height - dockHeight) {
                         if (!LauncherMenu.isActive) {
                             behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                     } else if (distance < -a) {
                         behavior.state = BottomDrawerBehavior.STATE_HIDDEN
                     }
-                })
+                }
             }
             if (!Settings["hidestatus", false]) {
                 desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
@@ -613,10 +626,13 @@ class Main : AppCompatActivity() {
 
         launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
 
+        updateNavbarHeight(this@Main)
+
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
-            AppLoader(this@Main, onAppLoaderEnd).execute()
+            AppLoader(this.applicationContext, onAppLoaderEnd).execute()
             finish()
+            return
         }
 
         batteryBar = findViewById(R.id.battery)
@@ -635,10 +651,11 @@ class Main : AppCompatActivity() {
                     Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
                 }
             }
+            desktopContent = findViewById<View>(R.id.desktopContent)
+            desktopContent.setOnLongClickListener(LauncherMenu())
         }
 
-        updateNavbarHeight(this@Main)
-        drawerGrid = findViewById<GridView>(R.id.drawergrid)
+        drawerGrid = findViewById(R.id.drawergrid)
         searchBar = findViewById(R.id.searchbar)
         drawerGrid.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && drawerGrid.canScrollVertically(-1))
@@ -913,26 +930,26 @@ class Main : AppCompatActivity() {
         setDock()
     }
 
-    fun updateFeed() {
-        if (feedProgressBar.visibility == VISIBLE || !Settings["feed:enabled", true]) return
+    fun loadFeed() {
+        if (!Settings["feed:enabled", true] || feedProgressBar.visibility == VISIBLE) {
+            return
+        }
         if (Settings["feed:show_spinner", true]) {
             feedProgressBar.visibility = VISIBLE
             feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
-            FeedLoader {
-                (feedRecycler.adapter as FeedAdapter).updateFeed(it)
+            FeedLoader { success, items ->
+                if (success) {
+                    (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
+                }
                 feedProgressBar.animate().translationY(-72.dp).alpha(0f).onEnd {
                     feedProgressBar.visibility = GONE
                 }
             }.execute()
-        } else FeedLoader {
-            (feedRecycler.adapter as FeedAdapter).updateFeed(it)
+        } else FeedLoader { success, items ->
+            if (success) {
+                (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
+            }
         }.execute()
-    }
-
-    private fun loadFeed() {
-        if (Settings["feed:enabled", true]) {
-            updateFeed()
-        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -942,6 +959,7 @@ class Main : AppCompatActivity() {
     }
 
     override fun onResume() {
+        super.onResume()
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
             finish()
@@ -950,7 +968,6 @@ class Main : AppCompatActivity() {
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "home"
         }
-        super.onResume()
         Widget.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         //setWallpaperOffset(0.5f, 0.5f)
@@ -963,7 +980,7 @@ class Main : AppCompatActivity() {
         loadFeed()
         if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
-            thread(isDaemon = true) {
+            thread (isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["drawer:blur:rad", 15f]
                 for (i in 0 until blurLayers) {
@@ -976,11 +993,13 @@ class Main : AppCompatActivity() {
                         blurBg.setDrawableByLayerId(i, bd)
                     }
                 }
-                if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    ContactItem.getList(true).also {
-                        runOnUiThread {
-                            contacts.setItems(it)
-                        }
+            }
+        }
+        thread (isDaemon = true) {
+            if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                ContactItem.getList(true).also {
+                    runOnUiThread {
+                        contacts.setItems(it)
                     }
                 }
             }
@@ -1073,12 +1092,6 @@ class Main : AppCompatActivity() {
             window.decorView.systemUiVisibility =
                 SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-    }
-
-    inner class AppChangeReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            AppLoader(context, onAppLoaderEnd).execute()
         }
     }
 

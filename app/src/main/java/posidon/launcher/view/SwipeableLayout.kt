@@ -17,7 +17,6 @@ import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.onEnd
 import kotlin.math.abs
-import kotlin.math.min
 
 
 class SwipeableLayout(
@@ -56,9 +55,9 @@ class SwipeableLayout(
         override fun onAnimationEnd(animation: Animator?) { onSwipeAway?.invoke() }
     }
 
-    var initX = 0f
-    var initY = 0f
-    var xOffset = 0f
+    private var initX = 0f
+    private var initY = 0f
+    private var xOffset = 0f
 
     fun reset() { frontView.translationX = 0f }
 
