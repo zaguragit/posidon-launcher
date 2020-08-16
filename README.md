@@ -32,8 +32,6 @@ The best thing you can do is to make quickstep work, feel free to delete my impl
 
 #### Donations
 
-Bitcoin: 3GorC21z6EiURk4WR3sU4VpLXpXsRbVe42
-
 Paypal:
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HGZADEVYSUZAY&source=url">
 <img alt="Donate with PayPal" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif"/>
