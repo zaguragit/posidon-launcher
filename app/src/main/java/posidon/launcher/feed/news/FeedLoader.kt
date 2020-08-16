@@ -12,16 +12,18 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class FeedLoader(
-    private val onFinished: (items: ArrayList<FeedItem>) -> Unit
+    private val onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
 ) : AsyncTask<Unit, Unit, Boolean>() {
 
-    private val feedModels: ArrayList<FeedItem> = ArrayList()
-    val deleted = Settings.getStrings("feed:deleted_articles")
-    val pullParserFactory = XmlPullParserFactory.newInstance()
+    private val feedItems = ArrayList<FeedItem>()
+    private val deleted = Settings.getStrings("feed:deleted_articles")
+    private val pullParserFactory = XmlPullParserFactory.newInstance()
 
     companion object {
         private val endStrings = arrayOf("",
@@ -43,30 +45,41 @@ class FeedLoader(
             }
         }
         Settings.apply()
+        val threads = LinkedList<Thread>()
         for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
             if (u.isNotEmpty()) {
-                val domain: String
-                var url = if (!u.startsWith("http://") && !u.startsWith("https://")) {
-                    val slashI = u.indexOf('/')
-                    domain = "https://" + if (slashI != -1) u.substring(0, slashI) else u
-                    "https://$u"
-                } else {
-                    val slashI = u.indexOf('/', 8)
-                    domain = if (slashI != -1) u.substring(0, slashI) else u
-                    u
-                }
-                if (url.endsWith("/")) url = url.substring(0, url.length - 1)
-                var searching = true
-                var i = 0
-                while (searching && i < endStrings.size) {
-                    try {
-                        val newUrl = url + endStrings[i]
-                        parseFeed(URL(newUrl).openConnection().getInputStream(), Source(urlToName(url), url, domain))
-                        searching = false
+                threads.add(thread (isDaemon = true) {
+                    var (url, domain, name) = if (!u.startsWith("http://") && !u.startsWith("https://")) {
+                        val slashI = u.indexOf('/')
+                        val domain = if (slashI != -1) u.substring(0, slashI) else u
+                        Triple("https://$u", "https://$domain", if (domain.startsWith("www.")) {
+                            domain.substring(4)
+                        } else domain)
+                    } else {
+                        val slashI = u.indexOf('/', 8)
+                        val domain = if (slashI != -1) u.substring(0, slashI) else u
+                        Triple(u, domain, if (domain.startsWith("www.")) {
+                            domain.substring(4)
+                        } else domain)
                     }
-                    catch (e: Exception) {}
-                    i++
-                }
+                    if (url.endsWith("/")) {
+                        url = url.substring(0, url.length - 1)
+                    }
+
+                    var i = 0
+                    while (i < endStrings.size) {
+                        try {
+                            val newUrl = url + endStrings[i]
+                            val connection = URL(newUrl).openConnection()
+                            connection.connectTimeout = 15 * 1000
+                            connection.readTimeout = 15 * 1000
+                            connection.connect()
+                            parseFeed(connection.getInputStream(), Source(name, newUrl, domain))
+                            break
+                        } catch (e: Exception) {}
+                        i++
+                    }
+                })
             }
         }
 
@@ -74,36 +87,31 @@ class FeedLoader(
         var j: Int
         var temp: FeedItem
 
-        while (i < feedModels.size - 1) {
+        for (thread in threads) {
+            kotlin.runCatching {
+                thread.join()
+            }
+        }
+
+        while (i < feedItems.size - 1) {
             j = i + 1
-            while (j < feedModels.size) {
-                if (feedModels[i].time.before(feedModels[j].time)) {
-                    temp = feedModels[i]
-                    feedModels[i] = feedModels[j]
-                    feedModels[j] = temp
+            while (j < feedItems.size) {
+                if (feedItems[i].isBefore(feedItems[j])) {
+                    temp = feedItems[i]
+                    feedItems[i] = feedItems[j]
+                    feedItems[j] = temp
                 }
                 j++
             }
             i++
         }
 
-        return feedModels.size != 0
+        return feedItems.size != 0
     }
 
-    override fun onPostExecute(success: Boolean?) {
-        if (success!!) onFinished(feedModels)
-    }
+    override fun onPostExecute(success: Boolean) = onFinished(success, feedItems)
 
-    fun urlToName(url: String): String {
-        var out = when {
-            url.startsWith("https://") -> url.substring(8)
-            url.startsWith("http://") -> url.substring(7)
-            else -> url
-        }
-        if (out.startsWith("www.")) out = out.substring(4)
-        if (out.endsWith("/")) out = out.substring(0, out.length - 1)
-        return out
-    }
+    private val lock = ReentrantLock()
 
     @Throws(XmlPullParserException::class, IOException::class)
     private fun parseFeed(inputStream: InputStream, source: Source) {
@@ -126,11 +134,21 @@ class FeedLoader(
                             if (title != null && link != null) {
                                 if (Settings["feed:delete_articles", false]) {
                                     var show = true
-                                    for (string in deleted) if (string.substringAfter(':') == "$link:$title") {
-                                        show = false; break
+                                    for (string in deleted) {
+                                        if (string.substringAfter(':') == "$link:$title") {
+                                            show = false; break
+                                        }
                                     }
-                                    if (show) feedModels.add(FeedItem(title!!, link!!, img, time!!, source))
-                                } else feedModels.add(FeedItem(title!!, link!!, img, time!!, source))
+                                    if (show) {
+                                        lock.lock()
+                                        feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
+                                        lock.unlock()
+                                    }
+                                } else {
+                                    lock.lock()
+                                    feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
+                                    lock.unlock()
+                                }
                             }
                             title = null
                             link = null

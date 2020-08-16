@@ -15,7 +15,7 @@ class WebViewActivity : AppCompatActivity() {
         val webView = WebView(this)
         setContentView(webView)
         webView.settings.javaScriptEnabled = true
-        val url = intent.extras!!.getString("url")
+        val url = intent.extras!!.getString("url")!!
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)

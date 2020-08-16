@@ -21,7 +21,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
     override fun getItem(i: Int) = Main.apps[i]
     override fun getItemId(i: Int): Long = 0
 
-    var appSize = when (Settings["icsize", 1]) {
+    private val appSize = when (Settings["icsize", 1]) {
         0 -> 64.dp.toInt()
         2 -> 84.dp.toInt()
         else -> 74.dp.toInt()

@@ -1,6 +1,5 @@
 package posidon.launcher.customizations
 
-import android.animation.Animator
 import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.ApplicationInfo

@@ -14,6 +14,7 @@ import java.io.Serializable
 
 
 internal object ExternalStorage {
+
     fun writeData(data: Serializable, context: Context, name: String, feedbackPopup: Boolean) {
         val dir: File? = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, name)

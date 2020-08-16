@@ -82,7 +82,8 @@
             android:layout_gravity="center_vertical"
             android:hint="@string/reply"
             android:background="@android:color/transparent"
-            android:includeFontPadding="false"/>
+            android:includeFontPadding="false"
+            android:inputType="text"/>
         <ImageView
             android:id="@+id/replySend"
             android:layout_width="45dp"

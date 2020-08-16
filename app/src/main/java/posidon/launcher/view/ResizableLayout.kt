@@ -119,10 +119,10 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
         }
     }
 
-    var startX = 0f
-    var startY = 0f
-    var startRawX = 0f
-    var startRawY = 0f
+    private var startX = 0f
+    private var startY = 0f
+    private var startRawX = 0f
+    private var startRawY = 0f
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
@@ -159,7 +159,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
         return super.onInterceptTouchEvent(event)
     }
 
-    inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
+    private inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
         val threshold = 16.dp
         return abs(startX - endX) < threshold && abs(startY - endY) < threshold
     }

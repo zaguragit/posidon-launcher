@@ -30,8 +30,8 @@ class NestedScrollView : NestedScrollView {
         }
     }
 
-    var oldPointerY = 0f
-    var newPointerY = 0f
+    private var oldPointerY = 0f
+    private var newPointerY = 0f
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_MOVE) {
             oldPointerY = newPointerY

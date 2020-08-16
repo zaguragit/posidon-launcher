@@ -17,7 +17,6 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
 import posidon.launcher.feed.news.readers.ArticleActivity
@@ -105,9 +104,12 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                     }
                 } else holder.card.findViewById<View>(R.id.gradient).visibility = View.GONE
             } else {
+                holder.image.setImageDrawable(null)
                 fun onImageLoadEnd(img: Bitmap) {
+                    images[feedItem.img] = img
+                    holder.image.setImageBitmap(img)
                     if (Settings["feed:card_text_shadow", true]) {
-                        Palette.from(images[feedItem.img]!!).generate {
+                        Palette.from(img).generate {
                             val gradientDrawable = GradientDrawable()
                             if (it == null) {
                                 gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
@@ -123,19 +125,17 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 Loader.NullableBitmap(feedItem.img, maxWidth, Loader.Bitmap.AUTO, false) {
                     var worked = false
                     if (it != null) try {
-                        images[feedItem.img] = it
-                        holder.image.setImageBitmap(images[feedItem.img])
                         onImageLoadEnd(it)
                         worked = true
                     } catch (e: Exception) { e.printStackTrace() }
-                    if (!worked) Loader.NullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.Bitmap.AUTO, false) {
-                        if (it != null) try {
-                            images[feedItem.img] = it
-                            holder.image.setImageBitmap(images[feedItem.img])
-                            onImageLoadEnd(it)
-                            worked = true
-                        } catch (e: Exception) { e.printStackTrace() }
-                    }.execute()
+                    if (!worked) {
+                        Loader.NullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, Loader.Bitmap.AUTO, false) {
+                            if (it != null) try {
+                                onImageLoadEnd(it)
+                                worked = true
+                            } catch (e: Exception) { e.printStackTrace() }
+                        }.execute()
+                    }
                 }.execute()
             }
         } else {

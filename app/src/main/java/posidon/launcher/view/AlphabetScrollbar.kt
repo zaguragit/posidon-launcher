@@ -15,12 +15,12 @@ import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.mainFont
 
 class AlphabetScrollbar(
-    val listView: AbsListView,
+    private val listView: AbsListView,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(listView.context, attrs, defStyleAttr) {
 
-    var sectionIndexer: SectionIndexer? = listView.adapter.let {
+    private var sectionIndexer: SectionIndexer? = listView.adapter.let {
         if (it is SectionIndexer && it.sections.isArrayOf<Char>())
             it else null
     }

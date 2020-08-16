@@ -238,6 +238,7 @@ class Tutorial : AppCompatActivity() {
         setContentView(R.layout.tutorial3)
         findViewById<Switch>(R.id.enableNews).apply {
             accentColor = resources.getColor(R.color.secondaryAccent)
+            isChecked = Settings["feed:enabled", true]
             setOnCheckedChangeListener { _, checked ->
                 Settings.apply {
                     putNotSave("feed:enabled", checked)

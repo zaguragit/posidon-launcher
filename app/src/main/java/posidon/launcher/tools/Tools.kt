@@ -2,7 +2,6 @@ package posidon.launcher.tools
 
 import android.Manifest
 import android.animation.Animator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
@@ -29,6 +28,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import java.lang.ref.WeakReference
+import java.net.NetworkInterface
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -672,8 +672,8 @@ inline fun Drawable.clone() = constantState?.newDrawable()?.mutate()
 inline val Number.dp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
 inline val Number.sp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
 
-inline val Context.mainFont get() =
-    if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
+inline val Context.mainFont: Typeface
+    get() = if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
     else {
         when (Settings["font", "lexendDeca"]) {
             "posidonsans" -> resources.getFont(R.font.posidon_sans)
@@ -729,7 +729,7 @@ inline fun Activity.setWallpaperOffset(x: Float, y: Float) {
     wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight)
 }
 
-inline fun ViewPropertyAnimator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = setListener(object : Animator.AnimatorListener {
+inline fun ViewPropertyAnimator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit): ViewPropertyAnimator = setListener(object : Animator.AnimatorListener {
     override fun onAnimationRepeat(animation: Animator?) {}
     override fun onAnimationCancel(animation: Animator?) {}
     override fun onAnimationStart(animation: Animator?) {}

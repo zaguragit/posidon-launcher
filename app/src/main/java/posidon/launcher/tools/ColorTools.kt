@@ -329,7 +329,9 @@ object ColorTools {
         }
     }
 
-    class ColorAdapter(val colors: List<Int>) : RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
+    class ColorAdapter(
+        private val colors: List<Int>
+    ) : RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
 
         var onItemClickListener: ((color: Int) -> Unit)? = null
 

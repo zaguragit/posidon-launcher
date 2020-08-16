@@ -2,13 +2,11 @@ package posidon.launcher.items
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.provider.Settings
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.toBitmap
 import posidon.launcher.tools.toBitmapDrawable
 
 class SettingsItem private constructor(

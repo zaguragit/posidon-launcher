@@ -50,7 +50,7 @@ class StackTraceActivity : AppCompatActivity() {
             ShareCompat.IntentBuilder.from(this)
                     .setType("text/plain")
                     .setText(str)
-                    .setSubject("posidon launcher: crash stack trace")
+                    .setSubject("posidon launcher: crash log")
                     .addEmailTo("it@posidon.io")
                     .startChooser()
         }

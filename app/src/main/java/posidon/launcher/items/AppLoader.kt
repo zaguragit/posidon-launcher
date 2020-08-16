@@ -13,7 +13,10 @@ import posidon.launcher.tools.*
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 
-class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Unit?, Unit?, Unit?>() {
+class AppLoader (
+    context: Context,
+    private val onEnd: () -> Unit
+) : AsyncTask<Unit?, Unit?, Unit?>() {
 
     class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
 
@@ -57,7 +60,7 @@ class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Un
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
         val ICONSIZE = 65.dp.toInt()
-        val iconpackName = Settings["iconpack", "system"]
+        val iconPackName = Settings["iconpack", "system"]
         val p = Paint(Paint.FILTER_BITMAP_FLAG).apply {
             isAntiAlias = true
         }
@@ -75,29 +78,27 @@ class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Un
         var front: Bitmap? = null
         var areUnthemedIconsChanged = false
         try {
-            themeRes = packageManager.getResourcesForApplication(iconpackName)
-            if (themeRes != null) {
-                iconPackInfo = ThemeTools.getIconPackInfo(themeRes, iconpackName)
-                if (iconPackInfo.iconBack != null) {
-                    val intresiconback = themeRes.getIdentifier(iconPackInfo.iconBack, "drawable", iconpackName)
-                    if (intresiconback != 0) {
-                        back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
-                        areUnthemedIconsChanged = true
-                    }
+            themeRes = packageManager.getResourcesForApplication(iconPackName)
+            iconPackInfo = ThemeTools.getIconPackInfo(themeRes, iconPackName)
+            if (iconPackInfo.iconBack != null) {
+                val intresiconback = themeRes.getIdentifier(iconPackInfo.iconBack, "drawable", iconPackName)
+                if (intresiconback != 0) {
+                    back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
+                    areUnthemedIconsChanged = true
                 }
-                if (iconPackInfo.iconMask != null) {
-                    val intresiconmask = themeRes.getIdentifier(iconPackInfo.iconMask, "drawable", iconpackName)
-                    if (intresiconmask != 0) {
-                        mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
-                        areUnthemedIconsChanged = true
-                    }
+            }
+            if (iconPackInfo.iconMask != null) {
+                val intresiconmask = themeRes.getIdentifier(iconPackInfo.iconMask, "drawable", iconPackName)
+                if (intresiconmask != 0) {
+                    mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
+                    areUnthemedIconsChanged = true
                 }
-                if (iconPackInfo.iconFront != null) {
-                    val intresiconfront = themeRes.getIdentifier(iconPackInfo.iconFront, "drawable", iconpackName)
-                    if (intresiconfront != 0) {
-                        front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
-                        areUnthemedIconsChanged = true
-                    }
+            }
+            if (iconPackInfo.iconFront != null) {
+                val intresiconfront = themeRes.getIdentifier(iconPackInfo.iconFront, "drawable", iconPackName)
+                if (intresiconfront != 0) {
+                    front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
+                    areUnthemedIconsChanged = true
                 }
             }
         } catch (e: Exception) {}
@@ -129,13 +130,12 @@ class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Un
                         var intres = 0
                         val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
                         if (iconResource != null) {
-                            intres = themeRes!!.getIdentifier(iconResource, "drawable", iconpackName)
+                            intres = themeRes!!.getIdentifier(iconResource, "drawable", iconPackName)
                         }
                         if (intres != 0) {
                             try {
                                 app.icon = themeRes!!.getDrawable(intres)
                             } catch (e: Exception) {
-                                e.printStackTrace()
                                 app.icon = appList[i].getIcon(0)
                             }
                         } else {
@@ -190,7 +190,7 @@ class AppLoader (context: Context, private val onEnd: () -> Unit) : AsyncTask<Un
                 }
 
                 App.putInSecondMap(app)
-                if (Settings[appList[i].applicationInfo.packageName + "/" + appList[i].name + "?hidden", false]) {
+                if (Settings["app:$app:hidden", false]) {
                     App.hidden.add(app)
                 } else {
                     tmpApps.add(app)

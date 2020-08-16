@@ -14,7 +14,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
@@ -133,11 +132,13 @@ class CustomAppIcon : AppCompatActivity() {
         }
     }
 
-    internal inner class IconsAdapter(val iconPack: String) : BaseAdapter() {
+    internal inner class IconsAdapter(
+        private val iconPack: String
+    ) : BaseAdapter() {
 
-        val icons: ArrayList<String>
-        val themeRes = packageManager.getResourcesForApplication(iconPack)
-        val searchResults = ArrayList<String>()
+        private val icons: ArrayList<String>
+        private val themeRes = packageManager.getResourcesForApplication(iconPack)
+        private val searchResults = ArrayList<String>()
 
         init {
             icons = try { ThemeTools.getResourceNames(themeRes, iconPack) }

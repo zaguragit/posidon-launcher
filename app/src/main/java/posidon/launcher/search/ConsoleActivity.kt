@@ -27,7 +27,7 @@ class ConsoleActivity : AppCompatActivity() {
             setPadding(20.dp.toInt(), 0, 20.dp.toInt(), 0)
         }
     }
-    val input by lazy {
+    private val input by lazy {
         EditText(this).apply {
             textSize = 12f
             imeOptions = EditorInfo.IME_ACTION_DONE
@@ -38,14 +38,14 @@ class ConsoleActivity : AppCompatActivity() {
             setPadding(20.dp.toInt(), 0, 20.dp.toInt(), 12.dp.toInt())
         }
     }
-    val linearLayout by lazy {
+    private val linearLayout by lazy {
         LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             addView(text)
             addView(input)
         }
     }
-    val scroll by lazy {
+    private val scroll by lazy {
         NestedScrollView(this).apply {
             addView(linearLayout)
             isVerticalFadingEdgeEnabled = true
