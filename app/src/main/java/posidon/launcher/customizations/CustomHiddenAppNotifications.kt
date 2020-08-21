@@ -43,13 +43,13 @@ class CustomHiddenAppNotifications : AppCompatActivity() {
         list.adapter = ListAdapter(this, pacs)
     }
 
-    internal inner class ListAdapter(private val context: Context, private val apps: ArrayList<App>) : BaseAdapter() {
+    internal class ListAdapter(private val context: Context, private val apps: ArrayList<App>) : BaseAdapter() {
 
         override fun getCount() = apps.size
         override fun getItem(position: Int) = null
         override fun getItemId(position: Int) = 0L
 
-        internal inner class ViewHolder(
+        internal class ViewHolder(
             var icon: ImageView,
             var text: TextView
         )

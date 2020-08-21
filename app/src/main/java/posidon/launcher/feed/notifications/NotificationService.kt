@@ -299,7 +299,7 @@ class NotificationService : NotificationListenerService() {
                 if (messages != null) text = StringBuilder().apply {
                     messages.forEach {
                         val bundle = it as Bundle
-                        appendln(bundle.getCharSequence("text"))
+                        appendLine(bundle.getCharSequence("text"))
                     }
                     delete(lastIndex, length)
                 }

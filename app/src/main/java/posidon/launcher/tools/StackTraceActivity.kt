@@ -29,14 +29,14 @@ class StackTraceActivity : AppCompatActivity() {
         val t = intent.extras!!["throwable"] as Throwable
 
         val str = StringBuilder().apply {
-            appendln(t.toString())
-            appendln()
-            appendln("Device.api: " + Build.VERSION.SDK_INT)
-            appendln("Device.brand: " + Build.BRAND)
-            appendln("Device.model: " + Build.MODEL)
-            appendln("Version.code: " + BuildConfig.VERSION_CODE)
-            appendln("Version.name: " + BuildConfig.VERSION_NAME)
-            appendln()
+            appendLine(t.toString())
+            appendLine()
+            appendLine("Device.api: " + Build.VERSION.SDK_INT)
+            appendLine("Device.brand: " + Build.BRAND)
+            appendLine("Device.model: " + Build.MODEL)
+            appendLine("Version.code: " + BuildConfig.VERSION_CODE)
+            appendLine("Version.name: " + BuildConfig.VERSION_NAME)
+            appendLine()
             for (tr in t.stackTrace) append("at: ").append(tr).append("\n")
             for (throwable in t.suppressed)
                 for (tr in throwable.stackTrace)

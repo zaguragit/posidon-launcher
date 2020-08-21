@@ -15,6 +15,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Kustom
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.view.Spinner
@@ -149,6 +150,7 @@ class CustomTheme : AppCompatActivity() {
         Settings["accent"] = it
         Main.accentColor = it or -0x1000000
         Main.customized = true
+        Kustom["accent"] = Main.accentColor.toUInt().toString(16)
     }
 
     fun pickIconBGColor(v: View) = ColorTools.pickColor(this, Settings["icon:background", 0xff252627.toInt()]) {

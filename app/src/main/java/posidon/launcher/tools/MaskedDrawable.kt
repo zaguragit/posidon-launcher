@@ -26,9 +26,11 @@ class MaskedDrawable(
     private val c = Canvas(bitmap)
 
     override fun draw(canvas: Canvas) {
-        drawable.draw(c)
-        c.drawPath(path, maskPaint)
-        canvas.drawBitmap(bitmap, null, bounds, paint)
+        try {
+            drawable.draw(c)
+            c.drawPath(path, maskPaint)
+            canvas.drawBitmap(bitmap, null, bounds, paint)
+        } catch (e: Exception) {}
     }
 
     override fun getIntrinsicWidth() = drawable.intrinsicWidth

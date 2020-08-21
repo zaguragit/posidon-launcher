@@ -112,32 +112,35 @@ class Main : AppCompatActivity() {
                     layoutParams.width = appSize
                 }
                 val item = Dock[i]
+                val label = view.findViewById<TextView>(R.id.icontxt)
                 if (!showLabels) {
-                    view.findViewById<View>(R.id.icontxt).visibility = GONE
+                    label.visibility = GONE
                 }
                 if (item is Folder) {
                     img.setImageDrawable(item.icon)
                     if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = item.label
+                        label.text = item.label
                         view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
+                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     if (notifBadgesEnabled) {
                         var notificationCount = 0
                         for (app in item.apps) {
                             notificationCount += app.notificationCount
                         }
                         if (notificationCount != 0) {
-                            val badge = view.findViewById<TextView>(R.id.notificationBadge)
                             badge.visibility = View.VISIBLE
                             badge.text = notificationCount.toString()
                             badge.background = ColorTools.iconBadge(accentColor)
                             badge.setTextColor(if (ColorTools.useDarkText(accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
-                        } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
-                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                        } else { badge.visibility = View.GONE }
+                    } else { badge.visibility = View.GONE }
+
                     val finalI = i
                     val bgColor = Settings["folderBG", -0x22eeeded]
                     val r = Settings["folderCornerRadius", 18].dp
                     val labelsEnabled = Settings["folderLabelsEnabled", false]
+
                     view.setOnClickListener { if (Folder.currentlyOpen == null) {
 
                         if (Settings["kustom:variables:enable", false]) {
@@ -152,12 +155,12 @@ class Main : AppCompatActivity() {
                         popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
                         val container = content.findViewById<GridLayout>(R.id.container)
                         container.columnCount = Settings["folderColumns", 3]
+                        val title = content.findViewById<TextView>(R.id.title)
                         if (Settings["folder:show_title", true]) {
-                            val title = content.findViewById<TextView>(R.id.title)
                             title.setTextColor(Settings["folder:title_color", 0xffffffff.toInt()])
                             title.text = item.label
                         } else {
-                            content.findViewById<View>(R.id.title).visibility = View.GONE
+                            title.visibility = View.GONE
                             content.findViewById<View>(R.id.separator).visibility = View.GONE
                         }
                         val appList = item.apps
@@ -256,7 +259,7 @@ class Main : AppCompatActivity() {
                     println("SHORTCUTT!!")
                     if (item.isInstalled(packageManager)) {
                         if (showLabels) {
-                            view.findViewById<TextView>(R.id.icontxt).text = item.label
+                            label.text = item.label
                             view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                         }
                         img.setImageDrawable(item.icon)
@@ -270,11 +273,11 @@ class Main : AppCompatActivity() {
                         continue
                     }
                     if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = item.label
+                        label.text = item.label
                         view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
+                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     if (notifBadgesEnabled && item.notificationCount != 0) {
-                        val badge = view.findViewById<TextView>(R.id.notificationBadge)
                         badge.visibility = View.VISIBLE
                         badge.text = item.notificationCount.toString()
                         Palette.from(item.icon!!.toBitmap()).generate {
@@ -282,7 +285,7 @@ class Main : AppCompatActivity() {
                             badge.background = ColorTools.iconBadge(color)
                             badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
                         }
-                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                    } else { badge.visibility = View.GONE }
                     img.setImageDrawable(item.icon)
                     view.setOnClickListener { item.open(this@Main, it) }
                     view.setOnLongClickListener(ItemLongPress.dock(this@Main, item, i))
@@ -296,7 +299,9 @@ class Main : AppCompatActivity() {
                     layoutParams.height = appSize
                     layoutParams.width = appSize
                 }
-                if (!showLabels) view.findViewById<View>(R.id.icontxt).visibility = GONE
+                if (!showLabels) {
+                    view.findViewById<View>(R.id.icontxt).visibility = GONE
+                }
                 container.addView(view)
                 i++
             }
@@ -444,8 +449,8 @@ class Main : AppCompatActivity() {
             feedProgressBar.indeterminateDrawable.setTint(accentColor)
             if (Settings["feed:enabled", true]) {
                 feedRecycler.visibility = VISIBLE
-                feedRecycler.adapter = FeedAdapter(ArrayList(), this@Main)
                 (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
+                feedRecycler.adapter = FeedAdapter(ArrayList(), this)
             } else {
                 feedRecycler.visibility = GONE
                 feedRecycler.adapter = null
@@ -525,25 +530,26 @@ class Main : AppCompatActivity() {
 
             if (Settings["notif:enabled", true]) {
                 val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
+                val parentNotification = findViewById<View>(R.id.parentNotification)
                 NotificationService.onUpdate = {
                     try {
                         runOnUiThread {
                             if (Settings["collapseNotifications", false]) {
                                 if (NotificationService.notificationsAmount > 1) {
-                                    findViewById<View>(R.id.parentNotification).visibility = VISIBLE
+                                    parentNotification.visibility = VISIBLE
                                     parentNotificationTitle.text = resources.getString(
                                         R.string.num_notifications,
                                         NotificationService.notificationsAmount
                                     )
                                     if (notifications.visibility == VISIBLE) {
-                                        findViewById<View>(R.id.parentNotification).background.alpha = 127
+                                        parentNotification.background.alpha = 127
                                         findViewById<View>(R.id.arrowUp).visibility = VISIBLE
                                     } else {
-                                        findViewById<View>(R.id.parentNotification).background.alpha = 255
+                                        parentNotification.background.alpha = 255
                                         findViewById<View>(R.id.arrowUp).visibility = GONE
                                     }
                                 } else {
-                                    findViewById<View>(R.id.parentNotification).visibility = GONE
+                                    parentNotification.visibility = GONE
                                     notifications.visibility = VISIBLE
                                 }
                             }
@@ -569,7 +575,7 @@ class Main : AppCompatActivity() {
                 val r = Settings["feed:card_radius", 15].dp
                 notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
-                findViewById<View>(R.id.parentNotification).background = notificationBackground
+                parentNotification.background = notificationBackground
                 parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
                 parentNotificationTitle.typeface = mainFont
                 val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
@@ -580,11 +586,11 @@ class Main : AppCompatActivity() {
                 if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
                     notifications.visibility = GONE
                     findViewById<View>(R.id.arrowUp).visibility = GONE
-                    findViewById<View>(R.id.parentNotification).visibility = VISIBLE
-                    findViewById<View>(R.id.parentNotification).background.alpha = 255
+                    parentNotification.visibility = VISIBLE
+                    parentNotification.background.alpha = 255
                 } else {
                     notifications.visibility = VISIBLE
-                    findViewById<View>(R.id.parentNotification).visibility = GONE
+                    parentNotification.visibility = GONE
                 }
             } else {
                 notifications.visibility = GONE
@@ -618,6 +624,7 @@ class Main : AppCompatActivity() {
 
         Widget.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
+        Kustom["accent"] = accentColor.toUInt().toString(16)
         setContentView(R.layout.main)
 
         launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
@@ -663,7 +670,7 @@ class Main : AppCompatActivity() {
             false
         }
         drawer = findViewById(R.id.drawer)
-        behavior = BottomDrawerBehavior.from<View>(findViewById(R.id.drawer)).apply {
+        behavior = BottomDrawerBehavior.from<View>(drawer).apply {
             state = BottomDrawerBehavior.STATE_COLLAPSED
             isHideable = false
             addBottomSheetCallback(object : BottomSheetCallback() {
@@ -941,7 +948,7 @@ class Main : AppCompatActivity() {
                 if (success) {
                     (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
                 }
-                feedProgressBar.animate().translationY(-72.dp).alpha(0f).onEnd {
+                feedProgressBar.animate().translationY(-(72).dp).alpha(0f).onEnd {
                     feedProgressBar.visibility = GONE
                 }
             }.execute()
@@ -977,7 +984,6 @@ class Main : AppCompatActivity() {
     private fun onUpdate() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
-        loadFeed()
         if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
             thread (isDaemon = true) {
@@ -1011,6 +1017,7 @@ class Main : AppCompatActivity() {
                 tryAnimate(app.icon!!)
             }
         }
+        loadFeed()
         if (Settings["notif:enabled", true]) {
             NotificationService.onUpdate()
         }
@@ -1095,12 +1102,10 @@ class Main : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        when {
-            behavior.state == BottomDrawerBehavior.STATE_EXPANDED -> behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-            widgetLayout.resizing -> widgetLayout.resizing = false
-            else -> Gestures.performTrigger(Settings["gesture:back", ""])
-        }
+    override fun onBackPressed() = when {
+        behavior.state == BottomDrawerBehavior.STATE_EXPANDED -> behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+        widgetLayout.resizing -> widgetLayout.resizing = false
+        else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
 
     fun openSearch(v: View?) = startActivity(
@@ -1152,8 +1157,9 @@ class Main : AppCompatActivity() {
         fun setDrawerSearchbarFGColor(color: Int) {
             Settings["searchtxtcolor"] = color
             instance.findViewById<TextView>(R.id.searchTxt).setTextColor(color)
-            instance.findViewById<ImageView>(R.id.searchIcon).imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-            instance.findViewById<ImageView>(R.id.searchIcon).imageTintMode = PorterDuff.Mode.MULTIPLY
+            val searchIcon = instance.findViewById<ImageView>(R.id.searchIcon)
+            searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
+            searchIcon.imageTintMode = PorterDuff.Mode.MULTIPLY
         }
 
         fun setDrawerSearchBarVisible(visible: Boolean) {
@@ -1189,12 +1195,14 @@ class Main : AppCompatActivity() {
         fun setDockSearchbarFGColor(color: Int) {
             Settings["docksearchtxtcolor"] = color
             instance.findViewById<TextView>(R.id.docksearchtxt).setTextColor(color)
-            instance.findViewById<ImageView>(R.id.docksearchic).imageTintList = ColorStateList.valueOf(color)
-            instance.findViewById<ImageView>(R.id.docksearchic).imageTintMode = PorterDuff.Mode.MULTIPLY
-            instance.findViewById<ProgressBar>(R.id.battery).progressTintList = ColorStateList.valueOf(color)
-            instance.findViewById<ProgressBar>(R.id.battery).indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-            instance.findViewById<ProgressBar>(R.id.battery).progressBackgroundTintList = ColorStateList.valueOf(color)
-            instance.findViewById<ProgressBar>(R.id.battery).progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
+            val dickSearchIcon = instance.findViewById<ImageView>(R.id.docksearchic)
+            dickSearchIcon.imageTintList = ColorStateList.valueOf(color)
+            dickSearchIcon.imageTintMode = PorterDuff.Mode.MULTIPLY
+            val battery = instance.findViewById<ProgressBar>(R.id.battery)
+            battery.progressTintList = ColorStateList.valueOf(color)
+            battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+            battery.progressBackgroundTintList = ColorStateList.valueOf(color)
+            battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
             (instance.findViewById<ProgressBar>(R.id.battery).progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
         }
 
