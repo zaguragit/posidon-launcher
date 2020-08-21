@@ -200,13 +200,13 @@ class AppLoader (
             }
         }
         lastThread?.join()
-        if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith(Comparator { o1, o2 ->
+        if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith { o1, o2 ->
             val iHsv = floatArrayOf(0f, 0f, 0f)
             val jHsv = floatArrayOf(0f, 0f, 0f)
             Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
             Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
             (iHsv[0] - jHsv[0]).toInt()
-        })
+        }
         else tmpApps.sortWith(Comparator { o1, o2 ->
             o1.label!!.compareTo(o2.label!!, ignoreCase = true)
         })

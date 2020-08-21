@@ -38,9 +38,9 @@ class CustomHiddenApps : AppCompatActivity() {
         }
 
         Sort.labelSort(apps)
-        apps.sortWith(Comparator { o1, o2 ->
+        apps.sortWith { o1, o2 ->
             o1.label!!.compareTo(o2.label!!, ignoreCase = true)
-        })
+        }
         findViewById<ListView>(R.id.list).adapter = ListAdapter(this, apps)
     }
 

@@ -28,7 +28,6 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import java.lang.ref.WeakReference
-import java.net.NetworkInterface
 import kotlin.math.*
 import kotlin.random.Random
 

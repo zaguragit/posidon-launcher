@@ -31,9 +31,9 @@ class NotificationAdapter(
     override fun getItemCount() = NotificationService.notificationGroups.size
 
     class NotificationViewHolder(
-        internal val view: ViewGroup,
-        internal val card: SwipeableLayout,
-        internal val linearLayout: LinearLayout
+        val view: ViewGroup,
+        val card: SwipeableLayout,
+        val linearLayout: LinearLayout
     ) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
@@ -73,7 +73,7 @@ class NotificationAdapter(
                         Main.instance.runOnUiThread {
                             val iter = group.iterator()
                             for (n in iter) n.cancel()
-                            groups.removeAt(i)
+                            groups.remove(group)
                         }
                     }
                     retView = LayoutInflater.from(context).inflate(R.layout.notification_normal_summary, null)
@@ -95,7 +95,7 @@ class NotificationAdapter(
                             group.remove(notification)
                             if (group.size == 1 && group[0].isSummary) {
                                 group[0].cancel()
-                                groups.removeAt(i)
+                                groups.remove(group)
                             }
                             notification.cancel()
                         }
