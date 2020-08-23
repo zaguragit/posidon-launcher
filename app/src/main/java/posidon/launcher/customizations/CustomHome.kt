@@ -31,8 +31,6 @@ class CustomHome : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<View>(R.id.clockcolorprev).background = ColorTools.colorCircle(Settings["clockcolor", -0x1])
-
         val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         when {
             widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
@@ -56,55 +54,7 @@ class CustomHome : AppCompatActivity() {
             dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
         }
 
-
-        findViewById<Switch>(R.id.showBehindDock).isChecked = Settings["feed:show_behind_dock", false]
         findViewById<Switch>(R.id.feedenabled).isChecked = Settings["feed:enabled", true]
-        findViewById<Switch>(R.id.hidefeed).isChecked = Settings["hidefeed", false]
-
-        run {
-            val newscardradiusslider = findViewById<SeekBar>(R.id.newscardradiusslider)
-            newscardradiusslider.progress = Settings["feed:card_radius", 15]
-            val newscardradiusnum = findViewById<TextView>(R.id.newscardradiusnum)
-            newscardradiusnum.text = Settings["feed:card_radius", 15].toString()
-            newscardradiusslider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    newscardradiusnum.text = progress.toString()
-                    Settings["feed:card_radius"] = progress
-                }
-            })
-        }
-
-        run {
-            val cardHorizontalMarginSeekbar = findViewById<SeekBar>(R.id.cardHorizontalMarginSeekbar)
-            cardHorizontalMarginSeekbar.progress = Settings["feed:card_margin_x", 16]
-            val cardHorizontalMarginNum = findViewById<TextView>(R.id.cardHorizontalMarginNum)
-            cardHorizontalMarginNum.text = Settings["feed:card_margin_x", 16].toString()
-            cardHorizontalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    cardHorizontalMarginNum.text = progress.toString()
-                    Settings["feed:card_margin_x"] = progress
-                }
-            })
-        }
-
-        run {
-            val cardVerticalMarginSeekbar = findViewById<SeekBar>(R.id.cardVerticalMarginSeekbar)
-            cardVerticalMarginSeekbar.progress = Settings["feed:card_margin_y", 9]
-            val cardVerticalMarginNum = findViewById<TextView>(R.id.cardVerticalMarginNum)
-            cardVerticalMarginNum.text = Settings["feed:card_margin_y", 9].toString()
-            cardVerticalMarginSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    cardVerticalMarginNum.text = progress.toString()
-                    Settings["feed:card_margin_y"] = progress
-                }
-            })
-        }
 
         run {
             val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
@@ -124,13 +74,6 @@ class CustomHome : AppCompatActivity() {
             })
         }
 
-        findViewById<View>(R.id.newscardbgprev).background = ColorTools.colorCircle(Settings["feed:card_bg", -0xdad9d9])
-        findViewById<View>(R.id.newscardtxtprev).background = ColorTools.colorCircle(Settings["feed:card_txt_color", -0x1])
-        findViewById<Switch>(R.id.newscardenableimg).isChecked = Settings["feed:card_img_enabled", true]
-        findViewById<Switch>(R.id.newscardblackgradient).isChecked = Settings["feed:card_text_shadow", true]
-
-        findViewById<Switch>(R.id.delete_articles).isChecked = Settings["feed:delete_articles", false]
-
         findViewById<Spinner>(R.id.readMethods).apply {
             data = resources.getStringArray(R.array.articleReadingMethods)
             selectionI = when(Settings["feed:openLinks", "browse"]) {
@@ -143,52 +86,9 @@ class CustomHome : AppCompatActivity() {
             }
         }
 
-        findViewById<View>(R.id.swipeBgPrev).background = ColorTools.colorCircle(Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()])
-
-        findViewById<Switch>(R.id.showFeedSpinner).isChecked = Settings["feed:show_spinner", true]
-
         findViewById<Switch>(R.id.starredContactsSwitch).isChecked = Settings["contacts_card:enabled", false]
 
-        run {
-            val contactsCardColumns = findViewById<SeekBar>(R.id.contactsColumnSlider)
-            contactsCardColumns.progress = Settings["contacts_card:columns", 5] - 1
-            val contactsCardColumnNum = findViewById<TextView>(R.id.contactsColumnNum)
-            contactsCardColumnNum.text = Settings["contacts_card:columns", 5].toString()
-            contactsCardColumns.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    contactsCardColumnNum.text = (progress + 1).toString()
-                    Settings["contacts_card:columns"] = progress + 1
-                }
-            })
-        }
-
         Main.customized = true
-    }
-
-    fun pickclockcolor(v: View) = ColorTools.pickColor(this, Settings["clockcolor", -0x1]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorCircle(it)
-        Settings["clockcolor"] = it
-    }
-
-    fun picknewscardcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_bg", -0xdad9d9]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorCircle(it)
-        Settings["feed:card_bg"] = it
-    }
-
-    fun picknewscardtxtcolor(v: View) = ColorTools.pickColor(this, Settings["feed:card_txt_color", -0x1]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorCircle(it)
-        Settings["feed:card_txt_color"] = it
-    }
-
-    fun pickSwipeBGColor(v: View) = ColorTools.pickColor(this, Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]) {
-        v as ViewGroup
-        v.getChildAt(1).background = ColorTools.colorCircle(it)
-        Settings["feed:card_swipe_bg_color"] = it
     }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
@@ -220,12 +120,6 @@ class CustomHome : AppCompatActivity() {
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
-            putNotSave("hidefeed", findViewById<Switch>(R.id.hidefeed).isChecked)
-            putNotSave("feed:delete_articles", findViewById<Switch>(R.id.delete_articles).isChecked)
-            putNotSave("feed:card_img_enabled", findViewById<Switch>(R.id.newscardenableimg).isChecked)
-            putNotSave("feed:card_text_shadow", findViewById<Switch>(R.id.newscardblackgradient).isChecked)
-            putNotSave("feed:show_behind_dock", findViewById<Switch>(R.id.showBehindDock).isChecked)
-            putNotSave("feed:show_spinner", findViewById<Switch>(R.id.showFeedSpinner).isChecked)
             putNotSave("contacts_card:enabled", findViewById<Switch>(R.id.starredContactsSwitch).isChecked)
             apply()
         }

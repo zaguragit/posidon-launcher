@@ -1,0 +1,16 @@
+<resources>
+    <declare-styleable name="SettingView">
+        <attr name="label" format="string"/>
+        <attr name="key" format="string"/>
+        <attr name="def" format="string|integer|color|float"/>
+        <attr name="drawable" format="color|reference"/>
+    </declare-styleable>
+    <declare-styleable name="ColorSettingView" parent="SettingView">
+        <attr name="hasAlpha" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="NumberBarSettingView" parent="SettingView">
+        <attr name="max" format="integer"/>
+        <attr name="startsWith1" format="boolean"/>
+        <attr name="isFloat" format="boolean"/>
+    </declare-styleable>
+</resources>

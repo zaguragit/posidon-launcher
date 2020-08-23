@@ -67,7 +67,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_arrow_left"
                         android:layout_weight="1"
                         android:text="@string/back_button"/>
                     <posidon.launcher.view.Spinner
@@ -98,7 +98,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_arrow_up"
                         android:layout_weight="1"
                         android:text="@string/gesture_top_overscroll"/>
                     <posidon.launcher.view.Spinner
@@ -114,7 +114,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_arrow_down"
                         android:layout_weight="1"
                         android:text="@string/gesture_bottom_overscroll"/>
                     <posidon.launcher.view.Spinner

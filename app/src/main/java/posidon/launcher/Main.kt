@@ -616,7 +616,7 @@ class Main : AppCompatActivity() {
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("posidonLauncher", "uncaught exception", throwable)
-            Settings.apply()
+            Settings.applyNow()
             startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
             Process.killProcess(Process.myPid())
             exitProcess(0)
@@ -1159,7 +1159,6 @@ class Main : AppCompatActivity() {
             instance.findViewById<TextView>(R.id.searchTxt).setTextColor(color)
             val searchIcon = instance.findViewById<ImageView>(R.id.searchIcon)
             searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-            searchIcon.imageTintMode = PorterDuff.Mode.MULTIPLY
         }
 
         fun setDrawerSearchBarVisible(visible: Boolean) {
@@ -1197,7 +1196,6 @@ class Main : AppCompatActivity() {
             instance.findViewById<TextView>(R.id.docksearchtxt).setTextColor(color)
             val dickSearchIcon = instance.findViewById<ImageView>(R.id.docksearchic)
             dickSearchIcon.imageTintList = ColorStateList.valueOf(color)
-            dickSearchIcon.imageTintMode = PorterDuff.Mode.MULTIPLY
             val battery = instance.findViewById<ProgressBar>(R.id.battery)
             battery.progressTintList = ColorStateList.valueOf(color)
             battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
@@ -1227,12 +1225,12 @@ class Main : AppCompatActivity() {
         }
 
         fun setDrawerScrollbarEnabled(enabled: Boolean) {
-            Settings["drawer:scrollbar_enabled"] = enabled
+            //Settings["drawer:scrollbar_enabled"] = enabled
             if (enabled) {
                 instance.drawerScrollBar.visibility = VISIBLE
                 (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
-                        if (Settings["drawer:sections_enabled", false]) 0
-                        else 24.dp.toInt()
+                    if (Settings["drawer:sections_enabled", false]) 0
+                    else 24.dp.toInt()
                 instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
                 instance.drawerScrollBar.update()
             } else  {

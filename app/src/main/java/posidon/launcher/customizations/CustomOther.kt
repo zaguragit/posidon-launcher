@@ -31,9 +31,6 @@ class CustomOther : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<Switch>(R.id.hidestatus).isChecked = Settings["hidestatus", false]
-        findViewById<Switch>(R.id.mnmlstatus).isChecked = Settings["mnmlstatus", false]
-
         val hapticbar = findViewById<SeekBar>(R.id.hapticbar)
         hapticbar.progress = Settings["hapticfeedback", 14]
         hapticbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -61,20 +58,12 @@ class CustomOther : AppCompatActivity() {
             }
         }
 
-        findViewById<Switch>(R.id.lock).isChecked = Settings["locked", false]
-
-        findViewById<Switch>(R.id.doKustomBroadcasts).isChecked = Settings["kustom:variables:enable", false]
-
         Main.customized = true
     }
 
     override fun onPause() {
         Main.customized = true
         Settings.apply {
-            putNotSave("hidestatus", findViewById<Switch>(R.id.hidestatus).isChecked)
-            putNotSave("mnmlstatus", findViewById<Switch>(R.id.mnmlstatus).isChecked)
-            putNotSave("locked", findViewById<Switch>(R.id.lock).isChecked)
-            putNotSave("kustom:variables:enable", findViewById<Switch>(R.id.doKustomBroadcasts).isChecked)
             apply()
         }
         super.onPause()

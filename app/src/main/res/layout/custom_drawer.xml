@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -27,70 +28,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickBGColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/background"/>
-                    <View
-                        android:id="@+id/bgColorPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="drawer:background_color"
+                    app:def="#88000000"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/columnnum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/columns" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/columnslider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:max="6" />
-                </LinearLayout>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/verticalspacingnum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/spacing" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/verticalspacingslider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:max="24" />
-                </LinearLayout>
+                    app:label="@string/columns"
+                    app:key="drawer:columns"
+                    app:def="4"
+                    app:max="7"
+                    app:startsWith1="true"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -109,39 +63,22 @@
                         android:max="2"
                         android:progress="1" />
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/appLabels" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/labelsenabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/appLabels"
+                    app:key="labelsenabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickLabelColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/labelColor"/>
-                    <View
-                        android:id="@+id/labelColorPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/labelColor"
+                    app:key="labelColor"
+                    app:def="#EEEEEEEE"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -158,23 +95,15 @@
                         android:id="@+id/sortingOptions"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
+                    android:id="@+id/scrollbarEnabledSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/scrollbar" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/scrollbarEnabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/scrollbar"
+                    app:key="drawer:scrollbar_enabled"
+                    app:def="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -202,52 +131,24 @@
                     android:layout_height="2dp"
                     android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/blurNum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/blurSlider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="25" />
-                </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/blurLayerNum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/blur_layers" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/blurLayerSlider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="3"/>
-                </LinearLayout>
+                    app:label="@string/radius"
+                    app:key="drawer:blur:rad"
+                    app:def="15"
+                    app:max="25"
+                    app:isFloat="true"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/blur_layers"
+                    app:key="blurLayers"
+                    app:def="1"
+                    app:max="4"
+                    app:startsWith1="true"/>
             </LinearLayout>
 
             <LinearLayout

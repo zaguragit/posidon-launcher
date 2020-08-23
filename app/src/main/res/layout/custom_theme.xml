@@ -39,7 +39,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
+                        android:drawableStart="@drawable/ic_label"
                         android:layout_weight="1"
                         android:text="@string/font"/>
                     <TextView
@@ -48,22 +48,16 @@
                         android:layout_width="wrap_content"
                         android:text="@string/sans_serif"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
+                    android:id="@+id/accentColorSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickAccentColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/accent_color"/>
-                    <View
-                        android:id="@+id/accentcolorprev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/accent_color"
+                    app:key="accent"
+                    app:def="#1155ff"
+                    app:hasAlpha="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -89,7 +83,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_image"
                         android:text="@string/icon_pack" />
                     <TextView
                         android:id="@+id/iconpackselector"
@@ -98,40 +92,22 @@
                         android:gravity="end|center_vertical"
                         android:layout_weight="1"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/animated"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/animatedicons"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/animated"
+                    app:key="animatedicons"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/generate_adaptive_icons"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/reshapeicons"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_image"
+                    app:label="@string/generate_adaptive_icons"
+                    app:key="reshapeicons"
+                    app:def="false"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -148,40 +124,23 @@
                         android:id="@+id/iconBackgrounds"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickIconBGColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/background"/>
-                    <View
-                        android:id="@+id/iconBackground"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="icon:background"
+                    app:def="#ff252627"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
-                    android:id="@+id/recolorWhiteBGs"
+                    android:id="@+id/recolorWhiteBGSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_color"
-                        android:text="@string/recolor_white_bgs"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/recolorWhiteBGsSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/recolor_white_bgs"
+                    app:key="icon:tint_white_bg"
+                    app:def="true"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:id="@+id/icshapesettings"
