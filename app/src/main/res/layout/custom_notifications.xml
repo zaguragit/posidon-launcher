@@ -3,6 +3,7 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -49,120 +50,62 @@
                     android:layout_height="2dp"
                     android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="picknotificationtitlecolor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/title_color"/>
-                    <View
-                        android:id="@+id/notificationtitlecolorprev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/title_color"
+                    app:key="notificationtitlecolor"
+                    app:def="#FF111213"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="picknotificationtxtcolor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/text_color"/>
-                    <View
-                        android:id="@+id/notificationtxtcolorprev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/text_color"
+                    app:key="notificationtxtcolor"
+                    app:def="#FF252627"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="picknotificationcolor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/background"/>
-                    <View
-                        android:id="@+id/notificationbgprev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notificationbgcolor"
+                    app:def="#FFFFFFFF"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/action_buttons" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/actionButtonSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/action_buttons"
+                    app:key="notificationActionsEnabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickNotificationActionBGColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/background"/>
-                    <View
-                        android:id="@+id/actionBGPreview"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notificationActionBGColor"
+                    app:def="#88e0e0e0"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickNotificationActionTextColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/text_color"/>
-                    <View
-                        android:id="@+id/actionTextColorPreview"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notificationActionTextColor"
+                    app:def="#FF252627"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/collapse_notifications" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/collapseNotificationSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_arrow_up"
+                    app:label="@string/collapse_notifications"
+                    app:key="collapseNotifications"
+                    app:def="false"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -190,62 +133,36 @@
                         android:drawableStart="@drawable/ic_visible"
                         android:text="@string/hidden_apps"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickSwipeBGColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/swipe_bg_color"/>
-                    <View
-                        android:id="@+id/swipeBgPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/swipe_bg_color"
+                    app:key="notif:card_swipe_bg_color"
+                    app:def="#880d0e0f"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/media_player" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/useMediaPlayer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_play"
+                    app:label="@string/media_player"
+                    app:key="notif:usePlayer"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/notification_badges" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/badgesEnabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_notification_badge"
+                    app:label="@string/notification_badges"
+                    app:key="notif:badges"
+                    app:def="true"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -94,7 +94,6 @@ class SearchActivity : AppCompatActivity() {
         searchTxt.hint = Settings["searchhinttxt", "Search.."]
         findViewById<ImageView>(R.id.searchIcon).apply {
             imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])
-            imageTintMode = PorterDuff.Mode.MULTIPLY
         }
         findViewById<ImageView>(R.id.kill).apply {
             imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])

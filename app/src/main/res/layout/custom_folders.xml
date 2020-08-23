@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/settings">
     <androidx.core.widget.NestedScrollView
@@ -27,133 +27,63 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/background"/>
-                    <View
-                        android:id="@+id/bgColorPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="folderBG"
+                    app:def="#DD111213"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/columnNum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="_"
-                        android:textSize="28sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/columns" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/columnSlider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="7"
-                        android:progress="5" />
-                </LinearLayout>
-                <LinearLayout
+                    app:label="@string/columns"
+                    app:key="folderColumns"
+                    app:def="3"
+                    app:max="7"
+                    app:startsWith1="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/appLabels" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/labelsEnabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/appLabels"
+                    app:key="folderLabelsEnabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickLabelColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/labelColor"/>
-                    <View
-                        android:id="@+id/labelColorPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/labelColor"
+                    app:key="folder:label_color"
+                    app:def="#DDFFFFFF"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/show_name" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/titleEnabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/show_name"
+                    app:key="folder:show_title"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:onClick="pickTitleColor">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_color"
-                        android:layout_weight="1"
-                        android:text="@string/name_color"/>
-                    <View
-                        android:id="@+id/titleColorPrev"
-                        style="@style/colorPreview"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/name_color"
+                    app:key="folder:title_color"
+                    app:def="#FFFFFFFF"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/radius" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/radiusSlider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="30"/>
-                </LinearLayout>
+                    app:label="@string/radius"
+                    app:key="folderCornerRadius"
+                    app:def="18"
+                    app:max="30"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

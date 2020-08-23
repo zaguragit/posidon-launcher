@@ -90,7 +90,7 @@
             android:layout_height="45dp"
             android:padding="12dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/arrow_to_right"
+            android:src="@drawable/ic_arrow_right"
             android:background="@drawable/button_bg_round"/>
     </LinearLayout>
 </LinearLayout>

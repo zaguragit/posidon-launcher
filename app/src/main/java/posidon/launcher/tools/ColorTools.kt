@@ -85,6 +85,7 @@ object ColorTools {
                 add(0xffddb63f.toInt())
                 add(0xff5a5bfa.toInt())
                 add(0xff5ae1be.toInt())
+                add(0xff17c25b.toInt())
             }).apply { onItemClickListener = { color -> txt.setText(Integer.toHexString(color)) }}
         }
         var updatingAllowed = true
@@ -212,6 +213,7 @@ object ColorTools {
                 add(0xffddb63f.toInt())
                 add(0xff5a5bfa.toInt())
                 add(0xff5ae1be.toInt())
+                add(0xff17c25b.toInt())
             }).apply { onItemClickListener = { color -> txt.setText(Integer.toHexString(color and 0xffffff)) }}
         }
         var updatingAllowed = true
@@ -236,13 +238,7 @@ object ColorTools {
                 okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             } catch (ignore: NumberFormatException) {}
         })
-        run {
-            var str = Integer.toHexString(initColor)
-            for (i in 0..6 - str.length) {
-                str += '0'
-            }
-            txt.setText(str)
-        }
+        txt.setText(initColor.toString(16).padStart(6, '0'))
         val txtColor = if (useDarkText(initColor)) -0xdad9d9 else -0x1
         txt.setTextColor(txtColor)
         okBtn.setTextColor(txtColor)

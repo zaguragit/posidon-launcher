@@ -79,11 +79,12 @@ object Settings {
         lock.unlock()
     }
 
-    fun apply() { thread {
+    fun apply() { thread(block = ::applyNow) }
+    fun applyNow() {
         lock.lock()
         PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get() ?: Tools.publicContext!!, "settings")
         lock.unlock()
-    }}
+    }
 
     operator fun get(key: String, default: Int) = ints[key] ?: default
     operator fun get(key: String, default: Float) = floats[key] ?: default

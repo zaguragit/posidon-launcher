@@ -58,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:src="@drawable/arrow_up"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        android:tint="#ffffff"/>
                     <TextView
                         android:id="@+id/parentNotificationTitle"
                         android:layout_width="0dp"

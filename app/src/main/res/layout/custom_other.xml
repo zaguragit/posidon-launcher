@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/settings">
     <androidx.core.widget.NestedScrollView
@@ -38,40 +38,22 @@
                     android:layout_height="2dp"
                     android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/settingshidestatus" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/hidestatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/settingshidestatus"
+                    app:key="hidestatus"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/minimal_statusbar" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/mnmlstatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/minimal_statusbar"
+                    app:key="mnmlstatus"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -159,46 +141,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/lock_home" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/lock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/lock_home"
+                    app:key="locked"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/kustom_variables" />
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/doKustomBroadcasts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/kustom_variables"
+                    app:key="kustom:variables:enable"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

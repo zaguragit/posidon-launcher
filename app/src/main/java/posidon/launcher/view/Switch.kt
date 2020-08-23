@@ -13,8 +13,8 @@ import posidon.launcher.tools.vibrate
 
 
 class Switch(
-    context: Context?,
-    attrs: AttributeSet?
+    context: Context,
+    attrs: AttributeSet? = null
 ) : android.widget.Switch(context, attrs) {
 
     var accentColor = Main.accentColor
