@@ -364,6 +364,10 @@ object Tools {
 	var navbarHeight = 0
 
 	fun updateNavbarHeight(activity: Activity) {
+        if (Settings["ignore_navbar", false]) {
+            navbarHeight = 0
+            return
+        }
         val metrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(metrics)
         val usableHeight = metrics.heightPixels

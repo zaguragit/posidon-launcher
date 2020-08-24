@@ -29,30 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/background"
-                    app:key="dock:background_color"
-                    app:def="#88000000"/>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/background_type"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/animationOptions"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -105,6 +81,36 @@
                     app:label="@string/labelColor"
                     app:key="dockLabelColor"
                     app:def="#EEEEEEEE"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="dock:background_color"
+                    app:def="#88000000"/>
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="0dp"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:layout_weight="1"
+                        android:text="@string/background_type"/>
+                    <posidon.launcher.view.Spinner
+                        style="@style/settingsbtn"
+                        android:id="@+id/animationOptions"
+                        android:layout_width="wrap_content"/>
+                </LinearLayout>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

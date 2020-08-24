@@ -55,6 +55,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notificationbgcolor"
+                    app:def="#FFFFFFFF"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
                     app:label="@string/title_color"
                     app:key="notificationtitlecolor"
                     app:def="#FF111213"/>
@@ -65,38 +73,6 @@
                     app:drawable="@drawable/ic_color"
                     app:label="@string/text_color"
                     app:key="notificationtxtcolor"
-                    app:def="#FF252627"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/background"
-                    app:key="notificationbgcolor"
-                    app:def="#FFFFFFFF"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_visible"
-                    app:label="@string/action_buttons"
-                    app:key="notificationActionsEnabled"
-                    app:def="false"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/background"
-                    app:key="notificationActionBGColor"
-                    app:def="#88e0e0e0"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/background"
-                    app:key="notificationActionTextColor"
                     app:def="#FF252627"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
@@ -141,6 +117,36 @@
                     app:label="@string/swipe_bg_color"
                     app:key="notif:card_swipe_bg_color"
                     app:def="#880d0e0f"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/action_buttons"
+                    app:key="notificationActionsEnabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notificationActionBGColor"
+                    app:def="#88e0e0e0"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/text_color"
+                    app:key="notificationActionTextColor"
+                    app:def="#FF252627"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

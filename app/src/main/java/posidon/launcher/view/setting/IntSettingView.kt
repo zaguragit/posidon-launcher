@@ -1,13 +1,8 @@
 package posidon.launcher.view.setting
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.view.Gravity
-import android.widget.LinearLayout
-import android.widget.TextView
 import posidon.launcher.R
-import posidon.launcher.tools.dp
 
 abstract class IntSettingView : SettingView {
 

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main

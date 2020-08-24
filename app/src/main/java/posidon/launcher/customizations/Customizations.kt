@@ -40,6 +40,7 @@ class Customizations : AppCompatActivity() {
     fun openApps    (v: View) = startActivity(Intent(this, CustomDrawer        ::class.java))
     fun openDock    (v: View) = startActivity(Intent(this, CustomDock          ::class.java))
     fun openHome    (v: View) = startActivity(Intent(this, CustomHome          ::class.java))
+    fun openNews    (v: View) = startActivity(Intent(this, CustomNews          ::class.java))
     fun openNotif   (v: View) = startActivity(Intent(this, CustomNotifications ::class.java))
     fun openSearch  (v: View) = startActivity(Intent(this, CustomSearch        ::class.java))
     fun openFolders (v: View) = startActivity(Intent(this, CustomFolders       ::class.java))

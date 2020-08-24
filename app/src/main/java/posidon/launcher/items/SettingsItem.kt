@@ -58,6 +58,10 @@ class SettingsItem private constructor(
                     Tools.badge(Tools.publicContext!!.getDrawable(R.drawable.custom_feed_icon)!!, posidonIcon, searchIconSize),
                     "posidon.launcher.settings.FEED"),
                 SettingsItem(
+                    Tools.publicContext!!.getString(R.string.settings_title_news),
+                    Tools.badge(Tools.publicContext!!.getDrawable(R.drawable.custom_news_icon)!!, posidonIcon, searchIconSize),
+                    "posidon.launcher.settings.NEWS"),
+                SettingsItem(
                     Tools.publicContext!!.getString(R.string.notifications),
                     Tools.badge(Tools.publicContext!!.getDrawable(R.drawable.custom_notifications_icon)!!, posidonIcon, searchIconSize),
                     "posidon.launcher.settings.NOTIFICATIONS"),

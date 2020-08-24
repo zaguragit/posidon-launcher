@@ -13,18 +13,11 @@ internal class FastBitmapDrawable(val bitmap: Bitmap?) : Drawable() {
     override fun getIntrinsicHeight() = height
     override fun getMinimumHeight() = height
 
+    override fun getAlpha() = paint.alpha
     override fun setAlpha(alpha: Int) {
         paint.alpha = alpha
         invalidateSelf()
     }
-    override fun getAlpha() = paint.alpha
-
-    fun hasAntiAlias() = paint.isAntiAlias
-    fun setAntiAlias(aa: Boolean) {
-        paint.isAntiAlias = aa
-        invalidateSelf()
-    }
-
     private var paint = Paint()
 
     override fun draw(canvas: Canvas) { bitmap?.let { canvas.drawBitmap(it, 0f, 0f, paint) } }
