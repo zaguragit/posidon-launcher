@@ -182,6 +182,7 @@
     <string name="kustom_variables">Kustom variables</string>
     <string name="swipe_bg_color">Swipe background</string>
     <string name="hide_crash_logs">Hide crash logs</string>
+    <string name="ignore_navbar_height">Ignore navbar height</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

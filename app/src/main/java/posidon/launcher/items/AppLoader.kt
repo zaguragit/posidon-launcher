@@ -207,9 +207,9 @@ class AppLoader (
             Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
             (iHsv[0] - jHsv[0]).toInt()
         }
-        else tmpApps.sortWith(Comparator { o1, o2 ->
+        else tmpApps.sortWith { o1, o2 ->
             o1.label!!.compareTo(o2.label!!, ignoreCase = true)
-        })
+        }
 
         var currentChar = tmpApps[0].label!![0].toUpperCase()
         var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }

@@ -86,6 +86,11 @@
                 android:text="@string/settings_title_feed" />
             <TextView
                 style="@style/customcategory"
+                android:drawableStart="@drawable/custom_news"
+                android:onClick="openNews"
+                android:text="@string/settings_title_news" />
+            <TextView
+                style="@style/customcategory"
                 android:drawableStart="@drawable/custom_notifications"
                 android:onClick="openNotif"
                 android:text="@string/notifications" />

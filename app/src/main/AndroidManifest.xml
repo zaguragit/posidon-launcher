@@ -143,6 +143,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".customizations.CustomNews"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:theme="@style/settings">
+            <intent-filter>
+                <action android:name="posidon.launcher.settings.NEWS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".customizations.CustomNotifications"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">

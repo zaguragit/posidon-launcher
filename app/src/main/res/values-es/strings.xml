@@ -183,6 +183,7 @@
     <string name="kustom_variables">Variables Kustom</string>
     <string name="swipe_bg_color">Swipe background</string>
     <string name="hide_crash_logs">Hide crash logs</string>
+    <string name="ignore_navbar_height">Ignore navbar height</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

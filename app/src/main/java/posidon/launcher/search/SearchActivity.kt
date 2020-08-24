@@ -107,8 +107,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        abstract class Operation : (D, D) -> D { abstract val string: String }
-
         val add = object : Op {
             override val string = "+"
             override fun invoke(x: D, y: D) = x + y

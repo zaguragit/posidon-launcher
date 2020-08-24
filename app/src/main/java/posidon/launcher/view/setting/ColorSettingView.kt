@@ -35,7 +35,10 @@ class ColorSettingView : IntSettingView {
                 setMargins(m, m, m, m)
             }
         }
-        setPreviewColor(Settings[key, default] or -0x1000000)
+        run {
+            val d = Settings[key, default]
+            setPreviewColor(if (hasAlpha) d else d or -0x1000000)
+        }
         addView(colorPreview)
         val pickColor = if (hasAlpha) {
             ColorTools::pickColor
