@@ -623,6 +623,22 @@ object Tools {
             }
         }
     }
+
+    fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {
+        val bgType = Settings["notif:badges:bg_type", 0]
+        val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
+        if (icon == null || bgType == 1) {
+            val bg = Main.accentColor
+            onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+        } else if (bgType == 0) {
+            Palette.from(icon.toBitmap()).generate {
+                val bg = it?.getDominantColor(customBG) ?: customBG
+                onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+            }
+        } else {
+            onGenerated(ColorTools.iconBadge(customBG), if (ColorTools.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
+        }
+    }
 }
 
 inline fun Activity.applyFontSetting() {

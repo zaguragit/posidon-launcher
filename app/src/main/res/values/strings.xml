@@ -90,8 +90,8 @@
     <string name="animated">Animated</string>
     <string name="generate_adaptive_icons">Generate adaptive icons</string>
     <string name="settings_title_icon_packs">Icon packs</string>
-    <string name="show_in_dock">Show in dock</string>
-    <string name="show_in_drawer">Show in drawer</string>
+    <string name="in_dock">In dock</string>
+    <string name="in_drawer">In drawer</string>
     <string name="duration">Duration</string>
     <string name="haptic_feedback">Haptic feedback</string>
     <string name="minimal_statusbar">Minimal statusbar</string>
@@ -183,6 +183,7 @@
     <string name="swipe_bg_color">Swipe background</string>
     <string name="hide_crash_logs">Hide crash logs</string>
     <string name="ignore_navbar_height">Ignore navbar height</string>
+    <string name="show_number">Show number</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -196,10 +197,10 @@
     </array>
 
     <array name="bgModes">
-        <item>solid</item>
-        <item>bottom glow</item>
-        <item>floating</item>
-        <item>floating split</item>
+        <item>Solid</item>
+        <item>Bottom glow</item>
+        <item>Floating</item>
+        <item>Floating split</item>
     </array>
 
     <array name="notificationGrouping">
@@ -236,5 +237,11 @@
         <item>Open search</item>
         <item>Open overview</item>
         <item>Refresh feed</item>
+    </array>
+
+    <array name="notifBadgesBGs">
+        <item>Dominant color</item>
+        <item>Accent</item>
+        <item>Custom</item>
     </array>
 </resources>

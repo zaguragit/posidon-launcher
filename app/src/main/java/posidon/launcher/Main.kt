@@ -28,7 +28,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dock.*
 import kotlinx.android.synthetic.main.main.*
@@ -45,7 +44,6 @@ import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tutorial.WelcomeActivity
@@ -55,7 +53,6 @@ import posidon.launcher.view.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.GridView
 import posidon.launcher.view.ResizableLayout.OnResizeListener
 import java.lang.ref.WeakReference
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.*
 import kotlin.system.exitProcess
@@ -98,6 +95,7 @@ class Main : AppCompatActivity() {
             val rowCount = Settings["dock:rows", 1]
             val showLabels = Settings["dockLabelsEnabled", false]
             val notifBadgesEnabled = Settings["notif:badges", true]
+            val notifBadgesShowNum = Settings["notif:badges:show_num", true]
             val container = findViewById<GridLayout>(R.id.dockContainer).apply {
                 this.removeAllViews()
                 this.columnCount = columnCount
@@ -130,9 +128,11 @@ class Main : AppCompatActivity() {
                         }
                         if (notificationCount != 0) {
                             badge.visibility = View.VISIBLE
-                            badge.text = notificationCount.toString()
-                            badge.background = ColorTools.iconBadge(accentColor)
-                            badge.setTextColor(if (ColorTools.useDarkText(accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
+                            badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
+                            Tools.generateNotificationBadgeBGnFG { bg, fg ->
+                                badge.background = bg
+                                badge.setTextColor(fg)
+                            }
                         } else { badge.visibility = View.GONE }
                     } else { badge.visibility = View.GONE }
 
@@ -183,11 +183,10 @@ class Main : AppCompatActivity() {
                             if (notifBadgesEnabled && app.notificationCount != 0) {
                                 val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
                                 badge.visibility = View.VISIBLE
-                                badge.text = app.notificationCount.toString()
-                                Palette.from(app.icon!!.toBitmap()).generate {
-                                    val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                                    badge.background = ColorTools.iconBadge(color)
-                                    badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                                badge.text = if (notifBadgesShowNum) app.notificationCount.toString() else ""
+                                Tools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
+                                    badge.background = bg
+                                    badge.setTextColor(fg)
                                 }
                             } else { appIcon.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
                             appIcon.setOnClickListener { view ->
@@ -279,11 +278,10 @@ class Main : AppCompatActivity() {
                     val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     if (notifBadgesEnabled && item.notificationCount != 0) {
                         badge.visibility = View.VISIBLE
-                        badge.text = item.notificationCount.toString()
-                        Palette.from(item.icon!!.toBitmap()).generate {
-                            val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                            badge.background = ColorTools.iconBadge(color)
-                            badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                        badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
+                        Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                            badge.background = bg
+                            badge.setTextColor(fg)
                         }
                     } else { badge.visibility = View.GONE }
                     img.setImageDrawable(item.icon)

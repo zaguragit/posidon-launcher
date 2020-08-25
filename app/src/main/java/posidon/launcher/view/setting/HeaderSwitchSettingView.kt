@@ -37,7 +37,8 @@ class HeaderSwitchSettingView : FrameLayout {
             text = a.getString(R.styleable.SettingView_label)
             textSize = 20f
             gravity = Gravity.CENTER_HORIZONTAL
-            val p = 18.dp.toInt()
+            includeFontPadding = false
+            val p = 20.dp.toInt()
             setPadding(p, p, p, p)
             setTextColor(context.resources.getColor(R.color.cardtitle))
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL)

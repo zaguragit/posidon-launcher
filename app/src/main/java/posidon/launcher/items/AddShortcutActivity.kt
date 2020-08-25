@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -42,6 +41,7 @@ class AddShortcutActivity : AppCompatActivity() {
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
+        val notifBadgesShowNum = Settings["notif:badges:show_num", true]
         container.columnCount = columnCount
         container.rowCount = rowCount
         val appSize = min(when (Settings["dockicsize", 1]) {
@@ -64,19 +64,21 @@ class AddShortcutActivity : AppCompatActivity() {
                     view.findViewById<TextView>(R.id.icontxt).text = item.label
                     view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                 }
+                val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
                     var notificationCount = 0
                     for (app in item.apps) {
                         notificationCount += app.notificationCount
                     }
                     if (notificationCount != 0) {
-                        val badge = view.findViewById<TextView>(R.id.notificationBadge)
                         badge.visibility = View.VISIBLE
-                        badge.text = notificationCount.toString()
-                        badge.background = ColorTools.iconBadge(Main.accentColor)
-                        badge.setTextColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff111213.toInt() else 0xffffffff.toInt())
-                    } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
-                } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                        badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
+                        Tools.generateNotificationBadgeBGnFG { bg, fg ->
+                            badge.background = bg
+                            badge.setTextColor(fg)
+                        }
+                    } else { badge.visibility = View.GONE }
+                } else { badge.visibility = View.GONE }
             } else if (item is Shortcut) {
                 if (item.isInstalled(packageManager)) {
                     if (showLabels) {
@@ -96,16 +98,15 @@ class AddShortcutActivity : AppCompatActivity() {
                     view.findViewById<TextView>(R.id.icontxt).text = item.label
                     view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                 }
+                val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled && item.notificationCount != 0) {
-                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     badge.visibility = View.VISIBLE
-                    badge.text = item.notificationCount.toString()
-                    Palette.from(item.icon!!.toBitmap()).generate {
-                        val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                        badge.background = ColorTools.iconBadge(color)
-                        badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                    badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
+                    Tools.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
+                        badge.background = bg
+                        badge.setTextColor(fg)
                     }
-                } else { view.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
+                } else { badge.visibility = View.GONE }
                 img.setImageDrawable(item.icon)
             }
             view.setOnClickListener {

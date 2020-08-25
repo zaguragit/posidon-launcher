@@ -91,8 +91,8 @@
     <string name="animated">Animados</string>
     <string name="generate_adaptive_icons">Generate adaptive icons</string>
     <string name="settings_title_icon_packs">Icon packs</string>
-    <string name="show_in_dock">Mostrar en dock</string>
-    <string name="show_in_drawer">Mostrar en cajon de apps</string>
+    <string name="in_dock">En dock</string>
+    <string name="in_drawer">En cajon de apps</string>
     <string name="duration">Duracion</string>
     <string name="haptic_feedback">Haptic feedback</string>
     <string name="minimal_statusbar">Statusbar simplificado</string>
@@ -182,8 +182,9 @@
     <string name="starred_contacts">Contactos escogidos</string>
     <string name="kustom_variables">Variables Kustom</string>
     <string name="swipe_bg_color">Swipe background</string>
-    <string name="hide_crash_logs">Hide crash logs</string>
-    <string name="ignore_navbar_height">Ignore navbar height</string>
+    <string name="hide_crash_logs">Ocultar crash logs</string>
+    <string name="ignore_navbar_height">Ignorar altura del navbar</string>
+    <string name="show_number">Mostrar numero</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -197,10 +198,10 @@
     </array>
 
     <array name="bgModes">
-        <item>solido</item>
-        <item>brillo inferior</item>
-        <item>floating</item>
-        <item>floating split</item>
+        <item>Solido</item>
+        <item>Brillo inferior</item>
+        <item>Flotante</item>
+        <item>Floatante dividido</item>
     </array>
 
     <array name="notificationGrouping">
@@ -231,11 +232,17 @@
     </array>
 
     <array name="gestureTriggers">
-        <item>Nothing</item>
+        <item>Nada</item>
         <item>Pull down notifications</item>
-        <item>Open app drawer</item>
-        <item>Open search</item>
-        <item>Open overview</item>
-        <item>Refresh feed</item>
+        <item>Abrir cajon de apps</item>
+        <item>Abrir busqueda</item>
+        <item>Abrir overview</item>
+        <item>Refrescar feed</item>
+    </array>
+
+    <array name="notifBadgesBGs">
+        <item>Color dominante</item>
+        <item>Acento</item>
+        <item>Escoger</item>
     </array>
 </resources>

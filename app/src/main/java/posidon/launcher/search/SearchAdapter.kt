@@ -7,15 +7,13 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.palette.graphics.Palette
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.toBitmap
 
 internal class SearchAdapter(
     private val context: Context,
@@ -59,11 +57,10 @@ internal class SearchAdapter(
         if (item is App && Settings["notif:badges", true] && item.notificationCount != 0) {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
-            badge.text = item.notificationCount.toString()
-            Palette.from(item.icon!!.toBitmap()).generate {
-                val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                badge.background = ColorTools.iconBadge(color)
-                badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+            badge.text = if (Settings["notif:badges:show_num", true]) item.notificationCount.toString() else ""
+            Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                badge.background = bg
+                badge.setTextColor(fg)
             }
         } else {
             holder.notificationBadge.visibility = View.GONE

@@ -90,8 +90,8 @@
     <string name="animated">Animatie</string>
     <string name="generate_adaptive_icons">Aanpasbare pictogrammen genereren</string>
     <string name="settings_title_icon_packs">Pictogramthema\'s</string>
-    <string name="show_in_dock">Tonen op dock</string>
-    <string name="show_in_drawer">Tonen in app-lijst</string>
+    <string name="in_dock">Op dock</string>
+    <string name="in_drawer">In app-lijst</string>
     <string name="duration">Duur</string>
     <string name="haptic_feedback">Haptische feedback</string>
     <string name="minimal_statusbar">Minimale statusbalk</string>
@@ -183,6 +183,7 @@
     <string name="swipe_bg_color">Swipe background</string>
     <string name="hide_crash_logs">Hide crash logs</string>
     <string name="ignore_navbar_height">Ignore navbar height</string>
+    <string name="show_number">Show number</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
@@ -196,10 +197,10 @@
     </array>
 
     <array name="bgModes">
-        <item>egaal</item>
-        <item>gloeiende onderzijde</item>
-        <item>floating</item>
-        <item>floating split</item>
+        <item>Egaal</item>
+        <item>Gloeiende onderzijde</item>
+        <item>Floating</item>
+        <item>Floating split</item>
     </array>
 
     <array name="notificationGrouping">
@@ -236,5 +237,11 @@
         <item>Open search</item>
         <item>Open overview</item>
         <item>Refresh feed</item>
+    </array>
+
+    <array name="notifBadgesBGs">
+        <item>Dominant color</item>
+        <item>Accent</item>
+        <item>Custom</item>
     </array>
 </resources>

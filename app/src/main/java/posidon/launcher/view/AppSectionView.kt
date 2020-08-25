@@ -7,13 +7,13 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.palette.graphics.Palette
 import posidon.launcher.R
-import posidon.launcher.items.*
+import posidon.launcher.items.App
+import posidon.launcher.items.ItemLongPress
+import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.toBitmap
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
 
@@ -69,11 +69,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             findViewById<TextView>(R.id.notificationBadge).run {
                 if (Settings["notif:badges", true] && item.notificationCount != 0) {
                     visibility = View.VISIBLE
-                    text = item.notificationCount.toString()
-                    Palette.from(item.icon!!.toBitmap()).generate {
-                        val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                        background = ColorTools.iconBadge(color)
-                        setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+                    text = if (Settings["notif:badges:show_num", true]) item.notificationCount.toString() else ""
+                    Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                        background = bg
+                        setTextColor(fg)
                     }
                 } else { visibility = View.GONE }
             }

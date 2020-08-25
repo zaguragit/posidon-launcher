@@ -111,11 +111,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_visible"
                     app:label="@string/action_buttons"
                     app:key="notificationActionsEnabled"
                     app:def="false"/>
@@ -149,14 +149,45 @@
                     app:label="@string/media_player"
                     app:key="notif:usePlayer"
                     app:def="true"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/notification_badges"
+                    app:key="notif:badges"
+                    app:def="true"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_notification_badge"
-                    app:label="@string/notification_badges"
-                    app:key="notif:badges"
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/show_number"
+                    app:key="notif:badges:show_num"
                     app:def="true"/>
+                <posidon.launcher.view.setting.SpinnerSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/background_type"
+                    app:key="notif:badges:bg_type"
+                    app:def="0"
+                    app:array="@array/notifBadgesBGs"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="notif:badges:bg_color"
+                    app:def="#ffff5555"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
