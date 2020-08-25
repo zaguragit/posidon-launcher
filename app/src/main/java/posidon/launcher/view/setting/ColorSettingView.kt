@@ -23,9 +23,9 @@ class ColorSettingView : IntSettingView {
 
     var onSelected: ((color: Int) -> Unit)? = null
 
-    override fun populate(attrs: AttributeSet?, defStyle: Int) {
+    override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.ColorSettingView, defStyle, 0)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.ColorSettingView, defStyle, defStyleRes)
 
         val hasAlpha = a.getBoolean(R.styleable.ColorSettingView_hasAlpha, true)
         colorPreview = View(context).apply {

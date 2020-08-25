@@ -120,26 +120,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <FrameLayout
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-12dp">
-                    <TextView
-                        style="@style/customcardtitle"
-                        android:text="@string/starred_contacts"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/starredContactsSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"/>
-                </FrameLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@drawable/card_separator"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/starred_contacts"
+                    app:key="contacts_card:enabled"
+                    app:def="false"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

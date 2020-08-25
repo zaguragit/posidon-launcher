@@ -20,9 +20,9 @@ class SwitchSettingView : SettingView {
 
     var onCheckedChange: ((Boolean) -> Unit)? = null
 
-    override fun populate(attrs: AttributeSet?, defStyle: Int) {
+    override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, 0)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
         val default = a.getBoolean(R.styleable.SettingView_def, false)
 
         switch = Switch(context).apply {

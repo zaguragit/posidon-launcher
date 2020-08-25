@@ -37,9 +37,9 @@ class NumberBarSettingView : IntSettingView {
         addView(textIcon)
     }
 
-    override fun populate(attrs: AttributeSet?, defStyle: Int) {
+    override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.NumberBarSettingView, defStyle, 0)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.NumberBarSettingView, defStyle, defStyleRes)
 
         labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 60.dp.toInt())
 

@@ -69,25 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <FrameLayout
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/customcardtitle"
-                        android:text="@string/cards"
-                        android:layout_marginTop="-12dp"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/feedenabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"/>
-                </FrameLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@drawable/card_separator"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/cards"
+                    app:key="feed:enabled"
+                    app:def="true"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

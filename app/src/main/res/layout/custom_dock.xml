@@ -95,22 +95,15 @@
                     app:label="@string/background"
                     app:key="dock:background_color"
                     app:def="#88000000"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.SpinnerSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/background_type"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/animationOptions"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/background_type"
+                    app:key="dock:background_type"
+                    app:def="0"
+                    app:array="@array/bgModes"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

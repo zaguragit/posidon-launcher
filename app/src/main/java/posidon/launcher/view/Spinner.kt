@@ -23,7 +23,7 @@ class Spinner : AppCompatTextView {
     constructor(context: Context, attr: AttributeSet) : super(context, attr)
     constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
-    var data: Array<String> = emptyArray()
+    var data: Array<out CharSequence> = emptyArray()
     var onSelectionChangedListener: ((Spinner) -> Unit)? = null
 
     inline fun setSelectionChangedListener(
@@ -65,7 +65,7 @@ class Spinner : AppCompatTextView {
         }
     }
 
-    val selection: String get() = data[selectionI]
+    val selection: CharSequence get() = data[selectionI]
 
     var selectionI: Int = 0
         set(value) {
