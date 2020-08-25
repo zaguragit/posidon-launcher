@@ -106,12 +106,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_visible"
-                    app:label="@string/show_in_drawer"
+                    app:label="@string/in_drawer"
                     app:key="drawersearchbarenabled"
                     app:def="true"/>
                 <posidon.launcher.view.setting.ColorSettingView
@@ -145,12 +145,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_visible"
-                    app:label="@string/show_in_dock"
+                    app:label="@string/in_dock"
                     app:key="docksearchbarenabled"
                     app:def="false"/>
                 <posidon.launcher.view.setting.ColorSettingView

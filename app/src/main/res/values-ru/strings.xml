@@ -90,8 +90,8 @@
     <string name="animated">Анимированные</string>
     <string name="generate_adaptive_icons">Генерировать адаптивные иконки</string>
     <string name="settings_title_icon_packs">Темы иконок</string>
-    <string name="show_in_dock">Показывать в доке</string>
-    <string name="show_in_drawer">Показывать в списке приложений</string>
+    <string name="in_dock">В доке</string>
+    <string name="in_drawer">В списке приложений</string>
     <string name="duration">Продолжительность</string>
     <string name="haptic_feedback">Haptic feedback</string>
     <string name="minimal_statusbar">Минимальный statusbar</string>
@@ -183,6 +183,7 @@
     <string name="swipe_bg_color">Swipe background</string>
     <string name="hide_crash_logs">Hide crash logs</string>
     <string name="ignore_navbar_height">Ignore navbar height</string>
+    <string name="show_number">Show number</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -196,10 +197,10 @@
     </array>
 
     <array name="bgModes">
-        <item>простой</item>
-        <item>нижнее свечение</item>
-        <item>floating</item>
-        <item>floating split</item>
+        <item>Простой</item>
+        <item>Нижнее свечение</item>
+        <item>Floating</item>
+        <item>Floating split</item>
     </array>
 
     <array name="notificationGrouping">
@@ -236,5 +237,11 @@
         <item>Открыть поиск</item>
         <item>Открыть обзор</item>
         <item>Refresh feed</item>
+    </array>
+
+    <array name="notifBadgesBGs">
+        <item>Dominant color</item>
+        <item>Accent</item>
+        <item>Custom</item>
     </array>
 </resources>

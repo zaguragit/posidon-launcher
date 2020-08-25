@@ -5,14 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.palette.graphics.Palette
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.toBitmap
 import posidon.launcher.view.HighlightAdapter
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
@@ -72,11 +69,10 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         if (Settings["notif:badges", true] && app.notificationCount != 0) {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
-            badge.text = app.notificationCount.toString()
-            Palette.from(app.icon!!.toBitmap()).generate {
-                val color = it?.getDominantColor(0xff111213.toInt()) ?: 0xff111213.toInt()
-                badge.background = ColorTools.iconBadge(color)
-                badge.setTextColor(if (ColorTools.useDarkText(color)) 0xff111213.toInt() else 0xffffffff.toInt())
+            badge.text = if (Settings["notif:badges:show_num", true]) app.notificationCount.toString() else ""
+            Tools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
+                badge.background = bg
+                badge.setTextColor(fg)
             }
         } else {
             holder.notificationBadge.visibility = View.GONE
