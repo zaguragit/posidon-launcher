@@ -18,7 +18,6 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
-import posidon.launcher.view.Switch
 
 class CustomNews : AppCompatActivity() {
 
@@ -28,8 +27,6 @@ class CustomNews : AppCompatActivity() {
         setContentView(R.layout.custom_news)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-
-        findViewById<Switch>(R.id.feedenabled).isChecked = Settings["feed:enabled", true]
 
         run {
             val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
@@ -87,13 +84,4 @@ class CustomNews : AppCompatActivity() {
         dialog.show()
     }
     fun seeRemovedArticles(v: View) = startActivity(Intent(this, RemovedArticles::class.java))
-
-    override fun onPause() {
-        Main.customized = true
-        Settings.apply {
-            putNotSave("feed:enabled", findViewById<Switch>(R.id.feedenabled).isChecked)
-            apply()
-        }
-        super.onPause()
-    }
 }

@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
-import posidon.launcher.view.Switch
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.applyFontSetting
 
 class CustomHome : AppCompatActivity() {
 
@@ -46,9 +46,6 @@ class CustomHome : AppCompatActivity() {
             })
             dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
         }
-
-        findViewById<Switch>(R.id.starredContactsSwitch).isChecked = Settings["contacts_card:enabled", false]
-
         Main.customized = true
     }
 
@@ -56,7 +53,6 @@ class CustomHome : AppCompatActivity() {
         Main.customized = true
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
-            putNotSave("contacts_card:enabled", findViewById<Switch>(R.id.starredContactsSwitch).isChecked)
             apply()
         }
         super.onPause()

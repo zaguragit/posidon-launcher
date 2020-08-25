@@ -13,4 +13,7 @@
         <attr name="startsWith1" format="boolean"/>
         <attr name="isFloat" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="SpinnerSettingView" parent="SettingView">
+        <attr name="array" format="integer"/>
+    </declare-styleable>
 </resources>

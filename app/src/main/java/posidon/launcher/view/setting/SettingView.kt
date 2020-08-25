@@ -9,34 +9,27 @@ import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.tools.dp
 
-abstract class SettingView : LinearLayout {
+abstract class SettingView(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+    defStyleRes: Int = 0
+) : LinearLayout(context, attrs, defStyle, defStyleRes) {
 
     protected lateinit var labelView: TextView
     protected open val doSpecialIcon = false
 
     protected lateinit var key: String
 
-    constructor(context: Context) : super(context) {
-        init(null, 0)
+    init {
+        init(attrs, defStyle, defStyleRes)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(attrs, 0)
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(attrs, defStyle)
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int, defStyleRes: Int) : super(context, attrs, defStyle, defStyleRes) {
-        init(attrs, defStyle)
-    }
-
-    protected open fun init(attrs: AttributeSet?, defStyle: Int) {
+    protected open fun init(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         orientation = HORIZONTAL
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, 0)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
         key = a.getString(R.styleable.SettingView_key)!!
 
         if (doSpecialIcon) {
@@ -61,9 +54,9 @@ abstract class SettingView : LinearLayout {
             layoutParams = LayoutParams(0, 60.dp.toInt(), 1f)
         }
         addView(labelView)
-        populate(attrs, defStyle)
+        populate(attrs, defStyle, defStyleRes)
     }
 
     open fun populateIcon(a: TypedArray) {}
-    abstract fun populate(attrs: AttributeSet?, defStyle: Int)
+    abstract fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int)
 }

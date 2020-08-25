@@ -79,22 +79,15 @@
                     app:label="@string/labelColor"
                     app:key="labelColor"
                     app:def="#EEEEEEEE"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.SpinnerSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/sorting"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/sortingOptions"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/sorting"
+                    app:key="drawer:sorting"
+                    app:def="0"
+                    app:array="@array/sortingAlgorithms"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:id="@+id/scrollbarEnabledSetting"
@@ -111,26 +104,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <FrameLayout
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-12dp">
-                    <TextView
-                        style="@style/customcardtitle"
-                        android:text="@string/blur"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/blurswitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"/>
-                </FrameLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@drawable/card_separator"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/blur"
+                    app:key="drawer:blur"
+                    app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -156,42 +137,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <FrameLayout
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-12dp">
-                    <TextView
-                        style="@style/customcardtitle"
-                        android:text="@string/sections"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/sectionsEnabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"/>
-                </FrameLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@drawable/card_separator"
-                    android:layout_marginBottom="12dp"/>
-                <LinearLayout
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/sections"
+                    app:key="drawer:sections_enabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SpinnerSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/name_position"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/sectionLetter"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/name_position"
+                    app:key="drawer:sec_name_pos"
+                    app:def="0"
+                    app:array="@array/namePositions"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
