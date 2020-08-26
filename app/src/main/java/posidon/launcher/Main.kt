@@ -62,7 +62,7 @@ class Main : AppCompatActivity() {
     private lateinit var drawerGrid: GridView
     private lateinit var drawer: View
     private lateinit var drawerScrollBar: AlphabetScrollbar
-    lateinit var behavior: BottomDrawerBehavior<View>
+    lateinit var behavior: LockableBottomDrawerBehavior<View>
     private var dockHeight = 0
 
     private lateinit var blurBg: LayerDrawable
@@ -401,6 +401,8 @@ class Main : AppCompatActivity() {
                 drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
             }
 
+            behavior.setLocked(!Settings["drawer:slide_up", true])
+
             applyFontSetting()
 
             if (Settings["hidestatus", false]) {
@@ -668,7 +670,7 @@ class Main : AppCompatActivity() {
             false
         }
         drawer = findViewById(R.id.drawer)
-        behavior = BottomDrawerBehavior.from<View>(drawer).apply {
+        behavior = LockableBottomDrawerBehavior.from<View>(drawer).apply {
             state = BottomDrawerBehavior.STATE_COLLAPSED
             isHideable = false
             addBottomSheetCallback(object : BottomSheetCallback() {

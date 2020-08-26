@@ -19,8 +19,11 @@ import android.view.DragEvent
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.EditText
+import android.widget.GridView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import posidon.launcher.Main
@@ -31,6 +34,7 @@ import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.searchOptimize
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -235,7 +239,7 @@ class SearchActivity : AppCompatActivity() {
             results.add(app)
         }
         findViewById<View>(R.id.fail).visibility = View.GONE
-        for (app in Main.apps) {
+        val appLoaderThread = thread (isDaemon = true) { for (app in Main.apps) {
             if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
                 app.label!!.contains(string) ||
                 searchOptimize(app.packageName).contains(searchOptimizedString) ||
@@ -249,42 +253,57 @@ class SearchActivity : AppCompatActivity() {
                     break
                 }
             }
-        }
-        kotlin.runCatching {
+            if (results.size > 30) break
+        }}
+        val settingLoaderThread = thread (isDaemon = true) { kotlin.runCatching {
             val settingList = SettingsItem.getList()
+            var i = 0
             for (setting in settingList) {
                 if (searchOptimize(setting.label!!).contains(searchOptimizedString) ||
                     setting.label!!.contains(string) ||
                     searchOptimize(setting.action).contains(searchOptimizedString) ||
                     setting.action.contains(string)) {
                     results.add(setting)
+                    i++
                     continue
                 }
                 for (word in setting.label!!.split(' ', '-', '_')) {
                     if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                         results.add(setting)
+                        i++
                         break
                     }
+                }
+                if (i > 10) break
+            }
+        }}
+        if (canReadContacts) {
+            kotlin.runCatching {
+                val contactList = ContactItem.getList()
+                var i = 0
+                for (contact in contactList) {
+                    if (searchOptimize(contact.label!!).contains(searchOptimizedString) ||
+                            contact.label!!.contains(string) ||
+                            contact.phone.contains(searchOptimizedString) ||
+                            contact.phone.contains(string)) {
+                        results.add(contact)
+                        i++
+                        continue
+                    }
+                    for (word in contact.label!!.split(' ', '-', '_')) {
+                        if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
+                            results.add(contact)
+                            i++
+                            break
+                        }
+                    }
+                    if (i > 16) break
                 }
             }
         }
-        if (canReadContacts) kotlin.runCatching {
-            val contactList = ContactItem.getList()
-            for (contact in contactList) {
-                if (searchOptimize(contact.label!!).contains(searchOptimizedString) ||
-                    contact.label!!.contains(string) ||
-                    contact.phone.contains(searchOptimizedString) ||
-                    contact.phone.contains(string)) {
-                    results.add(contact)
-                    continue
-                }
-                for (word in contact.label!!.split(' ', '-', '_')) {
-                    if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
-                        results.add(contact)
-                        break
-                    }
-                }
-            }
+        kotlin.runCatching {
+            appLoaderThread.join()
+            settingLoaderThread.join()
         }
         try {
             Sort.labelSort(results)

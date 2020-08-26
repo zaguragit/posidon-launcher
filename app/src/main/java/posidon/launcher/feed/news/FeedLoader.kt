@@ -89,7 +89,7 @@ class FeedLoader(
 
         for (thread in threads) {
             kotlin.runCatching {
-                thread.join()
+                thread.join(60000)
             }
         }
 

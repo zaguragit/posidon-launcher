@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_behavior="posidon.launcher.view.BottomDrawerBehavior"
+        app:layout_behavior="posidon.launcher.view.LockableBottomDrawerBehavior"
         app:hideable="false"
         app:peekHeight="0dp">
         <include layout="@layout/dock"/>

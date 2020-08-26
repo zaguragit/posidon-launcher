@@ -184,6 +184,7 @@
     <string name="hide_crash_logs">Hide crash logs</string>
     <string name="ignore_navbar_height">Ignore navbar height</string>
     <string name="show_number">Show number</string>
+    <string name="slide_up">Slide up</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
