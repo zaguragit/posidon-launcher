@@ -185,6 +185,7 @@
     <string name="hide_crash_logs">Ocultar crash logs</string>
     <string name="ignore_navbar_height">Ignorar altura del navbar</string>
     <string name="show_number">Mostrar numero</string>
+    <string name="slide_up">Slide up</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

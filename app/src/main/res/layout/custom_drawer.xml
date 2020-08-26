@@ -97,6 +97,14 @@
                     app:label="@string/scrollbar"
                     app:key="drawer:scrollbar_enabled"
                     app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_arrow_up"
+                    app:label="@string/slide_up"
+                    app:key="drawer:slide_up"
+                    app:def="true"/>
             </LinearLayout>
 
             <LinearLayout
