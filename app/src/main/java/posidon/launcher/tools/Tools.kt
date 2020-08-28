@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
@@ -16,17 +17,26 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.drawable.MaskedDrawable
+import posidon.launcher.view.GridLayoutManager
 import java.lang.ref.WeakReference
 import kotlin.math.*
 import kotlin.random.Random
@@ -638,6 +648,64 @@ object Tools {
         } else {
             onGenerated(ColorTools.iconBadge(customBG), if (ColorTools.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
         }
+    }
+
+    private class AppSelectionAdapter(
+        val apps: List<App>,
+        val onClick: (app: App) -> Unit
+    ) : RecyclerView.Adapter<AppSelectionAdapter.ViewHolder>() {
+
+        class ViewHolder(
+            val view: View,
+            val icon: ImageView,
+            val iconFrame: FrameLayout,
+            val text: TextView
+        ) : RecyclerView.ViewHolder(view)
+
+        override fun getItemCount() = apps.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(publicContext!!).inflate(R.layout.drawer_item, parent, false)
+            val iconFrame = view.findViewById<FrameLayout>(R.id.iconFrame)
+            val icon = iconFrame.findViewById<ImageView>(R.id.iconimg)
+            val text = view.findViewById<TextView>(R.id.icontxt)
+            return ViewHolder(view, icon, iconFrame, text)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, i: Int) {
+            val app = apps[i]
+            holder.icon.setImageDrawable(app.icon)
+            holder.text.text = app.label
+            holder.view.setOnClickListener {
+                onClick(app)
+            }
+        }
+    }
+
+    fun selectApp(context: Context, includeHidden: Boolean, out: (app: App) -> Unit) = Dialog(context, R.style.longpressmenusheet).run {
+        setContentView(RecyclerView(context).apply {
+            val apps = if (includeHidden) ArrayList<App>().apply {
+                addAll(Main.apps)
+                addAll(App.hidden)
+                if (Settings["drawer:sorting", 0] == 1) sortWith { o1, o2 ->
+                    val iHsv = floatArrayOf(0f, 0f, 0f)
+                    val jHsv = floatArrayOf(0f, 0f, 0f)
+                    Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
+                    Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
+                    (iHsv[0] - jHsv[0]).toInt()
+                }
+                else sortWith { o1, o2 ->
+                    o1.label!!.compareTo(o2.label!!, ignoreCase = true)
+                }
+            } else Main.apps
+            layoutManager = GridLayoutManager(context, 4)
+            adapter = AppSelectionAdapter(apps) {
+                out(it)
+                dismiss()
+            }
+        }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.displayHeight - 300.dp.toInt()))
+        window!!.setBackgroundDrawableResource(R.drawable.card)
+        show()
     }
 }
 

@@ -16,10 +16,14 @@ import android.view.View.OnLongClickListener
 import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.launcher.customizations.Customizations
+import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
-import posidon.launcher.view.BottomDrawerBehavior
+import posidon.launcher.tools.Device
+import posidon.launcher.tools.Gestures
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.vibrate
+import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.wall.Gallery
 import java.util.*
 

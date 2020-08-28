@@ -232,13 +232,14 @@
         <!--item>En vista articulo (experimental)</item-->
     </array>
 
-    <array name="gestureTriggers">
+    <array name="actions">
         <item>Nada</item>
         <item>Pull down notifications</item>
         <item>Abrir cajon de apps</item>
         <item>Abrir busqueda</item>
         <item>Abrir overview</item>
         <item>Refrescar feed</item>
+        <item>Abrir app</item>
     </array>
 
     <array name="notifBadgesBGs">

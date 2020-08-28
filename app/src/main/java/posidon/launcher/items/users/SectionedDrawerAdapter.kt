@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import android.widget.BaseAdapter
 import android.widget.SectionIndexer
 import posidon.launcher.Main
 import posidon.launcher.tools.Tools
-import posidon.launcher.view.AppSectionView
 import posidon.launcher.view.HighlightAdapter
+import posidon.launcher.view.groupView.AppSectionView
 
 class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 

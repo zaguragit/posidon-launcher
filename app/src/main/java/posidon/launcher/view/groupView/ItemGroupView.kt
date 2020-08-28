@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.groupView
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import posidon.launcher.items.*
+import posidon.launcher.items.LauncherItem
 import posidon.launcher.tools.dp
 
 abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {

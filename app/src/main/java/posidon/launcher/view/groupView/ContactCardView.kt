@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.groupView
 
 import android.content.Context
 import android.util.AttributeSet

@@ -22,10 +22,8 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickColorNoAlpha
-import posidon.launcher.tools.Tools.tryAnimate
-import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.Tools.clearAnimation
-import posidon.launcher.tools.getStatusBarHeight
+import posidon.launcher.tools.Tools.tryAnimate
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -36,7 +34,7 @@ class Gallery : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Settings.init(this)
+        Settings.init(applicationContext)
         applyFontSetting()
         setContentView(R.layout.wall_gallery)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)

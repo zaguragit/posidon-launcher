@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +12,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
+import posidon.launcher.items.Folder
+import posidon.launcher.items.Shortcut
+import posidon.launcher.items.isInstalled
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import kotlin.math.min

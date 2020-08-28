@@ -1,6 +1,7 @@
-package posidon.launcher.tools
+package posidon.launcher.external
 
 import android.content.Intent
+import posidon.launcher.tools.Tools
 
 object Kustom {
 

@@ -1,4 +1,4 @@
-package posidon.launcher.view;
+package posidon.launcher.view.drawer;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -8,7 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.AbsListView
 import android.widget.SectionIndexer
-import posidon.launcher.items.ItemLongPress
+import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight

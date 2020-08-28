@@ -36,9 +36,9 @@ class NotificationService : NotificationListenerService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         instance = this
         if (Tools.publicContext == null) {
-            Tools.publicContextReference = WeakReference(this)
+            Tools.publicContextReference = WeakReference(applicationContext)
         }
-        if (!Settings.isInitialized) Settings.init(baseContext)
+        Settings.init(applicationContext)
         update()
         return super.onStartCommand(intent, flags, startId)
     }

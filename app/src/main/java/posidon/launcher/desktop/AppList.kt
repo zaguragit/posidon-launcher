@@ -11,7 +11,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.items.DrawerAdapter
+import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -22,7 +22,7 @@ class AppList : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Settings.init(this)
+        Settings.init(applicationContext)
         setContentView(R.layout.desktop_app_list)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)

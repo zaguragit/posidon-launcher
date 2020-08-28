@@ -311,7 +311,7 @@
 
 
         <activity
-            android:name=".items.AddShortcutActivity"
+            android:name=".items.users.AddShortcutActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
@@ -333,7 +333,7 @@
             android:theme="@style/settings"/>
 
 
-        <activity android:name=".items.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
+        <activity android:name=".items.users.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>
