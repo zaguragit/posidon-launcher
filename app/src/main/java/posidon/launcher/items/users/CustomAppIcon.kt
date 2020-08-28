@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools

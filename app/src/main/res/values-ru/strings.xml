@@ -231,13 +231,14 @@
         <!--item>In article view (experimental)</item-->
     </array>
 
-    <array name="gestureTriggers">
+    <array name="actions">
         <item>Ничего</item>
         <item>Опустить уведомления</item>
         <item>Открыть app drawer</item>
         <item>Открыть поиск</item>
         <item>Открыть обзор</item>
         <item>Refresh feed</item>
+        <item>Открыть app</item>
     </array>
 
     <array name="notifBadgesBGs">

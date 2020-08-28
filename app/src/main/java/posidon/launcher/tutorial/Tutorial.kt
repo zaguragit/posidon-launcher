@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import posidon.launcher.view.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.view.Switch
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 
@@ -39,7 +39,7 @@ class Tutorial : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial1)
-        Settings.init(this)
+        Settings.init(applicationContext)
         for (i in styleButtons.indices) {
             findViewById<View>(styleButtons[i]).setOnClickListener {
                 if (selectedStyle != -1) {

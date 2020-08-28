@@ -7,7 +7,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import posidon.launcher.R
-import posidon.launcher.items.AppLoader
+import posidon.launcher.items.users.AppLoader
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import java.lang.ref.WeakReference
@@ -18,7 +18,7 @@ class DesktopMode : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.desktop)
         Tools.publicContextReference = WeakReference(this)
-        Settings.init(this)
+        Settings.init(applicationContext)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val menuBtn = findViewById<ImageView>(R.id.menuBtn)

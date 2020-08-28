@@ -9,7 +9,7 @@ import posidon.launcher.storage.Settings
 
 class ClockWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        if (!Settings.isInitialized) Settings.init(context)
+        Settings.init(context.applicationContext)
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.widget_clock)
             views.setTextColor(R.id.txt, Settings["clockcolor", -0x1])

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/settings">
     <androidx.core.widget.NestedScrollView
@@ -27,54 +27,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ActionSelectorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/pinch"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/pinch"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/pinch"
+                    app:key="gesture:pinch"
+                    app:def="open_overview"/>
+                <posidon.launcher.view.setting.ActionSelectorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/long_press"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/longPress"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/long_press"
+                    app:key="gesture:long_press"
+                    app:def="open_overview"/>
+                <posidon.launcher.view.setting.ActionSelectorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_arrow_left"
-                        android:layout_weight="1"
-                        android:text="@string/back_button"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/back"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_arrow_left"
+                    app:label="@string/back_button"
+                    app:key="gesture:back"
+                    app:def="nothing"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -90,38 +66,22 @@
                     android:layout_height="2dp"
                     android:background="@drawable/card_separator"
                     android:layout_marginBottom="12dp"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.ActionSelectorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_arrow_up"
-                        android:layout_weight="1"
-                        android:text="@string/gesture_top_overscroll"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/feedTopOverscroll"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
-                <LinearLayout
+                    app:drawable="@drawable/ic_arrow_up"
+                    app:label="@string/gesture_top_overscroll"
+                    app:key="gesture:feed:top_overscroll"
+                    app:def="pull_down_notifications"/>
+                <posidon.launcher.view.setting.ActionSelectorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_arrow_down"
-                        android:layout_weight="1"
-                        android:text="@string/gesture_bottom_overscroll"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
-                        android:id="@+id/feedBottomOverscroll"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_arrow_down"
+                    app:label="@string/gesture_bottom_overscroll"
+                    app:key="gesture:feed:bottom_overscroll"
+                    app:def="open_app_drawer"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

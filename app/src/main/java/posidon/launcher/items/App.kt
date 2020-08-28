@@ -35,16 +35,16 @@ class App(
 
     var notificationCount = 0
 
-    inline fun open(context: Context, view: View) {
+    inline fun open(context: Context, view: View?) {
         try {
             val intent = Intent(Intent.ACTION_MAIN)
             intent.component = ComponentName(packageName, name!!)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             Main.launcherApps.startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
-                "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle()
+                "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
                 "clip_reveal" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight).toBundle()
+                        ActivityOptions.makeClipRevealAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
                     else ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()
                 }
                 else -> ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()

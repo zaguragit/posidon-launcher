@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.app.ActivityOptions
 import android.content.Context
@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
-import posidon.launcher.items.ShortcutAdapter.ShortcutViewHolder
+import posidon.launcher.items.users.ShortcutAdapter.ShortcutViewHolder
 
 @RequiresApi(api = Build.VERSION_CODES.N_MR1)
 class ShortcutAdapter(private val context: Context, private val shortcuts: List<ShortcutInfo>, private val txtColor: Int) : RecyclerView.Adapter<ShortcutViewHolder>() {

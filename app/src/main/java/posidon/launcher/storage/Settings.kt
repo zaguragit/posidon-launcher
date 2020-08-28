@@ -95,24 +95,29 @@ object Settings {
 
 
     fun init(context: Context) {
-        Settings.context = WeakReference(context)
-        PrivateStorage.readAny(context, "settings").let {
-            if (it != null) {
-                if (it is SettingsFile) {
-                    ints = it.ints
-                    floats = it.floats
-                    bools = it.bools
-                    strings = it.strings
-                    lists = it.lists
+        lock.lock()
+        if (!isInitialized) {
+            Settings.context = WeakReference(context)
+            PrivateStorage.readAny(context, "settings").let {
+                if (it != null) {
+                    if (it is SettingsFile) {
+                        ints = it.ints
+                        floats = it.floats
+                        bools = it.bools
+                        strings = it.strings
+                        lists = it.lists
+                    }
+                } else {
+                    ints = HashMap()
+                    floats = HashMap()
+                    bools = HashMap()
+                    strings = HashMap()
+                    lists = HashMap()
                 }
-            } else {
-                ints = HashMap()
-                floats = HashMap()
-                bools = HashMap()
-                strings = HashMap()
-                lists = HashMap()
             }
+            isInitialized = true
         }
+        lock.unlock()
     }
 
     fun saveBackup() = ExternalStorage.writeDataOutsideScope(

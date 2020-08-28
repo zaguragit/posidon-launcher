@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.content.Context
 import android.content.pm.LauncherApps
@@ -8,8 +8,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.*
 import androidx.palette.graphics.Palette
 import posidon.launcher.Main
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.ThemeTools
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 

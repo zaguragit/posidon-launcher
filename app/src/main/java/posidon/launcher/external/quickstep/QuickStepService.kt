@@ -4,7 +4,10 @@ import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.app.Service
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Message
 import android.util.Log
 import android.view.MotionEvent
 import android.widget.Toast
@@ -93,7 +96,7 @@ class QuickStepService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Settings.init(this)
+        Settings.init(applicationContext)
 
         if (hasNavbar) onNavigationModeChanged(NavigationMode.THREE_BUTTONS)
         else onNavigationModeChanged(NavigationMode.GESTURAL)

@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
 import posidon.launcher.R
+import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 

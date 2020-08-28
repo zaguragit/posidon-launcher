@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.groupView
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.items.ItemLongPress
 import posidon.launcher.items.LauncherItem
+import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp

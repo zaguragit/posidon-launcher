@@ -231,13 +231,14 @@
         <!--item>In article view (experimental)</item-->
     </array>
 
-    <array name="gestureTriggers">
+    <array name="actions">
         <item>Nothing</item>
         <item>Pull down notifications</item>
         <item>Open app drawer</item>
         <item>Open search</item>
         <item>Open overview</item>
         <item>Refresh feed</item>
+        <item>Open app</item>
     </array>
 
     <array name="notifBadgesBGs">

@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.dock.*
 import kotlinx.android.synthetic.main.main.*
 import posidon.launcher.LauncherMenu.PinchListener
+import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.external.Widget.REQUEST_CREATE_APPWIDGET
 import posidon.launcher.external.Widget.REQUEST_PICK_APPWIDGET
@@ -40,18 +41,25 @@ import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.*
+import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.DrawerAdapter
+import posidon.launcher.items.users.ItemLongPress
+import posidon.launcher.items.users.SectionedDrawerAdapter
 import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.updateNavbarHeight
+import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.*
-import posidon.launcher.view.BottomDrawerBehavior.BottomSheetCallback
-import posidon.launcher.view.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.GridView
 import posidon.launcher.view.ResizableLayout.OnResizeListener
+import posidon.launcher.view.drawer.BottomDrawerBehavior
+import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
+import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
+import posidon.launcher.view.drawer.LockableBottomDrawerBehavior
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 import kotlin.math.*
@@ -603,7 +611,7 @@ class Main : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Settings.init(this)
+        Settings.init(applicationContext)
         if (Settings["init", true]) {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()

@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package posidon.launcher.items
+package posidon.launcher.items.users
 
 import android.app.Activity
 import android.content.ClipData
@@ -20,12 +20,16 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.palette.graphics.Palette
-import posidon.launcher.view.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.external.Kustom
+import posidon.launcher.items.App
+import posidon.launcher.items.Folder
+import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.view.LinearLayoutManager
 import java.util.*
 
 object ItemLongPress {

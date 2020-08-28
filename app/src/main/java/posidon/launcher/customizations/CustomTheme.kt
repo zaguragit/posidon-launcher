@@ -11,8 +11,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.external.Kustom
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Kustom
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.view.Spinner

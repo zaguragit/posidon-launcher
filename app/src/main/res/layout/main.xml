@@ -34,7 +34,7 @@
                     android:id="@+id/widgets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <posidon.launcher.view.ContactCardView
+                <posidon.launcher.view.groupView.ContactCardView
                     android:id="@+id/contacts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_behavior="posidon.launcher.view.LockableBottomDrawerBehavior"
+        app:layout_behavior="posidon.launcher.view.drawer.LockableBottomDrawerBehavior"
         app:hideable="false"
         app:peekHeight="0dp">
         <include layout="@layout/dock"/>
