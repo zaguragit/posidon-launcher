@@ -106,6 +106,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/package_search"
+                    app:key="search:use_package_names"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/shortcuts"
+                    app:key="search:use_shortcuts"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/contacts"
+                    app:key="search:use_contacts"
+                    app:def="true"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
@@ -191,26 +221,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <FrameLayout
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-12dp">
-                    <TextView
-                        style="@style/customcardtitle"
-                        android:text="@string/blur"/>
-                    <posidon.launcher.view.Switch
-                        android:id="@+id/blurswitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"/>
-                </FrameLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@drawable/card_separator"
-                    android:layout_marginBottom="12dp"/>
+                    app:label="@string/blur"
+                    app:key="search:blur"
+                    app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

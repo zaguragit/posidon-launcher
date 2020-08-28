@@ -186,6 +186,9 @@
     <string name="ignore_navbar_height">Ignorar altura del navbar</string>
     <string name="show_number">Mostrar numero</string>
     <string name="slide_up">Slide up</string>
+    <string name="package_search">Package search</string>
+    <string name="shortcuts">Shortcuts</string>
+    <string name="contacts">Contacts</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
