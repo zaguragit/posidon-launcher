@@ -224,6 +224,7 @@ class SearchActivity : AppCompatActivity() {
     private fun search(string: String) {
         currentString = string
         val searchOptimizedString = searchOptimize(string)
+        val packageSearch = Settings["search:use_package_names", false]
         if (string.isEmpty()) {
             grid.adapter = SearchAdapter(this, listOf())
             findViewById<View>(R.id.fail).visibility = View.GONE
@@ -241,53 +242,62 @@ class SearchActivity : AppCompatActivity() {
             results.add(app)
         }
         findViewById<View>(R.id.fail).visibility = View.GONE
-        val appLoaderThread = thread (isDaemon = true) { for (app in Main.apps) {
-            if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
-                app.label!!.contains(string) ||
-                searchOptimize(app.packageName).contains(searchOptimizedString) ||
-                app.packageName.contains(string)) {
-                results.add(app)
-                continue
-            }
-            for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
-                if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
-                    results.add(app)
-                    break
-                }
-            }
-            if (results.size > 30) break
-        }}
-        val settingLoaderThread = thread (isDaemon = true) { kotlin.runCatching {
-            val settingList = SettingsItem.getList()
+        val appLoaderThread = thread (isDaemon = true) {
             var i = 0
-            for (setting in settingList) {
-                if (searchOptimize(setting.label!!).contains(searchOptimizedString) ||
-                    setting.label!!.contains(string) ||
-                    searchOptimize(setting.action).contains(searchOptimizedString) ||
-                    setting.action.contains(string)) {
-                    results.add(setting)
+            for (app in Main.apps) {
+                if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
+                    app.label!!.contains(string) ||
+                    packageSearch && (
+                        searchOptimize(app.packageName).contains(searchOptimizedString) ||
+                        app.packageName.contains(string)
+                    )) {
+                    results.add(app)
                     i++
                     continue
                 }
-                for (word in setting.label!!.split(' ', '-', '_')) {
+                for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
                     if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
-                        results.add(setting)
+                        results.add(app)
                         i++
                         break
                     }
                 }
-                if (i > 10) break
+                if (i > 30) break
             }
-        }}
-        if (canReadContacts) {
+        }
+        val settingLoaderThread = thread (isDaemon = true) {
+            if (Settings["search:use_shortcuts", true]) kotlin.runCatching {
+                val settingList = SettingsItem.getList()
+                var i = 0
+                for (setting in settingList) {
+                    if (searchOptimize(setting.label!!).contains(searchOptimizedString) ||
+                        setting.label!!.contains(string) ||
+                        searchOptimize(setting.action).contains(searchOptimizedString) ||
+                        setting.action.contains(string)) {
+                        results.add(setting)
+                        i++
+                        continue
+                    }
+                    for (word in setting.label!!.split(' ', '-', '_')) {
+                        if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
+                            results.add(setting)
+                            i++
+                            break
+                        }
+                    }
+                    if (i > 10) break
+                }
+            }
+        }
+        if (canReadContacts && Settings["search:use_contacts", true]) {
             kotlin.runCatching {
                 val contactList = ContactItem.getList()
                 var i = 0
                 for (contact in contactList) {
                     if (searchOptimize(contact.label!!).contains(searchOptimizedString) ||
-                            contact.label!!.contains(string) ||
-                            contact.phone.contains(searchOptimizedString) ||
-                            contact.phone.contains(string)) {
+                        contact.label!!.contains(string) ||
+                        contact.phone.contains(searchOptimizedString) ||
+                        contact.phone.contains(string)) {
                         results.add(contact)
                         i++
                         continue
