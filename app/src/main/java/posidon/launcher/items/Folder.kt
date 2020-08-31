@@ -3,17 +3,26 @@ package posidon.launcher.items
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
+import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
-import android.widget.PopupWindow
+import android.view.DragEvent
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
+import posidon.launcher.Main
+import posidon.launcher.R
+import posidon.launcher.external.Kustom
+import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.toBitmap
-import kotlin.collections.ArrayList
+import posidon.launcher.tools.*
+import posidon.launcher.view.drawer.BottomDrawerBehavior
+import kotlin.math.abs
 import kotlin.math.min
 
 class Folder(string: String) : LauncherItem() {
 
-    val apps = ArrayList<App>()
+    val items = ArrayList<LauncherItem>()
 
     var uid: String
 
@@ -21,9 +30,9 @@ class Folder(string: String) : LauncherItem() {
         val appsList = string.substring(7, string.length).split('\t')
         uid = appsList[0]
         for (i in 1 until appsList.size) {
-            val app = App[appsList[i]]
+            val app = LauncherItem(appsList[i])
             if (app != null) {
-                apps.add(app)
+                items.add(app)
             }
         }
 
@@ -47,7 +56,7 @@ class Folder(string: String) : LauncherItem() {
 
     override fun toString(): String {
         val sb = StringBuilder()
-        for (app in apps) {
+        for (app in items) {
             sb.append("\t").append(app.toString())
         }
         return "folder:$uid$sb"
@@ -55,11 +64,11 @@ class Folder(string: String) : LauncherItem() {
 
     private fun icon(context: Context): Drawable? {
         try {
-            val previewApps = min(apps.size, 4)
+            val previewApps = min(items.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
             drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
             for (i in 1..previewApps) {
-                drr[i] = BitmapDrawable(context.resources, apps[i - 1].icon!!.toBitmap())
+                drr[i] = BitmapDrawable(context.resources, items[i - 1].icon!!.toBitmap())
             }
             val layerDrawable = LayerDrawable(drr)
             val width = layerDrawable.intrinsicWidth
@@ -105,7 +114,153 @@ class Folder(string: String) : LauncherItem() {
     }
 
     fun clear() {
-        apps.clear()
+        items.clear()
+    }
+
+    fun calculateNotificationCount(): Int {
+        var count = 0
+        for (item in items) {
+            if (item is App) {
+                count += item.notificationCount
+            }
+        }
+        return count
+    }
+
+    fun open(context: Context, view: View, i: Int) {
+        if (currentlyOpen == null) {
+
+            val bgColor = Settings["folderBG", -0x22eeeded]
+            val r = Settings["folderCornerRadius", 18].dp
+            val labelsEnabled = Settings["folderLabelsEnabled", false]
+            val columnCount = Settings["dock:columns", 5]
+            val appSize = min(when (Settings["dockicsize", 1]) {
+                0 -> 64.dp.toInt()
+                2 -> 84.dp.toInt()
+                else -> 74.dp.toInt()
+            }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
+            val notifBadgesEnabled = Settings["notif:badges", true]
+            val notifBadgesShowNum = Settings["notif:badges:show_num", true]
+
+            if (Settings["kustom:variables:enable", false]) {
+                Kustom["screen"] = "folder"
+            }
+
+            val content = LayoutInflater.from(context).inflate(R.layout.folder_layout, null)
+            val popupWindow = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+
+            currentlyOpen = popupWindow
+
+            popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
+            val container = content.findViewById<GridLayout>(R.id.container)
+            container.columnCount = Settings["folderColumns", 3]
+            val title = content.findViewById<TextView>(R.id.title)
+            if (Settings["folder:show_title", true]) {
+                title.setTextColor(Settings["folder:title_color", 0xffffffff.toInt()])
+                title.text = label
+            } else {
+                title.visibility = View.GONE
+                content.findViewById<View>(R.id.separator).visibility = View.GONE
+            }
+            val appList = items
+            var i1 = 0
+            val appListSize = appList.size
+            while (i1 < appListSize) {
+                val item = appList[i1]
+                val appIcon = LayoutInflater.from(context).inflate(R.layout.drawer_item, null)
+                val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
+                appIcon.findViewById<View>(R.id.iconFrame).run {
+                    layoutParams.height = appSize
+                    layoutParams.width = appSize
+                }
+                icon.setImageDrawable(item.icon)
+                val iconTxt = appIcon.findViewById<TextView>(R.id.icontxt)
+                if (labelsEnabled) {
+                    iconTxt.text = item.label
+                    iconTxt.setTextColor(Settings["folder:label_color", -0x22000001])
+                } else iconTxt.visibility = View.GONE
+                if (item is App) {
+                    val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
+                    if (notifBadgesEnabled && item.notificationCount != 0) {
+                        badge.visibility = View.VISIBLE
+                        badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
+                        Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                            badge.background = bg
+                            badge.setTextColor(fg)
+                        }
+                    } else {
+                        badge.visibility = View.GONE
+                    }
+                    appIcon.setOnClickListener { view ->
+                        item.open(context, view)
+                        popupWindow.dismiss()
+                    }
+                    appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, i1, popupWindow))
+                } else if (item is Shortcut) {
+                    appIcon.setOnClickListener { view ->
+                        item.open(context, view)
+                        popupWindow.dismiss()
+                    }
+                }
+                container.addView(appIcon)
+                i1++
+            }
+            popupWindow.setOnDismissListener {
+                currentlyOpen = null
+            }
+            content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
+                shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                paint.color = bgColor
+            }
+            val location = IntArray(2)
+            view?.getLocationInWindow(location)
+            val gravity = if (location[0] > Device.displayWidth / 2) {
+                Gravity.END
+            } else {
+                Gravity.START
+            }
+            val x = if (location[0] > Device.displayWidth / 2 && view != null) {
+                Device.displayWidth - location[0] - view.measuredWidth
+            } else {
+                location[0]
+            }
+            var y = if (view == null) 0 else (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
+            if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !context.isTablet) {
+                y += 68.dp.toInt()
+            }
+            popupWindow.contentView.setOnDragListener { _, event ->
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_LOCATION -> {
+                        val view = event.localState as View?
+                        if (view != null) {
+                            val location = IntArray(2)
+                            view.getLocationInWindow(location)
+                            val x = abs(event.x - location[0] - view.measuredWidth / 2f)
+                            val y = abs(event.y - location[1] - view.measuredHeight / 2f)
+                            if (x > view.width / 3.5f || y > view.height / 3.5f) {
+                                ItemLongPress.currentPopup?.dismiss()
+                                currentlyOpen?.dismiss()
+                                Main.instance.behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            }
+                        }
+                    }
+                    DragEvent.ACTION_DRAG_STARTED -> {
+                        (event.localState as View).visibility = View.INVISIBLE
+                    }
+                    DragEvent.ACTION_DRAG_ENDED -> {
+                        (event.localState as View).visibility = View.VISIBLE
+                        ItemLongPress.currentPopup?.isFocusable = true
+                        ItemLongPress.currentPopup?.update()
+                    }
+                    DragEvent.ACTION_DROP -> {
+                        val i = event.clipData.getItemAt(0).text.toString().toInt(16)
+                        App[event.clipData.description.label.toString()]?.let { app -> Dock.add(app, i) }
+                    }
+                }
+                true
+            }
+            popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
+        }
     }
 
     companion object {

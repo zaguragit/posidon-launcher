@@ -18,6 +18,11 @@
     <string name="settings_title_theme">Thema</string>
     <string name="settings_title_other">Overig</string>
     <string name="settings_title_icons">Pictogrammen</string>
+    <string name="settings_title_icon_packs">Pictogramthema\'s</string>
+    <string name="settings_title_folders">Mappen</string>
+    <string name="settings_title_news">Nieuws</string>
+    <string name="settings_title_quickstep">QuickStep</string>
+    <string name="settings_title_gestures">Gestures</string>
 
     <string name="defaultdateformat">d MMM | cccc</string>
     <string name="settingsdateformat">Datum</string>
@@ -89,7 +94,6 @@
     <string name="accent_color">Accentkleur</string>
     <string name="animated">Animatie</string>
     <string name="generate_adaptive_icons">Aanpasbare pictogrammen genereren</string>
-    <string name="settings_title_icon_packs">Pictogramthema\'s</string>
     <string name="in_dock">Op dock</string>
     <string name="in_drawer">In app-lijst</string>
     <string name="duration">Duur</string>
@@ -104,7 +108,6 @@
     <string name="wall_apply_lock_screen">Vergrendelscherm</string>
     <string name="wall_apply_both">Beide</string>
     <string name="settings_rows">Rijen</string>
-    <string name="settings_title_folders">Mappen</string>
     <string name="telegram">Telegram</string>
     <string name="action_buttons">Actieknoppen</string>
     <string name="sorting">Sortering</string>
@@ -128,7 +131,6 @@
     <string name="horizontal_margin">Horizontale marge</string>
     <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Waarde van 蟺</string>
-    <string name="settings_title_news">Nieuws</string>
     <string name="show_behind_dock">Tonen achter dock</string>
     <string name="some_quick_adjustments">Enkele snelle aanpassingen</string>
     <string name="mk_backup">Back-up maken</string>
@@ -143,7 +145,6 @@
     <string name="oops">Oeps!</string>
     <string name="posidon_launcher_crashed">posidon is gecrasht</string>
     <string name="send_bug_report">Bugmelding versturen</string>
-    <string name="settings_title_quickstep">QuickStep</string>
     <string name="show_name">Naam tonen</string>
     <string name="name_color">Naam van kleur</string>
     <string name="sections">Secties</string>
@@ -159,7 +160,6 @@
     <string name="console">Console</string>
     <string name="inter">Inter</string>
     <string name="search_as_home">Search as home</string>
-    <string name="settings_title_gestures">Gestures</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>
     <string name="pinch">Pinch</string>

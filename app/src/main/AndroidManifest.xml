@@ -311,7 +311,7 @@
 
 
         <activity
-            android:name=".items.users.AddShortcutActivity"
+            android:name=".external.AddShortcutActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"

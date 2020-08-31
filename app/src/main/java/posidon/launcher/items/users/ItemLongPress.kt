@@ -187,8 +187,8 @@ object ItemLongPress {
                 override fun onRemove(v: View) {
                     folderWindow.dismiss()
                     val f = Dock[i] as Folder
-                    f.apps.removeAt(folderI)
-                    Dock[i] = if (f.apps.size == 1) f.apps[0] else f
+                    f.items.removeAt(folderI)
+                    Dock[i] = if (f.items.size == 1) f.items[0] else f
                     Main.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -204,8 +204,8 @@ object ItemLongPress {
                 }
 
                 val f = Dock[i] as Folder
-                f.apps.removeAt(folderI)
-                Dock[i] = if (f.apps.size == 1) f.apps[0] else f
+                f.items.removeAt(folderI)
+                Dock[i] = if (f.items.size == 1) f.items[0] else f
             }
 
             popupWindow.showAtLocation(v, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + Tools.navbarHeight)

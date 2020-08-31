@@ -1,4 +1,4 @@
-package posidon.launcher.items.users
+package posidon.launcher.external
 
 import android.os.Build
 import android.os.Bundle
@@ -28,13 +28,17 @@ class AddShortcutActivity : AppCompatActivity() {
         applyFontSetting()
         setContentView(R.layout.add_shortcut_activity)
         val shortcut = Main.launcherApps.getPinItemRequest(intent).shortcutInfo
-        if (shortcut != null) {
-            Main.launcherApps.pinShortcuts(
-                shortcut.`package`,
-                listOf(shortcut.id),
-                Process.myUserHandle()
-            )
-        }
+        val hasHostPermission = Main.launcherApps.hasShortcutHostPermission()
+        if (shortcut == null || !hasHostPermission) return
+        val s = Shortcut(shortcut)
+
+        Main.launcherApps.pinShortcuts(
+            shortcut.`package`,
+            Shortcut.pinnedShortcuts.filter {
+                it.key == s.toString()
+            }.map { it.value.id },
+            Process.myUserHandle()
+        )
 
         findViewById<View>(R.id.docksearchbar).visibility = View.GONE
         findViewById<View>(R.id.battery).visibility = View.GONE
@@ -62,18 +66,15 @@ class AddShortcutActivity : AppCompatActivity() {
                 layoutParams.width = appSize
             }
             val item = Dock[i]
+            if (showLabels && item != null) {
+                view.findViewById<TextView>(R.id.icontxt).text = item.label
+                view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
+            }
             if (item is Folder) {
                 img.setImageDrawable(item.icon)
-                if (showLabels) {
-                    view.findViewById<TextView>(R.id.icontxt).text = item.label
-                    view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                }
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
-                    var notificationCount = 0
-                    for (app in item.apps) {
-                        notificationCount += app.notificationCount
-                    }
+                    val notificationCount = item.calculateNotificationCount()
                     if (notificationCount != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
@@ -85,10 +86,6 @@ class AddShortcutActivity : AppCompatActivity() {
                 } else { badge.visibility = View.GONE }
             } else if (item is Shortcut) {
                 if (item.isInstalled(packageManager)) {
-                    if (showLabels) {
-                        view.findViewById<TextView>(R.id.icontxt).text = item.label
-                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                    }
                     img.setImageDrawable(item.icon)
                 } else {
                     Dock[i] = null
@@ -97,10 +94,6 @@ class AddShortcutActivity : AppCompatActivity() {
                 if (!item.isInstalled(packageManager)) {
                     Dock[i] = null
                     continue
-                }
-                if (showLabels) {
-                    view.findViewById<TextView>(R.id.icontxt).text = item.label
-                    view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                 }
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled && item.notificationCount != 0) {
@@ -113,8 +106,9 @@ class AddShortcutActivity : AppCompatActivity() {
                 } else { badge.visibility = View.GONE }
                 img.setImageDrawable(item.icon)
             }
+            val finalI = i
             view.setOnClickListener {
-                Dock.add(Shortcut(shortcut!!), i)
+                Dock.add(s, finalI)
                 Main.setDock()
                 finishAffinity()
             }
