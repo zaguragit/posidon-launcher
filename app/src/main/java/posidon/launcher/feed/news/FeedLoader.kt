@@ -44,7 +44,7 @@ class FeedLoader(
                 deletedIter.remove()
             }
         }
-        Settings.apply()
+        Settings["feed:deleted_articles"] = deleted
         val threads = LinkedList<Thread>()
         for (u in Settings["feedUrls", FeedChooser.defaultSources].split("|")) {
             if (u.isNotEmpty()) {
@@ -114,12 +114,13 @@ class FeedLoader(
     private val lock = ReentrantLock()
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun parseFeed(inputStream: InputStream, source: Source) {
+    private inline fun parseFeed(inputStream: InputStream, source: Source) {
         var title: String? = null
         var link: String? = null
         var img: String? = null
         var time: Date? = null
         var isItem = 0
+        val feedItems = ArrayList<FeedItem>()
         inputStream.use {
             val parser: XmlPullParser = pullParserFactory.newPullParser()
             parser.setInput(inputStream, null)
@@ -140,14 +141,10 @@ class FeedLoader(
                                         }
                                     }
                                     if (show) {
-                                        lock.lock()
                                         feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
-                                        lock.unlock()
                                     }
                                 } else {
-                                    lock.lock()
                                     feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
-                                    lock.unlock()
                                 }
                             }
                             title = null
@@ -170,10 +167,10 @@ class FeedLoader(
                             img == null -> when (name) {
                                 "description", "content:encoded" -> {
                                     val result = getText(parser)
-                                    if (result.contains("src=\"")) {
-                                        val start = result.indexOf("src=\"", result.indexOf("img")) + 5
-                                        val end = result.indexOf("\"", start)
-                                        img = result.substring(start, end)
+                                    val i = result.indexOf("src=\"", result.indexOf("img"))
+                                    if (i != -1) {
+                                        val end = result.indexOf("\"", i + 5)
+                                        img = result.substring(i + 5, end)
                                     }
                                 }
                                 "image" -> img = getText(parser)
@@ -203,10 +200,10 @@ class FeedLoader(
                             }
                             (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true)) && img == null -> {
                                 val result = getText(parser)
-                                if (result.contains("src=\"")) {
-                                    val start = result.indexOf("src=\"", result.indexOf("img")) + 5
-                                    val end = result.indexOf("\"", start)
-                                    img = result.substring(start, end)
+                                val i = result.indexOf("src=\"", result.indexOf("img"))
+                                if (i != -1) {
+                                    val end = result.indexOf("\"", i + 5)
+                                    img = result.substring(i + 5, end)
                                 }
                             }
                         }
@@ -220,6 +217,9 @@ class FeedLoader(
                 }
             }
         }
+        lock.lock()
+        this.feedItems.addAll(feedItems)
+        lock.unlock()
     }
 
     private fun getText(parser: XmlPullParser): String {

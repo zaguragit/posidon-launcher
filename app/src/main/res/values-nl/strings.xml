@@ -188,6 +188,7 @@
     <string name="package_search">Package search</string>
     <string name="shortcuts">Shortcuts</string>
     <string name="contacts">Contacts</string>
+    <string name="keep_position">Keep position</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
