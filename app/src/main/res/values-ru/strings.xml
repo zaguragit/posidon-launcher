@@ -189,6 +189,8 @@
     <string name="shortcuts">Shortcuts</string>
     <string name="contacts">Contacts</string>
     <string name="keep_position">Keep position</string>
+    <string name="undo_popup">Undo popup</string>
+    <string name="undo">Undo</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

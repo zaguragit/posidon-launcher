@@ -16,16 +16,15 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.LauncherMenu
+import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
 import posidon.launcher.feed.news.readers.ArticleActivity
 import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
-import posidon.launcher.tools.Device
-import posidon.launcher.tools.Loader
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.*
 import posidon.launcher.view.SwipeableLayout
 import java.util.*
 
@@ -58,7 +57,7 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
             val tp = Settings["feed:card_margin_y", 9].dp.toInt()
             setPadding(0, tp, 0, tp)
             addView(if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
-                val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
+                val bg = Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]
                 setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
                 setSwipeColor(bg)
                 radius = Settings["feed:card_radius", 15].dp
@@ -83,8 +82,28 @@ class FeedAdapter(private val feedModels: ArrayList<FeedItem>, private val conte
                 notifyItemRemoved(i)
                 notifyItemRangeChanged(i, feedModels.size - i)
                 val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
-                Settings.getStrings("feed:deleted_articles").add("$day:" + feedItem.link + ':' + feedItem.title)
+                val a = "$day:" + feedItem.link + ':' + feedItem.title
+                Settings.getStrings("feed:deleted_articles").add(a)
                 Settings.apply()
+                if (Settings["feed:undo_article_removal_opt", false]) {
+                    Snackbar.make(context.findViewById(android.R.id.content), R.string.removed, Snackbar.LENGTH_LONG).apply {
+                        setAction(R.string.undo) {
+                            feedModels.add(i, feedItem)
+                            notifyItemInserted(i)
+                            notifyItemRangeChanged(i, feedModels.size - i)
+                            Settings.getStrings("feed:deleted_articles").remove(a)
+                            Settings.apply()
+                        }
+                        /*view.layoutParams = (view.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                            val m = 24.dp.toInt()
+                            setMargins(m, m, m, m)
+                        }*/
+                        view.setPadding(0, 0, 0, Tools.navbarHeight)
+                        view.layoutParams = view.layoutParams
+                        setActionTextColor(Main.accentColor)
+                        view.background = context.resources.getDrawable(R.drawable.card, null)
+                    }.show()
+                }
             }
         }
         if (Settings["feed:card_img_enabled", true] && feedItem.img != null) {
