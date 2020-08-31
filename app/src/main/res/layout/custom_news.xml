@@ -152,11 +152,17 @@
                         android:layout_weight="1"
                         android:max="50" />
                 </LinearLayout>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_swipe"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     app:label="@string/swipe_to_remove"
                     app:key="feed:delete_articles"
                     app:def="false"/>
@@ -168,6 +174,14 @@
                     app:label="@string/swipe_bg_color"
                     app:key="feed:card_swipe_bg_color"
                     app:def="#880d0e0f"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/undo_popup"
+                    app:key="feed:undo_article_removal_opt"
+                    app:def="false"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

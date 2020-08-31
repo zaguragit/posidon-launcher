@@ -20,22 +20,27 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.R
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.centerCropWallpaper
+import posidon.launcher.tools.Tools.tryAnimate
 import java.io.File
 import java.io.FileOutputStream
 
 class WallActivity : AppCompatActivity() {
+
     private var loading: ImageView? = null
     private var index = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.wall_preview)
         loading = findViewById(R.id.loading)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        if (img != null && img!!.height / img!!.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(img!!)
-        findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+        var image = img
+        if (image != null && image.height / image.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) {
+            image = centerCropWallpaper(image)
+        }
+        findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
         val extras = intent.extras
         if (extras == null) {
             loading!!.visibility = View.GONE
@@ -43,11 +48,39 @@ class WallActivity : AppCompatActivity() {
         } else {
             tryAnimate(loading!!.drawable)
             index = extras.getInt("index")
+
+            fun onImgLoaded() {
+                Tools.clearAnimation(loading!!.drawable)
+                loading!!.visibility = View.GONE
+                findViewById<View>(R.id.applybtn).setOnClickListener {
+                    findViewById<View>(R.id.bottomstuff).animate().alpha(0f)
+                    val dialog = BottomSheetDialog(this@WallActivity, R.style.bottomsheet)
+                    dialog.setContentView(R.layout.wall_apply_dialog)
+                    dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundColor(0x0)
+                    dialog.findViewById<View>(R.id.home)!!.background = dialogBtnBG()
+                    dialog.findViewById<View>(R.id.home)!!.setOnClickListener {
+                        SetWall(image!!, 0).execute()
+                        dialog.dismiss()
+                    }
+                    dialog.findViewById<View>(R.id.lock)!!.background = dialogBtnBG()
+                    dialog.findViewById<View>(R.id.lock)!!.setOnClickListener {
+                        SetWall(image!!, 1).execute()
+                        dialog.dismiss()
+                    }
+                    dialog.findViewById<View>(R.id.both)!!.background = dialogBtnBG()
+                    dialog.findViewById<View>(R.id.both)!!.setOnClickListener {
+                        SetWall(image!!, 2).execute()
+                        dialog.dismiss()
+                    }
+                    dialog.setOnDismissListener { findViewById<View>(R.id.bottomstuff).animate().alpha(1f) }
+                    dialog.show()
+                }
+            }
+
             if (Gallery.walls[index].type == Wall.Type.SVG) {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.svg"
                 Loader.NullableSvg(url) {
-                    Tools.clearAnimation(loading!!.drawable)
-                    loading!!.visibility = View.GONE
+                    onImgLoaded()
                     if (it != null) {
                         val displayWidth = Device.displayWidth
                         val displayHeight = Device.displayHeight
@@ -61,26 +94,25 @@ class WallActivity : AppCompatActivity() {
                             height = displayWidth * it.intrinsicHeight / it.intrinsicWidth
                         }
                         it.toBitmap(width, height).let {
-                            img = it
+                            image = it
                             if (it.height / it.width < displayHeight / displayWidth)
-                                img = centerCropWallpaper(it)
+                                image = centerCropWallpaper(it)
                         }
-                        findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+                        findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }.execute()
             } else {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.png"
                 Loader.NullableBitmap(url) {
-                    Tools.clearAnimation(loading!!.drawable)
-                    loading!!.visibility = View.GONE
+                    onImgLoaded()
                     if (it != null) {
-                        img = it
-                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) img = centerCropWallpaper(it)
-                        findViewById<ImageView>(R.id.theimg).setImageBitmap(img)
+                        image = it
+                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = centerCropWallpaper(it)
+                        findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }.execute()
             }
-            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(img!!, Gallery.walls[index].name!!) }
+            findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(image!!, Gallery.walls[index].name!!) }
             findViewById<View>(R.id.downloadbtn).background = btnBG()
             try {
                 findViewById<TextView>(R.id.nametxt).text = Gallery.walls[index].name
@@ -91,29 +123,6 @@ class WallActivity : AppCompatActivity() {
         if (bottompadding == 0) bottompadding = 20.dp.toInt()
         findViewById<View>(R.id.bottomstuff).setPadding(0, 0, 0, bottompadding)
         findViewById<View>(R.id.applybtn).background = btnBG()
-        findViewById<View>(R.id.applybtn).setOnClickListener {
-            findViewById<View>(R.id.bottomstuff).animate().alpha(0f)
-            val dialog = BottomSheetDialog(this@WallActivity, R.style.bottomsheet)
-            dialog.setContentView(R.layout.wall_apply_dialog)
-            dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundColor(0x0)
-            dialog.findViewById<View>(R.id.home)!!.background = dialogBtnBG()
-            dialog.findViewById<View>(R.id.home)!!.setOnClickListener {
-                SetWall(img!!, 0).execute()
-                dialog.dismiss()
-            }
-            dialog.findViewById<View>(R.id.lock)!!.background = dialogBtnBG()
-            dialog.findViewById<View>(R.id.lock)!!.setOnClickListener {
-                SetWall(img!!, 1).execute()
-                dialog.dismiss()
-            }
-            dialog.findViewById<View>(R.id.both)!!.background = dialogBtnBG()
-            dialog.findViewById<View>(R.id.both)!!.setOnClickListener {
-                SetWall(img!!, 2).execute()
-                dialog.dismiss()
-            }
-            dialog.setOnDismissListener { findViewById<View>(R.id.bottomstuff).animate().alpha(1f) }
-            dialog.show()
-        }
         System.gc()
     }
 

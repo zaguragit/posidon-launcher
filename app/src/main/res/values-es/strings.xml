@@ -187,8 +187,10 @@
     <string name="slide_up">Slide up</string>
     <string name="package_search">Package search</string>
     <string name="shortcuts">Shortcuts</string>
-    <string name="contacts">Contacts</string>
-    <string name="keep_position">Keep position</string>
+    <string name="contacts">Contactos</string>
+    <string name="keep_position">Mantener posicion</string>
+    <string name="undo_popup">Undo popup</string>
+    <string name="undo">Deshacer</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
