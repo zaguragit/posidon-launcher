@@ -128,10 +128,10 @@ class NotificationAdapter(
                             a.text = action.title
                             a.textSize = 14f
                             a.setTextColor(Settings["notificationActionTextColor", -0xdad9d9])
-                            val r = 24.dp
-                            val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
-                            out.paint.color = Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]
-                            a.background = out
+                            val r = Settings["notif:actions:radius", 24].dp
+                            val bg = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
+                            bg.paint.color = Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]
+                            a.background = bg
                             val vPadding = 10.dp.toInt()
                             val hPadding = 15.dp.toInt()
                             a.setPadding(hPadding, vPadding, hPadding, vPadding)

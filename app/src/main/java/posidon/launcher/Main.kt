@@ -388,9 +388,11 @@ class Main : AppCompatActivity() {
                     }
                 }
             }
-            if (!Settings["hidestatus", false]) {
+            val fadingEdge = Settings["feed:fading_edge", true]
+            if (fadingEdge && !Settings["hidestatus", false]) {
                 desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
             }
+            desktop.isVerticalFadingEdgeEnabled = fadingEdge
 
             shouldSetApps = false
             customized = false

@@ -68,6 +68,14 @@
                     app:label="@string/keep_position"
                     app:key="feed:keep_pos"
                     app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/fading_edge"
+                    app:key="feed:fading_edge"
+                    app:def="true"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
