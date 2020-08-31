@@ -119,6 +119,14 @@
                     app:label="@string/action_buttons"
                     app:key="notificationActionsEnabled"
                     app:def="false"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/radius"
+                    app:key="notif:actions:radius"
+                    app:def="24"
+                    app:max="50"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

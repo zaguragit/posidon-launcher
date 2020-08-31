@@ -191,6 +191,7 @@
     <string name="keep_position">Keep position</string>
     <string name="undo_popup">Undo popup</string>
     <string name="undo">Undo</string>
+    <string name="fading_edge">Fading edge</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
