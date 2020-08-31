@@ -46,7 +46,7 @@ object Settings {
     }
 
 
-    val lock = ReentrantLock()
+    private val lock = ReentrantLock()
 
     fun putNotSave(key: String, value: Int) {
         lock.lock()

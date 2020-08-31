@@ -60,6 +60,14 @@
                     app:label="@string/show_behind_dock"
                     app:key="feed:show_behind_dock"
                     app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/keep_position"
+                    app:key="feed:keep_pos"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

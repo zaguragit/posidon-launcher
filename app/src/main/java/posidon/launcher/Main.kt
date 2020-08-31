@@ -141,118 +141,6 @@ class Main : AppCompatActivity() {
                     } else { badge.visibility = View.GONE }
 
                     view.setOnClickListener { item.open(this@Main, view, i) }
-                    /*if (Folder.currentlyOpen == null) {
-
-                        if (Settings["kustom:variables:enable", false]) {
-                            Kustom["screen"] = "folder"
-                        }
-
-                        val content = LayoutInflater.from(this@Main).inflate(R.layout.folder_layout, null)
-                        val popupWindow = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
-
-                        Folder.currentlyOpen = popupWindow
-
-                        popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
-                        val container = content.findViewById<GridLayout>(R.id.container)
-                        container.columnCount = Settings["folderColumns", 3]
-                        val title = content.findViewById<TextView>(R.id.title)
-                        if (Settings["folder:show_title", true]) {
-                            title.setTextColor(Settings["folder:title_color", 0xffffffff.toInt()])
-                            title.text = item.label
-                        } else {
-                            title.visibility = View.GONE
-                            content.findViewById<View>(R.id.separator).visibility = View.GONE
-                        }
-                        val appList = item.apps
-                        var i1 = 0
-                        val appListSize = appList.size
-                        while (i1 < appListSize) {
-                            val app = appList[i1]
-                            val appIcon = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
-                            val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
-                            appIcon.findViewById<View>(R.id.iconFrame).run {
-                                layoutParams.height = appSize
-                                layoutParams.width = appSize
-                            }
-                            icon.setImageDrawable(app.icon)
-                            if (labelsEnabled) {
-                                val iconTxt = appIcon.findViewById<TextView>(R.id.icontxt)
-                                iconTxt.text = app.label
-                                iconTxt.setTextColor(Settings["folder:label_color", -0x22000001])
-                            } else appIcon.findViewById<View>(R.id.icontxt).visibility = GONE
-                            if (notifBadgesEnabled && app.notificationCount != 0) {
-                                val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
-                                badge.visibility = View.VISIBLE
-                                badge.text = if (notifBadgesShowNum) app.notificationCount.toString() else ""
-                                Tools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
-                                    badge.background = bg
-                                    badge.setTextColor(fg)
-                                }
-                            } else { appIcon.findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE }
-                            appIcon.setOnClickListener { view ->
-                                app.open(this@Main, view)
-                                popupWindow.dismiss()
-                            }
-                            appIcon.setOnLongClickListener(ItemLongPress.insideFolder(this@Main, app, finalI, view, i1, popupWindow))
-                            container.addView(appIcon)
-                            i1++
-                        }
-                        popupWindow.setOnDismissListener {
-                            Folder.currentlyOpen = null
-                        }
-                        content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
-                            shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                            paint.color = bgColor
-                        }
-                        val location = IntArray(2)
-                        view.getLocationInWindow(location)
-                        val gravity = if (location[0] > Device.displayWidth / 2) {
-                            Gravity.END
-                        } else {
-                            Gravity.START
-                        }
-                        val x = if (location[0] > Device.displayWidth / 2) {
-                            Device.displayWidth - location[0] - view.measuredWidth
-                        } else {
-                            location[0]
-                        }
-                        var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
-                        if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !isTablet) {
-                            y += 68.dp.toInt()
-                        }
-                        popupWindow.contentView.setOnDragListener { _, event ->
-                            when (event.action) {
-                                DragEvent.ACTION_DRAG_LOCATION -> {
-                                    val view = event.localState as View?
-                                    if (view != null) {
-                                        val location = IntArray(2)
-                                        view.getLocationInWindow(location)
-                                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
-                                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
-                                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
-                                            ItemLongPress.currentPopup?.dismiss()
-                                            Folder.currentlyOpen?.dismiss()
-                                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-                                        }
-                                    }
-                                }
-                                DragEvent.ACTION_DRAG_STARTED -> {
-                                    (event.localState as View).visibility = View.INVISIBLE
-                                }
-                                DragEvent.ACTION_DRAG_ENDED -> {
-                                    (event.localState as View).visibility = View.VISIBLE
-                                    ItemLongPress.currentPopup?.isFocusable = true
-                                    ItemLongPress.currentPopup?.update()
-                                }
-                                DragEvent.ACTION_DROP -> {
-                                    val i = event.clipData.getItemAt(0).text.toString().toInt(16)
-                                    App[event.clipData.description.label.toString()]?.let { app -> Dock.add(app, i) }
-                                }
-                            }
-                            true
-                        }
-                        popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
-                    }*/
                     view.setOnLongClickListener(ItemLongPress.folder(this@Main, item, i))
                 } else if (item is Shortcut) {
                     if (item.isInstalled(packageManager)) {
@@ -1008,7 +896,9 @@ class Main : AppCompatActivity() {
             LauncherMenu.dialog!!.dismiss()
         }
         behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
-        desktop.scrollTo(0, 0)
+        if (!Settings["feed:keep_pos", false]) {
+            desktop.scrollTo(0, 0)
+        }
         Widget.stopListening()
         if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
             notifications.visibility = GONE
