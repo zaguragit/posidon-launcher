@@ -1,0 +1,8 @@
+- Added Kustom variables support (go to Other->Kustom variables to enable)
+- Improved settings a lot
+- Added some customizations to notification badges
+- Added a setting to change notification swipe background color
+- Added a setting to ignore the navbar height
+- Added an option to disable the app drawer, in case you wanna use a custom one (like "smart drawer")
+- Added a gesture trigger to open an app
+- Fixed a bunch of bugs

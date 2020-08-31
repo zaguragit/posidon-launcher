@@ -119,21 +119,17 @@ class Main : AppCompatActivity() {
                 }
                 val item = Dock[i]
                 val label = view.findViewById<TextView>(R.id.icontxt)
-                if (!showLabels) {
+                if (showLabels) {
+                    label.text = item?.label
+                    label.setTextColor(Settings["dockLabelColor", -0x11111112])
+                } else {
                     label.visibility = GONE
                 }
                 if (item is Folder) {
                     img.setImageDrawable(item.icon)
-                    if (showLabels) {
-                        label.text = item.label
-                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                    }
                     val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     if (notifBadgesEnabled) {
-                        var notificationCount = 0
-                        for (app in item.apps) {
-                            notificationCount += app.notificationCount
-                        }
+                        val notificationCount = item.calculateNotificationCount()
                         if (notificationCount != 0) {
                             badge.visibility = View.VISIBLE
                             badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
@@ -144,12 +140,8 @@ class Main : AppCompatActivity() {
                         } else { badge.visibility = View.GONE }
                     } else { badge.visibility = View.GONE }
 
-                    val finalI = i
-                    val bgColor = Settings["folderBG", -0x22eeeded]
-                    val r = Settings["folderCornerRadius", 18].dp
-                    val labelsEnabled = Settings["folderLabelsEnabled", false]
-
-                    view.setOnClickListener { if (Folder.currentlyOpen == null) {
+                    view.setOnClickListener { item.open(this@Main, view, i) }
+                    /*if (Folder.currentlyOpen == null) {
 
                         if (Settings["kustom:variables:enable", false]) {
                             Kustom["screen"] = "folder"
@@ -260,15 +252,10 @@ class Main : AppCompatActivity() {
                             true
                         }
                         popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
-                    }}
+                    }*/
                     view.setOnLongClickListener(ItemLongPress.folder(this@Main, item, i))
                 } else if (item is Shortcut) {
-                    println("SHORTCUTT!!")
                     if (item.isInstalled(packageManager)) {
-                        if (showLabels) {
-                            label.text = item.label
-                            view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
-                        }
                         img.setImageDrawable(item.icon)
                         view.setOnClickListener { item.open(this@Main, it) }
                     } else {
@@ -278,10 +265,6 @@ class Main : AppCompatActivity() {
                     if (!item.isInstalled(packageManager)) {
                         Dock[i] = null
                         continue
-                    }
-                    if (showLabels) {
-                        label.text = item.label
-                        view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
                     }
                     val badge = view.findViewById<TextView>(R.id.notificationBadge)
                     if (notifBadgesEnabled && item.notificationCount != 0) {
@@ -295,18 +278,6 @@ class Main : AppCompatActivity() {
                     img.setImageDrawable(item.icon)
                     view.setOnClickListener { item.open(this@Main, it) }
                     view.setOnLongClickListener(ItemLongPress.dock(this@Main, item, i))
-                }
-                container.addView(view)
-                i++
-            }
-            while (i < columnCount * rowCount) {
-                val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
-                view.findViewById<View>(R.id.iconFrame).run {
-                    layoutParams.height = appSize
-                    layoutParams.width = appSize
-                }
-                if (!showLabels) {
-                    view.findViewById<View>(R.id.icontxt).visibility = GONE
                 }
                 container.addView(view)
                 i++
