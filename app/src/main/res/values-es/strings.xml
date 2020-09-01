@@ -29,7 +29,6 @@
     <string name="searchbarhint">Buscar…</string>
     <string name="feed_sources">Fuentes</string>
     <string name="example_feed_url">andro4all.com/feed</string>
-    <string name="settings_icon_count">Numero de iconos</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Esconder statusbar</string>
@@ -39,7 +38,6 @@
     <string name="ok">OK</string>
     <string name="notification_access">Acceso a notificaciones</string>
     <string name="permission_notifications_description">Para mostrar notificaciones en la pantalla de inicio</string>
-    <string name="permission_notifications_short_description">Mostrar notificaciones en la pantalla de inicio</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -127,7 +125,6 @@
     <string name="sample_feed_card_title">Salió una nueva version de posidon launcher!</string>
     <string name="hidden_apps">Apps escondidas</string>
     <string name="choose_a_launcher">Escoger un launcher</string>
-    <string name="launchers">Launchers</string>
     <string name="horizontal_margin">Margen horizontal</string>
     <string name="vertical_margin">Margen vertical</string>
     <string name="value_of_pi">Valor de π</string>

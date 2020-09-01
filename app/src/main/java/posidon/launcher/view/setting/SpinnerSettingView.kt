@@ -43,5 +43,6 @@ class SpinnerSettingView : IntSettingView {
             }
         }
         addView(spinner)
+        a.recycle()
     }
 }

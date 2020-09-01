@@ -29,7 +29,6 @@
     <string name="searchbarhint">Search…</string>
     <string name="feed_sources">Sources</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
-    <string name="settings_icon_count">Icon count</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Hide statusbar</string>
@@ -39,7 +38,6 @@
     <string name="ok">OK</string>
     <string name="notification_access">Notification access</string>
     <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
-    <string name="permission_notifications_short_description">Display notifications on your homescreen</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -127,7 +125,6 @@
     <string name="sample_feed_card_title">New version of posidon launcher is out!</string>
     <string name="hidden_apps">Hidden apps</string>
     <string name="choose_a_launcher">Choose a launcher</string>
-    <string name="launchers">Launchers</string>
     <string name="horizontal_margin">Horizontal margin</string>
     <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Value of π</string>

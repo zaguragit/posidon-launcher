@@ -22,8 +22,7 @@ object Settings {
     private lateinit var lists: HashMap<String, ArrayList<String>>
     private lateinit var context: WeakReference<Context>
 
-    var isInitialized: Boolean = false
-        private set
+    private var isInitialized: Boolean = false
 
     inline operator fun set(key: String, value: Int) {
         putNotSave(key, value); apply()

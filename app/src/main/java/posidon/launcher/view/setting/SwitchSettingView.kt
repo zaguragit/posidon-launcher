@@ -36,5 +36,6 @@ class SwitchSettingView : SettingView {
             }
         }
         addView(switch)
+        a.recycle()
     }
 }

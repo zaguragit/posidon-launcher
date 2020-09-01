@@ -10,8 +10,8 @@ class LockableBottomDrawerBehavior<V : View> : BottomDrawerBehavior<V> {
 
     private var mLocked = false
 
-    constructor() {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {}
+    constructor()
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
 
     fun setLocked(locked: Boolean) {
         mLocked = locked

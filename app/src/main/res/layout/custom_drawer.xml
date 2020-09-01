@@ -63,6 +63,14 @@
                         android:max="2"
                         android:progress="1" />
                 </LinearLayout>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/spacing"
+                    app:key="verticalspacing"
+                    app:def="12"
+                    app:max="48"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
