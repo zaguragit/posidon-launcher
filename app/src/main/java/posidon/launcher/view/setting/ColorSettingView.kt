@@ -54,6 +54,8 @@ class ColorSettingView : IntSettingView {
                 onSelected?.invoke(color)
             }
         }
+
+        a.recycle()
     }
 
     private fun setPreviewColor(it: Int) {

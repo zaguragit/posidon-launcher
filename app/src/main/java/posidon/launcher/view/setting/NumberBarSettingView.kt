@@ -74,5 +74,6 @@ class NumberBarSettingView : IntSettingView {
             })
         }
         addView(seekBar)
+        a.recycle()
     }
 }

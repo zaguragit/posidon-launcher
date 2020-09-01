@@ -36,12 +36,14 @@ class FeedChooserAdapter(
             val dialog = BottomSheetDialog(context, R.style.bottomsheet)
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
-            dialog.findViewById<EditText>(R.id.title)!!.text = Editable.Factory().newEditable(url)
-            dialog.findViewById<TextView>(R.id.done)!!.setTextColor(Main.accentColor)
-            dialog.findViewById<TextView>(R.id.done)!!.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
-            dialog.findViewById<TextView>(R.id.done)!!.setOnClickListener {
+            val title = dialog.findViewById<EditText>(R.id.title)!!
+            val done = dialog.findViewById<EditText>(R.id.done)!!
+            title.text = Editable.Factory().newEditable(url)
+            done.setTextColor(Main.accentColor)
+            done.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+            done.setOnClickListener {
                 dialog.dismiss()
-                feedUrls[i] = dialog.findViewById<EditText>(R.id.title)!!.text.toString().replace('|', ' ')
+                feedUrls[i] = title.text.toString().replace('|', ' ')
                 notifyDataSetChanged()
                 Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
                 Settings.apply()

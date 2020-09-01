@@ -29,7 +29,6 @@
     <string name="searchbarhint">Поиск…</string>
     <string name="feed_sources">Источники</string>
     <string name="example_feed_url">habr.com/rss</string>
-    <string name="settings_icon_count">Количество иконок</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Прятать statusbar</string>
@@ -39,7 +38,6 @@
     <string name="ok">OK</string>
     <string name="notification_access">Доступ к уведомлениям</string>
     <string name="permission_notifications_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
-    <string name="permission_notifications_short_description">Отображать уведомления на домашнем экране</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -127,7 +125,6 @@
     <string name="sample_feed_card_title">Вышла новая версия posidon launcher!</string>
     <string name="hidden_apps">Скрытые приложения</string>
     <string name="choose_a_launcher">Выберите лаунчер</string>
-    <string name="launchers">Лаунчеры</string>
     <string name="horizontal_margin">Horizontal margin</string>
     <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Значение π</string>

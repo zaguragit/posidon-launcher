@@ -358,17 +358,6 @@ class Main : AppCompatActivity() {
                                     feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
                                     wasHiddenLastTime = true
                                 }.duration = 180L
-                                /*
-                                desktopContent.post {
-                                    println(Device.displayHeight - desktopContent.measuredHeight - (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
-                                    println(Device.displayHeight)
-                                    println(desktop.measuredHeight)
-                                    println(desktopContent.measuredHeight)
-                                    println((dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
-                                    println()
-                                    desktopContent.setPadding(0, 12.dp.toInt(), 0, Device.displayHeight - (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
-                                }
-                                */
                             }
                         }
                     }

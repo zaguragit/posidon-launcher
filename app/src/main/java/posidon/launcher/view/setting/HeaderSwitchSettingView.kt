@@ -50,9 +50,11 @@ class HeaderSwitchSettingView : FrameLayout {
         }
         addView(separator)
         populate(attrs, defStyle, defStyleRes)
+
+        a.recycle()
     }
 
-    fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
+    private fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
         val default = a.getBoolean(R.styleable.SettingView_def, false)
@@ -70,5 +72,7 @@ class HeaderSwitchSettingView : FrameLayout {
             }
         }
         addView(switch)
+
+        a.recycle()
     }
 }

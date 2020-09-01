@@ -213,18 +213,18 @@ class Folder(string: String) : LauncherItem() {
                 paint.color = bgColor
             }
             val location = IntArray(2)
-            view?.getLocationInWindow(location)
+            view.getLocationInWindow(location)
             val gravity = if (location[0] > Device.displayWidth / 2) {
                 Gravity.END
             } else {
                 Gravity.START
             }
-            val x = if (location[0] > Device.displayWidth / 2 && view != null) {
+            val x = if (location[0] > Device.displayWidth / 2) {
                 Device.displayWidth - location[0] - view.measuredWidth
             } else {
                 location[0]
             }
-            var y = if (view == null) 0 else (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
+            var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
             if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !context.isTablet) {
                 y += 68.dp.toInt()
             }

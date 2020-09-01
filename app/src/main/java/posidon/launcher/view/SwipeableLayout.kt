@@ -103,7 +103,7 @@ class SwipeableLayout(
                             duration = 210L
                         }.start()
                         frontView.animate().translationX(measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset < -64.dp && ev.eventTime - ev.downTime < 160 -> {
+                    } xOffset < -(64).dp && ev.eventTime - ev.downTime < 160 -> {
                         ValueAnimator.ofInt(xOffset.toInt(), -measuredWidth).apply {
                             addUpdateListener { backView.clipBounds = Rect(measuredWidth + it.animatedValue as Int, 0, measuredWidth, measuredHeight) }
                             interpolator = SpringInterpolator()

@@ -29,7 +29,6 @@
     <string name="searchbarhint">Zoeken…</string>
     <string name="feed_sources">Bronnen</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
-    <string name="settings_icon_count">Pictogrambadges</string>
     <string name="slogan">Minimaal, boordevol functies, anders.</string>
     <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Statusbalk verbergen</string>
@@ -39,7 +38,6 @@
     <string name="ok">Ok¨¦</string>
     <string name="notification_access">Toegang tot meldingen</string>
     <string name="permission_notifications_description">Verleen toegang tot je meldingen om je meldingen te tonen op het startscherm</string>
-    <string name="permission_notifications_short_description">Meldingen tonen op je startscherm</string>
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">One UI</string>
     <string name="ios">iOS</string>
@@ -127,7 +125,6 @@
     <string name="sample_feed_card_title">Er is een nieuwe versie van posidon beschikbaar!</string>
     <string name="hidden_apps">Verborgen apps</string>
     <string name="choose_a_launcher">Kies een startscherm</string>
-    <string name="launchers">Startschermen</string>
     <string name="horizontal_margin">Horizontale marge</string>
     <string name="vertical_margin">Vertical margin</string>
     <string name="value_of_pi">Waarde van 蟺</string>

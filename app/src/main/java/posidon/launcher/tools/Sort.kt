@@ -6,24 +6,6 @@ import posidon.launcher.items.LauncherItem
 
 object Sort {
 
-    fun <T : LauncherItem> labelSort(items: Array<T?>) {
-        var i = 0
-        var j: Int
-        var temp: T
-        while (i < items.size - 1) {
-            j = i + 1
-            while (j < items.size) {
-                if (items[i]!!.label!!.compareTo(items[j]!!.label!!, ignoreCase = true) > 0) {
-                    temp = items[i]!!
-                    items[i] = items[j]
-                    items[j] = temp
-                }
-                j++
-            }
-            i++
-        }
-    }
-
     fun <T : LauncherItem> labelSort(items: ArrayList<T>) {
         var i = 0
         var j: Int

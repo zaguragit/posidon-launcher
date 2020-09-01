@@ -1,8 +1,13 @@
 - Added Kustom variables support (go to Other->Kustom variables to enable)
 - Improved settings a lot
-- Added some customizations to notification badges
-- Added a setting to change notification swipe background color
-- Added a setting to ignore the navbar height
-- Added an option to disable the app drawer, in case you wanna use a custom one (like "smart drawer")
+- New settings:
+   - Notification badges customizations
+   - Notification swipe background color
+   - A setting to ignore the navbar height
+   - An option to disable the app drawer, in case you wanna use a custom one (like "smart drawer")
+   - Option to keep scroll position when exiting the launcher
+   - An option to have an undo popup after sliding a news card away
+   - Notification action button corner radius
+   - A setting to disable vertical fading edges in the feed
 - Added a gesture trigger to open an app
 - Fixed a bunch of bugs
