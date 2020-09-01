@@ -37,7 +37,7 @@ class FeedChooserAdapter(
             dialog.setContentView(R.layout.feed_chooser_option_edit_dialog)
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
             val title = dialog.findViewById<EditText>(R.id.title)!!
-            val done = dialog.findViewById<EditText>(R.id.done)!!
+            val done = dialog.findViewById<TextView>(R.id.done)!!
             title.text = Editable.Factory().newEditable(url)
             done.setTextColor(Main.accentColor)
             done.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
