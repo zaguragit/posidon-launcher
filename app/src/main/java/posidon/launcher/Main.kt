@@ -386,18 +386,16 @@ class Main : AppCompatActivity() {
             shouldSetApps = false
             customized = false
 
-            if (Settings["notif:enabled", true]) {
-                val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
-                val parentNotification = findViewById<View>(R.id.parentNotification)
+            if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
                 NotificationService.onUpdate = {
                     try {
-                        runOnUiThread {
+                        if (Settings["notif:cards", true]) runOnUiThread {
                             if (Settings["collapseNotifications", false]) {
                                 if (NotificationService.notificationsAmount > 1) {
                                     parentNotification.visibility = VISIBLE
                                     parentNotificationTitle.text = resources.getString(
-                                        R.string.num_notifications,
-                                        NotificationService.notificationsAmount
+                                            R.string.num_notifications,
+                                            NotificationService.notificationsAmount
                                     )
                                     if (notifications.visibility == VISIBLE) {
                                         parentNotification.background.alpha = 127
@@ -412,17 +410,20 @@ class Main : AppCompatActivity() {
                                 }
                             }
                             notifications.adapter = NotificationAdapter(this@Main)
-                            if (Settings["notif:badges", true]) {
-                                drawerGrid.invalidateViews()
-                                setDock()
-                            }
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                        if (Settings["notif:badges", true]) runOnUiThread {
+                            drawerGrid.invalidateViews()
+                            setDock()
+                        }
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
                 try { startService(Intent(this, NotificationService::class.java)) }
                 catch (e: Exception) {}
+            }
+
+            if (Settings["notif:cards", true]) {
+                val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
+                val parentNotification = findViewById<View>(R.id.parentNotification)
                 (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).apply {
                     leftMargin = marginX
                     rightMargin = marginX
@@ -876,7 +877,7 @@ class Main : AppCompatActivity() {
             }
         }
         loadFeed()
-        if (Settings["notif:enabled", true]) {
+        if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
             NotificationService.onUpdate()
         }
     }
@@ -891,7 +892,7 @@ class Main : AppCompatActivity() {
             desktop.scrollTo(0, 0)
         }
         Widget.stopListening()
-        if (Settings["notif:enabled", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
+        if (Settings["notif:cards", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
             notifications.visibility = GONE
             findViewById<View>(R.id.arrowUp).visibility = GONE
             findViewById<View>(R.id.parentNotification).background.alpha = 255
@@ -930,7 +931,7 @@ class Main : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (Settings["notif:enabled", true]) {
+            if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
                 try { startService(Intent(this, NotificationService::class.java)) }
                 catch (e: Exception) {}
             }
