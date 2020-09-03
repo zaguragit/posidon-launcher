@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.abs
+import kotlin.math.max
 
 class FeedLoader(
     private val onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
@@ -71,9 +72,6 @@ class FeedLoader(
                         try {
                             val newUrl = url + endStrings[i]
                             val connection = URL(newUrl).openConnection()
-                            connection.connectTimeout = 15 * 1000
-                            connection.readTimeout = 15 * 1000
-                            connection.connect()
                             parseFeed(connection.getInputStream(), Source(name, newUrl, domain))
                             break
                         } catch (e: Exception) {}
@@ -87,9 +85,11 @@ class FeedLoader(
         var j: Int
         var temp: FeedItem
 
+        val m = System.currentTimeMillis()
         for (thread in threads) {
+            val millis = System.currentTimeMillis() - m
             kotlin.runCatching {
-                thread.join(60000)
+                thread.join(max(60000 - millis, 0))
             }
         }
 
@@ -193,7 +193,7 @@ class FeedLoader(
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("id", ignoreCase = true) -> link = getText(parser)
                             name.equals("published", ignoreCase = true) ||
-                            name.equals("updated", ignoreCase = true)-> {
+                            name.equals("updated", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
                                 val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
                                 time = try { format.parse(text)!! } catch (e: Exception) { Date(0) }
