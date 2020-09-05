@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.view.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,11 +18,12 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.vibrate
+import posidon.launcher.view.GridLayoutManager
 
 class FeedChooser : AppCompatActivity() {
 
     private lateinit var grid: RecyclerView
-    private val feedUrls: ArrayList<String> = ArrayList()
+    private val feedUrls = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

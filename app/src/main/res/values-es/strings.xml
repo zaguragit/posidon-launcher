@@ -189,6 +189,8 @@
     <string name="undo_popup">Undo popup</string>
     <string name="undo">Deshacer</string>
     <string name="fading_edge">Fading edge</string>
+    <string name="opml">OPML</string>
+    <string name="export">Export</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

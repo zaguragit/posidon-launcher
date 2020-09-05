@@ -6,7 +6,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-internal object PrivateStorage {
+object PrivateStorage {
 
     fun writeData(data: Serializable, context: Context, path: String) {
         try {
