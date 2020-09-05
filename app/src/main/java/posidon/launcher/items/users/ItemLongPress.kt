@@ -176,19 +176,19 @@ object ItemLongPress {
         true
     }
 
-    fun insideFolder(context: Context, app: App, i: Int, v: View?, folderI: Int, folderWindow: PopupWindow) = View.OnLongClickListener { view ->
+    fun insideFolder(context: Context, app: App, i: Int, v: View?, folderI: Int, folderWindow: PopupWindow, folder: Folder) = View.OnLongClickListener { view ->
         if (currentPopup == null) {
             val icon = view.findViewById<View>(R.id.iconimg)
             val location = IntArray(2)
             view.getLocationOnScreen(location)
             val gravity = if (location[0] > Device.displayWidth / 2) Gravity.END else Gravity.START
             val x = if (location[0] > Device.displayWidth / 2) Device.displayWidth - location[0] - view.measuredWidth else location[0]
+
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     folderWindow.dismiss()
-                    val f = Dock[i] as Folder
-                    f.items.removeAt(folderI)
-                    Dock[i] = if (f.items.size == 1) f.items[0] else f
+                    folder.items.removeAt(folderI)
+                    Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
                     Main.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
@@ -203,9 +203,8 @@ object ItemLongPress {
                     icon.startDrag(clipData, myShadow, view, 0)
                 }
 
-                val f = Dock[i] as Folder
-                f.items.removeAt(folderI)
-                Dock[i] = if (f.items.size == 1) f.items[0] else f
+                folder.items.removeAt(folderI)
+                Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
             }
 
             popupWindow.showAtLocation(v, Gravity.BOTTOM or gravity, x, Device.displayHeight - location[1] + Tools.navbarHeight)
