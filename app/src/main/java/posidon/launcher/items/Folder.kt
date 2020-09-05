@@ -162,11 +162,10 @@ class Folder(string: String) : LauncherItem() {
                 title.visibility = View.GONE
                 content.findViewById<View>(R.id.separator).visibility = View.GONE
             }
-            val appList = items
             var i1 = 0
-            val appListSize = appList.size
+            val appListSize = items.size
             while (i1 < appListSize) {
-                val item = appList[i1]
+                val item = items[i1]
                 val appIcon = LayoutInflater.from(context).inflate(R.layout.drawer_item, null)
                 val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
                 appIcon.findViewById<View>(R.id.iconFrame).run {
@@ -191,14 +190,14 @@ class Folder(string: String) : LauncherItem() {
                     } else {
                         badge.visibility = View.GONE
                     }
-                    appIcon.setOnClickListener { view ->
-                        item.open(context, view)
+                    appIcon.setOnClickListener { v ->
+                        item.open(context, v)
                         popupWindow.dismiss()
                     }
-                    appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, i1, popupWindow))
+                    appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, i1, popupWindow, this))
                 } else if (item is Shortcut) {
-                    appIcon.setOnClickListener { view ->
-                        item.open(context, view)
+                    appIcon.setOnClickListener { v ->
+                        item.open(context, v)
                         popupWindow.dismiss()
                     }
                 }
