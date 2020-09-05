@@ -6,18 +6,25 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.RemovedArticles
 import posidon.launcher.feed.news.chooser.FeedChooser
+import posidon.launcher.feed.news.opml.OPML
+import posidon.launcher.feed.news.opml.OpmlElement
+import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CustomNews : AppCompatActivity() {
 
@@ -84,4 +91,25 @@ class CustomNews : AppCompatActivity() {
         dialog.show()
     }
     fun seeRemovedArticles(v: View) = startActivity(Intent(this, RemovedArticles::class.java))
+
+    fun exportOPML(v: View) {
+        val feedUrls = ArrayList(Settings["feedUrls", FeedChooser.defaultSources].split("|"))
+        if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
+            feedUrls.removeAt(0)
+            Settings.putNotSave("feedUrls", "")
+            Settings.apply()
+        }
+
+        ExternalStorage.writeOutsideScope(this, "posidon_feed_sources_${SimpleDateFormat("MMdHHmmss", Locale.getDefault()).format(Date())}.opml") { out, path ->
+            try {
+                OPML.writeDocument(feedUrls.map {
+                    OpmlElement(it, it)
+                }, out.bufferedWriter(Charsets.UTF_8))
+                Toast.makeText(this, "Saved: $path", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 }

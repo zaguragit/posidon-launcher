@@ -194,6 +194,32 @@
                         android:onClick="seeRemovedArticles"/>
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/customcardtitle"
+                    android:text="@string/opml"
+                    android:layout_marginTop="-12dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/card_separator"
+                    android:layout_marginBottom="12dp"/>
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/export"
+                        android:onClick="exportOPML"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
