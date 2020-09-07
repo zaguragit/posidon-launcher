@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Meduza",
+    "url": "https://meduza.io/rss/all"
+  },
+  {
+    "name": "TVRain",
+    "url": "https://tvrain.ru/export/rss/all.xml"
+  },
+  {
+    "name": "TVRain | TED",
+    "url": "https://tvrain.ru/export/rss/programs/2223.xml"
+  },
+  {
+    "name": "TVRain | BBC",
+    "url": "https://tvrain.ru/export/rss/programs/1536.xml"
+  }
+]
