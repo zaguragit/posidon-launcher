@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.ColorTools.pickColorNoAlpha
@@ -139,13 +140,7 @@ class Gallery : AppCompatActivity() {
         }
     }
 
-    private fun pickFile() {
-        val intent = Intent()
-        intent.action = Intent.ACTION_OPEN_DOCUMENT
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "image/*"
-        startActivityForResult(intent, 1)
-    }
+    private fun pickFile() = ExternalStorage.pickFile(this, "image/*")
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 2 && grantResults.isNotEmpty() &&
@@ -156,10 +151,12 @@ class Gallery : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 1) {
+            ExternalStorage.onActivityResultPickFile(this, requestCode, data) {
                 WallActivity.img = null
-                try { WallActivity.img = BitmapFactory.decodeStream(baseContext.contentResolver.openInputStream(data!!.data!!)) }
-                catch (e: FileNotFoundException) { e.printStackTrace() }
+                if (it != null) {
+                    try { WallActivity.img = BitmapFactory.decodeStream(it) }
+                    catch (e: FileNotFoundException) { e.printStackTrace() }
+                }
                 startActivity(Intent(this, WallActivity::class.java))
             }
         }
