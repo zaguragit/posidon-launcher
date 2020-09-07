@@ -64,6 +64,7 @@ class FeedChooser : AppCompatActivity() {
             dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
             val input = dialog.findViewById<EditText>(R.id.title)!!
             dialog.findViewById<ExpandableListView>(R.id.list)!!.apply {
+                visibility = View.VISIBLE
                 setOnTouchListener { _, event ->
                     if (event.action == MotionEvent.ACTION_DOWN && this.canScrollVertically(-1))
                         this.requestDisallowInterceptTouchEvent(true)
