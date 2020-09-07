@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Engadget",
+    "url": "https://www.engadget.com/rss.xml"
+  },
+  {
+    "name": "It's FOSS",
+    "url": "https://itsfoss.com/feed"
+  },
+  {
+    "name": "Android Police",
+    "url": "https://www.androidpolice.com/rss"
+  },
+  {
+    "name": "Android Authority",
+    "url": "https://www.androidauthority.com/feed/"
+  },
+  {
+    "name": "CNet News",
+    "url": "https://www.cnet.com/rss/news/"
+  },
+  {
+    "name": "OMG! Ubuntu!",
+    "url": "https://www.omgubuntu.co.uk/rss"
+  }
+]

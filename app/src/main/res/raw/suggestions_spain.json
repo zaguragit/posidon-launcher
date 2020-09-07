@@ -1,0 +1,18 @@
+[
+  {
+    "name": "El Mundo",
+    "url": "https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"
+  },
+  {
+    "name": "La Vanguardia",
+    "url": "https://www.lavanguardia.com/mvc/feed/rss/home"
+  },
+  {
+    "name": "El Jueves",
+    "url": "https://www.eljueves.es/feeds/rss.html"
+  },
+  {
+    "name": "El País",
+    "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"
+  }
+]
