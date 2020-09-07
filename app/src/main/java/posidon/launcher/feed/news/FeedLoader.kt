@@ -161,8 +161,14 @@ class FeedLoader(
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
-                                val format = SimpleDateFormat("ccc, dd MMM yyyy HH:mm:ss Z", Locale.ROOT)
-                                time = try { format.parse(text.replace("GMT", "+0000"))!! } catch (e: Exception) { Date(0) }
+                                    .replace("GMT", "+0000")
+                                    .replace(Regex("[-:, /]"), "")
+                                time = try {
+                                    SimpleDateFormat("cccddMMMyyyyHHmmssZ", Locale.ROOT).parse(text)!!
+                                } catch (e: Exception) {
+                                    try { SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.ROOT).parse(text)!! }
+                                    catch (e: Exception) { Date(0) }
+                                }
                             }
                             img == null -> when (name) {
                                 "description", "content:encoded" -> {
