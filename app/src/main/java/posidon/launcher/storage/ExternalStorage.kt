@@ -1,7 +1,9 @@
 package posidon.launcher.storage
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -72,5 +74,21 @@ object ExternalStorage {
         try { data = ObjectInputStream(context.contentResolver.openInputStream(uri)).readObject() }
         catch (e: Exception) { e.printStackTrace() }
         return data
+    }
+
+    private const val FILE_REQUEST_CODE = 0xf113
+
+    fun pickFile(activity: Activity, mime: String) {
+        val intent = Intent()
+        intent.action = Intent.ACTION_OPEN_DOCUMENT
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = mime
+        activity.startActivityForResult(intent, FILE_REQUEST_CODE)
+    }
+
+    fun onActivityResultPickFile(activity: Activity, requestCode: Int, data: Intent?, fn: (InputStream?) -> Unit) {
+        if (requestCode == FILE_REQUEST_CODE) {
+            fn(try { activity.contentResolver.openInputStream(data!!.data!!)!! } catch (e: Exception) { null })
+        }
     }
 }

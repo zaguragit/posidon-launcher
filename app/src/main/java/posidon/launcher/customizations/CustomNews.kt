@@ -22,6 +22,7 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -111,5 +112,41 @@ class CustomNews : AppCompatActivity() {
                 Toast.makeText(this, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    fun importOPML(v: View) =
+        try { ExternalStorage.pickFile(this, "*/*") }
+        catch (e: Exception) { e.printStackTrace() }
+
+    private fun doImportOPML(input: InputStream?) {
+        val feedUrls = ArrayList(Settings["feedUrls", FeedChooser.defaultSources].split("|"))
+        if (feedUrls.size == 1 && feedUrls[0].replace(" ", "") == "") {
+            feedUrls.removeAt(0)
+            Settings.putNotSave("feedUrls", "")
+        }
+
+        try {
+            val new = OPML.readDocument(input!!.bufferedReader(Charsets.UTF_8))
+            var amountOfNewSources = 0
+            for (element in new) {
+                if (!feedUrls.contains(element.xmlUrl)) {
+                    feedUrls.add(element.xmlUrl)
+                    amountOfNewSources++
+                }
+            }
+            Settings.putNotSave("feedUrls", feedUrls.joinToString("|"))
+            Toast.makeText(this, "Imported $amountOfNewSources sources", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+        }
+        Settings.apply()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            ExternalStorage.onActivityResultPickFile(this, requestCode, data, ::doImportOPML)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

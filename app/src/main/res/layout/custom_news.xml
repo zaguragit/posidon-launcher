@@ -211,13 +211,20 @@
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="match_parent"
                         android:drawableStart="@drawable/ic_apps"
                         android:text="@string/export"
                         android:onClick="exportOPML"/>
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/_import"
+                        android:onClick="importOPML"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
