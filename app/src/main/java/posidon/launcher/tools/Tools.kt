@@ -710,6 +710,11 @@ object Tools {
         window!!.setBackgroundDrawableResource(R.drawable.card)
         show()
     }
+
+    inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
+        val threshold = 16.dp
+        return abs(startX - endX) < threshold && abs(startY - endY) < threshold
+    }
 }
 
 inline fun Activity.applyFontSetting() {

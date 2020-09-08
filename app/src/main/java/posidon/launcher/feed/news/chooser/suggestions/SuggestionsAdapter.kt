@@ -1,16 +1,15 @@
 package posidon.launcher.feed.news.chooser.suggestions
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
-import posidon.launcher.feed.news.chooser.Source
 import posidon.launcher.tools.dp
 
 class SuggestionsAdapter(
-    val context: Context,
-    val onSelect: (Source) -> Unit
+    val context: Context
 ) : BaseExpandableListAdapter() {
 
     override fun getGroupCount() = Suggestions.topics.size
@@ -34,18 +33,15 @@ class SuggestionsAdapter(
         return convertView
     }
 
-    override fun getChildView(topicI: Int, sourceI: Int, isLast: Boolean, cv: View?, parent: ViewGroup?): View {
+    @SuppressLint("ClickableViewAccessibility")
+    override fun getChildView(topicI: Int, sourceI: Int, isLast: Boolean, cv: View?, parent: ViewGroup): View {
         val convertView = (cv ?: TextView(context).apply {
             val h = 16.dp.toInt()
             setPadding(h + 16.dp.toInt(), 2.dp.toInt(), h, 8.dp.toInt())
-            textSize = 15f
+            textSize = 16f
         }) as TextView
 
         convertView.text = Suggestions[topicI][sourceI].name
-
-        convertView.setOnClickListener {
-            onSelect(Suggestions[topicI][sourceI])
-        }
 
         return convertView
     }
