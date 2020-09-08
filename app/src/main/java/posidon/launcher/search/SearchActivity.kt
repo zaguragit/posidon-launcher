@@ -372,9 +372,9 @@ class SearchActivity : AppCompatActivity() {
                 isShowingSmartCard = true
                 smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 smartBox.findViewById<TextView>(R.id.result).text = ""
-                Loader.Text("https://checkip.amazonaws.com") {
+                Loader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
-                }.execute()
+                }}
                 findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (
                 words.contains("pi") ||

@@ -12,7 +12,7 @@ import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
@@ -70,7 +70,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 if (Settings["notif:badges", true] && item.notificationCount != 0) {
                     visibility = View.VISIBLE
                     text = if (Settings["notif:badges:show_num", true]) item.notificationCount.toString() else ""
-                    Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                    ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                         background = bg
                         setTextColor(fg)
                     }

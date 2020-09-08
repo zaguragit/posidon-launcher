@@ -44,8 +44,8 @@ class Folder(string: String) : LauncherItem() {
                 val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
                 val t = Tools.publicContext!!.packageManager.getResourcesForApplication(data[0])
                 val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.generateAdaptiveIcon(t.getDrawable(intRes))
+                ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ThemeTools.generateAdaptiveIcon(t.getDrawable(intRes))
                 } else t.getDrawable(intRes), false)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -102,13 +102,13 @@ class Folder(string: String) : LauncherItem() {
 
             val icShape = Settings["icshape", 4]
             if (icShape != 3) {
-                canvas.drawPath(Tools.getAdaptiveIconPath(icShape, width, height), Paint().apply {
+                canvas.drawPath(ThemeTools.getAdaptiveIconPath(icShape, width, height), Paint().apply {
                     isAntiAlias = true
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 })
             }
 
-            return Tools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
+            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }
@@ -183,7 +183,7 @@ class Folder(string: String) : LauncherItem() {
                     if (notifBadgesEnabled && item.notificationCount != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                        Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                        ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }

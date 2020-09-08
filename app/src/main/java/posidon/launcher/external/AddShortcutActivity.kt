@@ -78,7 +78,7 @@ class AddShortcutActivity : AppCompatActivity() {
                     if (notificationCount != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
-                        Tools.generateNotificationBadgeBGnFG { bg, fg ->
+                        ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
@@ -99,7 +99,7 @@ class AddShortcutActivity : AppCompatActivity() {
                 if (notifBadgesEnabled && item.notificationCount != 0) {
                     badge.visibility = View.VISIBLE
                     badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                    Tools.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
+                    ThemeTools.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
                         badge.background = bg
                         badge.setTextColor(fg)
                     }

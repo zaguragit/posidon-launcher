@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
+import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
 
 
@@ -17,7 +18,7 @@ class ContactItem private constructor(
 
     init {
         if (iconUri == null) {
-            icon = Tools.generateContactPicture(label!!)
+            icon = ThemeTools.generateContactPicture(label!!)
         }
     }
 

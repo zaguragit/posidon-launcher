@@ -36,9 +36,9 @@ class CustomAppIcon : AppCompatActivity() {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, null).apply {
                 runCatching {
-                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(Tools.badgeMaybe(
+                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(ThemeTools.badgeMaybe(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            Tools.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
+                            ThemeTools.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
                         } else {
                             packageManager.getApplicationIcon("com.android.systemui")
                         }, false
@@ -79,8 +79,8 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName))
-            iconPacks[i].icon = Tools.tryAnimate(Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Tools.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
+            iconPacks[i].icon = Tools.tryAnimate(ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ThemeTools.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
             } else {
                 pacslist[i].loadIcon(packageManager)
             }, false))
@@ -190,8 +190,8 @@ class CustomAppIcon : AppCompatActivity() {
                 viewHolder.icon.setImageDrawable(null)
                 viewHolder.icon.setOnClickListener(null)
             } else {
-                viewHolder.icon.setImageDrawable(Tools.tryAnimate(Tools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Tools.generateAdaptiveIcon(themeRes.getDrawable(intRes))
+                viewHolder.icon.setImageDrawable(Tools.tryAnimate(ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ThemeTools.generateAdaptiveIcon(themeRes.getDrawable(intRes))
                 } else {
                     themeRes.getDrawable(intRes)
                 }, false)))
