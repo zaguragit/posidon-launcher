@@ -2,10 +2,8 @@ package posidon.launcher
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityOptions
 import android.app.WallpaperManager
-import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -25,20 +23,13 @@ import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dock.*
-import kotlinx.android.synthetic.main.main.*
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Kustom
-import posidon.launcher.external.Widget
-import posidon.launcher.external.Widget.REQUEST_CREATE_APPWIDGET
-import posidon.launcher.external.Widget.REQUEST_PICK_APPWIDGET
-import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedLoader
-import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.*
 import posidon.launcher.items.users.AppLoader
@@ -53,19 +44,20 @@ import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
-import posidon.launcher.view.*
+import posidon.launcher.view.AlphabetScrollbar
 import posidon.launcher.view.GridView
-import posidon.launcher.view.ResizableLayout.OnResizeListener
+import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.drawer.LockableBottomDrawerBehavior
+import posidon.launcher.view.feed.*
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 import kotlin.math.*
 import kotlin.system.exitProcess
 
-class Main : AppCompatActivity() {
+class Main : FragmentActivity() {
 
     private lateinit var drawerGrid: GridView
     private lateinit var drawer: View
@@ -79,11 +71,14 @@ class Main : AppCompatActivity() {
 
     private lateinit var desktop: NestedScrollView
     private lateinit var desktopContent: View
-    private lateinit var feedRecycler: RecyclerView
+
     private lateinit var feedProgressBar: ProgressBar
 
-    private lateinit var notifications: RecyclerView
-    private lateinit var widgetLayout: ResizableLayout
+    lateinit var widgetLayout: WidgetSection
+    private lateinit var contactCardView: ContactCardView
+    lateinit var musicCard: MusicCard
+    private lateinit var notifications: NotificationCards
+    private lateinit var feedRecycler: NewsCards
 
     private lateinit var batteryBar: ProgressBar
 
@@ -292,55 +287,29 @@ class Main : AppCompatActivity() {
             setDockSearchbarRadius(Settings["dock:search:radius", 30])
             setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
-            val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-            val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
-
             if (Settings["contacts_card:enabled", false]) {
-                contacts.visibility = View.VISIBLE
-                contacts.background = ShapeDrawable().apply {
-                    val r = Settings["feed:card_radius", 15].dp
-                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                    paint.color = Settings["notificationbgcolor", -0x1]
-                }
-                contacts.columns = Settings["contacts_card:columns", 5]
-                (contacts.layoutParams as ViewGroup.MarginLayoutParams).run {
-                    leftMargin = marginX
-                    rightMargin = marginX
-                    topMargin = marginY
-                    bottomMargin = marginY
-                }
+                contactCardView.visibility = View.VISIBLE
+                contactCardView.updateTheme()
             } else {
-                contacts.visibility = View.GONE
+                contactCardView.visibility = View.GONE
             }
 
             feedProgressBar.indeterminateDrawable.setTint(accentColor)
             if (Settings["feed:enabled", true]) {
                 feedRecycler.visibility = VISIBLE
-                (feedRecycler.layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
-                feedRecycler.adapter = FeedAdapter(ArrayList(), this)
+                feedRecycler.updateTheme(this)
             } else {
                 feedRecycler.visibility = GONE
                 feedRecycler.adapter = null
             }
-            (findViewById<View>(R.id.musicCard).layoutParams as ViewGroup.MarginLayoutParams).apply {
-                leftMargin = marginX
-                rightMargin = marginX
-                bottomMargin = marginY
-            }
+            musicCard.updateTheme()
             if (Settings["hidefeed", false]) {
-                feedRecycler.translationX = Device.displayWidth.toFloat()
-                feedRecycler.alpha = 0f
-                var wasHiddenLastTime = true
+                feedRecycler.hide()
                 desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                     val a = 6.dp
                     val distance = oldY - y
                     if (y > a) {
-                        if (wasHiddenLastTime) {
-                            feedRecycler.translationX = 0f
-                            feedRecycler.animate().alpha(1f).setInterpolator { it.pow(3 / (it + 8)) }.onEnd {
-                                wasHiddenLastTime = false
-                            }.duration = 200L
-                        }
+                        feedRecycler.show()
                         if (distance > a || y >= desktopContent.height - dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
                                 behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
@@ -353,18 +322,12 @@ class Main : AppCompatActivity() {
                             behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                         if (y < a && oldY >= a) {
-                            if (!wasHiddenLastTime) {
-                                feedRecycler.animate().alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.onEnd {
-                                    feedRecycler.translationX = findViewById<View>(R.id.homeView).width.toFloat()
-                                    wasHiddenLastTime = true
-                                }.duration = 180L
-                            }
+                            feedRecycler.hide()
                         }
                     }
                 }
             } else {
-                feedRecycler.translationX = 0f
-                feedRecycler.alpha = 1f
+                feedRecycler.show()
                 desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                     val a = 6.dp
                     val distance = oldY - y
@@ -390,26 +353,7 @@ class Main : AppCompatActivity() {
                 NotificationService.onUpdate = {
                     try {
                         if (Settings["notif:cards", true]) runOnUiThread {
-                            if (Settings["collapseNotifications", false]) {
-                                if (NotificationService.notificationsAmount > 1) {
-                                    parentNotification.visibility = VISIBLE
-                                    parentNotificationTitle.text = resources.getString(
-                                            R.string.num_notifications,
-                                            NotificationService.notificationsAmount
-                                    )
-                                    if (notifications.visibility == VISIBLE) {
-                                        parentNotification.background.alpha = 127
-                                        findViewById<View>(R.id.arrowUp).visibility = VISIBLE
-                                    } else {
-                                        parentNotification.background.alpha = 255
-                                        findViewById<View>(R.id.arrowUp).visibility = GONE
-                                    }
-                                } else {
-                                    parentNotification.visibility = GONE
-                                    notifications.visibility = VISIBLE
-                                }
-                            }
-                            notifications.adapter = NotificationAdapter(this@Main)
+                            notifications.update()
                         }
                         if (Settings["notif:badges", true]) runOnUiThread {
                             drawerGrid.invalidateViews()
@@ -422,38 +366,10 @@ class Main : AppCompatActivity() {
             }
 
             if (Settings["notif:cards", true]) {
-                val parentNotificationTitle = findViewById<TextView>(R.id.parentNotificationTitle)
-                val parentNotification = findViewById<View>(R.id.parentNotification)
-                (findViewById<View>(R.id.parentNotification).layoutParams as LinearLayout.LayoutParams).apply {
-                    leftMargin = marginX
-                    rightMargin = marginX
-                    topMargin = marginY
-                    bottomMargin = marginY
-                }
-                val notificationBackground = ShapeDrawable()
-                val r = Settings["feed:card_radius", 15].dp
-                notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
-                parentNotification.background = notificationBackground
-                parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-                parentNotificationTitle.typeface = mainFont
-                val parentNotificationBtn = findViewById<ImageView>(R.id.parentNotificationBtn)
-                parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(accentColor)) -0x1000000 else -0x1)
-                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor)
-                parentNotificationBtn.imageTintList = ColorStateList.valueOf(accentColor)
-                parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(accentColor and 0x00ffffff or 0x33000000)
-                if (Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
-                    notifications.visibility = GONE
-                    findViewById<View>(R.id.arrowUp).visibility = GONE
-                    parentNotification.visibility = VISIBLE
-                    parentNotification.background.alpha = 255
-                } else {
-                    notifications.visibility = VISIBLE
-                    parentNotification.visibility = GONE
-                }
+                notifications.visibility = VISIBLE
+                notifications.updateTheme()
             } else {
                 notifications.visibility = GONE
-                findViewById<View>(R.id.parentNotification).visibility = GONE
             }
             setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
         }
@@ -477,7 +393,6 @@ class Main : AppCompatActivity() {
             exitProcess(0)
         }
 
-        Widget.init()
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         Kustom["accent"] = accentColor.toUInt().toString(16)
         setContentView(R.layout.main)
@@ -625,52 +540,18 @@ class Main : AppCompatActivity() {
         }
         drawerScrollBar.bringToFront()
 
-        feedRecycler = findViewById<RecyclerView>(R.id.feedrecycler).apply {
-            layoutManager = LinearLayoutManager(this@Main)
-            isNestedScrollingEnabled = false
-        }
         feedProgressBar = findViewById(R.id.feedProgressBar)
 
-        notifications = findViewById<RecyclerView>(R.id.notifications).apply {
-            isNestedScrollingEnabled = false
-            layoutManager = LinearLayoutManager(this@Main)
-        }
+        widgetLayout = findViewById(R.id.widgets)
+        contactCardView = findViewById(R.id.contacts)
+        musicCard = findViewById(R.id.musicCard)
+        notifications = findViewById(R.id.notifications)
+        feedRecycler = findViewById(R.id.feedrecycler)
 
-        findViewById<View>(R.id.parentNotification).apply {
-            setOnLongClickListener(LauncherMenu())
-            setOnClickListener {
-                if (notifications.visibility == VISIBLE) {
-                    desktop.scrollTo(0, 0)
-                    notifications.visibility = GONE
-                    it.background.alpha = 255
-                    it.findViewById<View>(R.id.arrowUp).visibility = GONE
-                } else {
-                    notifications.visibility = VISIBLE
-                    it.background.alpha = 127
-                    it.findViewById<View>(R.id.arrowUp).visibility = VISIBLE
-                }
-            }
-        }
+        widgetLayout.init(0xe1d9e15)
 
         setCustomizations()
         loadFeed()
-
-        widgetLayout = findViewById<ResizableLayout>(R.id.widgets).apply {
-            layoutParams.height = Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT]
-            layoutParams = layoutParams
-            onResizeListener = object : OnResizeListener {
-                override fun onStop(newHeight: Int) { Settings["widgetHeight"] = newHeight }
-                override fun onCrossPress() = Widget.deleteWidget(widgetLayout)
-                override fun onMajorUpdate(newHeight: Int) = Widget.resize(newHeight)
-
-                override fun onUpdate(newHeight: Int) {
-                    layoutParams.height = newHeight
-                    layoutParams = layoutParams
-                }
-            }
-        }
-        Widget.startListening()
-        Widget.fromSettings(widgetLayout)
 
         val scaleGestureDetector = ScaleGestureDetector(this@Main, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
@@ -715,58 +596,11 @@ class Main : AppCompatActivity() {
         ))
         findViewById<ImageView>(R.id.blur).setImageDrawable(blurBg)
 
-        findViewById<View>(R.id.musicPrev).setOnClickListener {
-            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
-        }
-        findViewById<View>(R.id.musicPlay).setOnClickListener {
-            it as ImageView
-            if (musicService.isMusicActive) {
-                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                it.setImageResource(R.drawable.ic_play)
-            } else {
-                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
-                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
-                it.setImageResource(R.drawable.ic_pause)
-            }
-        }
-        findViewById<View>(R.id.musicNext).setOnClickListener {
-            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
-            findViewById<ImageView>(R.id.musicPlay).setImageResource(R.drawable.ic_pause)
-        }
         System.gc()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_PICK_APPWIDGET) {
-                val extras = data!!.extras
-                if (extras != null) {
-                    val id = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-                    val widgetInfo = AppWidgetManager.getInstance(this).getAppWidgetInfo(id)
-                    if (widgetInfo.configure != null) {
-                        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
-                        intent.component = widgetInfo.configure
-                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
-                        runCatching {
-                            startActivityForResult(intent, REQUEST_CREATE_APPWIDGET)
-                        }
-                    } else {
-                        Widget.fromIntent(widgetLayout, data)
-                    }
-                }
-            } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
-                Widget.fromIntent(widgetLayout, data)
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
-            val appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-            if (appWidgetId != -1) {
-                Widget.host.deleteAppWidgetId(appWidgetId)
-            }
-        }
+        widgetLayout.handleActivityResult(this, requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -800,16 +634,18 @@ class Main : AppCompatActivity() {
             feedProgressBar.visibility = VISIBLE
             feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
             FeedLoader.loadFeed { success, items ->
-                if (success) {
-                    (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
-                }
-                feedProgressBar.animate().translationY(-(72).dp).alpha(0f).onEnd {
-                    feedProgressBar.visibility = GONE
+                runOnUiThread {
+                    if (success) {
+                        feedRecycler.updateFeed(items!!)
+                    }
+                    feedProgressBar.animate().translationY(-(72).dp).alpha(0f).onEnd {
+                        feedProgressBar.visibility = GONE
+                    }
                 }
             }
         } else FeedLoader.loadFeed { success, items ->
-            if (success) {
-                (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
+            if (success) runOnUiThread {
+                feedRecycler.updateFeed(items!!)
             }
         }
     }
@@ -830,9 +666,8 @@ class Main : AppCompatActivity() {
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "home"
         }
-        Widget.startListening()
+        widgetLayout.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
-        //setWallpaperOffset(0.5f, 0.5f)
         onUpdate()
     }
 
@@ -860,7 +695,7 @@ class Main : AppCompatActivity() {
             if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 ContactItem.getList(true).also {
                     runOnUiThread {
-                        contacts.setItems(it)
+                        contactCardView.setItems(it)
                     }
                 }
             }
@@ -887,11 +722,9 @@ class Main : AppCompatActivity() {
         if (!Settings["feed:keep_pos", false]) {
             desktop.scrollTo(0, 0)
         }
-        Widget.stopListening()
+        widgetLayout.stopListening()
         if (Settings["notif:cards", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
-            notifications.visibility = GONE
-            findViewById<View>(R.id.arrowUp).visibility = GONE
-            findViewById<View>(R.id.parentNotification).background.alpha = 255
+            notifications.collapse()
         }
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "?"
@@ -900,12 +733,12 @@ class Main : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        Widget.stopListening()
+        widgetLayout.stopListening()
     }
 
     override fun onStart() {
         super.onStart()
-        Widget.startListening()
+        widgetLayout.startListening()
 
         if (Settings["drawer:sections_enabled", false]) {
             drawerGrid.adapter = SectionedDrawerAdapter()
@@ -937,12 +770,6 @@ class Main : AppCompatActivity() {
                     SYSTEM_UI_FLAG_LOW_PROFILE
             if (shouldSetApps) {
                 AppLoader(this@Main, onAppLoaderEnd).execute()
-            }
-            val playBtn = findViewById<ImageView>(R.id.musicPlay)
-            if (musicService.isMusicActive) {
-                playBtn.setImageResource(R.drawable.ic_pause)
-            } else {
-                playBtn.setImageResource(R.drawable.ic_play)
             }
 
             if (Settings["kustom:variables:enable", false]) {

@@ -16,19 +16,17 @@ import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.ResizableLayout
 
-object Widget {
+class Widget(val uid: Int) {
 
-    const val REQUEST_PICK_APPWIDGET = 0
-    const val REQUEST_CREATE_APPWIDGET = 1
-    const val REQUEST_BIND_WIDGET = 2
+    companion object {
+        const val REQUEST_PICK_APPWIDGET = 0
+        const val REQUEST_CREATE_APPWIDGET = 1
+        const val REQUEST_BIND_WIDGET = 2
+    }
 
     private var hostView: AppWidgetHostView? = null
-    lateinit var host: AppWidgetHost
+    var host: AppWidgetHost = AppWidgetHost(Tools.publicContext, uid)
         private set
-
-    fun init() {
-        host = AppWidgetHost(Tools.publicContext, 0xe1d9e15)
-    }
 
     fun fromIntent(widgetLayout: ResizableLayout, data: Intent?) {
         widgetLayout.visibility = View.VISIBLE
@@ -52,15 +50,15 @@ object Widget {
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
                 Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
             }
-            Settings["widget"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
+            Settings["widget:$uid"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
             widgetLayout.addView(hostView)
-            resize(Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT])
+            resize(Settings["widget:$uid:height", ViewGroup.LayoutParams.WRAP_CONTENT])
         } catch (e: Exception) { e.printStackTrace() }
     }
 
     fun fromSettings(widgetLayout: ResizableLayout) {
         val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
-        val str = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+        val str = Settings["widget:$uid", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         if (str.isNotEmpty()) {
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
@@ -94,7 +92,7 @@ object Widget {
             }
             hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
-            resize(Settings["widgetHeight", ViewGroup.LayoutParams.WRAP_CONTENT])
+            resize(Settings["widget:$uid:height", ViewGroup.LayoutParams.WRAP_CONTENT])
         } else widgetLayout.visibility = View.GONE
     }
 
@@ -114,7 +112,7 @@ object Widget {
         widgetLayout.removeView(hostView)
         hostView = null
         widgetLayout.visibility = View.GONE
-        Settings["widget"] = ""
+        Settings["widget:$uid"] = ""
     }
 
     fun resize(newHeight: Int) {

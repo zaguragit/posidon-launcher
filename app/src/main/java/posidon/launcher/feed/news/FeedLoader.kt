@@ -30,7 +30,7 @@ object FeedLoader {
 
     fun loadFeed(
         onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
-    ) {
+    ) = thread (isDaemon = true) {
         val feedItems = ArrayList<FeedItem>()
         val deleted = Settings.getStrings("feed:deleted_articles")
         val lock = ReentrantLock()

@@ -19,7 +19,7 @@ import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 import kotlin.math.abs
 
-class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
     private var dragHandle: View
     private var crossButton: View
