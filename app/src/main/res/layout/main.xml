@@ -30,57 +30,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.ResizableLayout
+                <posidon.launcher.view.feed.WidgetSection
                     android:id="@+id/widgets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <posidon.launcher.view.groupView.ContactCardView
+                <posidon.launcher.view.feed.ContactCardView
                     android:id="@+id/contacts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <include
+                <posidon.launcher.view.feed.MusicCard
                     android:id="@+id/musicCard"
-                    android:visibility="gone"
-                    layout="@layout/music_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <LinearLayout
-                    android:id="@+id/parentNotification"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:orientation="horizontal"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp">
-                    <ImageView
-                        android:id="@+id/arrowUp"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:src="@drawable/arrow_up"
-                        android:visibility="gone"
-                        android:tint="#ffffff"/>
-                    <TextView
-                        android:id="@+id/parentNotificationTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:textSize="17sp"/>
-                    <ImageView
-                        android:id="@+id/parentNotificationBtn"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_notification"
-                        android:background="@drawable/button_bg_round"
-                        android:padding="8dp"/>
-                </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/notifications"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"/>
-                <androidx.recyclerview.widget.RecyclerView
+                <posidon.launcher.view.feed.NotificationCards
+                    android:id="@+id/notifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <posidon.launcher.view.feed.NewsCards
                     android:id="@+id/feedrecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

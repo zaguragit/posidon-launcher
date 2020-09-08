@@ -1,6 +1,8 @@
-package posidon.launcher.view.groupView
+package posidon.launcher.view.feed
 
 import android.content.Context
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +14,9 @@ import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
+import posidon.launcher.view.groupView.ItemGroupView
 
-class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroupView(context, attrs) {
+class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroupView(context, attrs), FeedSection {
 
     var columns
         get() = gridLayout.columnCount
@@ -44,6 +47,23 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE
             setOnClickListener { item.open() }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
+        }
+    }
+
+    fun updateTheme() {
+        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+        val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+        background = ShapeDrawable().apply {
+            val r = Settings["feed:card_radius", 15].dp
+            shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+            paint.color = Settings["notificationbgcolor", -0x1]
+        }
+        columns = Settings["contacts_card:columns", 5]
+        (layoutParams as MarginLayoutParams).run {
+            leftMargin = marginX
+            rightMargin = marginX
+            topMargin = marginY
+            bottomMargin = marginY
         }
     }
 }

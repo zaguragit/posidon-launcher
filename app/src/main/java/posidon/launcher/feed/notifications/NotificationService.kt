@@ -5,22 +5,20 @@ import android.app.NotificationChannelGroup
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.drawable.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.UserHandle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.palette.graphics.Palette
 import posidon.launcher.Main
-import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -177,8 +175,8 @@ class NotificationService : NotificationListenerService() {
                         notificationsAmount2++
                         i++
                     }
-                    if (!hasMusic) Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
-                } else Main.instance.runOnUiThread { Main.instance.findViewById<View>(R.id.musicCard).visibility = View.GONE }
+                    if (!hasMusic) Main.instance.runOnUiThread { Main.instance.musicCard.visibility = View.GONE }
+                } else Main.instance.runOnUiThread { Main.instance.musicCard.visibility = View.GONE }
             }
             catch (e: Exception) { e.printStackTrace() }
             catch (e: OutOfMemoryError) {
@@ -234,42 +232,8 @@ class NotificationService : NotificationListenerService() {
             if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
             Main.instance.runOnUiThread {
-                Main.instance.findViewById<CardView>(R.id.musicCard).apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener { notification.notification.contentIntent?.send() }
-                    radius = Settings["feed:card_radius", 15].dp
-                }
-                Main.instance.findViewById<ImageView>(R.id.musicCardImage).setImageDrawable(icon)
-                Main.instance.findViewById<TextView>(R.id.musicCardTrackTitle).apply {
-                    setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-                    text = title
-                }
-                Main.instance.findViewById<TextView>(R.id.musicCardTrackArtist).apply {
-                    setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-                    text = subtitle
-                }
-                val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-                Main.instance.findViewById<View>(R.id.musicCardOverImg).background =
-                        if (instance.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
-                            LayerDrawable(arrayOf(
-                                ColorDrawable(color),
-                                GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
-                            )).apply {
-                                setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
-                                setLayerInset(1, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0, 0, 0)
-                            }
-                        } else {
-                            LayerDrawable(arrayOf(
-                                ColorDrawable(color),
-                                GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
-                            )).apply {
-                                setLayerInset(0, 136.dp.toInt(), 0, 0, 0)
-                                setLayerInset(1, 0, 0, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0)
-                            }
-                        }
-                Main.instance.findViewById<ImageView>(R.id.musicPrev).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-                Main.instance.findViewById<ImageView>(R.id.musicPlay).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-                Main.instance.findViewById<ImageView>(R.id.musicNext).imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+                Main.instance.musicCard.visibility = View.VISIBLE
+                Main.instance.musicCard.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
             }
         }
 

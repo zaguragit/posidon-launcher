@@ -17,7 +17,6 @@ import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.Kustom
-import posidon.launcher.external.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Gestures
@@ -75,7 +74,7 @@ class LauncherMenu : OnLongClickListener {
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Widget.selectWidget()
+                Main.instance.widgetLayout.widget.selectWidget()
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)
