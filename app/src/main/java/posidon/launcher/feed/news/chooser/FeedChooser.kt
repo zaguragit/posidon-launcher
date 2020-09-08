@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
@@ -17,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import posidon.launcher.Main
 import posidon.launcher.R
+import posidon.launcher.feed.news.chooser.suggestions.Suggestions
 import posidon.launcher.feed.news.chooser.suggestions.SuggestionsAdapter
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -65,14 +65,14 @@ class FeedChooser : AppCompatActivity() {
             val input = dialog.findViewById<EditText>(R.id.title)!!
             dialog.findViewById<ExpandableListView>(R.id.list)!!.apply {
                 visibility = View.VISIBLE
-                setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_DOWN && this.canScrollVertically(-1))
-                        this.requestDisallowInterceptTouchEvent(true)
-                    false
+                setAdapter(SuggestionsAdapter(context))
+                setOnChildClickListener { _, _, topicI, sourceI, _ ->
+                    input.text.run {
+                        clear()
+                        insert(0, Suggestions[topicI][sourceI].url)
+                    }
+                    true
                 }
-                setAdapter(SuggestionsAdapter(context) {
-                    input.setText(it.url, TextView.BufferType.EDITABLE)
-                })
             }
             dialog.findViewById<TextView>(R.id.done)!!.apply {
                 setTextColor(Main.accentColor)

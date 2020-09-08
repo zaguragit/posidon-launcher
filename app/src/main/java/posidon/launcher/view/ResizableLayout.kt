@@ -14,6 +14,7 @@ import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 import kotlin.math.abs
@@ -130,7 +131,7 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
                 longPressHandler.removeCallbacksAndMessages(null)
             }
             MotionEvent.ACTION_MOVE -> {
-                if (!(isAClick(startX, event.x, startY, event.y) && isAClick(startRawX, event.rawX, startRawY, event.rawY))) {
+                if (!(Tools.isAClick(startX, event.x, startY, event.y) && Tools.isAClick(startRawX, event.rawX, startRawY, event.rawY))) {
                     longPressHandler.removeCallbacksAndMessages(null)
                 }
             }
@@ -157,10 +158,5 @@ class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayo
             }
         }
         return super.onInterceptTouchEvent(event)
-    }
-
-    private inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
-        val threshold = 16.dp
-        return abs(startX - endX) < threshold && abs(startY - endY) < threshold
     }
 }
