@@ -1,6 +1,5 @@
 package posidon.launcher.tools
 
-import android.os.Build
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -30,17 +29,6 @@ object Dock {
         }
     }
 
-    fun convert() {
-        val data: Array<String?> = Settings["dock", ""].split("\n").toTypedArray()
-        for (i in data.indices) {
-            val string = data[i] ?: continue
-            Settings["dock:icon:$i"] = when {
-                string.startsWith("folder(") && string.endsWith(')') -> string.substring(0, string.length - 1).replaceFirst('(', ':').replace('¬', '\t')
-                else -> string
-            }
-        }
-    }
-
     operator fun get(i: Int) = Settings.getString("dock:icon:$i")?.let { LauncherItem(it).apply {
         if (this is Folder && uid.length != 8) {
             val label = uid
@@ -56,15 +44,7 @@ object Dock {
         val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 1]
 
         override fun hasNext() = i < iconCount
-
-        override fun next(): LauncherItem? {
-            val string = Settings.getString("dock:icon:${i++}") ?: return null
-            return when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
-                string.startsWith("folder:") -> Folder(string)
-                else -> App[string]
-            }
-        }
+        override fun next() = Settings.getString("dock:icon:${i++}")?.let { LauncherItem(it) }
     }
 
     operator fun set(i: Int, item: LauncherItem?) {

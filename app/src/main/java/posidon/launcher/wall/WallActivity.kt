@@ -59,17 +59,17 @@ class WallActivity : AppCompatActivity() {
                     dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundColor(0x0)
                     dialog.findViewById<View>(R.id.home)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.home)!!.setOnClickListener {
-                        SetWall(image!!, 0).execute()
+                        ThemeTools.setWallpaper(image!!, 0)
                         dialog.dismiss()
                     }
                     dialog.findViewById<View>(R.id.lock)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.lock)!!.setOnClickListener {
-                        SetWall(image!!, 1).execute()
+                        ThemeTools.setWallpaper(image!!, 1)
                         dialog.dismiss()
                     }
                     dialog.findViewById<View>(R.id.both)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.both)!!.setOnClickListener {
-                        SetWall(image!!, 2).execute()
+                        ThemeTools.setWallpaper(image!!, 2)
                         dialog.dismiss()
                     }
                     dialog.setOnDismissListener { findViewById<View>(R.id.bottomstuff).animate().alpha(1f) }
@@ -79,7 +79,7 @@ class WallActivity : AppCompatActivity() {
 
             if (Gallery.walls[index].type == Wall.Type.SVG) {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.svg"
-                Loader.NullableSvg(url) {
+                Loader.loadNullableSvg(url) { runOnUiThread {
                     onImgLoaded()
                     if (it != null) {
                         val displayWidth = Device.displayWidth
@@ -100,17 +100,17 @@ class WallActivity : AppCompatActivity() {
                         }
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
-                }.execute()
+                }}
             } else {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.png"
-                Loader.NullableBitmap(url) {
+                Loader.loadNullableBitmap(url) { runOnUiThread {
                     onImgLoaded()
                     if (it != null) {
                         image = it
                         if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = centerCropWallpaper(it)
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
-                }.execute()
+                }}
             }
             findViewById<View>(R.id.downloadbtn).setOnClickListener { saveBitmap(image!!, Gallery.walls[index].name!!) }
             findViewById<View>(R.id.downloadbtn).background = btnBG()

@@ -20,47 +20,15 @@ import kotlin.concurrent.thread
 class AppLoader (
     context: Context,
     private val onEnd: () -> Unit
-) : AsyncTask<Unit?, Unit?, Unit?>() {
+) {
 
-    class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
-
-        override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
-            AppLoader(context, onAppLoaderEnd).execute()
-        }
-
-        override fun onPackageChanged(packageName: String, user: UserHandle?) {
-            AppLoader(context, onAppLoaderEnd).execute()
-        }
-
-        override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) {
-            AppLoader(context, onAppLoaderEnd).execute()
-        }
-
-        override fun onPackageAdded(packageName: String, user: UserHandle?) {
-            AppLoader(context, onAppLoaderEnd).execute()
-        }
-
-        override fun onPackageRemoved(packageName: String, user: UserHandle?) {
-            Main.apps.removeAll { it.packageName == packageName }
-            val iter = Main.appSections.iterator()
-            for (section in iter) {
-                section.removeAll {
-                    it.packageName == packageName
-                }
-                if (section.isEmpty()) {
-                    iter.remove()
-                }
-            }
-            App.removePackage(packageName)
-            onAppLoaderEnd()
-        }
-    }
 
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
     private val context: WeakReference<Context> = WeakReference(context)
 
-    override fun doInBackground(objects: Array<Unit?>): Unit? {
+    fun execute() { thread(block = ::run) }
+    fun run() {
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
         val ICONSIZE = 65.dp.toInt()
@@ -173,9 +141,9 @@ class AppLoader (
                         }
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        app.icon = Tools.generateAdaptiveIcon(app.icon!!)
+                        app.icon = ThemeTools.generateAdaptiveIcon(app.icon!!)
                     }
-                    app.icon = Tools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
+                    app.icon = ThemeTools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
                     if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode &&
                         Settings["animatedicons", true]) {
                         try {
@@ -227,22 +195,42 @@ class AppLoader (
                 currentChar = app.label!![0].toUpperCase()
             }
         }
-        return null
+
+        Main.instance.runOnUiThread {
+            run {
+                val tmp = Main.apps
+                Main.apps = tmpApps
+                tmp.clear()
+            }
+            run {
+                val tmp = Main.appSections
+                Main.appSections = tmpAppSections
+                tmp.clear()
+            }
+            App.swapMaps()
+            App.clearSecondMap()
+            onEnd()
+        }
     }
 
-    override fun onPostExecute(v: Unit?) {
-        run {
-            val tmp = Main.apps
-            Main.apps = tmpApps
-            tmp.clear()
+    class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
+        override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()
+        override fun onPackageChanged(packageName: String, user: UserHandle?) = AppLoader(context, onAppLoaderEnd).execute()
+        override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()
+        override fun onPackageAdded(packageName: String, user: UserHandle?) = AppLoader(context, onAppLoaderEnd).execute()
+        override fun onPackageRemoved(packageName: String, user: UserHandle?) {
+            Main.apps.removeAll { it.packageName == packageName }
+            val iter = Main.appSections.iterator()
+            for (section in iter) {
+                section.removeAll {
+                    it.packageName == packageName
+                }
+                if (section.isEmpty()) {
+                    iter.remove()
+                }
+            }
+            App.removePackage(packageName)
+            onAppLoaderEnd()
         }
-        run {
-            val tmp = Main.appSections
-            Main.appSections = tmpAppSections
-            tmp.clear()
-        }
-        App.swapMaps()
-        App.clearSecondMap()
-        onEnd()
     }
 }

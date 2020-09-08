@@ -17,24 +17,24 @@ class DuckInstantAnswer private constructor(
         fun load(string: String, onLoad: (DuckInstantAnswer) -> Unit) {
             val encoded = Uri.encode(string)
             val url = "https://api.duckduckgo.com/?q=$encoded&format=json&t=posidon.launcher"
-            Loader.threadText(url) {
+            Loader.loadText(url) {
                 try {
                     val jObject = JSONObject(it)
                     val title = jObject.getString("Heading")
                     if (title.isBlank()) {
-                        return@threadText
+                        return@loadText
                     }
                     val sourceName = jObject.getString("AbstractSource")
                     if (sourceName.isBlank()) {
-                        return@threadText
+                        return@loadText
                     }
                     val sourceUrl = jObject.getString("AbstractURL")
                     if (sourceUrl.isBlank()) {
-                        return@threadText
+                        return@loadText
                     }
                     val type = jObject.getString("Type")
                     if (type.isBlank()) {
-                        return@threadText
+                        return@loadText
                     }
                     val description = if (type == "D") {
                         jObject.getJSONArray("RelatedTopics").getJSONObject(0).getString("Text")
@@ -42,7 +42,7 @@ class DuckInstantAnswer private constructor(
                         jObject.getString("AbstractText")
                     }
                     if (description.isBlank()) {
-                        return@threadText
+                        return@loadText
                     }
                     onLoad(DuckInstantAnswer(title, sourceName, sourceUrl, description, "https://duckduckgo.com/?q=$encoded&t=posidon.launcher"))
                 } catch (e: JSONException) {

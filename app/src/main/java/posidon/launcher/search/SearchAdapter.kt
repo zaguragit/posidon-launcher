@@ -12,7 +12,7 @@ import posidon.launcher.items.App
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
 
 internal class SearchAdapter(
@@ -58,7 +58,7 @@ internal class SearchAdapter(
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
             badge.text = if (Settings["notif:badges:show_num", true]) item.notificationCount.toString() else ""
-            Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+            ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                 badge.background = bg
                 badge.setTextColor(fg)
             }

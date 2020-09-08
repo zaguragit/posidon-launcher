@@ -133,7 +133,7 @@ class Main : AppCompatActivity() {
                         if (notificationCount != 0) {
                             badge.visibility = View.VISIBLE
                             badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
-                            Tools.generateNotificationBadgeBGnFG { bg, fg ->
+                            ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
                                 badge.background = bg
                                 badge.setTextColor(fg)
                             }
@@ -158,7 +158,7 @@ class Main : AppCompatActivity() {
                     if (notifBadgesEnabled && item.notificationCount != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                        Tools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                        ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
@@ -245,7 +245,7 @@ class Main : AppCompatActivity() {
         }
         setCustomizations = {
 
-            Tools.setDockBG(drawer, realdock, dockContainerContainer)
+            ThemeTools.setDockBG(drawer, realdock, dockContainerContainer)
 
             if (shouldSetApps) AppLoader(this@Main, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
@@ -467,10 +467,6 @@ class Main : AppCompatActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
             exitProcess(0)
-        }
-        if (Settings["dock:isOld", true]) {
-            Dock.convert()
-            Settings["dock:isOld"] = false
         }
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
@@ -803,19 +799,19 @@ class Main : AppCompatActivity() {
         if (Settings["feed:show_spinner", true]) {
             feedProgressBar.visibility = VISIBLE
             feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
-            FeedLoader { success, items ->
+            FeedLoader.loadFeed { success, items ->
                 if (success) {
                     (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
                 }
                 feedProgressBar.animate().translationY(-(72).dp).alpha(0f).onEnd {
                     feedProgressBar.visibility = GONE
                 }
-            }.execute()
-        } else FeedLoader { success, items ->
+            }
+        } else FeedLoader.loadFeed { success, items ->
             if (success) {
                 (feedRecycler.adapter as FeedAdapter).updateFeed(items!!)
             }
-        }.execute()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

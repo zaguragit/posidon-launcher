@@ -1,6 +1,5 @@
 package posidon.launcher.feed.news
 
-import android.os.AsyncTask
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
@@ -18,25 +17,24 @@ import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.max
 
-class FeedLoader(
-    private val onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
-) : AsyncTask<Unit, Unit, Boolean>() {
+object FeedLoader {
 
-    private val feedItems = ArrayList<FeedItem>()
-    private val deleted = Settings.getStrings("feed:deleted_articles")
-    private val pullParserFactory = XmlPullParserFactory.newInstance()
+    val pullParserFactory = XmlPullParserFactory.newInstance()
+    private val endStrings = arrayOf("",
+        "/feed",
+        "/rss",
+        "/feed.xml",
+        "/rss.xml",
+        "/atom",
+        "/atom.xml")
 
-    companion object {
-        private val endStrings = arrayOf("",
-            "/feed",
-            "/rss",
-            "/feed.xml",
-            "/rss.xml",
-            "/atom",
-            "/atom.xml")
-    }
+    fun loadFeed(
+        onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
+    ) {
+        val feedItems = ArrayList<FeedItem>()
+        val deleted = Settings.getStrings("feed:deleted_articles")
+        val lock = ReentrantLock()
 
-    override fun doInBackground(vararg Units: Unit): Boolean? {
         val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         val deletedIter = deleted.iterator()
         for (article in deletedIter) {
@@ -72,7 +70,7 @@ class FeedLoader(
                         try {
                             val newUrl = url + endStrings[i]
                             val connection = URL(newUrl).openConnection()
-                            parseFeed(connection.getInputStream(), Source(name, newUrl, domain))
+                            parseFeed(connection.getInputStream(), Source(name, newUrl, domain), lock, feedItems, deleted)
                             break
                         } catch (e: Exception) {}
                         i++
@@ -106,21 +104,17 @@ class FeedLoader(
             i++
         }
 
-        return feedItems.size != 0
+        onFinished(feedItems.size != 0, feedItems)
     }
 
-    override fun onPostExecute(success: Boolean) = onFinished(success, feedItems)
-
-    private val lock = ReentrantLock()
-
     @Throws(XmlPullParserException::class, IOException::class)
-    private inline fun parseFeed(inputStream: InputStream, source: Source) {
+    private inline fun parseFeed(inputStream: InputStream, source: Source, lock: ReentrantLock, feedItems: ArrayList<FeedItem>, deleted: java.util.ArrayList<String>) {
         var title: String? = null
         var link: String? = null
         var img: String? = null
         var time: Date? = null
         var isItem = 0
-        val feedItems = ArrayList<FeedItem>()
+        val items = ArrayList<FeedItem>()
         inputStream.use {
             val parser: XmlPullParser = pullParserFactory.newPullParser()
             parser.setInput(inputStream, null)
@@ -130,7 +124,7 @@ class FeedLoader(
                 when (parser.eventType) {
                     XmlPullParser.END_TAG -> when {
                         name.equals("item", ignoreCase = true) ||
-                        name.equals("entry", ignoreCase = true) -> {
+                                name.equals("entry", ignoreCase = true) -> {
                             isItem = 0
                             if (title != null && link != null) {
                                 if (Settings["feed:delete_articles", false]) {
@@ -141,10 +135,10 @@ class FeedLoader(
                                         }
                                     }
                                     if (show) {
-                                        feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
+                                        items.add(FeedItem(title!!, link!!, img, time!!, source))
                                     }
                                 } else {
-                                    feedItems.add(FeedItem(title!!, link!!, img, time!!, source))
+                                    items.add(FeedItem(title!!, link!!, img, time!!, source))
                                 }
                             }
                             title = null
@@ -161,8 +155,8 @@ class FeedLoader(
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
-                                    .replace("GMT", "+0000")
-                                    .replace(Regex("[-:, /]"), "")
+                                        .replace("GMT", "+0000")
+                                        .replace(Regex("[-:, /]"), "")
                                 time = try {
                                     SimpleDateFormat("cccddMMMyyyyHHmmssZ", Locale.ROOT).parse(text)!!
                                 } catch (e: Exception) {
@@ -184,10 +178,10 @@ class FeedLoader(
                                     val medium = parser.getAttributeValue(null, "medium")
                                     val url = parser.getAttributeValue(null, "url")
                                     if (medium == "image" ||
-                                        url.endsWith(".jpg") ||
-                                        url.endsWith(".png") ||
-                                        url.endsWith(".svg") ||
-                                        url.endsWith(".jpeg")) {
+                                            url.endsWith(".jpg") ||
+                                            url.endsWith(".png") ||
+                                            url.endsWith(".svg") ||
+                                            url.endsWith(".jpeg")) {
                                         img = url
                                     }
                                 }
@@ -199,7 +193,7 @@ class FeedLoader(
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("id", ignoreCase = true) -> link = getText(parser)
                             name.equals("published", ignoreCase = true) ||
-                            name.equals("updated", ignoreCase = true) -> {
+                                    name.equals("updated", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
                                 val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
                                 time = try { format.parse(text)!! } catch (e: Exception) { Date(0) }
@@ -224,7 +218,7 @@ class FeedLoader(
             }
         }
         lock.lock()
-        this.feedItems.addAll(feedItems)
+        feedItems.addAll(items)
         lock.unlock()
     }
 

@@ -8,6 +8,7 @@ import android.widget.*
 import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.view.HighlightAdapter
@@ -70,7 +71,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
             badge.text = if (Settings["notif:badges:show_num", true]) app.notificationCount.toString() else ""
-            Tools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
+            ThemeTools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
                 badge.background = bg
                 badge.setTextColor(fg)
             }
