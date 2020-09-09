@@ -19,7 +19,7 @@ object Gestures {
     fun performTrigger(key: String) {
         when (key) {
             PULL_DOWN_NOTIFICATIONS -> Tools.publicContext!!.pullStatusbar()
-            OPEN_APP_DRAWER -> Home.instance.behavior.state = BottomDrawerBehavior.STATE_EXPANDED
+            OPEN_APP_DRAWER -> Home.instance.drawer.state = BottomDrawerBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.publicContext!!.startActivity(Intent(Tools.publicContext, SearchActivity::class.java))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
             REFRESH_FEED -> Home.instance.loadFeed()

@@ -65,62 +65,11 @@
         </RelativeLayout>
     </posidon.launcher.view.NestedScrollView>
 
-    <LinearLayout
+    <posidon.launcher.view.drawer.DrawerView
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="posidon.launcher.view.drawer.LockableBottomDrawerBehavior"
-        android:orientation="vertical"
         app:hideable="false"
-        app:peekHeight="0dp">
-        <!--include layout="@layout/dock"/-->
-        <posidon.launcher.view.drawer.DockView
-            android:id="@+id/dock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
-        <FrameLayout
-            android:id="@+id/drawercontent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <posidon.launcher.view.GridView
-                android:id="@+id/drawergrid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:stretchMode="columnWidth"
-                android:listSelector="#00000000"
-                android:fadingEdge="vertical"
-                android:fadingEdgeLength="72dp"
-                android:requiresFadingEdge="vertical"
-                android:scrollbars="none"
-                android:clipToPadding="false"
-                android:alpha="0"/>
-            <LinearLayout
-                android:id="@+id/searchbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:onClick="openSearch">
-                <ImageView
-                    android:id="@+id/searchIcon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:padding="12dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_search"
-                    android:tint="#ffffff"/>
-                <TextView
-                    android:id="@+id/searchTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="-16dp"
-                    android:gravity="center_vertical"
-                    android:padding="12dp"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
+        app:peekHeight="0dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
