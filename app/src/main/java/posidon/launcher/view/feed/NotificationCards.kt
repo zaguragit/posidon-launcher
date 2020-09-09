@@ -1,5 +1,6 @@
 package posidon.launcher.view.feed
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.ShapeDrawable
@@ -12,8 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
@@ -133,7 +134,7 @@ class NotificationCards : LinearLayout, FeedSection {
         notifications.adapter = NotificationAdapter(context)
     }
 
-    fun updateTheme() {
+    override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
         (parentNotification.layoutParams as LayoutParams).apply {
@@ -150,10 +151,10 @@ class NotificationCards : LinearLayout, FeedSection {
         parentNotification.background = notificationBackground
         parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
         parentNotificationTitle.typeface = context.mainFont
-        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(Main.accentColor)) -0x1000000 else -0x1)
-        parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Main.accentColor)
-        parentNotificationBtn.imageTintList = ColorStateList.valueOf(Main.accentColor)
-        parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(Home.accentColor)) -0x1000000 else -0x1)
+        parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Home.accentColor)
+        parentNotificationBtn.imageTintList = ColorStateList.valueOf(Home.accentColor)
+        parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
         isCollapsingEnabled = Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1
     }
 }

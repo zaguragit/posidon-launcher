@@ -1,5 +1,6 @@
 package posidon.launcher.view.feed
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
@@ -50,7 +51,7 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         }
     }
 
-    fun updateTheme() {
+    override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
         background = ShapeDrawable().apply {
@@ -64,6 +65,14 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             rightMargin = marginX
             topMargin = marginY
             bottomMargin = marginY
+        }
+    }
+
+    fun update(activity: Activity) {
+        ContactItem.getList(true).also {
+            activity.runOnUiThread {
+                setItems(it)
+            }
         }
     }
 }

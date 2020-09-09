@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.vibrate
@@ -30,7 +30,7 @@ class FeedChooserAdapter(
         val url = feedUrls[i]
         holder.text.text = url
 
-        holder.card.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+        holder.card.backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
         holder.text.setOnLongClickListener {
             context.vibrate()
             val dialog = BottomSheetDialog(context, R.style.bottomsheet)
@@ -39,8 +39,8 @@ class FeedChooserAdapter(
             val title = dialog.findViewById<EditText>(R.id.title)!!
             val done = dialog.findViewById<TextView>(R.id.done)!!
             title.text = Editable.Factory().newEditable(url)
-            done.setTextColor(Main.accentColor)
-            done.backgroundTintList = ColorStateList.valueOf(Main.accentColor and 0x00ffffff or 0x33000000)
+            done.setTextColor(Home.accentColor)
+            done.backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
             done.setOnClickListener {
                 dialog.dismiss()
                 feedUrls[i] = title.text.toString().replace('|', ' ')

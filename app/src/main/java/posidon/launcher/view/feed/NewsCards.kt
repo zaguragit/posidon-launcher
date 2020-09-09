@@ -25,12 +25,6 @@ class NewsCards : RecyclerView, FeedSection {
         isNestedScrollingEnabled = false
     }
 
-    fun updateTheme(activity: Activity) {
-        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-        (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
-        adapter = FeedAdapter(ArrayList(), activity)
-    }
-
     var wasHiddenLastTime = true
 
     fun hide() {
@@ -53,5 +47,11 @@ class NewsCards : RecyclerView, FeedSection {
 
     inline fun updateFeed(items: ArrayList<FeedItem>) {
         (adapter as FeedAdapter).updateFeed(items)
+    }
+
+    override fun updateTheme(activity: Activity) {
+        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+        (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
+        adapter = FeedAdapter(ArrayList(), activity)
     }
 }

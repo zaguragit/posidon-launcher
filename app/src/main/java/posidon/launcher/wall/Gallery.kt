@@ -17,7 +17,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
@@ -65,7 +65,7 @@ class Gallery : AppCompatActivity() {
                     try { wallManager.setBitmap(c) }
                     catch (e: Exception) {}
                 }
-                startActivity(Intent(this, Main::class.java))
+                startActivity(Intent(this, Home::class.java))
             }
         }
         val loading = findViewById<ImageView>(R.id.loading)

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import posidon.launcher.BuildConfig
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 
@@ -19,7 +19,7 @@ class StackTraceActivity : AppCompatActivity() {
         System.gc()
         kotlin.runCatching {
             if (Settings["dev:hide_crash_logs", true]) {
-                startActivity(Intent(this, Main::class.java))
+                startActivity(Intent(this, Home::class.java))
                 finish()
                 return
             }

@@ -10,7 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
@@ -48,7 +48,7 @@ class Widget(val uid: Int) {
                 val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-                Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
+                Home.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
             }
             Settings["widget:$uid"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
             widgetLayout.addView(hostView)
@@ -82,7 +82,7 @@ class Widget(val uid: Int) {
                     val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
-                    Main.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
+                    Home.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
             }
             hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo).apply {
@@ -104,7 +104,7 @@ class Widget(val uid: Int) {
         pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo)
         val customExtras: ArrayList<out Parcelable?> = ArrayList()
         pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
-        Main.instance.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
+        Home.instance.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
     }
 
     fun deleteWidget(widgetLayout: ResizableLayout) {

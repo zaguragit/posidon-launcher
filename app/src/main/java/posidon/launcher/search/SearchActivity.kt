@@ -26,7 +26,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.*
@@ -108,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
                 if (Settings["search:asHome", false]) {
                     searchTxt.text.clear()
                 } else {
-                    startActivity(Intent(this@SearchActivity, Main::class.java))
+                    startActivity(Intent(this@SearchActivity, Home::class.java))
                 }
             }
         }
@@ -244,7 +244,7 @@ class SearchActivity : AppCompatActivity() {
         findViewById<View>(R.id.fail).visibility = View.GONE
         val appLoaderThread = thread (isDaemon = true) {
             var i = 0
-            for (app in Main.apps) {
+            for (app in Home.apps) {
                 if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
                     app.label!!.contains(string) ||
                     packageSearch && (

@@ -9,8 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
+import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
@@ -33,7 +33,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
             if (field) {
                 dragHandle.visibility = VISIBLE
                 crossButton.visibility = VISIBLE
-                dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Main.accentColor))
+                dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Home.accentColor))
             } else {
                 dragHandle.visibility = GONE
                 crossButton.visibility = GONE
@@ -64,7 +64,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
         clipChildren = false
         dragHandle = findViewById(R.id.handle)
         dragHandle.visibility = if (resizing) VISIBLE else GONE
-        dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Main.accentColor))
+        dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Home.accentColor))
         dragHandle.backgroundTintMode = PorterDuff.Mode.MULTIPLY
         var oldHeight = 0
         var oldMillis = System.currentTimeMillis()

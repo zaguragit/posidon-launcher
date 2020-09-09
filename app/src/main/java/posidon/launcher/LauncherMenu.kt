@@ -45,7 +45,7 @@ class LauncherMenu : OnLongClickListener {
 
         fun openOverview() {
             if (!isActive) {
-                open(Tools.publicContext!!, Main.instance.window)
+                open(Tools.publicContext!!, Home.instance.window)
             }
         }
 
@@ -74,7 +74,7 @@ class LauncherMenu : OnLongClickListener {
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Main.instance.widgetLayout.widget.selectWidget()
+                Home.instance.widgetLayout.widget.selectWidget()
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)

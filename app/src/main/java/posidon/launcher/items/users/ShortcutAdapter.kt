@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.users.ShortcutAdapter.ShortcutViewHolder
 
@@ -28,10 +28,10 @@ class ShortcutAdapter(private val context: Context, private val shortcuts: List<
         val txt = holder.view.findViewById<TextView>(R.id.icontxt)
         txt.text = shortcuts[position].shortLabel
         txt.setTextColor(txtColor)
-        holder.view.findViewById<ImageView>(R.id.iconimg).setImageDrawable(Main.launcherApps.getShortcutIconDrawable(shortcuts[position], context.resources.displayMetrics.densityDpi))
+        holder.view.findViewById<ImageView>(R.id.iconimg).setImageDrawable(Home.launcherApps.getShortcutIconDrawable(shortcuts[position], context.resources.displayMetrics.densityDpi))
         holder.view.setOnClickListener {
             ItemLongPress.currentPopup?.dismiss()
-            Main.launcherApps.startShortcut(shortcuts[position], null, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
+            Home.launcherApps.startShortcut(shortcuts[position], null, ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle())
         }
     }
 

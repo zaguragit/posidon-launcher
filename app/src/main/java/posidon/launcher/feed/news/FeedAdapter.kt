@@ -14,8 +14,8 @@ import androidx.cardview.widget.CardView
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.FeedModelViewHolder
 import posidon.launcher.storage.Settings
@@ -101,7 +101,7 @@ class FeedAdapter(
                         }
                         view.setPadding(0, 0, 0, Tools.navbarHeight)
                         view.layoutParams = view.layoutParams
-                        setActionTextColor(Main.accentColor)
+                        setActionTextColor(Home.accentColor)
                         view.background = context.resources.getDrawable(R.drawable.card, null)
                     }.show()
                 }
@@ -131,7 +131,7 @@ class FeedAdapter(
                 onImageLoadEnd(images[feedItem.img]!!)
             } else {
                 holder.image.setImageDrawable(null)
-                feedItem.tryLoadImage(maxWidth, Loader.AUTO) { Main.instance.runOnUiThread {
+                feedItem.tryLoadImage(maxWidth, Loader.AUTO) { Home.instance.runOnUiThread {
                     images[feedItem.img] = it
                     onImageLoadEnd(it)
                 }}

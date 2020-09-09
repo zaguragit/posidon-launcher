@@ -7,7 +7,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.*
 import androidx.palette.graphics.Palette
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
@@ -75,12 +75,12 @@ class AppLoader (
             }
         } catch (e: Exception) {}
 
-        val userManager = Main.instance.getSystemService(Context.USER_SERVICE) as UserManager
+        val userManager = Home.instance.getSystemService(Context.USER_SERVICE) as UserManager
         var lastThread: Thread? = null
 
         for (profile in userManager.userProfiles) {
 
-            val appList = Main.launcherApps.getActivityList(null, profile)
+            val appList = Home.launcherApps.getActivityList(null, profile)
 
             for (i in appList.indices) {
 
@@ -196,15 +196,15 @@ class AppLoader (
             }
         }
 
-        Main.instance.runOnUiThread {
+        Home.instance.runOnUiThread {
             run {
-                val tmp = Main.apps
-                Main.apps = tmpApps
+                val tmp = Home.apps
+                Home.apps = tmpApps
                 tmp.clear()
             }
             run {
-                val tmp = Main.appSections
-                Main.appSections = tmpAppSections
+                val tmp = Home.appSections
+                Home.appSections = tmpAppSections
                 tmp.clear()
             }
             App.swapMaps()
@@ -219,8 +219,8 @@ class AppLoader (
         override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackageAdded(packageName: String, user: UserHandle?) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackageRemoved(packageName: String, user: UserHandle?) {
-            Main.apps.removeAll { it.packageName == packageName }
-            val iter = Main.appSections.iterator()
+            Home.apps.removeAll { it.packageName == packageName }
+            val iter = Home.appSections.iterator()
             for (section in iter) {
                 section.removeAll {
                     it.packageName == packageName

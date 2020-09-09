@@ -29,7 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -67,13 +67,13 @@ object Tools {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && d is Animatable2 -> {
                 d.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable) = Main.instance.runOnUiThread { d.start() }
+                    override fun onAnimationEnd(drawable: Drawable) = Home.instance.runOnUiThread { d.start() }
                 })
                 d.start()
             }
             d is Animatable2Compat -> {
                 d.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
-                    override fun onAnimationEnd(drawable: Drawable) = Main.instance.runOnUiThread { d.start() }
+                    override fun onAnimationEnd(drawable: Drawable) = Home.instance.runOnUiThread { d.start() }
                 })
                 d.start()
             }
@@ -453,7 +453,7 @@ object Tools {
     fun selectApp(context: Context, includeHidden: Boolean, out: (app: App) -> Unit) = Dialog(context, R.style.longpressmenusheet).run {
         setContentView(RecyclerView(context).apply {
             val apps = if (includeHidden) ArrayList<App>().apply {
-                addAll(Main.apps)
+                addAll(Home.apps)
                 addAll(App.hidden)
                 if (Settings["drawer:sorting", 0] == 1) sortWith { o1, o2 ->
                     val iHsv = floatArrayOf(0f, 0f, 0f)
@@ -465,7 +465,7 @@ object Tools {
                 else sortWith { o1, o2 ->
                     o1.label!!.compareTo(o2.label!!, ignoreCase = true)
                 }
-            } else Main.apps
+            } else Home.apps
             layoutManager = GridLayoutManager(context, 4)
             adapter = AppSelectionAdapter(apps) {
                 out(it)

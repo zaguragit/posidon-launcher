@@ -74,7 +74,7 @@
         </service>
 
         <activity
-            android:name=".Main"
+            android:name=".Home"
             android:clearTaskOnLaunch="true"
             android:configChanges="mcc|mnc|uiMode|keyboard|keyboardHidden|screenSize|orientation|navigation|screenLayout|smallestScreenSize"
             android:excludeFromRecents="true"

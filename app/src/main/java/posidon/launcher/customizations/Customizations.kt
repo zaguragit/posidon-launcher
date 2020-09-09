@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -65,7 +65,7 @@ class Customizations : AppCompatActivity() {
     }
 
     private fun cardThing() {
-        if (Main.customized && !Settings["rated", false]) {
+        if (Home.customized && !Settings["rated", false]) {
             findViewById<View>(R.id.card).visibility = View.VISIBLE
             findViewById<View>(R.id.yesBtn).setOnClickListener {
                 val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))

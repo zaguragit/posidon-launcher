@@ -14,7 +14,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
 import androidx.palette.graphics.Palette
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -73,7 +73,7 @@ class NotificationService : NotificationListenerService() {
             var notificationsAmount2 = 0
             val useMusicPlayer = Settings["notif:usePlayer", true]
             try {
-                for (app in Main.apps) {
+                for (app in Home.apps) {
                     app.notificationCount = 0
                 }
                 if (notifications != null) {
@@ -175,8 +175,8 @@ class NotificationService : NotificationListenerService() {
                         notificationsAmount2++
                         i++
                     }
-                    if (!hasMusic) Main.instance.runOnUiThread { Main.instance.musicCard.visibility = View.GONE }
-                } else Main.instance.runOnUiThread { Main.instance.musicCard.visibility = View.GONE }
+                    if (!hasMusic) Home.instance.runOnUiThread { Home.instance.musicCard.visibility = View.GONE }
+                } else Home.instance.runOnUiThread { Home.instance.musicCard.visibility = View.GONE }
             }
             catch (e: Exception) { e.printStackTrace() }
             catch (e: OutOfMemoryError) {
@@ -231,9 +231,9 @@ class NotificationService : NotificationListenerService() {
             var subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
             if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
-            Main.instance.runOnUiThread {
-                Main.instance.musicCard.visibility = View.VISIBLE
-                Main.instance.musicCard.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
+            Home.instance.runOnUiThread {
+                Home.instance.musicCard.visibility = View.VISIBLE
+                Home.instance.musicCard.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
             }
         }
 

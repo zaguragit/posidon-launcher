@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.Process
 import android.view.View
 import androidx.annotation.RequiresApi
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -24,7 +24,7 @@ class Shortcut : LauncherItem {
         label = shortcut.shortLabel.toString()
         packageName = shortcut.`package`
         id = shortcut.id
-        icon = Main.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
+        icon = Home.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
         println("UAN__ $label $this")
         pinnedShortcuts.putIfAbsent(this.toString(), this)
     }
@@ -32,7 +32,7 @@ class Shortcut : LauncherItem {
     constructor(string: String) {
         packageName = string.substring(9).substringBefore('/')
         id = string.substring(10 + packageName.length)
-        val shortcuts = Main.launcherApps.getShortcuts(LauncherApps.ShortcutQuery().apply {
+        val shortcuts = Home.launcherApps.getShortcuts(LauncherApps.ShortcutQuery().apply {
             setPackage(packageName)
             //setShortcutIds(listOf(id))
             setQueryFlags(
@@ -43,7 +43,7 @@ class Shortcut : LauncherItem {
         }, Process.myUserHandle())
         val shortcut = shortcuts?.getOrNull(0)
         if (shortcut != null) {
-            icon = Main.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
+            icon = Home.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
             label = shortcut.shortLabel?.toString()
         }
         for (s in shortcuts!!) {
@@ -57,7 +57,7 @@ class Shortcut : LauncherItem {
 
     fun open(context: Context, view: View) {
         try {
-            Main.launcherApps.startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
+            Home.launcherApps.startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 "clip_reveal" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)

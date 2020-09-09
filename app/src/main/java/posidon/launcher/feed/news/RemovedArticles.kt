@@ -13,7 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -53,9 +53,9 @@ class RemovedArticles : AppCompatActivity() {
             val button = TextView(context).apply {
                 text = context.getString(R.string.restore)
                 textSize = 15f
-                setTextColor(if (ColorTools.useDarkText(Main.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
+                setTextColor(if (ColorTools.useDarkText(Home.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
                 background = context.getDrawable(R.drawable.button_bg_round)
-                backgroundTintList = ColorStateList.valueOf(Main.accentColor)
+                backgroundTintList = ColorStateList.valueOf(Home.accentColor)
                 val h = 20.dp.toInt()
                 val v = 8.dp.toInt()
                 setPadding(h, v, h, v)

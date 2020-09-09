@@ -1,3 +1,7 @@
 package posidon.launcher.view.feed
 
-interface FeedSection
+import android.app.Activity
+
+interface FeedSection {
+    fun updateTheme(activity: Activity)
+}

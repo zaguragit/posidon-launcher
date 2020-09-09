@@ -21,7 +21,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.App
@@ -152,7 +152,7 @@ object ItemLongPress {
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     Dock[i] = null
-                    Main.setDock()
+                    Home.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
@@ -189,7 +189,7 @@ object ItemLongPress {
                     folderWindow.dismiss()
                     folder.items.removeAt(folderI)
                     Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
-                    Main.setDock()
+                    Home.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
@@ -214,7 +214,7 @@ object ItemLongPress {
 
     fun olddrawer(context: Context) = OnItemLongClickListener { _, view, position, _ ->
         if (currentPopup == null) try {
-            val app = Main.apps[position]
+            val app = Home.apps[position]
             val icon = view.findViewById<View>(R.id.iconimg)
             val location = IntArray(2)
             val popupWindow = popupWindow(context, object : Methods {
@@ -315,7 +315,7 @@ object ItemLongPress {
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     Dock[i] = null
-                    Main.setDock()
+                    Home.setDock()
                 }
                 override fun onEdit(v: View) {
                     val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
@@ -333,7 +333,7 @@ object ItemLongPress {
                         folder.label = editLabel.text.toString().replace('\t', ' ')
                         Settings["folder:${folder.uid}:label"] = folder.label
                         Dock[i] = folder
-                        Main.setDock()
+                        Home.setDock()
                     }
                     editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
                 }
@@ -376,8 +376,8 @@ object ItemLongPress {
         editLabel.setText(Settings[app.packageName + "/" + app.name + "?label", app.label!!])
         editWindow.setOnDismissListener {
             Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\t', ' ')
-            Main.shouldSetApps = true
-            Main.setDock()
+            Home.shouldSetApps = true
+            Home.setDock()
         }
         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
     }

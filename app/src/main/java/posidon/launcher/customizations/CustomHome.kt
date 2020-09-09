@@ -9,7 +9,7 @@ import android.widget.EditText
 import android.widget.TextClock
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -46,11 +46,11 @@ class CustomHome : AppCompatActivity() {
             })
             dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
         }
-        Main.customized = true
+        Home.customized = true
     }
 
     override fun onPause() {
-        Main.customized = true
+        Home.customized = true
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             apply()
