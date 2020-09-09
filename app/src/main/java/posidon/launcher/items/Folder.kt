@@ -239,7 +239,7 @@ class Folder(string: String) : LauncherItem() {
                             if (x > view.width / 3.5f || y > view.height / 3.5f) {
                                 ItemLongPress.currentPopup?.dismiss()
                                 currentlyOpen?.dismiss()
-                                Home.instance.behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                                Home.instance.drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
                             }
                         }
                     }

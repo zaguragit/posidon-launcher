@@ -21,7 +21,10 @@ import android.os.*
 import android.util.Log
 import android.view.*
 import android.view.View.*
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import posidon.launcher.LauncherMenu.PinchListener
@@ -42,13 +45,12 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.AlphabetScrollbar
-import posidon.launcher.view.GridView
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.drawer.DockView
-import posidon.launcher.view.drawer.LockableBottomDrawerBehavior
+import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.*
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
@@ -60,14 +62,10 @@ import kotlin.system.exitProcess
 
 class Home : FragmentActivity() {
 
-    private lateinit var drawerGrid: GridView
-    private lateinit var drawer: View
+    lateinit var drawer: DrawerView
     private lateinit var drawerScrollBar: AlphabetScrollbar
-    lateinit var behavior: LockableBottomDrawerBehavior<View>
 
     private lateinit var blurBg: LayerDrawable
-
-    private lateinit var searchBar: View
 
     private lateinit var desktop: NestedScrollView
     private lateinit var desktopContent: View
@@ -101,26 +99,26 @@ class Home : FragmentActivity() {
 
             if (shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
-                    drawerGrid.adapter = SectionedDrawerAdapter()
-                    drawerGrid.onItemClickListener = null
-                    drawerGrid.onItemLongClickListener = null
+                    drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+                    drawer.drawerGrid.onItemClickListener = null
+                    drawer.drawerGrid.onItemLongClickListener = null
                 } else {
-                    drawerGrid.adapter = DrawerAdapter()
-                    drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
-                    drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
+                    drawer.drawerGrid.adapter = DrawerAdapter()
+                    drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+                    drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
                 }
                 setDock()
             }
 
             if (Settings["drawer:sections_enabled", false]) {
-                drawerGrid.numColumns = 1
-                drawerGrid.verticalSpacing = 0
+                drawer.drawerGrid.numColumns = 1
+                drawer.drawerGrid.verticalSpacing = 0
             } else {
-                drawerGrid.numColumns = Settings["drawer:columns", 4]
-                drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+                drawer.drawerGrid.numColumns = Settings["drawer:columns", 4]
+                drawer.drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
             }
 
-            behavior.setLocked(!Settings["drawer:slide_up", true])
+            drawer.setLocked(!Settings["drawer:slide_up", true])
 
             applyFontSetting()
 
@@ -171,14 +169,14 @@ class Home : FragmentActivity() {
                         feedRecycler.show()
                         if (distance > a || y >= desktopContent.height - dock.dockHeight - desktop.height) {
                             if (!LauncherMenu.isActive) {
-                                behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                                drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
                             }
                         } else if (distance < -a) {
-                            behavior.state = BottomDrawerBehavior.STATE_HIDDEN
+                            drawer.state = BottomDrawerBehavior.STATE_HIDDEN
                         }
                     } else {
                         if (!LauncherMenu.isActive) {
-                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                         if (y < a && oldY >= a) {
                             feedRecycler.hide()
@@ -192,10 +190,10 @@ class Home : FragmentActivity() {
                     val distance = oldY - y
                     if (distance > a || y < a || y + desktop.height >= desktopContent.height - dock.dockHeight) {
                         if (!LauncherMenu.isActive) {
-                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                     } else if (distance < -a) {
-                        behavior.state = BottomDrawerBehavior.STATE_HIDDEN
+                        drawer.state = BottomDrawerBehavior.STATE_HIDDEN
                     }
                 }
             }
@@ -215,7 +213,7 @@ class Home : FragmentActivity() {
                             notifications.update()
                         }
                         if (Settings["notif:badges", true]) runOnUiThread {
-                            drawerGrid.invalidateViews()
+                            drawer.drawerGrid.invalidateViews()
                             setDock()
                         }
                     } catch (e: Exception) { e.printStackTrace() }
@@ -270,7 +268,7 @@ class Home : FragmentActivity() {
             isNestedScrollingEnabled = false
             isSmoothScrollingEnabled = false
             onTopOverScroll = {
-                if (!LauncherMenu.isActive && behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
+                if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                     Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
                 }
             }
@@ -283,18 +281,9 @@ class Home : FragmentActivity() {
             desktopContent.setOnLongClickListener(LauncherMenu())
         }
 
-        drawerGrid = findViewById(R.id.drawergrid)
-        searchBar = findViewById(R.id.searchbar)
-        drawerGrid.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && drawerGrid.canScrollVertically(-1))
-                drawerGrid.requestDisallowInterceptTouchEvent(true)
-            false
-        }
-        drawer = findViewById(R.id.drawer)
-        behavior = LockableBottomDrawerBehavior.from<View>(drawer).apply {
-            state = BottomDrawerBehavior.STATE_COLLAPSED
-            isHideable = false
-            addBottomSheetCallback(object : BottomSheetCallback() {
+        drawer = findViewById<DrawerView>(R.id.drawer).apply {
+            init()
+            addCallback(object : BottomSheetCallback() {
 
                 val things = IntArray(5)
                 val radii = FloatArray(8)
@@ -316,6 +305,11 @@ class Home : FragmentActivity() {
                                 list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
                                 window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
                             }
+                            val tr = Settings["dockradius", 30].dp
+                            radii[0] = tr
+                            radii[1] = tr
+                            radii[2] = tr
+                            radii[3] = tr
                         }
                         BottomDrawerBehavior.STATE_EXPANDED -> {
                             if (Settings["kustom:variables:enable", false]) {
@@ -328,16 +322,11 @@ class Home : FragmentActivity() {
                         }
                     }
                     ItemLongPress.currentPopup?.dismiss()
-                    colors[2] = Settings["drawer:background_color", -0x78000000]
                     floats[0] = dock.dockHeight.toFloat() / (Device.displayHeight + dock.dockHeight)
                     things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
                     things[1] = Settings["dock:background_color", -0x78000000]
                     things[2] = Settings["dock:background_type", 0]
-                    val tr = Settings["dockradius", 30].dp
-                    radii[0] = tr
-                    radii[1] = tr
-                    radii[2] = tr
-                    radii[3] = tr
+                    colors[2] = Settings["drawer:background_color", -0x78000000]
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -383,8 +372,8 @@ class Home : FragmentActivity() {
             })
         }
 
-        drawerScrollBar = AlphabetScrollbar(drawerGrid)
-        findViewById<ViewGroup>(R.id.drawercontent).addView(drawerScrollBar)
+        drawerScrollBar = AlphabetScrollbar(drawer.drawerGrid)
+        drawer.drawerContent.addView(drawerScrollBar)
         (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
             width = 24.dp.toInt()
             gravity = Gravity.END
@@ -401,14 +390,14 @@ class Home : FragmentActivity() {
 
         widgetLayout.init(0xe1d9e15)
 
-        dock = findViewById(R.id.dock)
+        dock = drawer.dock
 
         setCustomizations()
         loadFeed()
 
         val scaleGestureDetector = ScaleGestureDetector(this@Home, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP && behavior.state == BottomDrawerBehavior.STATE_COLLAPSED)
+            if (event.action == MotionEvent.ACTION_UP && drawer.state == BottomDrawerBehavior.STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Home).sendWallpaperCommand(
                     v.windowToken,
                     WallpaperManager.COMMAND_TAP,
@@ -438,7 +427,7 @@ class Home : FragmentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val list = ArrayList<Rect>()
             list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-            findViewById<View>(R.id.homeView).systemGestureExclusionRects = list
+            window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
         }
 
         blurBg = LayerDrawable(arrayOf<Drawable>(
@@ -464,17 +453,17 @@ class Home : FragmentActivity() {
     }
 
     private val onAppLoaderEnd = {
-        val s = drawerGrid.scrollY
+        val s = drawer.drawerGrid.scrollY
         if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.adapter = SectionedDrawerAdapter()
-            drawerGrid.onItemClickListener = null
-            drawerGrid.onItemLongClickListener = null
+            drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+            drawer.drawerGrid.onItemClickListener = null
+            drawer.drawerGrid.onItemLongClickListener = null
         } else {
-            drawerGrid.adapter = DrawerAdapter()
-            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
-            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
+            drawer.drawerGrid.adapter = DrawerAdapter()
+            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
         }
-        drawerGrid.scrollY = s
+        drawer.drawerGrid.scrollY = s
         drawerScrollBar.updateAdapter()
         setDock()
     }
@@ -528,7 +517,7 @@ class Home : FragmentActivity() {
         val tmp = Tools.navbarHeight
         updateNavbarHeight(this)
         if (Tools.canBlurDrawer) {
-            val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
+            val shouldHide = drawer.state == BottomDrawerBehavior.STATE_COLLAPSED || drawer.state == BottomDrawerBehavior.STATE_HIDDEN
             thread (isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["drawer:blur:rad", 15f]
@@ -567,7 +556,7 @@ class Home : FragmentActivity() {
         if (LauncherMenu.isActive) {
             LauncherMenu.dialog!!.dismiss()
         }
-        behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+        drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         if (!Settings["feed:keep_pos", false]) {
             desktop.scrollTo(0, 0)
         }
@@ -590,13 +579,13 @@ class Home : FragmentActivity() {
         widgetLayout.startListening()
 
         if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.adapter = SectionedDrawerAdapter()
-            drawerGrid.onItemClickListener = null
-            drawerGrid.onItemLongClickListener = null
+            drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+            drawer.drawerGrid.onItemClickListener = null
+            drawer.drawerGrid.onItemLongClickListener = null
         } else {
-            drawerGrid.adapter = DrawerAdapter()
-            drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
-            drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
+            drawer.drawerGrid.adapter = DrawerAdapter()
+            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
         }
         drawerScrollBar.updateAdapter()
     }
@@ -622,7 +611,7 @@ class Home : FragmentActivity() {
             }
 
             if (Settings["kustom:variables:enable", false]) {
-                if (behavior.state == STATE_EXPANDED) {
+                if (drawer.state == STATE_EXPANDED) {
                     Kustom["screen"] = "drawer"
                 } else {
                     Kustom["screen"] = "home"
@@ -636,7 +625,7 @@ class Home : FragmentActivity() {
     }
 
     override fun onBackPressed() = when {
-        behavior.state == BottomDrawerBehavior.STATE_EXPANDED -> behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+        drawer.state == BottomDrawerBehavior.STATE_EXPANDED -> drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         widgetLayout.resizing -> widgetLayout.resizing = false
         else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
@@ -657,7 +646,7 @@ class Home : FragmentActivity() {
 
         lateinit var setCustomizations: () -> Unit private set
 
-        fun setDock() = instance.dock.loadApps(instance.drawer, instance.behavior, instance.desktop, instance.desktopContent, instance)
+        fun setDock() = instance.dock.loadApps(instance.drawer, instance.desktop, instance.desktopContent, instance)
 
         lateinit var launcherApps: LauncherApps
         lateinit var musicService: AudioManager
@@ -668,7 +657,7 @@ class Home : FragmentActivity() {
 
         fun setSearchHintText(text: String) {
             Settings["searchhinttxt"] = text
-            instance.findViewById<TextView>(R.id.searchTxt).text = text
+            instance.drawer.searchTxt.text = text
             instance.dock.searchTxt.text = text
         }
 
@@ -678,7 +667,7 @@ class Home : FragmentActivity() {
             val tr = Settings["searchradius", 0].dp
             bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             bg.paint.color = color
-            instance.searchBar.background = bg
+            instance.drawer.searchBar.background = bg
         }
 
         fun setDrawerSearchbarRadius(radius: Int) {
@@ -687,25 +676,25 @@ class Home : FragmentActivity() {
             val tr = radius.dp
             bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             bg.paint.color = Settings["searchcolor", 0x33000000]
-            instance.searchBar.background = bg
+            instance.drawer.searchBar.background = bg
         }
 
         fun setDrawerSearchbarFGColor(color: Int) {
             Settings["searchtxtcolor"] = color
-            instance.findViewById<TextView>(R.id.searchTxt).setTextColor(color)
-            val searchIcon = instance.findViewById<ImageView>(R.id.searchIcon)
+            instance.drawer.searchTxt.setTextColor(color)
+            val searchIcon = instance.drawer.searchIcon
             searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
         }
 
         fun setDrawerSearchBarVisible(visible: Boolean) {
             Settings["drawersearchbarenabled"] = visible
             if (visible) {
-                instance.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
-                instance.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
-                instance.searchBar.visibility = VISIBLE
+                instance.drawer.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
+                instance.drawer.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
+                instance.drawer.searchBar.visibility = VISIBLE
             } else {
-                instance.searchBar.visibility = GONE
-                instance.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
+                instance.drawer.searchBar.visibility = GONE
+                instance.drawer.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
             }
         }
 
@@ -764,15 +753,15 @@ class Home : FragmentActivity() {
             //Settings["drawer:scrollbar_enabled"] = enabled
             if (enabled) {
                 instance.drawerScrollBar.visibility = VISIBLE
-                (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
+                (instance.drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
                     if (Settings["drawer:sections_enabled", false]) 0
                     else 24.dp.toInt()
-                instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
+                instance.drawer.drawerGrid.layoutParams = instance.drawer.drawerGrid.layoutParams
                 instance.drawerScrollBar.update()
             } else  {
                 instance.drawerScrollBar.visibility = GONE
-                (instance.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
-                instance.drawerGrid.layoutParams = instance.drawerGrid.layoutParams
+                (instance.drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
+                instance.drawer.drawerGrid.layoutParams = instance.drawer.drawerGrid.layoutParams
             }
         }
 

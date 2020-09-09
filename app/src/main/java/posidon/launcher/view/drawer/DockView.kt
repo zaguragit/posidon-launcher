@@ -91,7 +91,7 @@ class DockView : LinearLayout {
         addView(containerContainer, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
-    fun loadApps(drawer: View, behavior: LockableBottomDrawerBehavior<View>, desktop: View, desktopContent: View, activity: Activity) {
+    fun loadApps(drawer: DrawerView, desktop: View, desktopContent: View, activity: Activity) {
         val columnCount = Settings["dock:columns", 5]
         val appSize = min(when (Settings["dockicsize", 1]) {
             0 -> 64.dp.toInt()
@@ -177,10 +177,10 @@ class DockView : LinearLayout {
             containerHeight + 14.dp.toInt()
         }
         container.layoutParams.height = containerHeight
-        behavior.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
+        drawer.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
         val metrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getRealMetrics(metrics)
-        activity.findViewById<View>(R.id.drawercontent).layoutParams.height = metrics.heightPixels
+        drawer.drawerContent.layoutParams.height = metrics.heightPixels
         (activity.findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
         if (Settings["feed:show_behind_dock", false]) {
             (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, 0)
@@ -192,7 +192,7 @@ class DockView : LinearLayout {
         if (Settings["dock:background_type", 0] == 1) {
             val bg = drawer.background as LayerDrawable
             bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
-            bg.setLayerInset(1, 0, behavior.peekHeight, 0, 0)
+            bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
         }
         (activity.findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
         activity.window.decorView.setOnDragListener { _, event ->
@@ -207,7 +207,7 @@ class DockView : LinearLayout {
                         if (x > view.width / 3.5f || y > view.height / 3.5f) {
                             ItemLongPress.currentPopup?.dismiss()
                             Folder.currentlyOpen?.dismiss()
-                            behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
                         }
                     }
                 }
@@ -221,7 +221,7 @@ class DockView : LinearLayout {
                 }
                 DragEvent.ACTION_DROP -> {
                     (event.localState as View?)?.visibility = VISIBLE
-                    if (behavior.state != BottomDrawerBehavior.STATE_EXPANDED) {
+                    if (drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                         if (event.y > Device.displayHeight - dockHeight) {
                             val item = LauncherItem(event.clipData.description.label.toString())!!
                             val location = IntArray(2)
