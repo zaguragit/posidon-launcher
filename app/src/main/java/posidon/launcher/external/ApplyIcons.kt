@@ -3,7 +3,7 @@ package posidon.launcher.external
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.storage.Settings
 
 class ApplyIcons : AppCompatActivity() {
@@ -11,8 +11,8 @@ class ApplyIcons : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         try { Settings["iconpack"] = intent.extras!!.getString("iconpack") }
         catch (ignore: Exception) {}
-        Main.shouldSetApps = true
-        startActivity(Intent(this, Main::class.java))
+        Home.shouldSetApps = true
+        startActivity(Intent(this, Home::class.java))
         finish()
     }
 }

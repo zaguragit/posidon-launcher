@@ -5,14 +5,12 @@ import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.*
 import android.graphics.drawable.*
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.drawable.MaskedDrawable
@@ -256,7 +254,7 @@ object ThemeTools {
     fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
         val drawable = if (isWork) {
             val badge = Tools.publicContext!!.resources.getDrawable(R.drawable.work_badge, Tools.publicContext!!.theme)
-            badge.setTint(Main.accentColor)
+            badge.setTint(Home.accentColor)
             badge.setTintMode(PorterDuff.Mode.MULTIPLY)
             badge(icon, badge, when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74
@@ -315,55 +313,11 @@ object ThemeTools {
         badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
     }
 
-    fun setDockBG(drawer: View, realDock: View, dockContainerContainer: View) {
-        when (Settings["dock:background_type", 0]) {
-            0 -> { drawer.background = ShapeDrawable().apply {
-                val tr = Settings["dockradius", 30].dp
-                shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                paint.color = Settings["dock:background_color", -0x78000000]
-            }}
-            1 -> { drawer.background = LayerDrawable(arrayOf(
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                            Settings["dock:background_color", -0x78000000])),
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000],
-                            Settings["drawer:background_color", -0x78000000]))
-            ))}
-            2 -> {
-                drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = 0
-                }
-                dockContainerContainer.background = null
-                realDock.background = ShapeDrawable().apply {
-                    val r = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }
-            }
-            3 -> {
-                drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = 0
-                }
-                realDock.background = null
-                dockContainerContainer.background = ShapeDrawable().apply {
-                    val r = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }
-            }
-        }
-    }
-
     fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {
         val bgType = Settings["notif:badges:bg_type", 0]
         val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
         if (icon == null || bgType == 1) {
-            val bg = Main.accentColor
+            val bg = Home.accentColor
             onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
         } else if (bgType == 0) {
             Palette.from(icon.toBitmap()).generate {

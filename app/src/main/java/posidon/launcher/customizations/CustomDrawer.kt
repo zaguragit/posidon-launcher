@@ -5,7 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -29,7 +29,7 @@ class CustomDrawer : AppCompatActivity() {
 
         findViewById<SwitchSettingView>(R.id.scrollbarEnabledSetting).run {
             onCheckedChange = {
-                Main.setDrawerScrollbarEnabled(it)
+                Home.setDrawerScrollbarEnabled(it)
             }
         }
     }
@@ -39,8 +39,8 @@ class CustomDrawer : AppCompatActivity() {
             putNotSave("icsize", icsize!!.progress)
             apply()
         }
-        Main.shouldSetApps = true
-        Main.customized = true
+        Home.shouldSetApps = true
+        Home.customized = true
         super.onPause()
     }
 }

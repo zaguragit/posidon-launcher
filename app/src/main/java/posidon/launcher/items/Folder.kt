@@ -10,7 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.users.ItemLongPress
@@ -239,7 +239,7 @@ class Folder(string: String) : LauncherItem() {
                             if (x > view.width / 3.5f || y > view.height / 3.5f) {
                                 ItemLongPress.currentPopup?.dismiss()
                                 currentlyOpen?.dismiss()
-                                Main.instance.behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
+                                Home.instance.behavior.state = BottomDrawerBehavior.STATE_COLLAPSED
                             }
                         }
                     }

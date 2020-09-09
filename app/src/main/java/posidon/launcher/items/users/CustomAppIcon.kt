@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -197,7 +197,7 @@ class CustomAppIcon : AppCompatActivity() {
                 }, false)))
                 viewHolder.icon.setOnClickListener {
                     Settings[key] = "ref:$iconPack|${searchResults[i]}"
-                    Main.shouldSetApps = true
+                    Home.shouldSetApps = true
                     finish()
                 }
             }

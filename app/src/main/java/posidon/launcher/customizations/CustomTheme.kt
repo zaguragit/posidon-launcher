@@ -9,7 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.storage.Settings
@@ -31,7 +31,7 @@ class CustomTheme : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val pm = packageManager
 
-        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Main.accentColor)
+        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Home.accentColor)
         val i = findViewById<TextView>(R.id.iconpackselector)
         try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
@@ -54,57 +54,57 @@ class CustomTheme : AppCompatActivity() {
                     Settings["font"] = "sansserif"
                     fontName.text = getString(R.string.sans_serif)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.posidonsans).setOnClickListener {
                     dismiss()
                     Settings["font"] = "posidonsans"
                     fontName.text = getString(R.string.posidon_sans)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.monospace).setOnClickListener {
                     dismiss()
                     Settings["font"] = "monospace"
                     fontName.text = getString(R.string.monospace)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.ubuntu).setOnClickListener {
                     dismiss()
                     Settings["font"] = "ubuntu"
                     fontName.text = getString(R.string.ubuntu)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.lexendDeca).setOnClickListener {
                     dismiss()
                     Settings["font"] = "lexendDeca"
                     fontName.text = getString(R.string.lexend_deca)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.inter).setOnClickListener {
                     dismiss()
                     Settings["font"] = "inter"
                     fontName.text = getString(R.string.inter)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.open_dyslexic).setOnClickListener {
                     dismiss()
                     Settings["font"] = "openDyslexic"
                     fontName.text = getString(R.string.open_dyslexic)
                     applyFontSetting()
-                    Main.instance.applyFontSetting()
+                    Home.instance.applyFontSetting()
                 }
             }.show()
         }
 
         findViewById<ColorSettingView>(R.id.accentColorSetting).onSelected = {
-            Main.accentColor = it
-            Main.customized = true
-            Kustom["accent"] = Main.accentColor.toUInt().toString(16)
+            Home.accentColor = it
+            Home.customized = true
+            Kustom["accent"] = Home.accentColor.toUInt().toString(16)
         }
 
         findViewById<Spinner>(R.id.iconBackgrounds).apply {
@@ -126,7 +126,7 @@ class CustomTheme : AppCompatActivity() {
                     4 -> "dm"
                     else -> "custom"
                 }
-                Main.shouldSetApps = true
+                Home.shouldSetApps = true
             }
         }
 
@@ -137,7 +137,7 @@ class CustomTheme : AppCompatActivity() {
         } else {
             icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         }
-        Main.shouldSetApps = true
+        Home.shouldSetApps = true
     }
 
     fun iconPackSelector(v: View) = startActivity(Intent(this, IconPackPicker::class.java))

@@ -1,5 +1,6 @@
 package posidon.launcher.view.feed
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.res.ColorStateList
@@ -18,7 +19,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
@@ -53,8 +54,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_left)
         setOnClickListener {
-            Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -63,13 +64,13 @@ class MusicCard : CardView, FeedSection {
         setImageResource(R.drawable.ic_play)
         setOnClickListener {
             it as ImageView
-            if (Main.musicService.isMusicActive) {
-                Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
+            if (Home.musicService.isMusicActive) {
+                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
+                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
                 it.setImageResource(R.drawable.ic_play)
             } else {
-                Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
-                Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
+                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
+                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
                 it.setImageResource(R.drawable.ic_pause)
             }
         }
@@ -82,8 +83,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_right)
         setOnClickListener {
-            Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-            Main.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -126,7 +127,7 @@ class MusicCard : CardView, FeedSection {
         addView(musicCardOverImg, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
-    fun updateTheme() {
+    override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
         (layoutParams as MarginLayoutParams).apply {
@@ -177,7 +178,7 @@ class MusicCard : CardView, FeedSection {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (Main.musicService.isMusicActive) {
+            if (Home.musicService.isMusicActive) {
                 musicPlay.setImageResource(R.drawable.ic_pause)
             } else {
                 musicPlay.setImageResource(R.drawable.ic_play)

@@ -1,8 +1,8 @@
 package posidon.launcher.tools
 
 import android.content.Intent
+import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.items.App
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.view.drawer.BottomDrawerBehavior
@@ -19,10 +19,10 @@ object Gestures {
     fun performTrigger(key: String) {
         when (key) {
             PULL_DOWN_NOTIFICATIONS -> Tools.publicContext!!.pullStatusbar()
-            OPEN_APP_DRAWER -> Main.instance.behavior.state = BottomDrawerBehavior.STATE_EXPANDED
+            OPEN_APP_DRAWER -> Home.instance.behavior.state = BottomDrawerBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.publicContext!!.startActivity(Intent(Tools.publicContext, SearchActivity::class.java))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
-            REFRESH_FEED -> Main.instance.loadFeed()
+            REFRESH_FEED -> Home.instance.loadFeed()
             else -> {
                 if (key.startsWith("$OPEN_APP:")) {
                     val string = key.substring(OPEN_APP.length + 1)

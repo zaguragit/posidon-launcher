@@ -36,17 +36,9 @@ class WidgetSection(
         widget.fromSettings(this)
     }
 
-    fun handleIntent(data: Intent?) {
-        widget.fromIntent(this, data)
-    }
-
-    fun startListening() {
-        widget.startListening()
-    }
-
-    fun stopListening() {
-        widget.stopListening()
-    }
+    fun handleIntent(data: Intent?) = widget.fromIntent(this, data)
+    fun startListening() = widget.startListening()
+    fun stopListening() = widget.stopListening()
 
     fun handleActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
@@ -75,5 +67,9 @@ class WidgetSection(
                 widget.host.deleteAppWidgetId(appWidgetId)
             }
         }
+    }
+
+    override fun updateTheme(activity: Activity) {
+
     }
 }

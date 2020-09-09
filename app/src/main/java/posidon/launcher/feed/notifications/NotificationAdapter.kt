@@ -15,8 +15,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
+import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
-import posidon.launcher.Main
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
@@ -70,7 +70,7 @@ class NotificationAdapter(
                 val retView: View
                 val view: View = if (notification.isSummary) {
                     holder.card.onSwipeAway = {
-                        Main.instance.runOnUiThread {
+                        Home.instance.runOnUiThread {
                             val iter = group.iterator()
                             for (n in iter) n.cancel()
                             groups.remove(group)

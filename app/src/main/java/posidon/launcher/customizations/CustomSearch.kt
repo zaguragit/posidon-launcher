@@ -6,7 +6,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -26,7 +26,7 @@ class CustomSearch : AppCompatActivity() {
     }
 
     override fun onPause() {
-        Main.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
+        Home.setSearchHintText(findViewById<TextView>(R.id.hinttxt).text.toString())
         Settings.apply {
             putNotSave("search:ic_size", findViewById<SeekBar>(R.id.iconSizeSlider).progress)
             apply()

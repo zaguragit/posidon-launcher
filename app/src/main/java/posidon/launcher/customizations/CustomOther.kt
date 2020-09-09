@@ -10,7 +10,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Main
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -57,11 +57,11 @@ class CustomOther : AppCompatActivity() {
             }
         }
 
-        Main.customized = true
+        Home.customized = true
     }
 
     override fun onPause() {
-        Main.customized = true
+        Home.customized = true
         Settings.apply {
             apply()
         }
