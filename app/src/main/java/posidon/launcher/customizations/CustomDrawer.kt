@@ -5,13 +5,13 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.view.setting.SwitchSettingView
-
 
 class CustomDrawer : AppCompatActivity() {
 
@@ -39,8 +39,8 @@ class CustomDrawer : AppCompatActivity() {
             putNotSave("icsize", icsize!!.progress)
             apply()
         }
-        Home.shouldSetApps = true
-        Home.customized = true
+        Global.shouldSetApps = true
+        Global.customized = true
         super.onPause()
     }
 }

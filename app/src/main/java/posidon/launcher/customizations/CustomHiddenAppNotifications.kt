@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -82,8 +82,8 @@ class CustomHiddenAppNotifications : AppCompatActivity() {
                 finalConvertView.setBackgroundColor(0x0)
             }
             convertView.setOnClickListener {
-                Home.shouldSetApps = true
-                Home.customized = true
+                Global.shouldSetApps = true
+                Global.customized = true
                 if (hidden) {
                     finalConvertView.setBackgroundColor(0x33ff0000)
                     Settings["notif:ex:${app.packageName}"] = false

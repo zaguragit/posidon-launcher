@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -16,7 +16,6 @@ import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.onEnd
 import kotlin.math.max
-
 
 class Customizations : AppCompatActivity() {
 
@@ -65,7 +64,7 @@ class Customizations : AppCompatActivity() {
     }
 
     private fun cardThing() {
-        if (Home.customized && !Settings["rated", false]) {
+        if (Global.customized && !Settings["rated", false]) {
             findViewById<View>(R.id.card).visibility = View.VISIBLE
             findViewById<View>(R.id.yesBtn).setOnClickListener {
                 val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))

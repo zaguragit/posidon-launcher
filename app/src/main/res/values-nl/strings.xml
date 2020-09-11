@@ -193,6 +193,7 @@
     <string name="export">Export</string>
     <string name="_import">Import</string>
     <string name="max_cards">Max cards</string>
+    <string name="widget">Widget</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>

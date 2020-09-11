@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
@@ -214,7 +215,7 @@ object ItemLongPress {
 
     fun olddrawer(context: Context) = OnItemLongClickListener { _, view, position, _ ->
         if (currentPopup == null) try {
-            val app = Home.apps[position]
+            val app = Global.apps[position]
             val icon = view.findViewById<View>(R.id.iconimg)
             val location = IntArray(2)
             val popupWindow = popupWindow(context, object : Methods {
@@ -376,7 +377,7 @@ object ItemLongPress {
         editLabel.setText(Settings[app.packageName + "/" + app.name + "?label", app.label!!])
         editWindow.setOnDismissListener {
             Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\t', ' ')
-            Home.shouldSetApps = true
+            Global.shouldSetApps = true
             Home.setDock()
         }
         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)

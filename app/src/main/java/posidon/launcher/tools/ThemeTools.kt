@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.drawable.MaskedDrawable
@@ -254,7 +254,7 @@ object ThemeTools {
     fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
         val drawable = if (isWork) {
             val badge = Tools.publicContext!!.resources.getDrawable(R.drawable.work_badge, Tools.publicContext!!.theme)
-            badge.setTint(Home.accentColor)
+            badge.setTint(Global.accentColor)
             badge.setTintMode(PorterDuff.Mode.MULTIPLY)
             badge(icon, badge, when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74
@@ -317,7 +317,7 @@ object ThemeTools {
         val bgType = Settings["notif:badges:bg_type", 0]
         val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
         if (icon == null || bgType == 1) {
-            val bg = Home.accentColor
+            val bg = Global.accentColor
             onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
         } else if (bgType == 0) {
             Palette.from(icon.toBitmap()).generate {

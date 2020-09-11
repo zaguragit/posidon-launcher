@@ -4,7 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.provider.Settings
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
@@ -29,7 +29,7 @@ class SettingsItem private constructor(
                 return list as Array<SettingsItem>
             }
             val posidonIcon = App.getJustPackage("posidon.launcher")!![0].icon!!.toBitmapDrawable(true)
-            val settingsIcon = Tools.publicContext!!.getDrawable(R.drawable.ic_settings)!!.apply { setTintList(ColorStateList.valueOf(Home.accentColor)) }
+            val settingsIcon = Tools.publicContext!!.getDrawable(R.drawable.ic_settings)!!.apply { setTintList(ColorStateList.valueOf(Global.accentColor)) }
             val searchIconSize = when (posidon.launcher.storage.Settings["search:ic_size", 0]) {
                 0 -> 64; 2 -> 84; else -> 74
             }

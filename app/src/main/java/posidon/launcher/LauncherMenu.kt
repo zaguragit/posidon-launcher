@@ -75,7 +75,7 @@ class LauncherMenu : OnLongClickListener {
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Widget.selectWidget()
+                Widget.selectWidget(Home.instance)
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)

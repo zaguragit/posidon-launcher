@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
@@ -69,7 +69,7 @@ class NumberBarSettingView : IntSettingView {
                     if (startsWith1) p++
                     if (isFloat) Settings[key] = p.toFloat() else Settings[key] = p
                     textIcon.text = p.toString()
-                    Home.customized = true
+                    Global.customized = true
                 }
             })
         }

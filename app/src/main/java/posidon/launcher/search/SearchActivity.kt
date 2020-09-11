@@ -26,6 +26,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
@@ -244,7 +245,7 @@ class SearchActivity : AppCompatActivity() {
         findViewById<View>(R.id.fail).visibility = View.GONE
         val appLoaderThread = thread (isDaemon = true) {
             var i = 0
-            for (app in Home.apps) {
+            for (app in Global.apps) {
                 if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
                     app.label!!.contains(string) ||
                     packageSearch && (

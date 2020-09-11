@@ -2,13 +2,14 @@ package posidon.launcher.feed.order
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -52,8 +53,8 @@ class OrderAdapter(
         val swipeView = SwipeableLayout(linearLayout).apply {
             layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
             setCardBackgroundColor(context.resources.getColor(R.color.cardbg))
-            setIconColor(Home.accentColor)
-            setSwipeColor(Home.accentColor and 0x11ffffff)
+            setIconColor(Global.accentColor)
+            setSwipeColor(Global.accentColor and 0x11ffffff)
             useCompatPadding = true
             cardElevation = 10f
             radius = 12.dp
@@ -74,14 +75,22 @@ class OrderAdapter(
             "starred_contacts" -> {
                 holder.text.text = context.getString(R.string.starred_contacts)
                 holder.icon.setImageResource(R.drawable.ic_apps)
+                holder.icon.imageTintList = ColorStateList.valueOf(0xffffffff.toInt())
             }
             "notifications" -> {
                 holder.text.text = context.getString(R.string.notifications)
-                holder.icon.setImageResource(R.drawable.custom_notifications)
+                holder.icon.setImageResource(R.drawable.ic_notification)
+                holder.icon.imageTintList = ColorStateList.valueOf(0xffffffff.toInt())
             }
             "news" -> {
                 holder.text.text = context.getString(R.string.settings_title_news)
-                holder.icon.setImageResource(R.drawable.custom_news)
+                holder.icon.setImageResource(R.drawable.ic_news)
+                holder.icon.imageTintList = ColorStateList.valueOf(0xffffffff.toInt())
+            }
+            "music" -> {
+                holder.text.text = context.getString(R.string.media_player)
+                holder.icon.setImageResource(R.drawable.ic_play)
+                holder.icon.imageTintList = ColorStateList.valueOf(0xffffffff.toInt())
             }
             else -> {
                 val prefix = section.substringBefore(':')
@@ -92,6 +101,7 @@ class OrderAdapter(
                         val packageName = component.substringBefore('/')
                         holder.text.text = "Widget" + " | " + (App.getJustPackage(packageName)?.get(0)?.label ?: context.packageManager.getApplicationInfo(packageName, 0).loadLabel(context.packageManager))
                         holder.icon.setImageDrawable(App.getJustPackage(packageName)?.get(0)?.icon ?: context.packageManager.getApplicationIcon(packageName))
+                        holder.icon.imageTintList = null
                     }
                     else -> {
                         sections.remove(section)

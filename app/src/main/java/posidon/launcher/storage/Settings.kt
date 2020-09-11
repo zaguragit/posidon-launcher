@@ -2,7 +2,7 @@ package posidon.launcher.storage
 
 import android.content.Context
 import android.net.Uri
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.tools.Tools
 import java.io.Serializable
 import java.lang.ref.WeakReference
@@ -158,8 +158,8 @@ object Settings {
             bools = it.bools
             strings = it.strings
             lists = it.lists
-            Home.customized = true
-            Home.shouldSetApps = true
+            Global.customized = true
+            Global.shouldSetApps = true
         }
     }
 

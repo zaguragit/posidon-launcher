@@ -30,14 +30,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                <posidon.launcher.view.setting.HeaderSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
-                    app:label="@string/cards"
-                    app:key="notif:cards"
-                    app:def="true"/>
+                    app:label="@string/cards"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -143,20 +141,6 @@
                     app:label="@string/text_color"
                     app:key="notificationActionTextColor"
                     app:def="#FF252627"/>
-            </LinearLayout>
-            <LinearLayout
-                style="@style/settingscard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_play"
-                    app:label="@string/media_player"
-                    app:key="notif:usePlayer"
-                    app:def="true"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

@@ -7,6 +7,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.*
 import androidx.palette.graphics.Palette
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -21,7 +22,6 @@ class AppLoader (
     context: Context,
     private val onEnd: () -> Unit
 ) {
-
 
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
@@ -80,7 +80,7 @@ class AppLoader (
 
         for (profile in userManager.userProfiles) {
 
-            val appList = Home.launcherApps.getActivityList(null, profile)
+            val appList = Global.launcherApps.getActivityList(null, profile)
 
             for (i in appList.indices) {
 
@@ -198,13 +198,13 @@ class AppLoader (
 
         Home.instance.runOnUiThread {
             run {
-                val tmp = Home.apps
-                Home.apps = tmpApps
+                val tmp = Global.apps
+                Global.apps = tmpApps
                 tmp.clear()
             }
             run {
-                val tmp = Home.appSections
-                Home.appSections = tmpAppSections
+                val tmp = Global.appSections
+                Global.appSections = tmpAppSections
                 tmp.clear()
             }
             App.swapMaps()
@@ -219,8 +219,8 @@ class AppLoader (
         override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackageAdded(packageName: String, user: UserHandle?) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackageRemoved(packageName: String, user: UserHandle?) {
-            Home.apps.removeAll { it.packageName == packageName }
-            val iter = Home.appSections.iterator()
+            Global.apps.removeAll { it.packageName == packageName }
+            val iter = Global.appSections.iterator()
             for (section in iter) {
                 section.removeAll {
                     it.packageName == packageName

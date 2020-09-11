@@ -9,7 +9,7 @@ import android.view.WindowManager
 import android.widget.GridView
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.search.SearchActivity
@@ -30,7 +30,7 @@ class AppList : FragmentActivity() {
 
         gridView.adapter = DrawerAdapter()
         gridView.setOnItemClickListener {
-            _, view, i, _ -> Home.apps[i].open(this@AppList, view)
+            _, view, i, _ -> Global.apps[i].open(this@AppList, view)
             finish()
         }
 

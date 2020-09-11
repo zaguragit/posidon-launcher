@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.news.RemovedArticles
 import posidon.launcher.feed.news.chooser.FeedChooser
@@ -66,7 +66,7 @@ class CustomNews : AppCompatActivity() {
             }
         }
 
-        Home.customized = true
+        Global.customized = true
     }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
