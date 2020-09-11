@@ -73,8 +73,8 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
                 MotionEvent.ACTION_MOVE -> {
                     val location = intArrayOf(0, 0)
                     getLocationOnScreen(location)
-                    if (location[1] + event.rawY >= MIN_HEIGHT.dp && location[1] + event.rawY <= maxHeight) {
-                        val height = (event.rawY - y).toInt()
+                    if (event.rawY - location[1] >= MIN_HEIGHT.dp && event.rawY - location[1] <= maxHeight) {
+                        val height = (event.rawY - location[1]).toInt()
                         layoutParams.height = height
                         layoutParams = layoutParams
                         onResizeListener?.run {

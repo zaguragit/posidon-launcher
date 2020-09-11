@@ -31,7 +31,7 @@ class AppLoader (
     fun run() {
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
-        val ICONSIZE = 65.dp.toInt()
+        val iconSize = 65.dp.toInt()
         val iconPackName = Settings["iconpack", "system"]
         val p = Paint(Paint.FILTER_BITMAP_FLAG).apply {
             isAntiAlias = true
@@ -93,7 +93,7 @@ class AppLoader (
                             val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
                             val t = packageManager.getResourcesForApplication(data[0])
                             val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                            app.icon = t.getDrawable(intRes)
+                            app.icon = t.getDrawable(intRes, null)
                         } catch (e: Exception) {
                             e.printStackTrace()
                             app.icon = appList[i].getIcon(0)
@@ -106,7 +106,7 @@ class AppLoader (
                         }
                         if (intres != 0) {
                             try {
-                                app.icon = themeRes!!.getDrawable(intres)
+                                app.icon = themeRes!!.getDrawable(intres, null)
                             } catch (e: Exception) {
                                 app.icon = appList[i].getIcon(0)
                             }
@@ -117,21 +117,21 @@ class AppLoader (
                                     var orig = Bitmap.createBitmap(app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight, Bitmap.Config.ARGB_8888)
                                     app.icon!!.setBounds(0, 0, app.icon!!.intrinsicWidth, app.icon!!.intrinsicHeight)
                                     app.icon!!.draw(Canvas(orig))
-                                    val scaledOrig = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
-                                    val scaledBitmap = Bitmap.createBitmap(ICONSIZE, ICONSIZE, Bitmap.Config.ARGB_8888)
+                                    val scaledOrig = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888)
+                                    val scaledBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888)
                                     val canvas = Canvas(scaledBitmap)
                                     if (back != null) {
-                                        canvas.drawBitmap(back, Tools.getResizedMatrix(back, ICONSIZE, ICONSIZE), p)
+                                        canvas.drawBitmap(back, Tools.getResizedMatrix(back, iconSize, iconSize), p)
                                     }
                                     val origCanv = Canvas(scaledOrig)
-                                    orig = Tools.getResizedBitmap(orig, (ICONSIZE * iconPackInfo.scaleFactor).toInt(), (ICONSIZE * iconPackInfo.scaleFactor).toInt())
+                                    orig = Tools.getResizedBitmap(orig, (iconSize * iconPackInfo.scaleFactor).toInt(), (iconSize * iconPackInfo.scaleFactor).toInt())
                                     origCanv.drawBitmap(orig, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f, p)
                                     if (mask != null) {
-                                        origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, ICONSIZE, ICONSIZE), maskp)
+                                        origCanv.drawBitmap(mask, Tools.getResizedMatrix(mask, iconSize, iconSize), maskp)
                                     }
-                                    canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, ICONSIZE, ICONSIZE), 0f, 0f, p)
+                                    canvas.drawBitmap(Tools.getResizedBitmap(scaledOrig, iconSize, iconSize), 0f, 0f, p)
                                     if (front != null) {
-                                        canvas.drawBitmap(front, Tools.getResizedMatrix(front, ICONSIZE, ICONSIZE), p)
+                                        canvas.drawBitmap(front, Tools.getResizedMatrix(front, iconSize, iconSize), p)
                                     }
                                     app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
                                 } catch (e: Exception) {

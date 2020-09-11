@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import com.pixplicity.sharp.Sharp
 import java.io.BufferedReader
-import java.io.FileNotFoundException
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 import kotlin.concurrent.thread
@@ -25,7 +25,9 @@ object Loader {
             }
             bufferReader.close()
             onFinished(builder.toString())
-        } catch (e: Exception) { e.printStackTrace() }
+        }
+        catch (e: IOException) {}
+        catch (e: Exception) { e.printStackTrace() }
     }
 
     const val AUTO = -1
@@ -55,10 +57,10 @@ object Loader {
                 }
             }
         }
-        catch (ignore: FileNotFoundException) {}
+        catch (e: IOException) {}
         catch (e: Exception) { e.printStackTrace() }
         catch (e: OutOfMemoryError) {
-            img!!.recycle()
+            img?.recycle()
             img = null
             System.gc()
         }
@@ -86,6 +88,7 @@ object Loader {
                 Sharp.loadInputStream(it).drawable
             }
         }
+        catch (e: IOException) { null }
         catch (e: Exception) {
             e.printStackTrace()
             null

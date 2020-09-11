@@ -21,13 +21,14 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.concurrent.thread
 
 class NotificationService : NotificationListenerService() {
 
     init {
         update = {
-            if (!updating) try { NotificationLoader(activeNotifications).start() }
-            catch (e: Exception) { NotificationLoader(null).start() }
+            if (!updating) try { loadNotifications(activeNotifications) }
+            catch (e: Exception) { loadNotifications(null) }
         }
     }
 
@@ -36,7 +37,6 @@ class NotificationService : NotificationListenerService() {
         if (Tools.publicContext == null) {
             Tools.publicContextReference = WeakReference(applicationContext)
         }
-        Settings.init(applicationContext)
         update()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -50,13 +50,11 @@ class NotificationService : NotificationListenerService() {
     override fun onNotificationChannelModified(pkg: String, u: UserHandle, c: NotificationChannel, modifType: Int) = update()
     override fun onNotificationChannelGroupModified(pkg: String, u: UserHandle, g: NotificationChannelGroup, modifType: Int) = update()
 
-    private class NotificationLoader(private val notifications: Array<StatusBarNotification>?) : Thread() {
+    private fun loadNotifications(notifications: Array<StatusBarNotification>?) = thread (isDaemon = true) {
 
-        init {
-            isDaemon = true
-        }
+        Settings.init(applicationContext)
 
-        private fun showNotificationBadgeOnPackage(packageName: String) {
+        fun showNotificationBadgeOnPackage(packageName: String) {
             val apps = App.getJustPackage(packageName)
             if (apps != null) {
                 for (app in apps) {
@@ -65,79 +63,38 @@ class NotificationService : NotificationListenerService() {
             }
         }
 
-        override fun run() {
-            var hasMusic = false
-            updating = true
-            val groups = ArrayList<ArrayList<Notification>>()
-            var i = 0
-            var notificationsAmount2 = 0
-            val useMusicPlayer = Settings["notif:usePlayer", true]
-            try {
-                for (app in Home.apps) {
-                    app.notificationCount = 0
-                }
-                if (notifications != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
-                        while (i < notifications.size) {
-                            val notification = notifications[i]
+        var hasMusic = false
+        updating = true
+        val groups = ArrayList<ArrayList<Notification>>()
+        var i = 0
+        var notificationsAmount2 = 0
+        val useMusicPlayer = Settings["notif:usePlayer", true]
+        try {
+            for (app in Home.apps) {
+                app.notificationCount = 0
+            }
+            if (notifications != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
+                    while (i < notifications.size) {
+                        val notification = notifications[i]
 
-                            if (Settings["notif:ex:${notification.packageName}", false]) {
-                                i++
-                                continue
-                            }
-
-                            if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
-                                handleMusicNotification(notification)
-                                hasMusic = true
-                                i++; continue
-                            }
-
-                            val group = ArrayList<Notification>()
-                            if (notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
-                                val key = notification.groupKey
-                                var last: Bundle? = null
-                                var extras: Bundle
-                                while (i < notifications.size && notifications[i].isGroup && notifications[i].groupKey == key && notifications[i].groupKey != null) {
-                                    extras = notifications[i].notification.extras
-                                    if (last == null || extras.getCharSequence(android.app.Notification.EXTRA_TITLE) !=
-                                        last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
-                                        last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
-                                        last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
-                                        showNotificationBadgeOnPackage(notifications[i].packageName)
-                                        group.add(formatNotification(notifications[i]))
-                                        if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
-                                    }
-                                    last = extras
-                                    i++
-                                }
-                            } else {
-                                showNotificationBadgeOnPackage(notification.packageName)
-                                group.add(formatNotification(notification))
-                                notificationsAmount2++
-                                i++
-                            }
-                            groups.add(group)
+                        if (Settings["notif:ex:${notification.packageName}", false]) {
+                            i++
+                            continue
                         }
-                    } else if (Settings["notifications:groupingType", "os"] == "byApp") {
-                        while (i < notifications.size) {
-                            val notification = notifications[i]
 
-                            if (Settings["notif:ex:${notification.packageName}", false]) {
-                                i++
-                                continue
-                            }
+                        if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                            handleMusicNotification(notification)
+                            hasMusic = true
+                            i++; continue
+                        }
 
-                            if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
-                                handleMusicNotification(notification)
-                                hasMusic = true
-                                i++; continue
-                            }
-
-                            val group = ArrayList<Notification>()
-                            val packageName = notification.packageName
+                        val group = ArrayList<Notification>()
+                        if (notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0) {
+                            val key = notification.groupKey
                             var last: Bundle? = null
                             var extras: Bundle
-                            while (i < notifications.size && notifications[i].packageName == packageName) {
+                            while (i < notifications.size && notifications[i].isGroup && notifications[i].groupKey == key && notifications[i].groupKey != null) {
                                 extras = notifications[i].notification.extras
                                 if (last == null || extras.getCharSequence(android.app.Notification.EXTRA_TITLE) !=
                                         last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
@@ -150,9 +107,16 @@ class NotificationService : NotificationListenerService() {
                                 last = extras
                                 i++
                             }
-                            groups.add(group)
+                        } else {
+                            showNotificationBadgeOnPackage(notification.packageName)
+                            group.add(formatNotification(notification))
+                            notificationsAmount2++
+                            i++
                         }
-                    } else while (i < notifications.size) {
+                        groups.add(group)
+                    }
+                } else if (Settings["notifications:groupingType", "os"] == "byApp") {
+                    while (i < notifications.size) {
                         val notification = notifications[i]
 
                         if (Settings["notif:ex:${notification.packageName}", false]) {
@@ -163,35 +127,67 @@ class NotificationService : NotificationListenerService() {
                         if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
-                            i++
-                            continue
+                            i++; continue
                         }
 
-                        showNotificationBadgeOnPackage(notification.packageName)
-
                         val group = ArrayList<Notification>()
-                        group.add(formatNotification(notification))
+                        val packageName = notification.packageName
+                        var last: Bundle? = null
+                        var extras: Bundle
+                        while (i < notifications.size && notifications[i].packageName == packageName) {
+                            extras = notifications[i].notification.extras
+                            if (last == null || extras.getCharSequence(android.app.Notification.EXTRA_TITLE) !=
+                                    last.getCharSequence(android.app.Notification.EXTRA_TITLE) || extras.getCharSequence(android.app.Notification.EXTRA_TEXT) !=
+                                    last.getCharSequence(android.app.Notification.EXTRA_TEXT) || extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) !=
+                                    last.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT) || notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) {
+                                showNotificationBadgeOnPackage(notifications[i].packageName)
+                                group.add(formatNotification(notifications[i]))
+                                if (notifications[i].notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY == 0) notificationsAmount2++
+                            }
+                            last = extras
+                            i++
+                        }
                         groups.add(group)
-                        notificationsAmount2++
-                        i++
                     }
-                    if (!hasMusic) Home.instance.runOnUiThread { Home.instance.musicCard.visibility = View.GONE }
-                } else Home.instance.runOnUiThread { Home.instance.musicCard.visibility = View.GONE }
-            }
-            catch (e: Exception) { e.printStackTrace() }
-            catch (e: OutOfMemoryError) {
-                groups.clear()
-                notificationGroups.clear()
-                notificationsAmount2 = 0
-                System.gc()
-            }
-            val tmp = notificationGroups
-            notificationGroups = groups
-            tmp.clear()
-            notificationsAmount = notificationsAmount2
-            onUpdate()
-            updating = false
+                } else while (i < notifications.size) {
+                    val notification = notifications[i]
+
+                    if (Settings["notif:ex:${notification.packageName}", false]) {
+                        i++
+                        continue
+                    }
+
+                    if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                        handleMusicNotification(notification)
+                        hasMusic = true
+                        i++
+                        continue
+                    }
+
+                    showNotificationBadgeOnPackage(notification.packageName)
+
+                    val group = ArrayList<Notification>()
+                    group.add(formatNotification(notification))
+                    groups.add(group)
+                    notificationsAmount2++
+                    i++
+                }
+                if (!hasMusic) Home.instance.runOnUiThread { Home.instance.feed.musicCard?.visibility = View.GONE }
+            } else Home.instance.runOnUiThread { Home.instance.feed.musicCard?.visibility = View.GONE }
         }
+        catch (e: Exception) { e.printStackTrace() }
+        catch (e: OutOfMemoryError) {
+            groups.clear()
+            notificationGroups.clear()
+            notificationsAmount2 = 0
+            System.gc()
+        }
+        val tmp = notificationGroups
+        notificationGroups = groups
+        tmp.clear()
+        notificationsAmount = notificationsAmount2
+        onUpdate()
+        updating = false
     }
 
     companion object {
@@ -232,8 +228,8 @@ class NotificationService : NotificationListenerService() {
             if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
             Home.instance.runOnUiThread {
-                Home.instance.musicCard.visibility = View.VISIBLE
-                Home.instance.musicCard.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
+                Home.instance.feed.musicCard?.visibility = View.VISIBLE
+                Home.instance.feed.musicCard?.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
             }
         }
 

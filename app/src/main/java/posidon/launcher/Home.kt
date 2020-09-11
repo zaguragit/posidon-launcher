@@ -1,6 +1,5 @@
 package posidon.launcher
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.app.WallpaperManager
@@ -9,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherApps
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PorterDuff
@@ -24,12 +22,10 @@ import android.view.View.*
 import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ProgressBar
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Kustom
-import posidon.launcher.feed.news.FeedLoader
+import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.App
 import posidon.launcher.items.users.AppLoader
@@ -45,13 +41,12 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.AlphabetScrollbar
-import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
 import posidon.launcher.view.drawer.DockView
 import posidon.launcher.view.drawer.DrawerView
-import posidon.launcher.view.feed.*
+import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference
 import kotlin.concurrent.thread
 import kotlin.math.max
@@ -60,25 +55,16 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 
-class Home : FragmentActivity() {
+class Home : AppCompatActivity() {
 
     lateinit var drawer: DrawerView
     private lateinit var drawerScrollBar: AlphabetScrollbar
 
+    private lateinit var dock: DockView
+
     private lateinit var blurBg: LayerDrawable
 
-    private lateinit var desktop: NestedScrollView
-    private lateinit var desktopContent: View
-
-    private lateinit var feedProgressBar: ProgressBar
-
-    lateinit var widgetLayout: WidgetSection
-    private lateinit var contactCardView: ContactCardView
-    lateinit var musicCard: MusicCard
-    private lateinit var notifications: NotificationCards
-    private lateinit var feedRecycler: NewsCards
-
-    private lateinit var dock: DockView
+    lateinit var feed: Feed
 
     private lateinit var powerManager: PowerManager
 
@@ -88,6 +74,7 @@ class Home : FragmentActivity() {
 
         setCustomizations = {
 
+            feed.update()
             dock.updateBG(drawer)
 
             setDockSearchBarVisible(Settings["docksearchbarenabled", false])
@@ -135,92 +122,11 @@ class Home : FragmentActivity() {
 
             setSearchHintText(Settings["searchhinttxt", "Search.."])
 
-            feedProgressBar.indeterminateDrawable.setTint(accentColor)
-
-            if (Settings["contacts_card:enabled", false]) {
-                contactCardView.visibility = View.VISIBLE
-                contactCardView.updateTheme(this)
-            } else {
-                contactCardView.visibility = View.GONE
-            }
-            if (Settings["feed:enabled", true]) {
-                feedRecycler.visibility = VISIBLE
-                feedRecycler.updateTheme(this)
-            } else {
-                feedRecycler.visibility = GONE
-                feedRecycler.adapter = null
-            }
-
-            musicCard.updateTheme(this)
-
-            if (Settings["notif:cards", true]) {
-                notifications.visibility = VISIBLE
-                notifications.updateTheme(this)
-            } else {
-                notifications.visibility = GONE
-            }
-
-            if (Settings["hidefeed", false]) {
-                feedRecycler.hide()
-                desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                    val a = 6.dp
-                    val distance = oldY - y
-                    if (y > a) {
-                        feedRecycler.show()
-                        if (distance > a || y >= desktopContent.height - dock.dockHeight - desktop.height) {
-                            if (!LauncherMenu.isActive) {
-                                drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                            }
-                        } else if (distance < -a) {
-                            drawer.state = BottomDrawerBehavior.STATE_HIDDEN
-                        }
-                    } else {
-                        if (!LauncherMenu.isActive) {
-                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                        }
-                        if (y < a && oldY >= a) {
-                            feedRecycler.hide()
-                        }
-                    }
-                }
-            } else {
-                feedRecycler.show()
-                desktop.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                    val a = 6.dp
-                    val distance = oldY - y
-                    if (distance > a || y < a || y + desktop.height >= desktopContent.height - dock.dockHeight) {
-                        if (!LauncherMenu.isActive) {
-                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                        }
-                    } else if (distance < -a) {
-                        drawer.state = BottomDrawerBehavior.STATE_HIDDEN
-                    }
-                }
-            }
-            val fadingEdge = Settings["feed:fading_edge", true]
-            if (fadingEdge && !Settings["hidestatus", false]) {
-                desktop.setPadding(0, getStatusBarHeight() - 12.dp.toInt(), 0, 0)
-            }
-            desktop.isVerticalFadingEdgeEnabled = fadingEdge
+            feed.updateTheme(this, drawer)
 
             shouldSetApps = false
             customized = false
 
-            if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
-                NotificationService.onUpdate = {
-                    try {
-                        if (Settings["notif:cards", true]) runOnUiThread {
-                            notifications.update()
-                        }
-                        if (Settings["notif:badges", true]) runOnUiThread {
-                            drawer.drawerGrid.invalidateViews()
-                            setDock()
-                        }
-                    } catch (e: Exception) { e.printStackTrace() }
-                }
-                try { startService(Intent(this, NotificationService::class.java)) }
-                catch (e: Exception) {}
-            }
             setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
         }
     }
@@ -234,7 +140,6 @@ class Home : FragmentActivity() {
             finish()
             exitProcess(0)
         }
-
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("posidonLauncher", "uncaught exception", throwable)
             Settings.applyNow()
@@ -242,17 +147,13 @@ class Home : FragmentActivity() {
             Process.killProcess(Process.myPid())
             exitProcess(0)
         }
-
         accentColor = Settings["accent", 0x1155ff] or -0x1000000
         Kustom["accent"] = accentColor.toUInt().toString(16)
-        setContentView(R.layout.main)
 
         launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
         launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
-
         updateNavbarHeight(this@Home)
 
         if (Settings["search:asHome", false]) {
@@ -261,12 +162,11 @@ class Home : FragmentActivity() {
             finish()
             return
         }
+        setContentView(R.layout.main)
 
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
-        desktop = findViewById<NestedScrollView>(R.id.desktop).apply {
-            isNestedScrollingEnabled = false
-            isSmoothScrollingEnabled = false
+        feed = findViewById<Feed>(R.id.feed).apply {
             onTopOverScroll = {
                 if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                     Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
@@ -277,8 +177,6 @@ class Home : FragmentActivity() {
                     Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
                 }
             }
-            desktopContent = findViewById<View>(R.id.desktopContent)
-            desktopContent.setOnLongClickListener(LauncherMenu())
         }
 
         drawer = findViewById<DrawerView>(R.id.drawer).apply {
@@ -333,7 +231,7 @@ class Home : FragmentActivity() {
                     val inverseOffset = 1 - slideOffset
                     drawerGrid.alpha = slideOffset
                     drawerScrollBar.alpha = slideOffset
-                    desktop.alpha = inverseOffset.pow(1.2f)
+                    feed.alpha = inverseOffset.pow(1.2f)
                     if (slideOffset >= 0) {
                         try {
                             val bg = drawer.background
@@ -364,8 +262,8 @@ class Home : FragmentActivity() {
                             }
                         } catch (e: Exception) { e.printStackTrace() }
                     } else if (!Settings["feed:show_behind_dock", false]) {
-                        (desktop.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
-                        desktop.requestLayout()
+                        (feed.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
+                        feed.requestLayout()
                     }
                     dock.alpha = inverseOffset
                 }
@@ -380,20 +278,10 @@ class Home : FragmentActivity() {
         }
         drawerScrollBar.bringToFront()
 
-        feedProgressBar = findViewById(R.id.feedProgressBar)
-
-        widgetLayout = findViewById(R.id.widgets)
-        contactCardView = findViewById(R.id.contacts)
-        musicCard = findViewById(R.id.musicCard)
-        notifications = findViewById(R.id.notifications)
-        feedRecycler = findViewById(R.id.feedrecycler)
-
-        widgetLayout.init(0xe1d9e15)
-
         dock = drawer.dock
 
         setCustomizations()
-        loadFeed()
+        feed.loadNews(this)
 
         val scaleGestureDetector = ScaleGestureDetector(this@Home, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
@@ -406,7 +294,7 @@ class Home : FragmentActivity() {
                     0, null)
             false
         }
-        desktop.setOnTouchListener { _, event ->
+        feed.setOnTouchListener { _, event ->
             if (hasWindowFocus()) {
                 scaleGestureDetector.onTouchEvent(event)
                 false
@@ -442,7 +330,10 @@ class Home : FragmentActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        widgetLayout.handleActivityResult(this, requestCode, resultCode, data)
+        val w = Widget.handleActivityResult(this, requestCode, resultCode, data)
+        if (w != null) {
+            feed.add(w)
+        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -468,30 +359,6 @@ class Home : FragmentActivity() {
         setDock()
     }
 
-    fun loadFeed() {
-        if (!Settings["feed:enabled", true] || feedProgressBar.visibility == VISIBLE) {
-            return
-        }
-        if (Settings["feed:show_spinner", true]) {
-            feedProgressBar.visibility = VISIBLE
-            feedProgressBar.animate().translationY(0f).alpha(1f).setListener(null)
-            FeedLoader.loadFeed { success, items ->
-                runOnUiThread {
-                    if (success) {
-                        feedRecycler.updateFeed(items!!)
-                    }
-                    feedProgressBar.animate().translationY(-(72).dp).alpha(0f).onEnd {
-                        feedProgressBar.visibility = GONE
-                    }
-                }
-            }
-        } else FeedLoader.loadFeed { success, items ->
-            if (success) runOnUiThread {
-                feedRecycler.updateFeed(items!!)
-            }
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
@@ -508,9 +375,9 @@ class Home : FragmentActivity() {
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "home"
         }
-        widgetLayout.startListening()
         overridePendingTransition(R.anim.home_enter, R.anim.appexit)
         onUpdate()
+        feed.onResume(this)
     }
 
     private fun onUpdate() {
@@ -533,11 +400,6 @@ class Home : FragmentActivity() {
                 }
             }
         }
-        thread (isDaemon = true) {
-            if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                contactCardView.update(this)
-            }
-        }
         if (customized || tmp != Tools.navbarHeight) {
             setCustomizations()
         } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
@@ -545,7 +407,7 @@ class Home : FragmentActivity() {
                 tryAnimate(app.icon!!)
             }
         }
-        loadFeed()
+        feed.loadNews(this)
         if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
             NotificationService.onUpdate()
         }
@@ -558,25 +420,16 @@ class Home : FragmentActivity() {
         }
         drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         if (!Settings["feed:keep_pos", false]) {
-            desktop.scrollTo(0, 0)
-        }
-        widgetLayout.stopListening()
-        if (Settings["notif:cards", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
-            notifications.collapse()
+            feed.scrollTo(0, 0)
         }
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "?"
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        widgetLayout.stopListening()
+        feed.onPause()
     }
 
     override fun onStart() {
         super.onStart()
-        widgetLayout.startListening()
 
         if (Settings["drawer:sections_enabled", false]) {
             drawer.drawerGrid.adapter = SectionedDrawerAdapter()
@@ -626,7 +479,7 @@ class Home : FragmentActivity() {
 
     override fun onBackPressed() = when {
         drawer.state == BottomDrawerBehavior.STATE_EXPANDED -> drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-        widgetLayout.resizing -> widgetLayout.resizing = false
+        //widgetLayout.resizing -> widgetLayout.resizing = false
         else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
 
@@ -646,7 +499,7 @@ class Home : FragmentActivity() {
 
         lateinit var setCustomizations: () -> Unit private set
 
-        fun setDock() = instance.dock.loadApps(instance.drawer, instance.desktop, instance.desktopContent, instance)
+        fun setDock() = instance.dock.loadApps(instance.drawer, instance.feed, instance.feed.desktopContent, instance)
 
         lateinit var launcherApps: LauncherApps
         lateinit var musicService: AudioManager

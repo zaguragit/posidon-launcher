@@ -45,13 +45,17 @@ class NewsCards : RecyclerView, FeedSection {
         }
     }
 
-    inline fun updateFeed(items: ArrayList<FeedItem>) {
+    inline fun updateFeed(items: List<FeedItem>) {
         (adapter as FeedAdapter).updateFeed(items)
     }
+
+    override fun doShow() = Settings["feed:enabled", true]
 
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
         adapter = FeedAdapter(ArrayList(), activity)
     }
+
+    override fun toString() = "news"
 }

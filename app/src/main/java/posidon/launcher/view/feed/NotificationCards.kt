@@ -134,6 +134,8 @@ class NotificationCards : LinearLayout, FeedSection {
         notifications.adapter = NotificationAdapter(context)
     }
 
+    override fun doShow() = Settings["notif:cards", true]
+
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
@@ -157,4 +159,12 @@ class NotificationCards : LinearLayout, FeedSection {
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
         isCollapsingEnabled = Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1
     }
+
+    override fun onPause() {
+        if (Settings["notif:cards", true] && Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1) {
+            collapse()
+        }
+    }
+
+    override fun toString() = "notifications"
 }
