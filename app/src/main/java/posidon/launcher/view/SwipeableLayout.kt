@@ -62,7 +62,6 @@ class SwipeableLayout(
     fun reset() { frontView.translationX = 0f }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        println("TACH DA SVAIP" + ev.action)
         when (ev.action) {
             MotionEvent.ACTION_MOVE -> {
                 xOffset = ev.x - initX
