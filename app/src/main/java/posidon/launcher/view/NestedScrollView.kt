@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
 
-class NestedScrollView : NestedScrollView {
+open class NestedScrollView : NestedScrollView {
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attr: AttributeSet) : super(context, attr)
-    constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
+    constructor(context: Context, attr: AttributeSet?) : super(context, attr)
+    constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
     var onTopOverScroll = {}
     var onBottomOverScroll = {}

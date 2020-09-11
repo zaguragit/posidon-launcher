@@ -29,7 +29,7 @@ object FeedLoader {
         "/atom.xml")
 
     fun loadFeed(
-        onFinished: (success: Boolean, items: ArrayList<FeedItem>?) -> Unit
+        onFinished: (success: Boolean, items: List<FeedItem>) -> Unit
     ) = thread (isDaemon = true) {
         val feedItems = ArrayList<FeedItem>()
         val deleted = Settings.getStrings("feed:deleted_articles")
@@ -104,7 +104,15 @@ object FeedLoader {
             i++
         }
 
-        onFinished(feedItems.size != 0, feedItems)
+        val success = feedItems.size != 0
+
+        var items: MutableList<FeedItem> = feedItems
+        val maxNewsCards = Settings["feed:max_news", 48]
+        if (items.size > maxNewsCards) {
+            items = items.subList(0, maxNewsCards)
+        }
+
+        onFinished(success, items)
     }
 
     @Throws(XmlPullParserException::class, IOException::class)

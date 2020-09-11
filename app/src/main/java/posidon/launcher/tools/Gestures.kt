@@ -22,7 +22,7 @@ object Gestures {
             OPEN_APP_DRAWER -> Home.instance.drawer.state = BottomDrawerBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.publicContext!!.startActivity(Intent(Tools.publicContext, SearchActivity::class.java))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
-            REFRESH_FEED -> Home.instance.loadFeed()
+            REFRESH_FEED -> Home.instance.feed.loadNews(Home.instance)
             else -> {
                 if (key.startsWith("$OPEN_APP:")) {
                     val string = key.substring(OPEN_APP.length + 1)

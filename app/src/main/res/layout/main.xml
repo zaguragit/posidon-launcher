@@ -14,56 +14,10 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-    <posidon.launcher.view.NestedScrollView
-        android:id="@+id/desktop"
+    <posidon.launcher.view.feed.Feed
+        android:id="@+id/feed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadingEdge="vertical"
-        android:fadingEdgeLength="18dp"
-        android:requiresFadingEdge="vertical"
-        android:overScrollMode="always">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:id="@+id/desktopContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <posidon.launcher.view.feed.WidgetSection
-                    android:id="@+id/widgets"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <posidon.launcher.view.feed.ContactCardView
-                    android:id="@+id/contacts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <posidon.launcher.view.feed.MusicCard
-                    android:id="@+id/musicCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
-                <posidon.launcher.view.feed.NotificationCards
-                    android:id="@+id/notifications"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <posidon.launcher.view.feed.NewsCards
-                    android:id="@+id/feedrecycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-            <ProgressBar
-                android:id="@+id/feedProgressBar"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="72dp"
-                android:indeterminateDrawable="@drawable/progress"
-                android:indeterminateDuration="500"
-                android:indeterminateTintMode="multiply"
-                android:visibility="gone"/>
-        </RelativeLayout>
-    </posidon.launcher.view.NestedScrollView>
+        android:layout_height="match_parent"/>
 
     <posidon.launcher.view.drawer.DrawerView
         android:id="@+id/drawer"

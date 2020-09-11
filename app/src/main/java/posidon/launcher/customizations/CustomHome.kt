@@ -1,5 +1,6 @@
 package posidon.launcher.customizations
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
@@ -57,4 +59,6 @@ class CustomHome : AppCompatActivity() {
         }
         super.onPause()
     }
+
+    fun openFeedOrder(v: View) = startActivity(Intent(this, FeedOrderActivity::class.java))
 }

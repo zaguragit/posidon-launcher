@@ -57,6 +57,7 @@ class FeedAdapter(
         var swipeableLayout: SwipeableLayout? = null
 
         return FeedModelViewHolder(FrameLayout(context).apply {
+            layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
             val tp = Settings["feed:card_margin_y", 9].dp.toInt()
             setPadding(0, tp, 0, tp)
             addView(if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
@@ -73,8 +74,6 @@ class FeedAdapter(
     }
 
     override fun onBindViewHolder(holder: FeedModelViewHolder, i: Int) {
-
-        holder.card.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         val feedItem = feedModels[i]
         holder.title.text = feedItem.title
         holder.source.text = feedItem.source.name
@@ -149,7 +148,7 @@ class FeedAdapter(
 
     override fun getItemCount() = feedModels.size
 
-    fun updateFeed(feedModels: ArrayList<FeedItem>) {
+    fun updateFeed(feedModels: List<FeedItem>) {
         this.feedModels.clear()
         this.feedModels.addAll(feedModels)
         this.notifyDataSetChanged()

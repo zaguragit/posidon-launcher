@@ -17,6 +17,7 @@ import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.Kustom
+import posidon.launcher.external.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Gestures
@@ -54,7 +55,7 @@ class LauncherMenu : OnLongClickListener {
             isActive = true
             context.vibrate()
             val homescreen = window.decorView.findViewById<View>(android.R.id.content)
-            val page = homescreen.findViewById<View>(R.id.desktop)
+            val page = homescreen.findViewById<View>(R.id.feed)
             page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
             val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
             drawer.state = BottomDrawerBehavior.STATE_HIDDEN
@@ -74,7 +75,7 @@ class LauncherMenu : OnLongClickListener {
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Home.instance.widgetLayout.widget.selectWidget()
+                Widget.selectWidget()
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)
@@ -97,7 +98,7 @@ class LauncherMenu : OnLongClickListener {
 
         private fun exit(homescreen: View, window: Window, drawer: DrawerView) {
             drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-            val page = homescreen.findViewById<View>(R.id.desktop)
+            val page = homescreen.findViewById<View>(R.id.feed)
             page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
             page.setBackgroundColor(0x0)
             window.setBackgroundDrawableResource(android.R.color.transparent)

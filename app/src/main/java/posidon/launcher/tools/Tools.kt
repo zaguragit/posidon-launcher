@@ -40,6 +40,7 @@ import java.io.InputStreamReader
 import java.io.StringWriter
 import java.lang.ref.WeakReference
 import kotlin.math.*
+import kotlin.random.Random
 
 object Tools {
 
@@ -404,6 +405,11 @@ object Tools {
         val str = uidCounter++.toString(16).padStart(8, '_')
         Settings["folder:uids:count"] = uidCounter
         return str
+    }
+
+    tailrec fun generateWidgetHostUid(): Int {
+        val r = Random.nextInt()
+        return if (Settings.getString("widget:$r") == null) r else generateWidgetHostUid()
     }
 
     fun searchOptimize(s: String) = s.toLowerCase()

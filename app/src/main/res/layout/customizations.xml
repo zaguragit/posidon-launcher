@@ -75,15 +75,10 @@
             </LinearLayout>
             <TextView
                 style="@style/customcategory"
-                android:drawableStart="@drawable/custom_drawer"
-                android:onClick="openApps"
-                android:text="@string/settings_title_drawer"
-                android:layout_marginTop="12dp"/>
-            <TextView
-                style="@style/customcategory"
                 android:drawableStart="@drawable/custom_feed"
                 android:onClick="openHome"
-                android:text="@string/settings_title_feed" />
+                android:text="@string/settings_title_feed"
+                android:layout_marginTop="12dp"/>
             <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_news"
@@ -94,6 +89,11 @@
                 android:drawableStart="@drawable/custom_notifications"
                 android:onClick="openNotif"
                 android:text="@string/notifications" />
+            <TextView
+                style="@style/customcategory"
+                android:drawableStart="@drawable/custom_drawer"
+                android:onClick="openApps"
+                android:text="@string/settings_title_drawer"/>
             <TextView
                 style="@style/customcategory"
                 android:drawableStart="@drawable/custom_dock"

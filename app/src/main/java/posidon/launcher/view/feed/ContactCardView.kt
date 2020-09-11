@@ -1,7 +1,9 @@
 package posidon.launcher.view.feed
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
@@ -10,12 +12,14 @@ import android.view.View
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import posidon.launcher.R
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 import posidon.launcher.view.groupView.ItemGroupView
+import kotlin.concurrent.thread
 
 class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroupView(context, attrs), FeedSection {
 
@@ -51,6 +55,8 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         }
     }
 
+    override fun doShow() = Settings["contacts_card:enabled", false]
+
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
@@ -68,11 +74,17 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         }
     }
 
-    fun update(activity: Activity) {
-        ContactItem.getList(true).also {
-            activity.runOnUiThread {
-                setItems(it)
+    override fun onResume(activity: Activity) {
+        thread (isDaemon = true) {
+            if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                ContactItem.getList(true).also {
+                    activity.runOnUiThread {
+                        setItems(it)
+                    }
+                }
             }
         }
     }
+
+    override fun toString() = "starred_contacts"
 }

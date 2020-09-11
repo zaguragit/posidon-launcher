@@ -127,6 +127,8 @@ class MusicCard : CardView, FeedSection {
         addView(musicCardOverImg, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
+    override fun doShow() = true
+
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
@@ -185,4 +187,6 @@ class MusicCard : CardView, FeedSection {
             }
         }
     }
+
+    override fun toString() = "music"
 }

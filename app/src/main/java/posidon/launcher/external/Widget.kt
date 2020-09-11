@@ -1,5 +1,6 @@
 package posidon.launcher.external
 
+import android.app.Activity
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -15,17 +16,84 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.ResizableLayout
+import posidon.launcher.view.feed.WidgetSection
 
-class Widget(val uid: Int) {
+class Widget(
+    val hostId: Int
+) {
 
     companion object {
         const val REQUEST_PICK_APPWIDGET = 0
         const val REQUEST_CREATE_APPWIDGET = 1
         const val REQUEST_BIND_WIDGET = 2
+
+        fun fromIntent(data: Intent?): WidgetSection? {
+            val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
+            try {
+                val widgetId = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+                val hostId = Tools.generateWidgetHostUid()
+                val providerInfo = widgetManager.getAppWidgetInfo(widgetId)
+                if (!widgetManager.bindAppWidgetIdIfAllowed(widgetId, providerInfo.provider)) {
+                    val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
+                    Home.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
+                }
+                Settings["widget:$hostId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + widgetId
+                return WidgetSection(Tools.publicContext!!, Widget(hostId))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
+        }
+
+        fun handleActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?): WidgetSection? {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_PICK_APPWIDGET) {
+                    val extras = data!!.extras
+                    if (extras != null) {
+                        val id = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+                        val widgetInfo = AppWidgetManager.getInstance(activity).getAppWidgetInfo(id)
+                        if (widgetInfo.configure != null) {
+                            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
+                            intent.component = widgetInfo.configure
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+                            runCatching {
+                                activity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET)
+                            }
+                        } else {
+                            return fromIntent(data)
+                        }
+                    }
+                } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
+                    return fromIntent(data)
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
+                val appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+                if (appWidgetId != -1) {
+                    tmpHost?.deleteAppWidgetId(appWidgetId)
+                }
+            }
+            return null
+        }
+
+        private var tmpHost: AppWidgetHost? = null
+        fun selectWidget() {
+            val hostId = Tools.generateWidgetHostUid()
+            tmpHost = AppWidgetHost(Tools.publicContext, hostId)
+            val appWidgetId = tmpHost!!.allocateAppWidgetId()
+            val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
+            pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            val customInfo: ArrayList<out Parcelable?> = ArrayList()
+            pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo)
+            val customExtras: ArrayList<out Parcelable?> = ArrayList()
+            pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
+            Home.instance.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
+        }
     }
 
     private var hostView: AppWidgetHostView? = null
-    var host: AppWidgetHost = AppWidgetHost(Tools.publicContext, uid)
+    var host: AppWidgetHost = AppWidgetHost(Tools.publicContext, hostId)
         private set
 
     fun fromIntent(widgetLayout: ResizableLayout, data: Intent?) {
@@ -50,15 +118,15 @@ class Widget(val uid: Int) {
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
                 Home.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
             }
-            Settings["widget:$uid"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
+            Settings["widget:$hostId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + id
             widgetLayout.addView(hostView)
-            resize(Settings["widget:$uid:height", ViewGroup.LayoutParams.WRAP_CONTENT])
+            resize(Settings["widget:$hostId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
         } catch (e: Exception) { e.printStackTrace() }
     }
 
     fun fromSettings(widgetLayout: ResizableLayout) {
         val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
-        val str = Settings["widget:$uid", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+        val str = Settings["widget:$hostId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
         if (str.isNotEmpty()) {
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
@@ -92,27 +160,16 @@ class Widget(val uid: Int) {
             }
             hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
-            resize(Settings["widget:$uid:height", ViewGroup.LayoutParams.WRAP_CONTENT])
+            resize(Settings["widget:$hostId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
         } else widgetLayout.visibility = View.GONE
     }
 
-    fun selectWidget() {
-        val appWidgetId = host.allocateAppWidgetId()
-        val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
-        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-        val customInfo: ArrayList<out Parcelable?> = ArrayList()
-        pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo)
-        val customExtras: ArrayList<out Parcelable?> = ArrayList()
-        pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
-        Home.instance.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
-    }
-
     fun deleteWidget(widgetLayout: ResizableLayout) {
-        host.deleteAppWidgetId(hostView!!.appWidgetId)
+        hostView?.appWidgetId?.let { host.deleteAppWidgetId(it) }
         widgetLayout.removeView(hostView)
         hostView = null
         widgetLayout.visibility = View.GONE
-        Settings["widget:$uid"] = ""
+        Settings["widget:$hostId"] = ""
     }
 
     fun resize(newHeight: Int) {
