@@ -131,7 +131,19 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
-            MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_DOWN -> {
+                startX = event.x
+                startY = event.y
+                startRawX = event.rawX
+                startRawY = event.rawY
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                if (event.eventTime - event.downTime < ViewConfiguration.getLongPressTimeout() || !hasWindowFocus())
+                    longPressHandler.removeCallbacksAndMessages(null)
+            }
+            MotionEvent.ACTION_CANCEL,
+            MotionEvent.ACTION_OUTSIDE -> {
                 longPressHandler.removeCallbacksAndMessages(null)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -149,6 +161,15 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
                 if (event.eventTime - event.downTime > ViewConfiguration.getLongPressTimeout() && hasWindowFocus())
                     return true
                 longPressHandler.removeCallbacksAndMessages(null)
+            }
+            MotionEvent.ACTION_CANCEL,
+            MotionEvent.ACTION_OUTSIDE -> {
+                longPressHandler.removeCallbacksAndMessages(null)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (!(Tools.isAClick(startX, event.x, startY, event.y) && Tools.isAClick(startRawX, event.rawX, startRawY, event.rawY))) {
+                    longPressHandler.removeCallbacksAndMessages(null)
+                }
             }
             MotionEvent.ACTION_DOWN -> {
                 startX = event.x
