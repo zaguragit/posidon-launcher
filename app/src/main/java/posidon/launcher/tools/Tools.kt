@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -459,7 +460,7 @@ object Tools {
     fun selectApp(context: Context, includeHidden: Boolean, out: (app: App) -> Unit) = Dialog(context, R.style.longpressmenusheet).run {
         setContentView(RecyclerView(context).apply {
             val apps = if (includeHidden) ArrayList<App>().apply {
-                addAll(Home.apps)
+                addAll(Global.apps)
                 addAll(App.hidden)
                 if (Settings["drawer:sorting", 0] == 1) sortWith { o1, o2 ->
                     val iHsv = floatArrayOf(0f, 0f, 0f)
@@ -471,7 +472,7 @@ object Tools {
                 else sortWith { o1, o2 ->
                     o1.label!!.compareTo(o2.label!!, ignoreCase = true)
                 }
-            } else Home.apps
+            } else Global.apps
             layoutManager = GridLayoutManager(context, 4)
             adapter = AppSelectionAdapter(apps) {
                 out(it)

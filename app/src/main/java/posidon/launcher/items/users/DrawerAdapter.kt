@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
@@ -15,8 +15,8 @@ import posidon.launcher.view.HighlightAdapter
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
-    override fun getCount(): Int = Home.apps.size
-    override fun getItem(i: Int) = Home.apps[i]
+    override fun getCount(): Int = Global.apps.size
+    override fun getItem(i: Int) = Global.apps[i]
     override fun getItemId(i: Int): Long = 0
 
     private val appSize = when (Settings["icsize", 1]) {
@@ -34,7 +34,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
         val holder: ViewHolder
-        val app = Home.apps[i]
+        val app = Global.apps[i]
         if (convertView == null) {
             val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
@@ -81,19 +81,19 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         return convertView
     }
 
-    private val savedSections = Array(Home.appSections.size) { Home.appSections[it][0].label!![0].toUpperCase() }
+    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label!![0].toUpperCase() }
 
     override fun getSections(): Array<Char> = savedSections
 
     override fun getSectionForPosition(i: Int): Int {
-        val label = Home.apps[i].label!!
+        val label = Global.apps[i].label!!
         return savedSections.indexOf(if (label.isEmpty()) ' ' else label[0].toUpperCase())
     }
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
-        for (j in Home.apps.indices) {
-            val label = Home.apps[j].label!!
+        for (j in Global.apps.indices) {
+            val label = Global.apps[j].label!!
             if (char == if (label.isEmpty()) ' ' else label[0].toUpperCase()) {
                 return j
             }

@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -40,7 +40,7 @@ class App(
             val intent = Intent(Intent.ACTION_MAIN)
             intent.component = ComponentName(packageName, name!!)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            Home.launcherApps.startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
+            Global.launcherApps.startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
                 "clip_reveal" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)

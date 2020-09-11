@@ -7,7 +7,6 @@ import posidon.launcher.external.Widget
 interface FeedSection {
 
     fun updateTheme(activity: Activity)
-    fun doShow(): Boolean
 
     fun onPause() {}
     fun onResume(activity: Activity) {}

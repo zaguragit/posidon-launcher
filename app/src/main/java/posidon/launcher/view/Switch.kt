@@ -7,7 +7,7 @@ import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.util.StateSet
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 
@@ -17,7 +17,7 @@ class Switch(
     attrs: AttributeSet? = null
 ) : android.widget.Switch(context, attrs) {
 
-    var accentColor = Home.accentColor
+    var accentColor = Global.accentColor
         set(value) {
             field = value
             trackDrawable = generateTrackDrawable()

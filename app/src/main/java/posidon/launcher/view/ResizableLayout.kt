@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -33,7 +33,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
             if (field) {
                 dragHandle.visibility = VISIBLE
                 crossButton.visibility = VISIBLE
-                dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Home.accentColor))
+                dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Global.accentColor))
             } else {
                 dragHandle.visibility = GONE
                 crossButton.visibility = GONE
@@ -57,6 +57,8 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
 
     companion object {
         private const val MIN_HEIGHT = 96
+        var currentlyResizing: ResizableLayout? = null
+            private set
     }
 
     init {
@@ -64,7 +66,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
         clipChildren = false
         dragHandle = findViewById(R.id.handle)
         dragHandle.visibility = if (resizing) VISIBLE else GONE
-        dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Home.accentColor))
+        dragHandle.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Global.accentColor))
         dragHandle.backgroundTintMode = PorterDuff.Mode.MULTIPLY
         var oldHeight = 0
         var oldMillis = System.currentTimeMillis()
@@ -116,7 +118,9 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
     private val onLongPress = Runnable {
         if (!Settings["locked", false] && !LauncherMenu.isActive && hasWindowFocus()) {
             context.vibrate()
+            currentlyResizing?.resizing = false
             resizing = true
+            currentlyResizing = this
         }
     }
 

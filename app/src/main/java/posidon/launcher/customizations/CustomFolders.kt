@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-
 
 class CustomFolders : AppCompatActivity() {
 
@@ -18,6 +17,6 @@ class CustomFolders : AppCompatActivity() {
         setContentView(R.layout.custom_folders)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        Home.customized = true
+        Global.customized = true
     }
 }

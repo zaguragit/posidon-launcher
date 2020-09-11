@@ -12,9 +12,12 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
+import posidon.launcher.external.Widget
 import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
@@ -68,18 +71,14 @@ class Feed : NestedScrollView {
 
     fun add(section: FeedSection) = add(section, 0)
     fun add(section: FeedSection, i: Int) {
-        Settings.getStringsOrSet("feed:sections") {
-            arrayListOf("notifications", "news")
-        }.add(i,section.toString())
+        getSectionsFromSettings().add(i,section.toString())
         Settings.apply()
         sections.add(i, section)
         desktopContent.addView(section as View, i)
         section.onAdd(this)
     }
     fun remove(section: FeedSection) {
-        Settings.getStringsOrSet("feed:sections") {
-            arrayListOf("notifications", "news")
-        }.remove(section.toString())
+        getSectionsFromSettings().remove(section.toString())
         Settings.apply()
         sections.remove(section)
         desktopContent.removeView(section as View)
@@ -93,16 +92,11 @@ class Feed : NestedScrollView {
     }
 
     fun updateTheme(activity: Activity, drawer: DrawerView) {
-        spinner.indeterminateDrawable.setTint(Home.accentColor)
+        spinner.indeterminateDrawable.setTint(Global.accentColor)
 
         for (section in sections) {
             section as View
-            if (section.doShow()) {
-                section.visibility = VISIBLE
-                section.updateTheme(activity)
-            } else {
-                section.visibility = GONE
-            }
+            section.updateTheme(activity)
         }
 
         if (Settings["hidefeed", false]) {
@@ -148,10 +142,10 @@ class Feed : NestedScrollView {
         }
         isVerticalFadingEdgeEnabled = fadingEdge
 
-        if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
+        if (notifications != null || Settings["notif:badges", true]) {
             NotificationService.onUpdate = {
                 try {
-                    if (Settings["notif:cards", true]) activity.runOnUiThread {
+                    if (notifications != null) activity.runOnUiThread {
                         notifications?.update()
                     }
                     if (Settings["notif:badges", true]) activity.runOnUiThread {
@@ -167,7 +161,7 @@ class Feed : NestedScrollView {
 
     fun loadNews(activity: Activity) {
         val newsCards = newsCards
-        if (!Settings["feed:enabled", true] || spinner.visibility == VISIBLE || newsCards == null) {
+        if (newsCards == null || spinner.visibility == VISIBLE) {
             return
         }
         if (Settings["feed:show_spinner", true]) {
@@ -205,9 +199,7 @@ class Feed : NestedScrollView {
     fun update() {
         sections.clear()
         desktopContent.removeAllViews()
-        val s = Settings.getStringsOrSet("feed:sections") {
-            arrayListOf("notifications", "news")
-        }
+        val s = getSectionsFromSettings()
         for (section in s.reversed()) {
             internalAdd(FeedSection(context, section).also {
                 when (it) {
@@ -216,6 +208,58 @@ class Feed : NestedScrollView {
                     is NewsCards -> newsCards = it
                 }
             }, 0)
+        }
+    }
+
+    companion object {
+
+        fun getSectionsFromSettings() = Settings.getStringsOrSet("feed:sections") {
+            arrayListOf("notifications", "news")
+        }
+
+        fun selectFeedSectionToAdd(activity: Activity, onSelect: (FeedSection) -> Unit) {
+            val sections = getSectionsFromSettings()
+            BottomSheetDialog(activity, R.style.bottomsheet).apply {
+                setContentView(R.layout.feed_section_options)
+                window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
+                findViewById<View>(R.id.notifications_section)!!.run {
+                    if (sections.contains("notifications")) {
+                        visibility = GONE
+                    } else setOnClickListener {
+                        onSelect(NotificationCards(context))
+                        dismiss()
+                    }
+                }
+                findViewById<View>(R.id.news_section)!!.run {
+                    if (sections.contains("news")) {
+                        visibility = GONE
+                    } else setOnClickListener {
+                        onSelect(NewsCards(context))
+                        dismiss()
+                    }
+                }
+                findViewById<View>(R.id.starred_contacts_section)!!.run {
+                    if (sections.contains("starred_contacts")) {
+                        visibility = GONE
+                    } else setOnClickListener {
+                        onSelect(ContactCardView(context))
+                        dismiss()
+                    }
+                }
+                findViewById<View>(R.id.music_section)!!.run {
+                    if (sections.contains("music")) {
+                        visibility = GONE
+                    } else setOnClickListener {
+                        onSelect(MusicCard(context))
+                        dismiss()
+                    }
+                }
+                findViewById<View>(R.id.widget_section)!!.setOnClickListener {
+                    Widget.selectWidget(activity)
+                    dismiss()
+                }
+                show()
+            }
         }
     }
 }

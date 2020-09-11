@@ -9,6 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
@@ -31,7 +32,7 @@ class CustomTheme : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val pm = packageManager
 
-        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Home.accentColor)
+        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Global.accentColor)
         val i = findViewById<TextView>(R.id.iconpackselector)
         try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
@@ -102,9 +103,9 @@ class CustomTheme : AppCompatActivity() {
         }
 
         findViewById<ColorSettingView>(R.id.accentColorSetting).onSelected = {
-            Home.accentColor = it
-            Home.customized = true
-            Kustom["accent"] = Home.accentColor.toUInt().toString(16)
+            Global.accentColor = it
+            Global.customized = true
+            Kustom["accent"] = Global.accentColor.toUInt().toString(16)
         }
 
         findViewById<Spinner>(R.id.iconBackgrounds).apply {
@@ -126,7 +127,7 @@ class CustomTheme : AppCompatActivity() {
                     4 -> "dm"
                     else -> "custom"
                 }
-                Home.shouldSetApps = true
+                Global.shouldSetApps = true
             }
         }
 
@@ -137,7 +138,7 @@ class CustomTheme : AppCompatActivity() {
         } else {
             icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         }
-        Home.shouldSetApps = true
+        Global.shouldSetApps = true
     }
 
     fun iconPackSelector(v: View) = startActivity(Intent(this, IconPackPicker::class.java))

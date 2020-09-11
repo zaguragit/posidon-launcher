@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.news.chooser.suggestions.Suggestions
 import posidon.launcher.feed.news.chooser.suggestions.SuggestionsAdapter
@@ -47,8 +47,8 @@ class FeedChooser : AppCompatActivity() {
 
         grid.adapter = FeedChooserAdapter(this@FeedChooser, feedUrls)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
-        fab.imageTintList = ColorStateList.valueOf(Home.accentColor)
+        fab.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
+        fab.imageTintList = ColorStateList.valueOf(Global.accentColor)
         fab.setOnClickListener { addSource(this, feedUrls, grid.adapter!!) }
         (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
     }
@@ -75,8 +75,8 @@ class FeedChooser : AppCompatActivity() {
                 }
             }
             dialog.findViewById<TextView>(R.id.done)!!.apply {
-                setTextColor(Home.accentColor)
-                backgroundTintList = ColorStateList.valueOf(Home.accentColor and 0x00ffffff or 0x33000000)
+                setTextColor(Global.accentColor)
+                backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
                 setOnClickListener {
                     dialog.dismiss()
                     feedUrls.add(input.text.toString().replace('|', ' '))

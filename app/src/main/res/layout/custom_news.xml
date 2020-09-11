@@ -35,7 +35,7 @@
                     <TextView
                         style="@style/settingsbtn"
                         android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_label"
+                        android:drawableStart="@drawable/ic_news"
                         android:text="@string/feed_sources"
                         android:onClick="chooseFeeds"/>
                 </LinearLayout>
@@ -77,14 +77,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                <posidon.launcher.view.setting.HeaderSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
-                    app:label="@string/cards"
-                    app:key="feed:enabled"
-                    app:def="true"/>
+                    app:label="@string/cards"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

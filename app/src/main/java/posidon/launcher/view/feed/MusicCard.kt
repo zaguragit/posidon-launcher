@@ -19,7 +19,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
@@ -54,8 +54,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_left)
         setOnClickListener {
-            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -64,13 +64,13 @@ class MusicCard : CardView, FeedSection {
         setImageResource(R.drawable.ic_play)
         setOnClickListener {
             it as ImageView
-            if (Home.musicService.isMusicActive) {
-                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
+            if (Global.musicService.isMusicActive) {
+                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
+                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
                 it.setImageResource(R.drawable.ic_play)
             } else {
-                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
-                Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
+                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
+                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
                 it.setImageResource(R.drawable.ic_pause)
             }
         }
@@ -83,8 +83,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_right)
         setOnClickListener {
-            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-            Home.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -126,8 +126,6 @@ class MusicCard : CardView, FeedSection {
         })
         addView(musicCardOverImg, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
-
-    override fun doShow() = true
 
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
@@ -180,7 +178,7 @@ class MusicCard : CardView, FeedSection {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (Home.musicService.isMusicActive) {
+            if (Global.musicService.isMusicActive) {
                 musicPlay.setImageResource(R.drawable.ic_pause)
             } else {
                 musicPlay.setImageResource(R.drawable.ic_play)

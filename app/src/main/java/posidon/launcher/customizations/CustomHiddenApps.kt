@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -31,7 +32,7 @@ class CustomHiddenApps : AppCompatActivity() {
         val userManager = Home.instance.getSystemService(Context.USER_SERVICE) as UserManager
 
         for (profile in userManager.userProfiles) {
-            val appList = Home.launcherApps.getActivityList(null, profile)
+            val appList = Global.launcherApps.getActivityList(null, profile)
             for (i in appList.indices) {
                 App[appList[i].applicationInfo.packageName, appList[i].name, profile.hashCode()]?.let { apps.add(it) }
             }
@@ -96,8 +97,8 @@ class CustomHiddenApps : AppCompatActivity() {
                 convertView.setBackgroundColor(0x0)
             }
             convertView.setOnClickListener {
-                Home.shouldSetApps = true
-                Home.customized = true
+                Global.shouldSetApps = true
+                Global.customized = true
                 if (hidden) {
                     convertView.setBackgroundColor(0x33ff0000)
                     Settings["app:$app:hidden"] = false

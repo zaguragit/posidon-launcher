@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-
 
 class CustomQuickStep : AppCompatActivity() {
 
@@ -21,11 +20,11 @@ class CustomQuickStep : AppCompatActivity() {
 
 
 
-        Home.customized = true
+        Global.customized = true
     }
 
     override fun onPause() {
-        Home.customized = true
+        Global.customized = true
         super.onPause()
     }
 }

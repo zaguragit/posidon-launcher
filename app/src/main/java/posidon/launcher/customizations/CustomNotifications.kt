@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -24,13 +24,13 @@ class CustomNotifications : AppCompatActivity() {
         findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
         findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
 
-        Home.customized = true
+        Global.customized = true
     }
 
     fun openHideApps(v: View) = startActivity(Intent(this, CustomHiddenAppNotifications::class.java))
 
     override fun onPause() {
-        Home.customized = true
+        Global.customized = true
         Settings.apply {
             putNotSave("notifications:groupingType", when (findViewById<Spinner>(R.id.notificationGrouping).selectionI) { 0 -> "os"; 1 -> "byApp"; else -> "none" })
             apply()

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -27,12 +28,12 @@ class AddShortcutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.add_shortcut_activity)
-        val shortcut = Home.launcherApps.getPinItemRequest(intent).shortcutInfo
-        val hasHostPermission = Home.launcherApps.hasShortcutHostPermission()
+        val shortcut = Global.launcherApps.getPinItemRequest(intent).shortcutInfo
+        val hasHostPermission = Global.launcherApps.hasShortcutHostPermission()
         if (shortcut == null || !hasHostPermission) return
         val s = Shortcut(shortcut)
 
-        Home.launcherApps.pinShortcuts(
+        Global.launcherApps.pinShortcuts(
             shortcut.`package`,
             Shortcut.pinnedShortcuts.filter {
                 it.key == s.toString()

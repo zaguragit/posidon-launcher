@@ -33,28 +33,11 @@
                     <LinearLayout
                         style="@style/settingsEntry"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView
-                            style="@style/settingsbtn"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:drawableStart="@drawable/ic_label"
-                            android:text="@string/settings_title_news" />
-                        <posidon.launcher.view.Switch
-                            android:id="@+id/enableNews"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:padding="12dp"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        style="@style/settingsEntry"
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
                             style="@style/settingsbtn"
                             android:layout_width="match_parent"
-                            android:drawableStart="@drawable/ic_label"
+                            android:drawableStart="@drawable/ic_news"
                             android:text="@string/feed_sources"
                             android:onClick="chooseFeeds"/>
                     </LinearLayout>
@@ -66,7 +49,7 @@
                             style="@style/settingsbtn"
                             android:onClick="iconPackSelector"
                             android:layout_width="match_parent"
-                            android:drawableStart="@drawable/ic_apps"
+                            android:drawableStart="@drawable/ic_image"
                             android:text="@string/icon_pack" />
                     </LinearLayout>
                 </LinearLayout>

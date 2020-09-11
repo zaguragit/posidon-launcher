@@ -28,6 +28,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <LinearLayout
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/settingsbtn"
+                        android:onClick="openFeedOrder"
+                        android:layout_width="match_parent"
+                        android:drawableStart="@drawable/ic_apps"
+                        android:text="@string/cards" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -52,17 +69,6 @@
                     app:key="feed:card_margin_y"
                     app:def="9"
                     app:max="16"/>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="openFeedOrder"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/cards" />
-                </LinearLayout>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -147,14 +153,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                <posidon.launcher.view.setting.HeaderSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
-                    app:label="@string/starred_contacts"
-                    app:key="contacts_card:enabled"
-                    app:def="false"/>
+                    app:label="@string/starred_contacts"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -164,6 +168,20 @@
                     app:def="5"
                     app:max="5"
                     app:startsWith1="true"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/background"
+                    app:key="contacts_card:bg_color"
+                    app:def="#ffffffff"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/text_color"
+                    app:key="contacts_card:text_color"
+                    app:def="#ff252627"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

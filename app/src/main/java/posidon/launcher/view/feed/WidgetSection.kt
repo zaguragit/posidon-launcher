@@ -32,8 +32,6 @@ class WidgetSection(
     fun startListening() = widget.startListening()
     fun stopListening() = widget.stopListening()
 
-    override fun doShow() = true
-
     override fun updateTheme(activity: Activity) {
 
     }

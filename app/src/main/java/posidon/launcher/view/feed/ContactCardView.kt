@@ -49,13 +49,12 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
                 layoutParams.width = 74.dp.toInt()
             }
             findViewById<TextView>(R.id.icontxt).text = item.label
+            findViewById<TextView>(R.id.icontxt).setTextColor(Settings["contacts_card:text_color", 0xff252627.toInt()])
             findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE
             setOnClickListener { item.open() }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
         }
     }
-
-    override fun doShow() = Settings["contacts_card:enabled", false]
 
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
@@ -63,7 +62,7 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         background = ShapeDrawable().apply {
             val r = Settings["feed:card_radius", 15].dp
             shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-            paint.color = Settings["notificationbgcolor", -0x1]
+            paint.color = Settings["contacts_card:bg_color", -0x1]
         }
         columns = Settings["contacts_card:columns", 5]
         (layoutParams as MarginLayoutParams).run {
@@ -72,11 +71,12 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             topMargin = marginY
             bottomMargin = marginY
         }
+        textView.setTextColor(Settings["contacts_card:text_color", 0xff252627.toInt()])
     }
 
     override fun onResume(activity: Activity) {
         thread (isDaemon = true) {
-            if (Settings["contacts_card:enabled", false] && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 ContactItem.getList(true).also {
                     activity.runOnUiThread {
                         setItems(it)

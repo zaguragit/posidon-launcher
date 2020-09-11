@@ -10,7 +10,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -19,7 +19,6 @@ import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
 import java.io.FileNotFoundException
 import kotlin.system.exitProcess
-
 
 class CustomOther : AppCompatActivity() {
 
@@ -57,11 +56,11 @@ class CustomOther : AppCompatActivity() {
             }
         }
 
-        Home.customized = true
+        Global.customized = true
     }
 
     override fun onPause() {
-        Home.customized = true
+        Global.customized = true
         Settings.apply {
             apply()
         }

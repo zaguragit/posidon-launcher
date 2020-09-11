@@ -21,7 +21,6 @@ import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.view.Switch
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 
@@ -236,16 +235,6 @@ class Tutorial : AppCompatActivity() {
 
     fun done2(v: View) {
         setContentView(R.layout.tutorial3)
-        findViewById<Switch>(R.id.enableNews).apply {
-            accentColor = resources.getColor(R.color.secondaryAccent)
-            isChecked = Settings["feed:enabled", true]
-            setOnCheckedChangeListener { _, checked ->
-                Settings.apply {
-                    putNotSave("feed:enabled", checked)
-                    apply()
-                }
-            }
-        }
         Tools.updateNavbarHeight(this)
     }
 

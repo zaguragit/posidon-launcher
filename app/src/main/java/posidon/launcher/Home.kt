@@ -27,7 +27,6 @@ import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
-import posidon.launcher.items.App
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.items.users.ItemLongPress
@@ -41,6 +40,7 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.AlphabetScrollbar
+import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
@@ -66,8 +66,6 @@ class Home : AppCompatActivity() {
 
     lateinit var feed: Feed
 
-    private lateinit var powerManager: PowerManager
-
     init {
         Tools.publicContextReference = WeakReference(this)
         instance = this
@@ -84,14 +82,14 @@ class Home : AppCompatActivity() {
             setDockSearchbarRadius(Settings["dock:search:radius", 30])
             setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
-            if (shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
+            if (Global.shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
                     drawer.drawerGrid.adapter = SectionedDrawerAdapter()
                     drawer.drawerGrid.onItemClickListener = null
                     drawer.drawerGrid.onItemLongClickListener = null
                 } else {
                     drawer.drawerGrid.adapter = DrawerAdapter()
-                    drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+                    drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
                     drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
                 }
                 setDock()
@@ -124,8 +122,8 @@ class Home : AppCompatActivity() {
 
             feed.updateTheme(this, drawer)
 
-            shouldSetApps = false
-            customized = false
+            Global.shouldSetApps = false
+            Global.customized = false
 
             setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
         }
@@ -147,13 +145,13 @@ class Home : AppCompatActivity() {
             Process.killProcess(Process.myPid())
             exitProcess(0)
         }
-        accentColor = Settings["accent", 0x1155ff] or -0x1000000
-        Kustom["accent"] = accentColor.toUInt().toString(16)
+        Global.accentColor = Settings["accent", 0x1155ff] or -0x1000000
+        Kustom["accent"] = Global.accentColor.toUInt().toString(16)
 
-        launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
-        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
+        Global.launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        Global.powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        Global.musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
         updateNavbarHeight(this@Home)
 
         if (Settings["search:asHome", false]) {
@@ -351,7 +349,7 @@ class Home : AppCompatActivity() {
             drawer.drawerGrid.onItemLongClickListener = null
         } else {
             drawer.drawerGrid.adapter = DrawerAdapter()
-            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
             drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
         }
         drawer.drawerGrid.scrollY = s
@@ -400,15 +398,15 @@ class Home : AppCompatActivity() {
                 }
             }
         }
-        if (customized || tmp != Tools.navbarHeight) {
+        if (Global.customized || tmp != Tools.navbarHeight) {
             setCustomizations()
-        } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
-            for (app in apps) {
+        } else if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
+            for (app in Global.apps) {
                 tryAnimate(app.icon!!)
             }
         }
         feed.loadNews(this)
-        if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
+        if (feed.notifications != null || Settings["notif:badges", true]) {
             NotificationService.onUpdate()
         }
     }
@@ -437,7 +435,7 @@ class Home : AppCompatActivity() {
             drawer.drawerGrid.onItemLongClickListener = null
         } else {
             drawer.drawerGrid.adapter = DrawerAdapter()
-            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> apps[i].open(this@Home, v) }
+            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
             drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
         }
         drawerScrollBar.updateAdapter()
@@ -451,7 +449,7 @@ class Home : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (Settings["notif:cards", true] || Settings["notif:badges", true]) {
+            if (feed.notifications != null || Settings["notif:badges", true]) {
                 try { startService(Intent(this, NotificationService::class.java)) }
                 catch (e: Exception) {}
             }
@@ -459,7 +457,7 @@ class Home : AppCompatActivity() {
                     SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     SYSTEM_UI_FLAG_LOW_PROFILE
-            if (shouldSetApps) {
+            if (Global.shouldSetApps) {
                 AppLoader(this@Home, onAppLoaderEnd).execute()
             }
 
@@ -479,7 +477,7 @@ class Home : AppCompatActivity() {
 
     override fun onBackPressed() = when {
         drawer.state == BottomDrawerBehavior.STATE_EXPANDED -> drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-        //widgetLayout.resizing -> widgetLayout.resizing = false
+        ResizableLayout.currentlyResizing != null -> ResizableLayout.currentlyResizing?.resizing = false
         else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
 
@@ -487,22 +485,11 @@ class Home : AppCompatActivity() {
 
     companion object {
 
-        var appSections = ArrayList<ArrayList<App>>()
-        var apps = ArrayList<App>()
-
-        var shouldSetApps = true
-        var customized = false
-
-        var accentColor = -0xeeaa01
-
         lateinit var instance: Home private set
 
         lateinit var setCustomizations: () -> Unit private set
 
         fun setDock() = instance.dock.loadApps(instance.drawer, instance.feed, instance.feed.desktopContent, instance)
-
-        lateinit var launcherApps: LauncherApps
-        lateinit var musicService: AudioManager
 
         fun openSearch(context: Context) = context.startActivity(
             Intent(context, if (Settings["dev:console", false]) ConsoleActivity::class.java else SearchActivity::class.java),

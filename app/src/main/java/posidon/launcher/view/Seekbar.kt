@@ -9,7 +9,7 @@ import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatSeekBar
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.tools.dp
 
 class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar(context, attrs) {
@@ -38,7 +38,7 @@ class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar
     private fun generateTrackFG(): ClipDrawable {
         val out = GradientDrawable()
         out.cornerRadius = 12.dp
-        out.setColor(Home.accentColor and 0x00ffffff or 0x88000000.toInt())
+        out.setColor(Global.accentColor and 0x00ffffff or 0x88000000.toInt())
         out.setStroke(10.dp.toInt(), 0x0)
         return ClipDrawable(out, Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
     }
@@ -46,7 +46,7 @@ class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar
     private fun generateThumb(): ShapeDrawable {
         val r = 24.dp.toInt()
         val out = ShapeDrawable(OvalShape())
-        out.paint.color = Home.accentColor
+        out.paint.color = Global.accentColor
         out.intrinsicHeight = r
         out.intrinsicWidth = r
         return out

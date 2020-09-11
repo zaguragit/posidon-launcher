@@ -14,6 +14,7 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
 import androidx.palette.graphics.Palette
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -68,9 +69,8 @@ class NotificationService : NotificationListenerService() {
         val groups = ArrayList<ArrayList<Notification>>()
         var i = 0
         var notificationsAmount2 = 0
-        val useMusicPlayer = Settings["notif:usePlayer", true]
         try {
-            for (app in Home.apps) {
+            for (app in Global.apps) {
                 app.notificationCount = 0
             }
             if (notifications != null) {
@@ -83,7 +83,7 @@ class NotificationService : NotificationListenerService() {
                             continue
                         }
 
-                        if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                        if (!hasMusic && Home.instance.feed.musicCard != null && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
                             i++; continue
@@ -124,7 +124,7 @@ class NotificationService : NotificationListenerService() {
                             continue
                         }
 
-                        if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                        if (!hasMusic && Home.instance.feed.musicCard != null && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                             handleMusicNotification(notification)
                             hasMusic = true
                             i++; continue
@@ -157,7 +157,7 @@ class NotificationService : NotificationListenerService() {
                         continue
                     }
 
-                    if (!hasMusic && useMusicPlayer && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
+                    if (!hasMusic && Home.instance.feed.musicCard != null && notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEMPLATE)?.let { it.subSequence(25, it.length) == "MediaStyle" } == true) {
                         handleMusicNotification(notification)
                         hasMusic = true
                         i++

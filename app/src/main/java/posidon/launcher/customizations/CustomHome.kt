@@ -10,12 +10,13 @@ import android.widget.EditText
 import android.widget.TextClock
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.view.feed.Feed
 
 class CustomHome : AppCompatActivity() {
 
@@ -26,11 +27,14 @@ class CustomHome : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        val widget = Settings["widget", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
-        when {
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") -> {}
-            widget.startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget") -> {}
-            else -> findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
+        val sections = Feed.getSectionsFromSettings()
+        if (sections.indexOfFirst { it.startsWith("widget:") && (
+            Settings[it, "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+                .startsWith("posidon.launcher/posidon.launcher.external.widgets.ClockWidget") ||
+            Settings[it, "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+                .startsWith("posidon.launcher/posidon.launcher.external.widgets.BigWidget")
+        )} == -1) {
+            findViewById<View>(R.id.dateFormatCard).visibility = View.GONE
         }
 
         run {
@@ -48,11 +52,11 @@ class CustomHome : AppCompatActivity() {
             })
             dateftxt.setText(dateformat, TextView.BufferType.EDITABLE)
         }
-        Home.customized = true
+        Global.customized = true
     }
 
     override fun onPause() {
-        Home.customized = true
+        Global.customized = true
         Settings.apply {
             putNotSave("datef", findViewById<EditText>(R.id.dateformat).text.toString())
             apply()

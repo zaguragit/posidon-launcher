@@ -5,7 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Home
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -26,11 +26,11 @@ class CustomDock : AppCompatActivity() {
         icsize = findViewById(R.id.dockiconsizeslider)
         icsize!!.progress = Settings["dockicsize", 1]
 
-        Home.customized = true
+        Global.customized = true
     }
 
     override fun onPause() {
-        Home.customized = true
+        Global.customized = true
         Settings.apply {
             putNotSave("dockicsize", icsize!!.progress)
             apply()
