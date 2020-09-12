@@ -30,7 +30,6 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         }
 
     init {
-        columns = 5
         title = context.getString(R.string.starred_contacts)
         textView.run {
             val p = 10.dp.toInt()
