@@ -122,10 +122,10 @@ class Home : AppCompatActivity() {
 
             feed.updateTheme(this, drawer)
 
+            setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
+
             Global.shouldSetApps = false
             Global.customized = false
-
-            setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
         }
     }
 

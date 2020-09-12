@@ -246,19 +246,27 @@ class DockView : LinearLayout {
 
     fun updateBG(drawer: View) {
         when (Settings["dock:background_type", 0]) {
-            0 -> { drawer.background = ShapeDrawable().apply {
-                val tr = Settings["dockradius", 30].dp
-                shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                paint.color = Settings["dock:background_color", -0x78000000]
-            }}
-            1 -> { drawer.background = LayerDrawable(arrayOf(
+            0 -> {
+                background = null
+                containerContainer.background = null
+                drawer.background = ShapeDrawable().apply {
+                    val tr = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = Settings["dock:background_color", -0x78000000]
+                }
+            }
+            1 -> {
+                background = null
+                containerContainer.background = null
+                drawer.background = LayerDrawable(arrayOf(
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                            Settings["dock:background_color", -0x78000000])),
+                        Settings["dock:background_color", -0x78000000] and 0x00ffffff,
+                        Settings["dock:background_color", -0x78000000])),
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                            Settings["dock:background_color", -0x78000000],
-                            Settings["drawer:background_color", -0x78000000]))
-            ))}
+                        Settings["dock:background_color", -0x78000000],
+                        Settings["drawer:background_color", -0x78000000]))
+                ))
+            }
             2 -> {
                 drawer.background = ShapeDrawable().apply {
                     val tr = Settings["dockradius", 30].dp
