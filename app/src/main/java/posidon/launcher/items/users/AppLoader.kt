@@ -27,7 +27,7 @@ class AppLoader (
     private val tmpAppSections = ArrayList<ArrayList<App>>()
     private val context: WeakReference<Context> = WeakReference(context)
 
-    fun execute() { thread(block = ::run) }
+    fun execute() { thread(isDaemon = true, block = ::run) }
     fun run() {
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
@@ -213,7 +213,10 @@ class AppLoader (
         }
     }
 
-    class Callback (val context: Context, val onAppLoaderEnd: () -> Unit) : LauncherApps.Callback() {
+    class Callback(
+        val context: Context,
+        val onAppLoaderEnd: () -> Unit
+    ) : LauncherApps.Callback() {
         override fun onPackagesUnavailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackageChanged(packageName: String, user: UserHandle?) = AppLoader(context, onAppLoaderEnd).execute()
         override fun onPackagesAvailable(packageNames: Array<out String>, user: UserHandle?, replacing: Boolean) = AppLoader(context, onAppLoaderEnd).execute()

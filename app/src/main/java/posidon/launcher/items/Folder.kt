@@ -194,10 +194,13 @@ class Folder(string: String) : LauncherItem() {
                         item.open(context, v)
                         popupWindow.dismiss()
                     }
-                    appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, i1, popupWindow, this))
+                    val finalI = i1
+                    appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, finalI, popupWindow, this))
                 } else if (item is Shortcut) {
                     appIcon.setOnClickListener { v ->
-                        item.open(context, v)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            item.open(context, v)
+                        }
                         popupWindow.dismiss()
                     }
                 }
@@ -253,7 +256,7 @@ class Folder(string: String) : LauncherItem() {
                     }
                     DragEvent.ACTION_DROP -> {
                         val i = event.clipData.getItemAt(0).text.toString().toInt(16)
-                        App[event.clipData.description.label.toString()]?.let { app -> Dock.add(app, i) }
+                        LauncherItem(event.clipData.description.label.toString())?.let { items.add(i, it) }
                     }
                 }
                 true
