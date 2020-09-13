@@ -214,7 +214,7 @@ class Feed : NestedScrollView {
     companion object {
 
         fun getSectionsFromSettings() = Settings.getStringsOrSet("feed:sections") {
-            arrayListOf("notifications", "news")
+            arrayListOf("music", "notifications", "news")
         }
 
         fun selectFeedSectionToAdd(activity: Activity, onSelect: (FeedSection) -> Unit) {
