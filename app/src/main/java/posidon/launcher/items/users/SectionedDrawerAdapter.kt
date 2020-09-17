@@ -19,7 +19,7 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         val section = Global.appSections[i]
         val convertView = cv as AppSectionView? ?: AppSectionView(Tools.publicContext!!)
         convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
-        convertView.setItems(section)
+        convertView.setItems(section, parent)
         convertView.title = section[0].label!![0].toUpperCase().toString()
         return convertView
     }
