@@ -12,6 +12,7 @@ import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Device
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
 
@@ -50,9 +51,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
 
     override fun getItemView (item: LauncherItem): View {
         item as App
-        return (if (Settings["drawer:columns", 4] > 2) LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false)
-        else LayoutInflater.from(context).inflate(R.layout.list_item, gridLayout, false).apply {
-            if (Settings["drawer:columns", 4] == 2) findViewById<TextView>(R.id.icontxt).textSize = 18f
+        return (if (Settings["drawer:columns", 4] > 2) {
+            LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false)
+        } else LayoutInflater.from(context).inflate(R.layout.list_item, gridLayout, false).apply {
+            layoutParams.width = Device.displayWidth / 2
         }).apply {
             findViewById<ImageView>(R.id.iconimg).setImageDrawable(item.icon)
             findViewById<View>(R.id.iconFrame).run {
