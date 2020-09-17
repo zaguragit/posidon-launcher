@@ -3,6 +3,8 @@ package posidon.launcher.view.groupView
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -52,7 +54,7 @@ abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : Li
     init {
         orientation = VERTICAL
         addView(textView)
-        addView(gridLayout)
+        addView(gridLayout, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
     inline var title: CharSequence

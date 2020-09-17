@@ -38,10 +38,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         if (convertView == null) {
             val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
-            else li.inflate(R.layout.list_item, parent, false).apply {
-                if (Settings["drawer:columns", 4] == 2)
-                    findViewById<TextView>(R.id.icontxt).textSize = 18f
-            }
+            else li.inflate(R.layout.list_item, parent, false)
             holder = ViewHolder(
                 convertView.findViewById(R.id.iconimg),
                 convertView.findViewById(R.id.iconFrame),
