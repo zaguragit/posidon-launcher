@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,14 +23,14 @@ abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : Li
         setPaddingRelative(28.dp.toInt(), 0, 0, 0)
     }
 
-    fun setItems(list: Iterable<LauncherItem>) {
+    fun setItems(list: Iterable<LauncherItem>, parent: ViewParent) {
         clear()
-        list.forEach { add(it) }
+        list.forEach { add(it, parent) }
     }
 
-    fun add(item: LauncherItem) {
+    fun add(item: LauncherItem, parent: ViewParent) {
         items.add(item)
-        gridLayout.addView(getItemView(item).apply {
+        gridLayout.addView(getItemView(item, parent).apply {
             setOnTouchListener { _, event ->
                 val parent = this@ItemGroupView.parent
                 if (parent != null) {
@@ -44,7 +45,7 @@ abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : Li
         })
     }
 
-    abstract fun getItemView (item: LauncherItem): View
+    abstract fun getItemView (item: LauncherItem, parent: ViewParent): View
 
     fun clear() {
         items.clear()

@@ -9,6 +9,7 @@ import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -38,7 +39,7 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
         setPadding(8.dp.toInt(), 0, 8.dp.toInt(), 0)
     }
 
-    override fun getItemView(item: LauncherItem): View {
+    override fun getItemView(item: LauncherItem, parent: ViewParent): View {
         item as ContactItem
         return (LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false)).apply {
             layoutParams.width = (gridLayout.measuredWidth) / columns
@@ -78,7 +79,7 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 ContactItem.getList(true).also {
                     activity.runOnUiThread {
-                        setItems(it)
+                        setItems(it, parent)
                     }
                 }
             }

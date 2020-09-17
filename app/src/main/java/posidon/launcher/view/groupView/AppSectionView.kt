@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,9 +13,9 @@ import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
+import kotlin.math.min
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
 
@@ -49,12 +50,22 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
         }
     }
 
-    override fun getItemView (item: LauncherItem): View {
+    override fun getItemView (item: LauncherItem, parent: ViewParent): View {
         item as App
-        return (if (Settings["drawer:columns", 4] > 2) {
-            LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false)
+        val columns = Settings["drawer:columns", 4]
+        val parentWidth = (parent as View).measuredWidth
+        return (if (columns > 2) {
+            LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false).apply {
+                layoutParams.width = min(if (Settings["drawer:scrollbar_enabled", false]) {
+                    parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
+                } else { parentWidth - 24.dp.toInt() } / columns, appSize)
+            }
         } else LayoutInflater.from(context).inflate(R.layout.list_item, gridLayout, false).apply {
-            layoutParams.width = Device.displayWidth / 2
+            if (columns == 2) {
+                layoutParams.width = if (Settings["drawer:scrollbar_enabled", false]) {
+                    parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
+                } else { parentWidth - 24.dp.toInt() } / 2
+            }
         }).apply {
             findViewById<ImageView>(R.id.iconimg).setImageDrawable(item.icon)
             findViewById<View>(R.id.iconFrame).run {
