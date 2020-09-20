@@ -83,17 +83,6 @@
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
                     app:label="@string/cards"/>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/layout"
-                        android:onClick="chooseLayouts"/>
-                </LinearLayout>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -158,6 +147,46 @@
                         android:layout_weight="1"
                         android:max="50" />
                 </LinearLayout>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/height"
+                    app:key="news:cards:height"
+                    app:def="240"
+                    app:max="320"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_label"
+                    app:label="@string/separate_text"
+                    app:key="news:cards:sep_txt"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/staggered"
+                    app:key="news:cards:is_staggered"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/adjust_height_to_content"
+                    app:key="news:cards:wrap_content"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/source_radius"
+                    app:key="news:cards:source:radius"
+                    app:def="30"
+                    app:max="30"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

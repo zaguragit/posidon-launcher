@@ -5,13 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.util.AttributeSet
+import android.view.Gravity
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Global
 import posidon.launcher.Home
@@ -28,7 +30,7 @@ import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 
-class Feed : NestedScrollView {
+class Feed : FrameLayout {
 
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
@@ -41,9 +43,26 @@ class Feed : NestedScrollView {
         setOnLongClickListener(LauncherMenu())
     }
 
+    val scroll = NestedScrollView(context).apply {
+        overScrollMode = OVER_SCROLL_ALWAYS
+        isNestedScrollingEnabled = false
+        isSmoothScrollingEnabled = false
+
+        val scaleGestureDetector = ScaleGestureDetector(context, LauncherMenu.PinchListener())
+        setOnTouchListener { _, event ->
+            if (hasWindowFocus()) {
+                scaleGestureDetector.onTouchEvent(event)
+                false
+            } else true
+        }
+
+        addView(desktopContent, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+    }
+
     val spinner = ProgressBar(context, null, R.style.Widget_AppCompat_ProgressBar).apply {
         indeterminateDrawable = resources.getDrawable(R.drawable.progress, null)
         indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+        isIndeterminate = true
         visibility = GONE
     }
 
@@ -57,17 +76,15 @@ class Feed : NestedScrollView {
         private set
 
     init {
-        overScrollMode = OVER_SCROLL_ALWAYS
-        addView(RelativeLayout(context).apply {
-            addView(desktopContent, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-            addView(spinner, LayoutParams(MATCH_PARENT, 48.dp.toInt()).apply {
-                topMargin = 72.dp.toInt()
-            })
-        }, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-
-        isNestedScrollingEnabled = false
-        isSmoothScrollingEnabled = false
+        addView(scroll, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+        addView(spinner, LayoutParams(48.dp.toInt(), 48.dp.toInt()).apply {
+            topMargin = 72.dp.toInt()
+            gravity = Gravity.CENTER_HORIZONTAL
+        })
     }
+
+    var onTopOverScroll by scroll::onTopOverScroll
+    var onBottomOverScroll by scroll::onBottomOverScroll
 
     fun add(section: FeedSection) = add(section, 0)
     fun add(section: FeedSection, i: Int) {
@@ -101,7 +118,7 @@ class Feed : NestedScrollView {
 
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
-            setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
+            scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                 val a = 6.dp
                 val distance = oldY - y
                 if (y > a) {
@@ -124,7 +141,7 @@ class Feed : NestedScrollView {
             }
         } else {
             newsCards?.show()
-            setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
+            scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
                 val a = 6.dp
                 val distance = oldY - y
                 if (distance > a || y < a || y + height >= desktopContent.height - drawer.dock.dockHeight) {
@@ -138,9 +155,9 @@ class Feed : NestedScrollView {
         }
         val fadingEdge = Settings["feed:fading_edge", true]
         if (fadingEdge && !Settings["hidestatus", false]) {
-            setPadding(0, context.getStatusBarHeight() - 12.dp.toInt(), 0, 0)
+            scroll.setPadding(0, context.getStatusBarHeight() - 12.dp.toInt(), 0, 0)
         }
-        isVerticalFadingEdgeEnabled = fadingEdge
+        scroll.isVerticalFadingEdgeEnabled = fadingEdge
 
         if (notifications != null || Settings["notif:badges", true]) {
             NotificationService.onUpdate = {
@@ -164,7 +181,9 @@ class Feed : NestedScrollView {
         if (newsCards == null || spinner.visibility == VISIBLE) {
             return
         }
+        println("DIS IS HERE OKEY INTRESTIN")
         if (Settings["feed:show_spinner", true]) {
+            println("DIS IS HERE ND WORKS")
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
             FeedLoader.loadFeed { success, items ->
@@ -172,7 +191,7 @@ class Feed : NestedScrollView {
                     if (success) {
                         newsCards.updateFeed(items)
                     }
-                    spinner.animate().translationY(-(72).dp).alpha(0f).onEnd {
+                    spinner.animate().translationY((-72).dp).alpha(0f).onEnd {
                         spinner.visibility = GONE
                     }
                 }
@@ -197,11 +216,15 @@ class Feed : NestedScrollView {
     }
 
     fun update() {
+        val map = HashMap<String, FeedSection>()
+        for (s in sections) {
+            map[s.toString()] = s
+        }
         sections.clear()
         desktopContent.removeAllViews()
         val s = getSectionsFromSettings()
         for (section in s.reversed()) {
-            internalAdd(FeedSection(context, section).also {
+            internalAdd(map[section] ?: FeedSection(context, section).also {
                 when (it) {
                     is MusicCard -> musicCard = it
                     is NotificationCards -> notifications = it

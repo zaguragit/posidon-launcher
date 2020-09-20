@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.storage.Settings
@@ -21,7 +22,6 @@ class NewsCards : RecyclerView, FeedSection {
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
 
     init {
-        layoutManager = LinearLayoutManager(context)
         isNestedScrollingEnabled = false
     }
 
@@ -52,6 +52,7 @@ class NewsCards : RecyclerView, FeedSection {
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
+        layoutManager = if (Settings["news:cards:is_staggered", false]) StaggeredGridLayoutManager(2, VERTICAL) else LinearLayoutManager(context)
         adapter = FeedAdapter(ArrayList(), activity)
     }
 
