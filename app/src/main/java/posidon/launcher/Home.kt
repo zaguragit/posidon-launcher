@@ -23,7 +23,6 @@ import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.LauncherMenu.PinchListener
 import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
@@ -281,7 +280,6 @@ class Home : AppCompatActivity() {
         setCustomizations()
         feed.loadNews(this)
 
-        val scaleGestureDetector = ScaleGestureDetector(this@Home, PinchListener())
         findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == BottomDrawerBehavior.STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Home).sendWallpaperCommand(
@@ -291,12 +289,6 @@ class Home : AppCompatActivity() {
                     event.y.toInt(),
                     0, null)
             false
-        }
-        feed.setOnTouchListener { _, event ->
-            if (hasWindowFocus()) {
-                scaleGestureDetector.onTouchEvent(event)
-                false
-            } else true
         }
         if (Settings["mnmlstatus", false]) {
             window.decorView.systemUiVisibility =

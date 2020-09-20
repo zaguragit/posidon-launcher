@@ -16,7 +16,10 @@ interface FeedSection {
     fun onDelete(feed: Feed) {}
 
     companion object {
-        operator fun invoke(context: Context, string: String): FeedSection = when (string) {
+        operator fun invoke(
+            context: Context,
+            string: String
+        ): FeedSection = when (string) {
             "starred_contacts" -> ContactCardView(context)
             "news" -> NewsCards(context)
             "music" -> MusicCard(context)

@@ -172,6 +172,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
                     app:label="@string/background"
                     app:key="contacts_card:bg_color"
                     app:def="#ffffffff"/>
@@ -179,6 +180,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
                     app:label="@string/text_color"
                     app:key="contacts_card:text_color"
                     app:def="#ff252627"/>

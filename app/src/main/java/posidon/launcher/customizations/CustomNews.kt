@@ -8,7 +8,6 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.news.RemovedArticles
@@ -20,7 +19,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
 import java.io.InputStream
 import java.text.SimpleDateFormat
@@ -70,27 +68,6 @@ class CustomNews : AppCompatActivity() {
     }
 
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
-    fun chooseLayouts(v: View) {
-        val dialog = BottomSheetDialog(this, R.style.bottomsheet)
-        dialog.setContentView(R.layout.custom_home_feed_card_layout_chooser)
-        dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
-        dialog.findViewById<View>(R.id.card0)!!.setOnClickListener {
-            vibrate()
-            Settings["feed:card_layout"] = 0
-            dialog.dismiss()
-        }
-        dialog.findViewById<View>(R.id.card1)!!.setOnClickListener {
-            vibrate()
-            Settings["feed:card_layout"] = 1
-            dialog.dismiss()
-        }
-        dialog.findViewById<View>(R.id.card2)!!.setOnClickListener {
-            vibrate()
-            Settings["feed:card_layout"] = 2
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
     fun seeRemovedArticles(v: View) = startActivity(Intent(this, RemovedArticles::class.java))
 
     fun exportOPML(v: View) {

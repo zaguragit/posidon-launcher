@@ -8,6 +8,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 
 class ClockWidget : AppWidgetProvider() {
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         Settings.init(context.applicationContext)
         for (appWidgetId in appWidgetIds) {
@@ -19,4 +20,3 @@ class ClockWidget : AppWidgetProvider() {
         }
     }
 }
-

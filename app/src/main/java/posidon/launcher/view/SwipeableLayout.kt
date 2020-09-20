@@ -35,6 +35,8 @@ class SwipeableLayout(
 
     fun setSwipeColor(color: Int) = backView.setBackgroundColor(color)
 
+    var cornerRadiusCompensation = 0f
+
     init {
         setCardBackgroundColor(0)
         cardElevation = 0f
@@ -71,12 +73,12 @@ class SwipeableLayout(
                     if (xOffset > 0) {
                         closeIcon.translationX = 18.dp
                         closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                        Rect(0, 0, xOffset.toInt(), measuredHeight)
+                        Rect(0, 0, xOffset.toInt() + cornerRadiusCompensation.toInt(), measuredHeight)
                     }
                     else {
                         closeIcon.translationX = measuredWidth - 50.dp
                         closeIcon.translationY = (measuredHeight - 32.dp) / 2
-                        Rect(measuredWidth + xOffset.toInt(), 0, measuredWidth, measuredHeight)
+                        Rect(measuredWidth + xOffset.toInt() - cornerRadiusCompensation.toInt(), 0, measuredWidth, measuredHeight)
                     }
                 return true
             }
