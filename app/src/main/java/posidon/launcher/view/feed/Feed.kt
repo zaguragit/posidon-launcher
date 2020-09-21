@@ -102,19 +102,15 @@ class Feed : FrameLayout {
         section.onDelete(this)
     }
 
-    fun internalAdd(section: FeedSection, i: Int) {
+    fun internalAdd(section: FeedSection, i: Int): FeedSection {
         sections.add(i, section)
         desktopContent.addView(section as View, i)
         section.onAdd(this)
+        return section
     }
 
-    fun updateTheme(activity: Activity, drawer: DrawerView) {
+    private fun updateTheme(activity: Activity, drawer: DrawerView) {
         spinner.indeterminateDrawable.setTint(Global.accentColor)
-
-        for (section in sections) {
-            section as View
-            section.updateTheme(activity)
-        }
 
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
@@ -215,7 +211,7 @@ class Feed : FrameLayout {
         }
     }
 
-    fun update() {
+    fun update(activity: Activity, drawer: DrawerView) {
         val map = HashMap<String, FeedSection>()
         for (s in sections) {
             map[s.toString()] = s
@@ -224,14 +220,16 @@ class Feed : FrameLayout {
         desktopContent.removeAllViews()
         val s = getSectionsFromSettings()
         for (section in s.reversed()) {
-            internalAdd(map[section] ?: FeedSection(context, section).also {
+            internalAdd(map[section]?.also {
+            } ?: FeedSection(activity, section).also {
                 when (it) {
                     is MusicCard -> musicCard = it
                     is NotificationCards -> notifications = it
                     is NewsCards -> newsCards = it
                 }
-            }, 0)
+            }, 0).updateTheme(activity)
         }
+        updateTheme(activity, drawer)
     }
 
     companion object {
@@ -240,7 +238,7 @@ class Feed : FrameLayout {
             arrayListOf("music", "notifications", "news")
         }
 
-        fun selectFeedSectionToAdd(activity: Activity, onSelect: (FeedSection) -> Unit) {
+        fun selectFeedSectionToAdd(activity: Activity, onSelect: (String) -> Unit) {
             val sections = getSectionsFromSettings()
             BottomSheetDialog(activity, R.style.bottomsheet).apply {
                 setContentView(R.layout.feed_section_options)
@@ -249,7 +247,7 @@ class Feed : FrameLayout {
                     if (sections.contains("notifications")) {
                         visibility = GONE
                     } else setOnClickListener {
-                        onSelect(NotificationCards(context))
+                        onSelect("notifications")
                         dismiss()
                     }
                 }
@@ -257,7 +255,7 @@ class Feed : FrameLayout {
                     if (sections.contains("news")) {
                         visibility = GONE
                     } else setOnClickListener {
-                        onSelect(NewsCards(context))
+                        onSelect("news")
                         dismiss()
                     }
                 }
@@ -265,7 +263,7 @@ class Feed : FrameLayout {
                     if (sections.contains("starred_contacts")) {
                         visibility = GONE
                     } else setOnClickListener {
-                        onSelect(ContactCardView(context))
+                        onSelect("starred_contacts")
                         dismiss()
                     }
                 }
@@ -273,7 +271,7 @@ class Feed : FrameLayout {
                     if (sections.contains("music")) {
                         visibility = GONE
                     } else setOnClickListener {
-                        onSelect(MusicCard(context))
+                        onSelect("music")
                         dismiss()
                     }
                 }

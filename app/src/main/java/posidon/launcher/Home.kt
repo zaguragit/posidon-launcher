@@ -71,7 +71,8 @@ class Home : AppCompatActivity() {
 
         setCustomizations = {
 
-            feed.update()
+            feed.update(this, drawer)
+
             dock.updateBG(drawer)
 
             setDockSearchBarVisible(Settings["docksearchbarenabled", false])
@@ -118,8 +119,6 @@ class Home : AppCompatActivity() {
             setDrawerSearchbarRadius(Settings["searchradius", 0])
 
             setSearchHintText(Settings["searchhinttxt", "Search.."])
-
-            feed.updateTheme(this, drawer)
 
             setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
 

@@ -1,8 +1,6 @@
 package posidon.launcher.view.feed
 
 import android.app.Activity
-import android.content.Context
-import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -15,14 +13,11 @@ import posidon.launcher.tools.onEnd
 import posidon.launcher.view.LinearLayoutManager
 import kotlin.math.pow
 
-class NewsCards : RecyclerView, FeedSection {
-
-    constructor(c: Context) : super(c)
-    constructor(c: Context, a: AttributeSet?) : super(c, a)
-    constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
+class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
 
     init {
         isNestedScrollingEnabled = false
+        adapter = FeedAdapter(ArrayList(), c)
     }
 
     var wasHiddenLastTime = true
@@ -53,7 +48,6 @@ class NewsCards : RecyclerView, FeedSection {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
         layoutManager = if (Settings["news:cards:is_staggered", false]) StaggeredGridLayoutManager(2, VERTICAL) else LinearLayoutManager(context)
-        adapter = FeedAdapter(ArrayList(), activity)
     }
 
     override fun toString() = "news"
