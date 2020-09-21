@@ -130,9 +130,9 @@ class FeedAdapter(
             swipeableLayout = this
         } else v).apply {
             layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
-                val tp = Settings["feed:card_margin_y", 9].dp.toInt()
-                topMargin = tp
-                bottomMargin = tp
+                val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+                val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
+                setMargins(marginX, marginY, marginX, marginY)
             }
         }, title, source, image, gradient, swipeableLayout)
 
