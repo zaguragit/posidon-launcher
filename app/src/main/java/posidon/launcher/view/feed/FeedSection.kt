@@ -1,7 +1,6 @@
 package posidon.launcher.view.feed
 
 import android.app.Activity
-import android.content.Context
 import posidon.launcher.external.Widget
 
 interface FeedSection {
@@ -17,7 +16,7 @@ interface FeedSection {
 
     companion object {
         operator fun invoke(
-            context: Context,
+            context: Activity,
             string: String
         ): FeedSection = when (string) {
             "starred_contacts" -> ContactCardView(context)

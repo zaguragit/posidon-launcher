@@ -48,12 +48,6 @@ class FeedAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
 
-        /*val v = LayoutInflater.from(context).inflate(when(Settings["feed:card_layout", 0]) {
-            1 -> R.layout.feed_card1
-            2 -> R.layout.feed_card2
-            else -> R.layout.feed_card0
-        }, parent, false)*/
-
         val image = ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
         }
@@ -120,7 +114,9 @@ class FeedAdapter(
                         setMargins(m, m, m, m)
                     }
                 })
-            }, ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+            }, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                gravity = Gravity.BOTTOM
+            })
         }
 
         var swipeableLayout: SwipeableLayout? = null

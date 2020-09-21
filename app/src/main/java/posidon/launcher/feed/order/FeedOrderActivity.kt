@@ -76,7 +76,7 @@ class FeedOrderActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             Feed.selectFeedSectionToAdd(this) {
-                sections.add(0, it.toString())
+                sections.add(0, it)
                 Settings.apply()
                 recycler.adapter!!.notifyItemInserted(0)
             }
