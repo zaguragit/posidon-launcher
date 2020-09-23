@@ -31,7 +31,7 @@ import posidon.launcher.view.SwipeableLayout
 import java.util.*
 
 class FeedAdapter(
-    private val feedModels: ArrayList<FeedItem>,
+    val items: ArrayList<FeedItem>,
     private val context: Activity
 ) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -144,7 +144,7 @@ class FeedAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
-        val feedItem = feedModels[i]
+        val feedItem = items[i]
         holder.title.text = feedItem.title
         holder.source.text = feedItem.source.name
 
@@ -155,9 +155,13 @@ class FeedAdapter(
         }
 
         if (Settings["feed:card_img_enabled", true]) when {
-            feedItem.img == null -> holder.image.setImageDrawable(null)
-            images.containsKey(feedItem.img) -> onImageLoadEnd(holder, images[feedItem.img]!!)
+            feedItem.img == null -> holder.image.visibility = View.GONE
+            images.containsKey(feedItem.img) -> {
+                holder.image.visibility = View.VISIBLE
+                onImageLoadEnd(holder, images[feedItem.img]!!)
+            }
             else -> {
+                holder.image.visibility = View.VISIBLE
                 holder.image.setImageDrawable(null)
                 feedItem.tryLoadImage(maxWidth, Loader.AUTO) { Home.instance.runOnUiThread {
                     images[feedItem.img] = it
@@ -172,9 +176,9 @@ class FeedAdapter(
     }
 
     private fun deleteArticle(feedItem: FeedItem, i: Int) {
-        feedModels.remove(feedItem)
+        items.remove(feedItem)
         notifyItemRemoved(i)
-        notifyItemRangeChanged(i, feedModels.size - i)
+        notifyItemRangeChanged(i, items.size - i)
         val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         val a = "$day:" + feedItem.link + ':' + feedItem.title
         Settings.getStrings("feed:deleted_articles").add(a)
@@ -182,9 +186,9 @@ class FeedAdapter(
         if (Settings["feed:undo_article_removal_opt", false]) {
             Snackbar.make(context.findViewById(android.R.id.content), R.string.removed, Snackbar.LENGTH_LONG).apply {
                 setAction(R.string.undo) {
-                    feedModels.add(i, feedItem)
+                    items.add(i, feedItem)
                     notifyItemInserted(i)
-                    notifyItemRangeChanged(i, feedModels.size - i)
+                    notifyItemRangeChanged(i, items.size - i)
                     Settings.getStrings("feed:deleted_articles").remove(a)
                     Settings.apply()
                 }
@@ -196,11 +200,11 @@ class FeedAdapter(
         }
     }
 
-    override fun getItemCount() = feedModels.size
+    override fun getItemCount() = items.size
 
     fun updateFeed(feedModels: List<FeedItem>) {
-        this.feedModels.clear()
-        this.feedModels.addAll(feedModels)
+        this.items.clear()
+        this.items.addAll(feedModels)
         this.notifyDataSetChanged()
     }
 
