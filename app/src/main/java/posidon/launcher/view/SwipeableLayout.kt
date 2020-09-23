@@ -37,6 +37,8 @@ class SwipeableLayout(
 
     var cornerRadiusCompensation = 0f
 
+    override fun setOnClickListener(l: OnClickListener?) = frontView.setOnClickListener(l)
+
     init {
         setCardBackgroundColor(0)
         cardElevation = 0f

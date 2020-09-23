@@ -138,8 +138,9 @@ class DockView : LinearLayout {
                     } else { badge.visibility = View.GONE }
                 } else { badge.visibility = View.GONE }
 
-                view.setOnClickListener { item.open(context, view, i) }
-                view.setOnLongClickListener(ItemLongPress.folder(context, item, i))
+                val finalI = i
+                view.setOnClickListener { item.open(context, view, finalI) }
+                view.setOnLongClickListener(ItemLongPress.folder(context, item, finalI))
             } else if (item is Shortcut) {
                 if (item.isInstalled(context.packageManager)) {
                     img.setImageDrawable(item.icon)

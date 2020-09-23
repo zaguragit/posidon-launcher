@@ -48,6 +48,7 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
         layoutManager = if (Settings["news:cards:is_staggered", false]) StaggeredGridLayoutManager(2, VERTICAL) else LinearLayoutManager(context)
+        adapter = FeedAdapter((adapter as FeedAdapter).items, activity)
     }
 
     override fun toString() = "news"

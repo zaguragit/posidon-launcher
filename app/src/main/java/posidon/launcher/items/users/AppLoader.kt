@@ -177,7 +177,7 @@ class AppLoader (
             val jHsv = floatArrayOf(0f, 0f, 0f)
             Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
             Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
-            (iHsv[0] - jHsv[0]).toInt()
+            iHsv[0].compareTo(jHsv[0])
         }
         else tmpApps.sortWith { o1, o2 ->
             o1.label!!.compareTo(o2.label!!, ignoreCase = true)
