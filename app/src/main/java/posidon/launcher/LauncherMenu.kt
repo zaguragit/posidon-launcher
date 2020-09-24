@@ -26,7 +26,6 @@ import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
-import java.util.*
 
 class LauncherMenu : OnLongClickListener {
 
@@ -88,8 +87,7 @@ class LauncherMenu : OnLongClickListener {
             dialog!!.setOnDismissListener { exit(homescreen, window, drawer) }
             dialog!!.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val list = ArrayList<Rect>()
-                homescreen.systemGestureExclusionRects = list
+                homescreen.systemGestureExclusionRects = listOf()
             }
             if (Settings["kustom:variables:enable", false]) {
                 Kustom["screen"] = "overview"
@@ -102,10 +100,8 @@ class LauncherMenu : OnLongClickListener {
             page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
             page.setBackgroundColor(0x0)
             window.setBackgroundDrawableResource(android.R.color.transparent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val list = ArrayList<Rect>()
-                list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-                homescreen.systemGestureExclusionRects = list
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
+                homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
             }
             isActive = false
             if (Settings["kustom:variables:enable", false]) {

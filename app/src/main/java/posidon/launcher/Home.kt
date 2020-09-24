@@ -122,6 +122,14 @@ class Home : AppCompatActivity() {
 
             setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (Settings["gesture:back", ""] == "") {
+                    window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+                } else {
+                    window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
+                }
+            }
+
             Global.shouldSetApps = false
             Global.customized = false
         }
@@ -194,10 +202,8 @@ class Home : AppCompatActivity() {
                             colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
                             colors[1] = Settings["dock:background_color", -0x78000000]
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                val list = ArrayList<Rect>()
-                                list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
+                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
                             }
                             val tr = Settings["dockradius", 30].dp
                             radii[0] = tr
@@ -210,8 +216,7 @@ class Home : AppCompatActivity() {
                                 Kustom["screen"] = "drawer"
                             }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                val list = ArrayList<Rect>()
-                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
+                                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
                             }
                         }
                     }
@@ -300,12 +305,6 @@ class Home : AppCompatActivity() {
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val list = ArrayList<Rect>()
-            list.add(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-            window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = list
-        }
 
         blurBg = LayerDrawable(arrayOf<Drawable>(
                 ColorDrawable(0x0),
@@ -409,7 +408,7 @@ class Home : AppCompatActivity() {
         }
         drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         if (!Settings["feed:keep_pos", false]) {
-            feed.scrollTo(0, 0)
+            feed.scroll.scrollTo(0, 0)
         }
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "?"
