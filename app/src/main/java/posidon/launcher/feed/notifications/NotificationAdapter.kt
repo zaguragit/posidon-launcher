@@ -213,7 +213,7 @@ class NotificationAdapter(
                 view.findViewById<TextView>(R.id.txt).setTextColor(Settings["notificationtxtcolor", -0xdad9d9])
 
                 view.setOnClickListener { notification.open() }
-                view.setOnLongClickListener(LauncherMenu())
+                view.setOnLongClickListener(LauncherMenu)
                 holder.linearLayout.addView(retView)
             }
         }

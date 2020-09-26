@@ -70,14 +70,10 @@ class NotificationCards : LinearLayout, FeedSection {
         addView(parentNotificationTitle, LayoutParams(0, 48.dp.toInt(), 1f))
         addView(parentNotificationBtn, LayoutParams(48.dp.toInt(), 48.dp.toInt()))
 
-        setOnLongClickListener(LauncherMenu())
+        setOnLongClickListener(LauncherMenu)
         setOnClickListener {
-            if (notifications.visibility == VISIBLE) {
-                //desktop.scrollTo(0, 0)
-                collapse()
-            } else {
-                expand()
-            }
+            if (notifications.visibility == VISIBLE)
+                collapse() else expand()
         }
     }
 

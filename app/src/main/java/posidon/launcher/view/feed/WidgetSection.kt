@@ -26,7 +26,11 @@ class WidgetSection(
         }
 
         widget.startListening()
-        widget.fromSettings(this)
+        if (!widget.fromSettings(this)) {
+            (parent as ViewGroup).removeView(this)
+            Feed.getSectionsFromSettings().remove(toString())
+            Settings.apply()
+        }
     }
 
     fun startListening() = widget.startListening()
