@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -291,5 +292,33 @@ class Feed : FrameLayout {
                 show()
             }
         }
+    }
+
+
+    private var oldPointerY = 0f
+    private var newPointerY = 0f
+    private var timeSincePress = 0L
+
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.action) {
+            MotionEvent.ACTION_DOWN -> {
+                timeSincePress = System.currentTimeMillis()
+                oldPointerY = ev.y
+                newPointerY = ev.y
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                oldPointerY = newPointerY
+                newPointerY = ev.y
+                if (System.currentTimeMillis() - timeSincePress < 240 && ev.pointerCount == 1) {
+                    if (oldPointerY < newPointerY) {
+                        onTopOverScroll()
+                    } else if (oldPointerY > newPointerY) {
+                        onBottomOverScroll()
+                    }
+                }
+            }
+        }
+        return super.onTouchEvent(ev)
     }
 }
