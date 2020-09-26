@@ -61,10 +61,8 @@ class Widget(
                             runCatching {
                                 activity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET)
                             }
-                        } else {
-                            return fromIntent(activity, data)
-                        }
-                    }
+                        } else return fromIntent(activity, data)
+                    } else return fromIntent(activity, data)
                 } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
                     return fromIntent(activity, data)
                 }
@@ -96,13 +94,13 @@ class Widget(
     var host: AppWidgetHost = AppWidgetHost(Tools.publicContext, hostId)
         private set
 
-    fun fromSettings(widgetLayout: ResizableLayout) {
-        val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
-        val str = Settings["widget:$hostId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
-        if (str.isNotEmpty()) {
+    fun fromSettings(widgetLayout: ResizableLayout): Boolean {
+        return try {
+            val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
+            val str = Settings["widget:$hostId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
-            val className: String = try { s[1] } catch (ignore: ArrayIndexOutOfBoundsException) { return }
+            val className: String = s[1]
             var providerInfo: AppWidgetProviderInfo? = null
             val appWidgetInfos = widgetManager.installedProviders
             var widgetIsFound = false
@@ -113,10 +111,9 @@ class Widget(
                     break
                 }
             }
-            if (!widgetIsFound) return
+            if (!widgetIsFound) return false
             var id: Int
-            try { id = s[2].toInt() }
-            catch (e: ArrayIndexOutOfBoundsException) {
+            try { id = s[2].toInt() } catch (e: ArrayIndexOutOfBoundsException) {
                 id = host.allocateAppWidgetId()
                 if (!widgetManager.bindAppWidgetIdIfAllowed(id, providerInfo!!.provider)) { // Request permission - https://stackoverflow.com/a/44351320/1816603
                     val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
@@ -133,7 +130,11 @@ class Widget(
             hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
             resize(Settings["widget:$hostId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
-        } else widgetLayout.visibility = View.GONE
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     fun deleteWidget(widgetLayout: ResizableLayout) {

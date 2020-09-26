@@ -40,7 +40,7 @@ class Feed : FrameLayout {
 
     val desktopContent = LinearLayout(context).apply {
         orientation = VERTICAL
-        setOnLongClickListener(LauncherMenu())
+        setOnLongClickListener(LauncherMenu)
     }
 
     val scroll = NestedScrollView(context).apply {
@@ -76,6 +76,15 @@ class Feed : FrameLayout {
         private set
 
     init {
+        val scaleGestureDetector = ScaleGestureDetector(context, LauncherMenu.PinchListener())
+        setOnLongClickListener(LauncherMenu)
+        setOnTouchListener { _, event ->
+            if (hasWindowFocus()) {
+                scaleGestureDetector.onTouchEvent(event)
+                false
+            } else true
+        }
+
         addView(scroll, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         addView(spinner, LayoutParams(48.dp.toInt(), 48.dp.toInt()).apply {
             topMargin = 72.dp.toInt()

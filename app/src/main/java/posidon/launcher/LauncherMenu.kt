@@ -27,7 +27,7 @@ import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
 
-class LauncherMenu : OnLongClickListener {
+object LauncherMenu : OnLongClickListener {
 
     override fun onLongClick(v: View): Boolean {
         Gestures.performTrigger(Settings["gesture:long_press", Gestures.OPEN_OVERVIEW])
@@ -40,73 +40,71 @@ class LauncherMenu : OnLongClickListener {
             Gestures.performTrigger(Settings["gesture:pinch", Gestures.OPEN_OVERVIEW])
     }
 
-    companion object {
-        var isActive = false
-        var dialog: Dialog? = null
+    var isActive = false
+    var dialog: Dialog? = null
 
-        fun openOverview() {
-            if (!isActive) {
-                open(Tools.publicContext!!, Home.instance.window)
-            }
+    fun openOverview() {
+        if (!isActive) {
+            open(Tools.publicContext!!, Home.instance.window)
         }
+    }
 
-        private inline fun open(context: Context, window: Window) {
-            isActive = true
-            context.vibrate()
-            val homescreen = window.decorView.findViewById<View>(android.R.id.content)
-            val page = homescreen.findViewById<View>(R.id.feed)
-            page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
-            val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
-            drawer.state = BottomDrawerBehavior.STATE_HIDDEN
-            dialog = Dialog(context, R.style.longpressmenusheet)
-            dialog!!.setContentView(R.layout.menu)
-            dialog!!.window!!.setGravity(Gravity.BOTTOM)
-            dialog!!.findViewById<View>(R.id.custombtn).setOnClickListener {
-                val i = Intent(context, Customizations::class.java)
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
-                dialog!!.dismiss()
-            }
-            dialog!!.findViewById<View>(R.id.wallbtn).setOnClickListener {
-                val i = Intent(context, Gallery::class.java)
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
-                dialog!!.dismiss()
-            }
-            dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Widget.selectWidget(Home.instance)
-                dialog!!.dismiss()
-            }
-            page.setBackgroundResource(R.drawable.page)
-            if (Tools.canBlurDrawer) {
-                window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(Settings["drawer:blur:rad", 15f])), context.getDrawable(R.drawable.black_gradient))))
-            } else {
-                window.setBackgroundDrawableResource(R.drawable.black_gradient)
-            }
-            homescreen.setOnClickListener { dialog!!.dismiss() }
-            dialog!!.setOnDismissListener { exit(homescreen, window, drawer) }
-            dialog!!.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                homescreen.systemGestureExclusionRects = listOf()
-            }
-            if (Settings["kustom:variables:enable", false]) {
-                Kustom["screen"] = "overview"
-            }
+    private inline fun open(context: Context, window: Window) {
+        isActive = true
+        context.vibrate()
+        val homescreen = window.decorView.findViewById<View>(android.R.id.content)
+        val page = homescreen.findViewById<View>(R.id.feed)
+        page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
+        val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
+        drawer.state = BottomDrawerBehavior.STATE_HIDDEN
+        dialog = Dialog(context, R.style.longpressmenusheet)
+        dialog!!.setContentView(R.layout.menu)
+        dialog!!.window!!.setGravity(Gravity.BOTTOM)
+        dialog!!.findViewById<View>(R.id.custombtn).setOnClickListener {
+            val i = Intent(context, Customizations::class.java)
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
+            dialog!!.dismiss()
         }
+        dialog!!.findViewById<View>(R.id.wallbtn).setOnClickListener {
+            val i = Intent(context, Gallery::class.java)
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
+            dialog!!.dismiss()
+        }
+        dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
+            Widget.selectWidget(Home.instance)
+            dialog!!.dismiss()
+        }
+        page.setBackgroundResource(R.drawable.page)
+        if (Tools.canBlurDrawer) {
+            window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(context.resources, Tools.blurredWall(Settings["drawer:blur:rad", 15f])), context.getDrawable(R.drawable.black_gradient))))
+        } else {
+            window.setBackgroundDrawableResource(R.drawable.black_gradient)
+        }
+        homescreen.setOnClickListener { dialog!!.dismiss() }
+        dialog!!.setOnDismissListener { exit(homescreen, window, drawer) }
+        dialog!!.show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            homescreen.systemGestureExclusionRects = listOf()
+        }
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "overview"
+        }
+    }
 
-        private fun exit(homescreen: View, window: Window, drawer: DrawerView) {
-            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-            val page = homescreen.findViewById<View>(R.id.feed)
-            page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
-            page.setBackgroundColor(0x0)
-            window.setBackgroundDrawableResource(android.R.color.transparent)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
-                homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-            }
-            isActive = false
-            if (Settings["kustom:variables:enable", false]) {
-                Kustom["screen"] = "home"
-            }
+    private fun exit(homescreen: View, window: Window, drawer: DrawerView) {
+        drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
+        val page = homescreen.findViewById<View>(R.id.feed)
+        page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
+        page.setBackgroundColor(0x0)
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
+            homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+        }
+        isActive = false
+        if (Settings["kustom:variables:enable", false]) {
+            Kustom["screen"] = "home"
         }
     }
 }

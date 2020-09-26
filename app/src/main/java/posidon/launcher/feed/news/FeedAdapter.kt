@@ -91,7 +91,7 @@ class FeedAdapter(
             cardElevation = 0f
             preventCornerOverlap = true
 
-            setOnLongClickListener(LauncherMenu())
+            setOnLongClickListener(LauncherMenu)
             setCardBackgroundColor(Settings["feed:card_bg", -0xdad9d9])
 
             val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else Settings["news:cards:height", 240].dp.toInt()
