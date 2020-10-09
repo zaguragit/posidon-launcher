@@ -46,7 +46,7 @@ class Folder(string: String) : LauncherItem() {
                 val intRes = t.getIdentifier(data[1], "drawable", data[0])
                 ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     ThemeTools.generateAdaptiveIcon(t.getDrawable(intRes))
-                } else t.getDrawable(intRes), false)
+                } else t.getDrawable(intRes), false, recycleIfNotUsed = true)
             } catch (e: Exception) {
                 e.printStackTrace()
                 icon(Tools.publicContext!!)
@@ -108,7 +108,7 @@ class Folder(string: String) : LauncherItem() {
                 })
             }
 
-            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
+            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false, recycleIfNotUsed = true)
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }

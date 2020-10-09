@@ -41,7 +41,7 @@ class CustomAppIcon : AppCompatActivity() {
                             ThemeTools.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
                         } else {
                             packageManager.getApplicationIcon("com.android.systemui")
-                        }, false
+                        }, false, recycleIfNotUsed = false
                     ))
                 }
                 findViewById<TextView>(R.id.icontxt).text = "Default"
@@ -83,7 +83,7 @@ class CustomAppIcon : AppCompatActivity() {
                 ThemeTools.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
             } else {
                 pacslist[i].loadIcon(packageManager)
-            }, false))
+            }, false, recycleIfNotUsed = false))
             iconPacks[i].label = pacslist[i].loadLabel(packageManager).toString()
         }
 
@@ -194,7 +194,7 @@ class CustomAppIcon : AppCompatActivity() {
                     ThemeTools.generateAdaptiveIcon(themeRes.getDrawable(intRes))
                 } else {
                     themeRes.getDrawable(intRes)
-                }, false)))
+                }, false, recycleIfNotUsed = false)))
                 viewHolder.icon.setOnClickListener {
                     Settings[key] = "ref:$iconPack|${searchResults[i]}"
                     Global.shouldSetApps = true

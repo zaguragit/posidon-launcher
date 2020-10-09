@@ -122,12 +122,13 @@ class Widget(
                     Home.instance.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
             }
+            widgetLayout.removeView(hostView)
             hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo).apply {
                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 }
+                setAppWidget(id, providerInfo)
             }
-            hostView!!.setAppWidget(id, providerInfo)
             widgetLayout.addView(hostView)
             resize(Settings["widget:$hostId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
             true
@@ -151,6 +152,7 @@ class Widget(
         val height = (newHeight / density).toInt()
         try {
             hostView!!.updateAppWidgetSize(null, width, height, width, height)
+            println("resized")
         } catch (e: Exception) { e.printStackTrace() }
     }
 

@@ -70,7 +70,7 @@
                     app:label="@string/max_cards"
                     app:key="feed:max_news"
                     app:def="48"
-                    app:max="50"/>
+                    app:max="100"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
