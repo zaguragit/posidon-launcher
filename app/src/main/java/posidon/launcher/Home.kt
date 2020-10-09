@@ -395,7 +395,9 @@ class Home : AppCompatActivity() {
                 tryAnimate(app.icon!!)
             }
         }
-        feed.loadNews(this)
+        if (Settings["news:load_on_resume", true]) {
+            feed.loadNews(this)
+        }
         if (feed.notifications != null || Settings["notif:badges", true]) {
             NotificationService.onUpdate()
         }

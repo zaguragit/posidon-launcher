@@ -71,6 +71,14 @@
                     app:key="feed:max_news"
                     app:def="48"
                     app:max="100"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/load_on_resume"
+                    app:key="news:load_on_resume"
+                    app:def="true"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
