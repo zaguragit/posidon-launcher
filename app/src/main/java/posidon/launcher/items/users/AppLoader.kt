@@ -16,6 +16,8 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class AppLoader (
@@ -76,7 +78,8 @@ class AppLoader (
         } catch (e: Exception) {}
 
         val userManager = Home.instance.getSystemService(Context.USER_SERVICE) as UserManager
-        var lastThread: Thread? = null
+
+        val threads = LinkedList<Thread>()
 
         for (profile in userManager.userProfiles) {
 
@@ -86,7 +89,7 @@ class AppLoader (
 
                 val app = App(appList[i].applicationInfo.packageName, appList[i].name, profile)
 
-                val thread = thread (isDaemon = true) {
+                threads.add(thread (isDaemon = true) {
                     val customIcon = Settings["app:$app:icon", ""]
                     if (customIcon != "") {
                         try {
@@ -143,14 +146,14 @@ class AppLoader (
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         app.icon = ThemeTools.generateAdaptiveIcon(app.icon!!)
                     }
-                    app.icon = ThemeTools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
+                    app.icon = ThemeTools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle(), recycleIfNotUsed = true)
                     if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode &&
                         Settings["animatedicons", true]) {
                         try {
                             Tools.tryAnimate(app.icon!!)
                         } catch (e: Exception) {}
                     }
-                }
+                })
 
                 app.label = Settings[app.packageName + "/" + app.name + "?label", appList[i].label.toString()]
                 if (app.label!!.isEmpty()) {
@@ -167,11 +170,15 @@ class AppLoader (
                 } else {
                     tmpApps.add(app)
                 }
-                lastThread?.join()
-                lastThread = thread
             }
         }
-        lastThread?.join()
+
+        for (t in threads) {
+            t.join()
+        }
+
+        threads.clear()
+
         if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith { o1, o2 ->
             val iHsv = floatArrayOf(0f, 0f, 0f)
             val jHsv = floatArrayOf(0f, 0f, 0f)
@@ -195,6 +202,8 @@ class AppLoader (
                 currentChar = app.label!![0].toUpperCase()
             }
         }
+
+        System.gc()
 
         Home.instance.runOnUiThread {
             run {

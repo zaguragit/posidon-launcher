@@ -251,27 +251,30 @@ object ThemeTools {
         }
     }
 
-    fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
-        val drawable = if (isWork) {
+    fun badgeMaybe(icon: Drawable, isWork: Boolean, recycleIfNotUsed: Boolean): Drawable {
+        return if (isWork) {
             val badge = Tools.publicContext!!.resources.getDrawable(R.drawable.work_badge, Tools.publicContext!!.theme)
             badge.setTint(Global.accentColor)
             badge.setTintMode(PorterDuff.Mode.MULTIPLY)
             badge(icon, badge, when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74
-            })
+            }, recycleIfNotUsed)
         } else LayerDrawable(arrayOf(icon)).apply {
             val diameter = max(intrinsicWidth, intrinsicHeight)
             val p = 8 * diameter / when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74
             }
             setLayerInset(0, p, p, p, p)
+        }.let {
+            if (icon is BitmapDrawable) {
+                BitmapDrawable(Tools.publicContext!!.resources, it.toBitmap()).also {
+                    if (recycleIfNotUsed) icon.bitmap.recycle()
+                }
+            } else it
         }
-        return if (icon is BitmapDrawable) {
-            BitmapDrawable(Tools.publicContext!!.resources, drawable.toBitmap())
-        } else drawable
     }
 
-    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): Drawable {
+    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int, recycleIfNotUsed: Boolean): Drawable {
         val drawable = LayerDrawable(arrayOf(icon, badge))
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val p = 8 * diameter / icSizeDP
@@ -279,12 +282,14 @@ object ThemeTools {
         val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
         return if (icon is BitmapDrawable) {
-            BitmapDrawable(Tools.publicContext!!.resources, drawable.toBitmap())
+            BitmapDrawable(Tools.publicContext!!.resources, drawable.toBitmap()).also {
+                if (recycleIfNotUsed) icon.bitmap.recycle()
+            }
         } else drawable
     }
 
     private val pics = HashMap<Int, Drawable>()
-    fun generateContactPicture(name: String): Drawable = pics[(name[0].toInt() shl 16) + name[1].toInt()] ?: let {
+    fun generateContactPicture(name: String): Drawable = pics.getOrPut((name[0].toInt() shl 16) + name[1].toInt()) {
         val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val random = Random((name[0].toInt() shl 16) + name[1].toInt())
@@ -310,7 +315,7 @@ object ThemeTools {
                 xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
             })
         }
-        badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false)
+        badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false, recycleIfNotUsed = true)
     }
 
     fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {

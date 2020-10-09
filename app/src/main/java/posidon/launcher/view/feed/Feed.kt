@@ -187,9 +187,7 @@ class Feed : FrameLayout {
         if (newsCards == null || spinner.visibility == VISIBLE) {
             return
         }
-        println("DIS IS HERE OKEY INTRESTIN")
         if (Settings["feed:show_spinner", true]) {
-            println("DIS IS HERE ND WORKS")
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
             FeedLoader.loadFeed { success, items ->
@@ -229,15 +227,18 @@ class Feed : FrameLayout {
         sections.clear()
         desktopContent.removeAllViews()
         val s = getSectionsFromSettings()
+        musicCard = null
+        notifications = null
+        newsCards = null
         for (section in s.reversed()) {
-            internalAdd(map[section]?.also {
-            } ?: FeedSection(activity, section).also {
+            internalAdd(map[section] ?: FeedSection(activity, section), 0).also {
                 when (it) {
                     is MusicCard -> musicCard = it
                     is NotificationCards -> notifications = it
                     is NewsCards -> newsCards = it
                 }
-            }, 0).updateTheme(activity)
+                it.updateTheme(activity)
+            }
         }
         updateTheme(activity, drawer)
     }
