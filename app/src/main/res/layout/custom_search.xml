@@ -130,6 +130,14 @@
                     app:label="@string/contacts"
                     app:key="search:use_contacts"
                     app:def="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/include_hidden_apps"
+                    app:key="search:include_hidden_apps"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

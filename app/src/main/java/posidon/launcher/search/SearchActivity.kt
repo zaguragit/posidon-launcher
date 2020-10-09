@@ -265,6 +265,28 @@ class SearchActivity : AppCompatActivity() {
                 }
                 if (i > 30) break
             }
+            if (Settings["search:include_hidden_apps", false]) {
+                for (app in App.hidden) {
+                    if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
+                        app.label!!.contains(string) ||
+                        packageSearch && (
+                            searchOptimize(app.packageName).contains(searchOptimizedString) ||
+                            app.packageName.contains(string)
+                        )) {
+                        results.add(app)
+                        i++
+                        continue
+                    }
+                    for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
+                        if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
+                            results.add(app)
+                            i++
+                            break
+                        }
+                    }
+                    if (i > 30) break
+                }
+            }
         }
         val settingLoaderThread = thread (isDaemon = true) {
             if (Settings["search:use_shortcuts", true]) kotlin.runCatching {

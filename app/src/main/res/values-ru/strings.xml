@@ -199,6 +199,8 @@
     <string name="separate_text">Separate text</string>
     <string name="source_radius">Source radius</string>
     <string name="height">Height</string>
+    <string name="load_on_resume">Load on resume</string>
+    <string name="include_hidden_apps">Include hidden apps</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
