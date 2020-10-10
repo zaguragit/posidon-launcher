@@ -2,10 +2,9 @@ package posidon.launcher.view
 
 import android.content.Context
 import android.graphics.drawable.ClipDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatSeekBar
@@ -20,14 +19,14 @@ class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar
         splitTrack = false
     }
 
-    private fun generateDrawable(): LayerDrawable {
+    private fun generateDrawable(): Drawable {
         val out = LayerDrawable(arrayOf(generateTrackBG(), generateTrackFG()))
         out.setId(0, android.R.id.background)
         out.setId(1, android.R.id.progress)
         return out
     }
 
-    private fun generateTrackBG(): GradientDrawable {
+    private fun generateTrackBG(): Drawable {
         val out = GradientDrawable()
         out.cornerRadius = 12.dp
         out.setColor(0xff08090a.toInt())
@@ -35,7 +34,7 @@ class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar
         return out
     }
 
-    private fun generateTrackFG(): ClipDrawable {
+    private fun generateTrackFG(): Drawable {
         val out = GradientDrawable()
         out.cornerRadius = 12.dp
         out.setColor(Global.accentColor and 0x00ffffff or 0x88000000.toInt())
@@ -43,12 +42,13 @@ class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar
         return ClipDrawable(out, Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
     }
 
-    private fun generateThumb(): ShapeDrawable {
+    private fun generateThumb(): Drawable {
         val r = 24.dp.toInt()
-        val out = ShapeDrawable(OvalShape())
-        out.paint.color = Global.accentColor
-        out.intrinsicHeight = r
-        out.intrinsicWidth = r
+        val out = GradientDrawable()
+        out.shape = GradientDrawable.OVAL
+        out.setColor(Global.accentColor)
+        out.setSize(r, r)
+        out.setStroke(1, 0xdd000000.toInt())
         return out
     }
 }

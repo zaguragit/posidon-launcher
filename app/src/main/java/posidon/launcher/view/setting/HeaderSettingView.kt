@@ -7,9 +7,14 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import posidon.launcher.R
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 
-class HeaderSettingView : FrameLayout {
+open class HeaderSettingView : FrameLayout {
+
+    companion object {
+        private val bg by lazy { Tools.publicContext!!.resources.getDrawable(R.drawable.settings_card_header, null) }
+    }
 
     private lateinit var labelView: TextView
 
@@ -20,9 +25,11 @@ class HeaderSettingView : FrameLayout {
         init(a, sa, sr)
     }
 
-    fun init(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
+    protected fun init(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
+
+        background = bg
 
         labelView = TextView(context).apply {
             text = a.getString(R.styleable.SettingView_label)
@@ -41,6 +48,10 @@ class HeaderSettingView : FrameLayout {
         }
         addView(separator)
 
+        populate(attrs, defStyle, defStyleRes)
+
         a.recycle()
     }
+
+    protected open fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {}
 }
