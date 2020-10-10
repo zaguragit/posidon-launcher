@@ -413,7 +413,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         answerBox.visibility = View.GONE
-        if (results.size < 6 && !isShowingSmartCard && string.length > 3 && !showHidden) {
+        if (results.size < 6 && !isShowingSmartCard && string.length > 3 && !showHidden && Settings["search:ddg_instant_answers", true]) {
             DuckInstantAnswer.load(string) { instantAnswer ->
                 if (currentString == string) {
                     runOnUiThread {

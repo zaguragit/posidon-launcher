@@ -138,6 +138,14 @@
                     app:label="@string/include_hidden_apps"
                     app:key="search:include_hidden_apps"
                     app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_search"
+                    app:label="@string/duckduckgo_results"
+                    app:key="search:ddg_instant_answers"
+                    app:def="true"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
