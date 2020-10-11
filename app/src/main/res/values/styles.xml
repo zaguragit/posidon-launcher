@@ -53,13 +53,6 @@
         <item name="android:paddingBottom">18dp</item>
     </style>
 
-    <style name="colorPreview">
-        <item name="android:layout_height">40dp</item>
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_weight">0</item>
-        <item name="android:layout_margin">10dp</item>
-    </style>
-
     <style name="settings" parent="hometheme">
         <item name="colorPrimary">@color/settingsbg</item>
         <item name="android:windowBackground">@color/settingsbg</item>
@@ -89,7 +82,7 @@
         <item name="android:paddingEnd">15dp</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:textColor">@color/cardtxt</item>
-        <item name="android:textColorHint">#111213</item>
+        <item name="android:textColorHint">#252627</item>
         <item name="android:background">@drawable/input_bg</item>
     </style>
 

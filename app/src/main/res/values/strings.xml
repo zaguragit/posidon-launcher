@@ -35,7 +35,6 @@
     <string name="spacing">Spacing</string>
     <string name="permission_storage_description">Grant storage access for things like accessing the wallpaper for the blur in the app drawer</string>
     <string name="storage_access">Storage access</string>
-    <string name="ok">OK</string>
     <string name="notification_access">Notification access</string>
     <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>
     <string name="pixel_stock_android">Pixel</string>
@@ -120,9 +119,6 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="would_you_like_to_rate_this_launcher">Would you like to rate this launcher?</string>
-    <string name="layout">Layout</string>
-    <string name="sample_feed_source">posidon news</string>
-    <string name="sample_feed_card_title">New version of posidon launcher is out!</string>
     <string name="hidden_apps">Hidden apps</string>
     <string name="choose_a_launcher">Choose a launcher</string>
     <string name="horizontal_margin">Horizontal margin</string>
