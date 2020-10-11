@@ -33,11 +33,7 @@ object OPML {
                     isInOpml = true
                 } else if (isInOpml && xpp.name == Symbols.OUTLINE) {
                     val title = xpp.getAttributeValue(null, Symbols.TITLE)
-                    var text = if (title != null) {
-                        title
-                    } else {
-                        xpp.getAttributeValue(null, Symbols.TEXT)
-                    }
+                    var text = title ?: xpp.getAttributeValue(null, Symbols.TEXT)
                     val xmlUrl = xpp.getAttributeValue(null, Symbols.XMLURL)
                     if (xmlUrl != null) {
                         if (text == null) {

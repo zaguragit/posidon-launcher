@@ -35,7 +35,6 @@
     <string name="spacing">Расстояние</string>
     <string name="permission_storage_description">Предоставьте доступ к хранилищу для доступа к обоям (для размытия в списке приложений)</string>
     <string name="storage_access">Доступ к хранилищу</string>
-    <string name="ok">OK</string>
     <string name="notification_access">Доступ к уведомлениям</string>
     <string name="permission_notifications_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
     <string name="pixel_stock_android">Pixel</string>
@@ -120,9 +119,6 @@
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="would_you_like_to_rate_this_launcher">Вы хотели бы оценить этот лаунчер?</string>
-    <string name="layout">Расположение</string>
-    <string name="sample_feed_source">posidon news</string>
-    <string name="sample_feed_card_title">Вышла новая версия posidon launcher!</string>
     <string name="hidden_apps">Скрытые приложения</string>
     <string name="choose_a_launcher">Выберите лаунчер</string>
     <string name="horizontal_margin">Horizontal margin</string>

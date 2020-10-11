@@ -19,7 +19,7 @@ import kotlin.math.max
 
 object FeedLoader {
 
-    val pullParserFactory = XmlPullParserFactory.newInstance()
+    private val pullParserFactory: XmlPullParserFactory = XmlPullParserFactory.newInstance()
     private val endStrings = arrayOf("",
         "/feed",
         "/rss",

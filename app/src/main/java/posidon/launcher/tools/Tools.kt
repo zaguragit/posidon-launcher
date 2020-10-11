@@ -38,7 +38,6 @@ import posidon.launcher.tools.drawable.MaskedDrawable
 import posidon.launcher.view.GridLayoutManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.io.StringWriter
 import java.lang.ref.WeakReference
 import kotlin.math.*
 import kotlin.random.Random
@@ -609,22 +608,6 @@ inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = a
     override fun onAnimationStart(animation: Animator?) {}
     override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
 })
-
-fun Context.loadRaw(id: Int): String {
-    lateinit var string: String
-    StringWriter().use { writer ->
-        val buffer = CharArray(1024)
-        resources.openRawResource(id).use { stream ->
-            val reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
-            var n: Int
-            while (reader.read(buffer).also { n = it } != -1) {
-                writer.write(buffer, 0, n)
-            }
-        }
-        string = writer.buffer.toString()
-    }
-    return string
-}
 
 fun <T> Context.loadRaw(id: Int, fn: (BufferedReader) -> T) =
     resources.openRawResource(id).use { stream ->

@@ -35,7 +35,6 @@
     <string name="spacing">Uitlijning</string>
     <string name="permission_storage_description">Verleen toegang tot je opslag om de achtergrond te kunnen wijzigen en de vervaging in de app-lijst aan te passen</string>
     <string name="storage_access">Toegang tot opslag</string>
-    <string name="ok">Ok¨¦</string>
     <string name="notification_access">Toegang tot meldingen</string>
     <string name="permission_notifications_description">Verleen toegang tot je meldingen om je meldingen te tonen op het startscherm</string>
     <string name="pixel_stock_android">Pixel</string>
@@ -120,9 +119,6 @@
     <string name="no">Nee</string>
     <string name="yes">Ja</string>
     <string name="would_you_like_to_rate_this_launcher">Wil je deze app beoordelen in de Play Store?</string>
-    <string name="layout">Indeling</string>
-    <string name="sample_feed_source">posidon-nieuws</string>
-    <string name="sample_feed_card_title">Er is een nieuwe versie van posidon beschikbaar!</string>
     <string name="hidden_apps">Verborgen apps</string>
     <string name="choose_a_launcher">Kies een startscherm</string>
     <string name="horizontal_margin">Horizontale marge</string>

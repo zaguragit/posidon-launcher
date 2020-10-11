@@ -35,7 +35,6 @@
     <string name="spacing">Espaciado</string>
     <string name="permission_storage_description">El acceso al almacenamiento es nesesario para funccionalides como el desenfoque en el fondo del cajon de aplicaciones</string>
     <string name="storage_access">Acceso al almacenamiento</string>
-    <string name="ok">OK</string>
     <string name="notification_access">Acceso a notificaciones</string>
     <string name="permission_notifications_description">Para mostrar notificaciones en la pantalla de inicio</string>
     <string name="pixel_stock_android">Pixel</string>
@@ -120,9 +119,6 @@
     <string name="no">No</string>
     <string name="yes">Si</string>
     <string name="would_you_like_to_rate_this_launcher">¿Te gustaría calificar este launcher?</string>
-    <string name="layout">Layout</string>
-    <string name="sample_feed_source">posidon news</string>
-    <string name="sample_feed_card_title">Salió una nueva version de posidon launcher!</string>
     <string name="hidden_apps">Apps escondidas</string>
     <string name="choose_a_launcher">Escoger un launcher</string>
     <string name="horizontal_margin">Margen horizontal</string>
