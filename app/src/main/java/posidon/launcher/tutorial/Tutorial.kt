@@ -31,13 +31,10 @@ class Tutorial : AppCompatActivity() {
     private var selectedStyle = -1
     private var done = false
 
-    init {
-        Tools.publicContextReference = WeakReference(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tutorial1)
+        Tools.appContextReference = WeakReference(applicationContext)
         Settings.init(applicationContext)
         for (i in styleButtons.indices) {
             findViewById<View>(styleButtons[i]).setOnClickListener {

@@ -49,48 +49,48 @@ class QuickStepService : Service() {
     private val mMyBinder: IBinder = object : IOverviewProxy.Stub() {
 
         override fun onOverviewToggle() {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewToggle()", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onOverviewToggle()", Toast.LENGTH_LONG).show()
         }
 
         override fun onQuickStep(event: MotionEvent?) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickStep($event)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onQuickStep($event)", Toast.LENGTH_LONG).show()
         }
 
         override fun onBind(sysUiProxy: ISystemUiProxy?) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onBind(sysUiProxy)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onBind(sysUiProxy)", Toast.LENGTH_LONG).show()
             systemUiProxy = sysUiProxy
         }
 
         override fun onOverviewShown(triggeredFromAltTab: Boolean) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewShown($triggeredFromAltTab)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onOverviewShown($triggeredFromAltTab)", Toast.LENGTH_LONG).show()
         }
 
         override fun onOverviewHidden(triggeredFromAltTab: Boolean, triggeredFromHomeKey: Boolean) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onOverviewHidden($triggeredFromAltTab, $triggeredFromHomeKey)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onOverviewHidden($triggeredFromAltTab, $triggeredFromHomeKey)", Toast.LENGTH_LONG).show()
         }
 
         override fun onTip(actionType: Int, viewType: Int) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onTip($actionType, $viewType)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onTip($actionType, $viewType)", Toast.LENGTH_LONG).show()
         }
 
         override fun onMotionEvent(event: MotionEvent?) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onMotionEvent($event)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onMotionEvent($event)", Toast.LENGTH_LONG).show()
         }
 
         override fun onPreMotionEvent(downHitTarget: Int) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onPreMotionEvent($downHitTarget)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onPreMotionEvent($downHitTarget)", Toast.LENGTH_LONG).show()
         }
 
         override fun onQuickScrubStart() {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubStart()", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onQuickScrubStart()", Toast.LENGTH_LONG).show()
         }
 
         override fun onQuickScrubEnd() {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubEnd()", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onQuickScrubEnd()", Toast.LENGTH_LONG).show()
         }
 
         override fun onQuickScrubProgress(progress: Float) {
-            Toast.makeText(Tools.publicContext!!, "QUICKSTEP.onQuickScrubProgress($progress)", Toast.LENGTH_LONG).show()
+            Toast.makeText(Tools.appContext!!, "QUICKSTEP.onQuickScrubProgress($progress)", Toast.LENGTH_LONG).show()
         }
     }
 

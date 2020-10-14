@@ -81,7 +81,7 @@ object Settings {
     fun apply() { thread(block = ::applyNow) }
     fun applyNow() {
         lock.lock()
-        PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get() ?: Tools.publicContext!!, "settings")
+        PrivateStorage.writeData(SettingsFile(ints, floats, bools, strings, lists), context.get() ?: Tools.appContext!!, "settings")
         lock.unlock()
     }
 

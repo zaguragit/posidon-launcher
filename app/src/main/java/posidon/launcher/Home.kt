@@ -66,7 +66,6 @@ class Home : AppCompatActivity() {
     lateinit var feed: Feed
 
     init {
-        Tools.publicContextReference = WeakReference(this)
         instance = this
 
         setCustomizations = {
@@ -138,6 +137,7 @@ class Home : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Tools.appContextReference = WeakReference(applicationContext)
         Settings.init(applicationContext)
         if (Settings["init", true]) {
             startActivity(Intent(this, WelcomeActivity::class.java))

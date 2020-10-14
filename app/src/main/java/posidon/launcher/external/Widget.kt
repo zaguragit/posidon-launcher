@@ -8,7 +8,6 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Intent
 import android.os.Parcelable
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import posidon.launcher.Home
@@ -28,7 +27,7 @@ class Widget(
         const val REQUEST_BIND_WIDGET = 2
 
         fun fromIntent(activity: Activity, data: Intent?): WidgetSection? {
-            val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
+            val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
             try {
                 val widgetId = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
                 val hostId = Tools.generateWidgetHostUid()
@@ -40,7 +39,7 @@ class Widget(
                     activity.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
                 Settings["widget:$hostId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + widgetId
-                return WidgetSection(Tools.publicContext!!, Widget(hostId))
+                return WidgetSection(Tools.appContext!!, Widget(hostId))
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null
@@ -53,7 +52,7 @@ class Widget(
                     val extras = data!!.extras
                     if (extras != null) {
                         val id = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-                        val widgetInfo = AppWidgetManager.getInstance(activity).getAppWidgetInfo(id)
+                        val widgetInfo = AppWidgetManager.getInstance(Tools.appContext).getAppWidgetInfo(id)
                         if (widgetInfo.configure != null) {
                             val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
                             intent.component = widgetInfo.configure
@@ -78,7 +77,7 @@ class Widget(
         private var tmpHost: AppWidgetHost? = null
         fun selectWidget(activity: Activity) {
             val hostId = Tools.generateWidgetHostUid()
-            tmpHost = AppWidgetHost(Tools.publicContext, hostId)
+            tmpHost = AppWidgetHost(Tools.appContext, hostId)
             val appWidgetId = tmpHost!!.allocateAppWidgetId()
             val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
             pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -91,12 +90,12 @@ class Widget(
     }
 
     private var hostView: AppWidgetHostView? = null
-    var host: AppWidgetHost = AppWidgetHost(Tools.publicContext, hostId)
+    var host: AppWidgetHost = AppWidgetHost(Tools.appContext, hostId)
         private set
 
     fun fromSettings(widgetLayout: ResizableLayout): Boolean {
         return try {
-            val widgetManager = AppWidgetManager.getInstance(Tools.publicContext)
+            val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
             val str = Settings["widget:$hostId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
@@ -123,7 +122,7 @@ class Widget(
                 }
             }
             widgetLayout.removeView(hostView)
-            hostView = host.createView(Tools.publicContext!!.applicationContext, id, providerInfo).apply {
+            hostView = host.createView(Tools.appContext!!, id, providerInfo).apply {
                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 }
@@ -142,12 +141,12 @@ class Widget(
         hostView?.appWidgetId?.let { host.deleteAppWidgetId(it) }
         widgetLayout.removeView(hostView)
         hostView = null
-        widgetLayout.visibility = View.GONE
+        //widgetLayout.visibility = View.GONE
         Settings["widget:$hostId"] = ""
     }
 
     fun resize(newHeight: Int) {
-        val density = Tools.publicContext!!.resources.displayMetrics.density
+        val density = Tools.appContext!!.resources.displayMetrics.density
         val width = (Device.displayWidth / density).toInt()
         val height = (newHeight / density).toInt()
         try {

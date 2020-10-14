@@ -146,7 +146,7 @@ class AppLoader (
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         app.icon = ThemeTools.generateAdaptiveIcon(app.icon!!)
                     }
-                    app.icon = ThemeTools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle(), recycleIfNotUsed = true)
+                    app.icon = ThemeTools.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
                     if (!(context.get()!!.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode &&
                         Settings["animatedicons", true]) {
                         try {

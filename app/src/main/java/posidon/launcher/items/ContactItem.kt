@@ -27,7 +27,7 @@ class ContactItem private constructor(
         viewContact.data = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
         viewContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         viewContact.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-        Tools.publicContext!!.startActivity(viewContact)
+        Tools.appContext!!.startActivity(viewContact)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -49,7 +49,7 @@ class ContactItem private constructor(
 
     companion object {
         fun getList(requiresStar: Boolean = false): Iterable<ContactItem> {
-            val cur = Tools.publicContext!!.contentResolver.query(
+            val cur = Tools.appContext!!.contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(ContactsContract.Contacts.LOOKUP_KEY,
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -96,7 +96,7 @@ class ContactItem private constructor(
                 cur.close()
             }
 
-            val nicknameCur = Tools.publicContext!!.contentResolver.query(
+            val nicknameCur = Tools.appContext!!.contentResolver.query(
                 ContactsContract.Data.CONTENT_URI,
                 arrayOf(ContactsContract.CommonDataKinds.Nickname.NAME, ContactsContract.Data.LOOKUP_KEY),
                 ContactsContract.Data.MIMETYPE + "= ?",

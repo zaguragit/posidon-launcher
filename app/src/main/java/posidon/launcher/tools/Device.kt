@@ -5,8 +5,8 @@ import android.content.res.Configuration
 
 object Device {
 
-    inline val displayWidth get() = Tools.publicContext!!.resources.displayMetrics.widthPixels
-    inline val displayHeight get() = Tools.publicContext!!.resources.displayMetrics.heightPixels
+    inline val displayWidth get() = Tools.appContext!!.resources.displayMetrics.widthPixels
+    inline val displayHeight get() = Tools.appContext!!.resources.displayMetrics.heightPixels
 }
 
 inline val Context.isTablet get() =
