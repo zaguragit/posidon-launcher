@@ -126,7 +126,7 @@ object ThemeTools {
         img: Bitmap,
         flag: Int
     ) = thread {
-        val wallpaperManager = WallpaperManager.getInstance(Tools.publicContext)
+        val wallpaperManager = WallpaperManager.getInstance(Tools.appContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             try {
                 wallpaperManager.setBitmap(img, null, true, when (flag) {
@@ -208,7 +208,7 @@ object ThemeTools {
             }
         } else drawable
         return if (containsAnimatable) d else {
-            BitmapDrawable(Tools.publicContext!!.resources, d.toBitmap())
+            BitmapDrawable(Tools.appContext!!.resources, d.toBitmap())
         }
     }
 
@@ -251,14 +251,14 @@ object ThemeTools {
         }
     }
 
-    fun badgeMaybe(icon: Drawable, isWork: Boolean, recycleIfNotUsed: Boolean): Drawable {
+    fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
         return if (isWork) {
-            val badge = Tools.publicContext!!.resources.getDrawable(R.drawable.work_badge, Tools.publicContext!!.theme)
+            val badge = Tools.appContext!!.resources.getDrawable(R.drawable.work_badge, Tools.appContext!!.theme)
             badge.setTint(Global.accentColor)
             badge.setTintMode(PorterDuff.Mode.MULTIPLY)
             badge(icon, badge, when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74
-            }, recycleIfNotUsed)
+            })
         } else LayerDrawable(arrayOf(icon)).apply {
             val diameter = max(intrinsicWidth, intrinsicHeight)
             val p = 8 * diameter / when (Settings["icsize", 1]) {
@@ -267,14 +267,12 @@ object ThemeTools {
             setLayerInset(0, p, p, p, p)
         }.let {
             if (icon is BitmapDrawable) {
-                BitmapDrawable(Tools.publicContext!!.resources, it.toBitmap()).also {
-                    if (recycleIfNotUsed) icon.bitmap.recycle()
-                }
+                BitmapDrawable(Tools.appContext!!.resources, it.toBitmap())
             } else it
         }
     }
 
-    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int, recycleIfNotUsed: Boolean): Drawable {
+    fun badge(icon: Drawable, badge: Drawable, icSizeDP: Int): Drawable {
         val drawable = LayerDrawable(arrayOf(icon, badge))
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val p = 8 * diameter / icSizeDP
@@ -282,9 +280,7 @@ object ThemeTools {
         val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
         return if (icon is BitmapDrawable) {
-            BitmapDrawable(Tools.publicContext!!.resources, drawable.toBitmap()).also {
-                if (recycleIfNotUsed) icon.bitmap.recycle()
-            }
+            BitmapDrawable(Tools.appContext!!.resources, drawable.toBitmap())
         } else drawable
     }
 
@@ -301,7 +297,7 @@ object ThemeTools {
         val textP = Paint().apply {
             color = 0xffffffff.toInt()
             textAlign = Paint.Align.CENTER
-            typeface = Tools.publicContext!!.mainFont
+            typeface = Tools.appContext!!.mainFont
             textSize = 64f
             isAntiAlias = true
         }
@@ -315,7 +311,7 @@ object ThemeTools {
                 xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
             })
         }
-        badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false, recycleIfNotUsed = true)
+        badgeMaybe(BitmapDrawable(Tools.appContext!!.resources, bitmap), false)
     }
 
     fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {

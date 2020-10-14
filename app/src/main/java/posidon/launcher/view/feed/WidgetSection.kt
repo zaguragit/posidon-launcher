@@ -26,17 +26,20 @@ class WidgetSection(
         }
 
         if (!widget.fromSettings(this)) {
-            (parent as ViewGroup).removeView(this)
-            Feed.getSectionsFromSettings().remove(toString())
-            Settings.apply()
+            (parent as Feed).remove(this)
+            return
         }
         widget.startListening()
     }
 
     override fun updateTheme(activity: Activity) {}
 
-    override fun onPause() = widget.stopListening()
-    override fun onResume(activity: Activity) = widget.startListening()
+    override fun onPause() {
+        //widget.stopListening()
+    }
+    override fun onResume(activity: Activity) {
+        //widget.startListening()
+    }
 
     override fun toString() = "widget:${widget.hostId}"
 

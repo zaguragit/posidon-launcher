@@ -13,7 +13,7 @@ import posidon.launcher.tools.dp
 open class HeaderSettingView : FrameLayout {
 
     companion object {
-        private val bg by lazy { Tools.publicContext!!.resources.getDrawable(R.drawable.settings_card_header, null) }
+        private val bg by lazy { Tools.appContext!!.resources.getDrawable(R.drawable.settings_card_header, null) }
     }
 
     private lateinit var labelView: TextView

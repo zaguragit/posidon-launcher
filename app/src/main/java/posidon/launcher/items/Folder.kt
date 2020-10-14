@@ -42,16 +42,16 @@ class Folder(string: String) : LauncherItem() {
         icon = if (customIcon != "") {
             try {
                 val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
-                val t = Tools.publicContext!!.packageManager.getResourcesForApplication(data[0])
+                val t = Tools.appContext!!.packageManager.getResourcesForApplication(data[0])
                 val intRes = t.getIdentifier(data[1], "drawable", data[0])
                 ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     ThemeTools.generateAdaptiveIcon(t.getDrawable(intRes))
-                } else t.getDrawable(intRes), false, recycleIfNotUsed = true)
+                } else t.getDrawable(intRes), false)
             } catch (e: Exception) {
                 e.printStackTrace()
-                icon(Tools.publicContext!!)
+                icon(Tools.appContext!!)
             }
-        } else icon(Tools.publicContext!!)
+        } else icon(Tools.appContext!!)
     }
 
     override fun toString(): String {
@@ -108,7 +108,7 @@ class Folder(string: String) : LauncherItem() {
                 })
             }
 
-            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.publicContext!!.resources, bitmap), false, recycleIfNotUsed = true)
+            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.appContext!!.resources, bitmap), false)
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }

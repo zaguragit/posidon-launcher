@@ -17,6 +17,6 @@ object Kustom {
         intent.putExtra(KUSTOM_ACTION_EXT_NAME, "posidon")
         intent.putExtra(KUSTOM_ACTION_VAR_NAME, variable)
         intent.putExtra(KUSTOM_ACTION_VAR_VALUE, value)
-        Tools.publicContext!!.sendBroadcast(intent)
+        Tools.appContext!!.sendBroadcast(intent)
     }
 }

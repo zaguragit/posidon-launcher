@@ -36,7 +36,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         val holder: ViewHolder
         val app = Global.apps[i]
         if (convertView == null) {
-            val li = Tools.publicContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val li = Tools.appContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
             else li.inflate(R.layout.list_item, parent, false)
             holder = ViewHolder(

@@ -18,7 +18,7 @@ object Suggestions {
     )
 
     val topics by lazy { list.map {
-        Topic(Tools.publicContext!!, it.key, it.value)
+        Topic(Tools.appContext!!, it.key, it.value)
     }}
 
     inline operator fun get(i: Int) = topics[i]

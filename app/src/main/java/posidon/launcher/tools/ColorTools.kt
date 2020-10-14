@@ -65,8 +65,8 @@ object ColorTools {
         return d
     }
 
-    fun pickColor(context: Context?, @ColorInt initColor: Int, onSelect: (color: Int) -> Unit) {
-        val d = BottomSheetDialog(context!!, R.style.bottomsheet)
+    fun pickColor(context: Context, @ColorInt initColor: Int, onSelect: (color: Int) -> Unit) {
+        val d = BottomSheetDialog(context, R.style.bottomsheet)
         d.setContentView(R.layout.color_picker)
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
         val alpha = d.findViewById<SeekBar>(R.id.alpha)!!
@@ -194,8 +194,8 @@ object ColorTools {
         d.show()
     }
 
-    fun pickColorNoAlpha(context: Context?, @ColorInt initColor: Int, onSelect: (color: Int) -> Unit) {
-        val d = BottomSheetDialog(context!!, R.style.bottomsheet)
+    fun pickColorNoAlpha(context: Context, @ColorInt initColor: Int, onSelect: (color: Int) -> Unit) {
+        val d = BottomSheetDialog(context, R.style.bottomsheet)
         d.setContentView(R.layout.color_picker)
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
         val red = d.findViewById<SeekBar>(R.id.red)!!
@@ -313,8 +313,8 @@ object ColorTools {
     }
 
     fun getWallpaperColors() = ArrayList<Int>().apply {
-        if (ActivityCompat.checkSelfPermission(Tools.publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val palette = Palette.from(WallpaperManager.getInstance(Tools.publicContext).fastDrawable.toBitmap()).generate()
+        if (ActivityCompat.checkSelfPermission(Tools.appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val palette = Palette.from(WallpaperManager.getInstance(Tools.appContext).fastDrawable.toBitmap()).generate()
             add(palette.getDominantColor(0xff1155ff.toInt()))
             add(palette.getDarkVibrantColor(0xff1155ff.toInt()))
             add(palette.getVibrantColor(0xff1155ff.toInt()))
@@ -336,7 +336,7 @@ object ColorTools {
         override fun getItemCount() = colors.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                ColorViewHolder(ImageView(Tools.publicContext).apply {
+                ColorViewHolder(ImageView(Tools.appContext).apply {
                     maxWidth = 72.dp.toInt()
                     maxHeight = 72.dp.toInt()
                     minimumWidth = 72.dp.toInt()

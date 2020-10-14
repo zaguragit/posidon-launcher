@@ -15,7 +15,7 @@ class QuickStepAdapter : RecyclerView.Adapter<QuickStepAdapter.ViewHolder>() {
     override fun getItemCount() = QuickStepService.recentTasks.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val context = Tools.publicContext!!
+        val context = Tools.appContext!!
         val text = TextView(context).apply {
             setTextColor(0xffffffff.toInt())
             textSize = 18f
@@ -36,7 +36,7 @@ class QuickStepAdapter : RecyclerView.Adapter<QuickStepAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
         val tasks = QuickStepService.recentTasks
-        val context = Tools.publicContext!!
+        val context = Tools.appContext!!
         holder.text.run {
             val info = context.packageManager.resolveActivity(tasks[i]!!.baseIntent, 0)!!
             //icon.setImageDrawable(App[info.let { "${it.resolvePackageName}/${it.activityInfo.parentActivityName}" }]?.icon ?: info.loadIcon(packageManager))

@@ -35,8 +35,8 @@ class NotificationService : NotificationListenerService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         instance = this
-        if (Tools.publicContext == null) {
-            Tools.publicContextReference = WeakReference(applicationContext)
+        if (Tools.appContext == null) {
+            Tools.appContextReference = WeakReference(applicationContext)
         }
         update()
         return super.onStartCommand(intent, flags, startId)
@@ -208,10 +208,10 @@ class NotificationService : NotificationListenerService() {
         private fun handleMusicNotification(notification: StatusBarNotification) {
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
+                icon = notification.notification.getLargeIcon().loadDrawable(Tools.appContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.tryAnimate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -220,7 +220,7 @@ class NotificationService : NotificationListenerService() {
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.appContext!!.packageManager.getApplicationLabel(Tools.appContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
 
@@ -238,15 +238,15 @@ class NotificationService : NotificationListenerService() {
             val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
             var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
-                try { title = Tools.publicContext!!.packageManager.getApplicationLabel(Tools.publicContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
+                try { title = Tools.appContext!!.packageManager.getApplicationLabel(Tools.appContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             var icon: Drawable? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(Tools.publicContext)
+                icon = notification.notification.getLargeIcon().loadDrawable(Tools.appContext)
             } catch (ignore: Exception) {}
             if (icon == null) try {
-                icon = Tools.publicContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
+                icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
                 Tools.tryAnimate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
@@ -273,7 +273,7 @@ class NotificationService : NotificationListenerService() {
             var bigPic: Drawable? = null
             val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
             if (b != null) {
-                try { bigPic = BitmapDrawable(Tools.publicContext!!.resources, b) }
+                try { bigPic = BitmapDrawable(Tools.appContext!!.resources, b) }
                 catch (e: Exception) { e.printStackTrace() }
             }
             return Notification(

@@ -108,8 +108,8 @@ object Tools {
         return found
     }
 
-    var publicContextReference = WeakReference<Context>(null)
-    inline val publicContext get() = publicContextReference.get()
+    var appContextReference = WeakReference<Context>(null)
+    inline val appContext get() = appContextReference.get()
 
     fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap {
         if (radius < 1) {
@@ -313,12 +313,12 @@ object Tools {
         return Bitmap.createScaledBitmap(bitmap, initWidth, initHeight, true)
     }
 
-    inline val canBlurDrawer get() = Settings["drawer:blur", true] && ContextCompat.checkSelfPermission(publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    inline val canBlurSearch get() = Settings["search:blur", true] && ContextCompat.checkSelfPermission(publicContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    inline val canBlurDrawer get() = Settings["drawer:blur", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    inline val canBlurSearch get() = Settings["search:blur", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 	fun blurredWall(radius: Float): Bitmap? {
         try {
-            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(publicContext).peekFastDrawable().toBitmap()
+            @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(appContext).peekFastDrawable().toBitmap()
             val displayWidth = Device.displayWidth
             val displayHeight = Device.displayHeight + navbarHeight
             when {
@@ -350,7 +350,7 @@ object Tools {
             catch (e: Exception) { e.printStackTrace() }
             return bitmap
         } catch (e: OutOfMemoryError) {
-            Toast.makeText(publicContext, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(appContext, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }
@@ -392,7 +392,7 @@ object Tools {
     inline val isDefaultLauncher: Boolean get() {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_HOME)
-        return publicContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+        return appContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
     }
 
     inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.065f)) / 0.4).toFloat()
@@ -439,7 +439,7 @@ object Tools {
         override fun getItemCount() = apps.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(publicContext!!).inflate(R.layout.drawer_item, parent, false)
+            val view = LayoutInflater.from(appContext!!).inflate(R.layout.drawer_item, parent, false)
             val iconFrame = view.findViewById<FrameLayout>(R.id.iconFrame)
             val icon = iconFrame.findViewById<ImageView>(R.id.iconimg)
             val text = view.findViewById<TextView>(R.id.icontxt)
@@ -530,13 +530,13 @@ inline fun Drawable.toBitmap(width: Int, height: Int, duplicateIfBitmapDrawable:
 }
 
 inline fun Drawable.toBitmapDrawable(duplicateIfBitmapDrawable: Boolean = false) = if (this is BitmapDrawable && !duplicateIfBitmapDrawable) this else {
-    BitmapDrawable(Tools.publicContext!!.resources, toBitmap())
+    BitmapDrawable(Tools.appContext!!.resources, toBitmap())
 }
 
 inline fun Drawable.clone() = constantState?.newDrawable()?.mutate()
 
-inline val Number.dp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
-inline val Number.sp get() = Tools.publicContext!!.resources.displayMetrics.density * toFloat()
+inline val Number.dp get() = Tools.appContext!!.resources.displayMetrics.density * toFloat()
+inline val Number.sp get() = Tools.appContext!!.resources.displayMetrics.density * toFloat()
 
 inline val Context.mainFont: Typeface
     get() = if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
