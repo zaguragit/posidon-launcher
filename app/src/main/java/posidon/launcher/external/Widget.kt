@@ -18,7 +18,7 @@ import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.feed.WidgetSection
 
 class Widget(
-    val hostId: Int
+    val widgetId: Int
 ) {
 
     companion object {
@@ -30,7 +30,7 @@ class Widget(
             val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
             try {
                 val widgetId = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-                val hostId = Tools.generateWidgetHostUid()
+                //val hostId = Tools.generateWidgetHostUid()
                 val providerInfo = widgetManager.getAppWidgetInfo(widgetId)
                 if (!widgetManager.bindAppWidgetIdIfAllowed(widgetId, providerInfo.provider)) {
                     val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
@@ -38,8 +38,8 @@ class Widget(
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
                     activity.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
-                Settings["widget:$hostId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + widgetId
-                return WidgetSection(Tools.appContext!!, Widget(hostId))
+                Settings["widget:$widgetId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + widgetId
+                return WidgetSection(Tools.appContext!!, Widget(widgetId))
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null
@@ -76,8 +76,8 @@ class Widget(
 
         private var tmpHost: AppWidgetHost? = null
         fun selectWidget(activity: Activity) {
-            val hostId = Tools.generateWidgetHostUid()
-            tmpHost = AppWidgetHost(Tools.appContext, hostId)
+            //val hostId = Tools.generateWidgetHostUid()
+            tmpHost = AppWidgetHost(Tools.appContext, HOST_ID)
             val appWidgetId = tmpHost!!.allocateAppWidgetId()
             val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
             pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -87,16 +87,18 @@ class Widget(
             pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
             activity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
         }
+
+        const val HOST_ID: Int = 0x3eed6ee2
     }
 
     private var hostView: AppWidgetHostView? = null
-    var host: AppWidgetHost = AppWidgetHost(Tools.appContext, hostId)
+    var host: AppWidgetHost = AppWidgetHost(Tools.appContext, HOST_ID)
         private set
 
     fun fromSettings(widgetLayout: ResizableLayout): Boolean {
         return try {
             val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
-            val str = Settings["widget:$hostId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+            val str = Settings["widget:$widgetId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
             val className: String = s[1]
@@ -129,7 +131,7 @@ class Widget(
                 setAppWidget(id, providerInfo)
             }
             widgetLayout.addView(hostView)
-            resize(Settings["widget:$hostId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
+            resize(Settings["widget:$widgetId:height", ViewGroup.LayoutParams.WRAP_CONTENT])
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -142,7 +144,7 @@ class Widget(
         widgetLayout.removeView(hostView)
         hostView = null
         //widgetLayout.visibility = View.GONE
-        Settings["widget:$hostId"] = ""
+        Settings["widget:$widgetId"] = ""
     }
 
     fun resize(newHeight: Int) {

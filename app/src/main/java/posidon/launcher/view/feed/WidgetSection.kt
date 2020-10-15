@@ -13,10 +13,10 @@ class WidgetSection(
 ) : ResizableLayout(context), FeedSection {
 
     override fun onAdd(feed: Feed) {
-        layoutParams.height = Settings["widget:${widget.hostId}:height", ViewGroup.LayoutParams.WRAP_CONTENT]
+        layoutParams.height = Settings["widget:${widget.widgetId}:height", ViewGroup.LayoutParams.WRAP_CONTENT]
 
         onResizeListener = object : OnResizeListener {
-            override fun onStop(newHeight: Int) { Settings["widget:${widget.hostId}:height"] = newHeight }
+            override fun onStop(newHeight: Int) { Settings["widget:${widget.widgetId}:height"] = newHeight }
             override fun onCrossPress() = feed.remove(this@WidgetSection)
             override fun onMajorUpdate(newHeight: Int) = widget.resize(newHeight)
             override fun onUpdate(newHeight: Int) {
@@ -34,14 +34,10 @@ class WidgetSection(
 
     override fun updateTheme(activity: Activity) {}
 
-    override fun onPause() {
-        //widget.stopListening()
-    }
-    override fun onResume(activity: Activity) {
-        //widget.startListening()
-    }
+    override fun onPause() = widget.stopListening()
+    override fun onResume(activity: Activity) = widget.startListening()
 
-    override fun toString() = "widget:${widget.hostId}"
+    override fun toString() = "widget:${widget.widgetId}"
 
     override fun onDelete(feed: Feed) {
         widget.deleteWidget(this@WidgetSection)

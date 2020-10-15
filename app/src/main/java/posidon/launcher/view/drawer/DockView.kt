@@ -149,6 +149,7 @@ class DockView : LinearLayout {
                     }
                 } else {
                     Dock[i] = null
+                    continue
                 }
             } else if (item is App) {
                 if (!item.isInstalled(context.packageManager)) {
