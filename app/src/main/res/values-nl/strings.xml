@@ -197,6 +197,8 @@
     <string name="height">Height</string>
     <string name="load_on_resume">Load on resume</string>
     <string name="include_hidden_apps">Include hidden apps</string>
+    <string name="show_source">Show source</string>
+    <string name="max_days_age">Max age (days)</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
