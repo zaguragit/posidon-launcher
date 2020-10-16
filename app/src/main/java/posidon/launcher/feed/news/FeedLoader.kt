@@ -35,11 +35,12 @@ object FeedLoader {
         val deleted = Settings.getStrings("feed:deleted_articles")
         val lock = ReentrantLock()
 
+        val maxAge = Settings["news:max_days_age", 5]
         val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         val deletedIter = deleted.iterator()
         for (article in deletedIter) {
             val day = article.substringBefore(':').toDouble()
-            if (abs(day - today) > 4) {
+            if (abs(day - today) >= maxAge) {
                 deletedIter.remove()
             }
         }
@@ -70,7 +71,7 @@ object FeedLoader {
                         try {
                             val newUrl = url + endStrings[i]
                             val connection = URL(newUrl).openConnection()
-                            parseFeed(connection.getInputStream(), Source(name, newUrl, domain), lock, feedItems, deleted)
+                            parseFeed(connection.getInputStream(), Source(name, newUrl, domain), lock, feedItems, deleted, maxAge)
                             break
                         } catch (e: Exception) {}
                         i++
@@ -116,7 +117,7 @@ object FeedLoader {
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private inline fun parseFeed(inputStream: InputStream, source: Source, lock: ReentrantLock, feedItems: ArrayList<FeedItem>, deleted: java.util.ArrayList<String>) {
+    private inline fun parseFeed(inputStream: InputStream, source: Source, lock: ReentrantLock, feedItems: ArrayList<FeedItem>, deleted: java.util.ArrayList<String>, maxAge: Int) {
         var title: String? = null
         var link: String? = null
         var img: String? = null
@@ -132,21 +133,28 @@ object FeedLoader {
                 when (parser.eventType) {
                     XmlPullParser.END_TAG -> when {
                         name.equals("item", ignoreCase = true) ||
-                                name.equals("entry", ignoreCase = true) -> {
+                        name.equals("entry", ignoreCase = true) -> {
                             isItem = 0
                             if (title != null && link != null) {
-                                if (Settings["feed:delete_articles", false]) {
-                                    var show = true
-                                    for (string in deleted) {
-                                        if (string.substringAfter(':') == "$link:$title") {
-                                            show = false; break
+                                val isNewEnough = if (time == null) true else {
+                                    val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+                                    val day = Calendar.getInstance().apply { this.time = time }[Calendar.DAY_OF_YEAR]
+                                    abs(day - today) < maxAge
+                                }
+                                if (isNewEnough) {
+                                    if (Settings["feed:delete_articles", false]) {
+                                        var show = true
+                                        for (string in deleted) {
+                                            if (string.substringAfter(':') == "$link:$title") {
+                                                show = false; break
+                                            }
                                         }
-                                    }
-                                    if (show) {
+                                        if (show) {
+                                            items.add(FeedItem(title!!, link!!, img, time!!, source))
+                                        }
+                                    } else {
                                         items.add(FeedItem(title!!, link!!, img, time!!, source))
                                     }
-                                } else {
-                                    items.add(FeedItem(title!!, link!!, img, time!!, source))
                                 }
                             }
                             title = null
@@ -163,8 +171,8 @@ object FeedLoader {
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
-                                        .replace("GMT", "+0000")
-                                        .replace(Regex("[-:, /]"), "")
+                                    .replace("GMT", "+0000")
+                                    .replace(Regex("[-:, /]"), "")
                                 time = try {
                                     SimpleDateFormat("cccddMMMyyyyHHmmssZ", Locale.ROOT).parse(text)!!
                                 } catch (e: Exception) {
@@ -186,10 +194,10 @@ object FeedLoader {
                                     val medium = parser.getAttributeValue(null, "medium")
                                     val url = parser.getAttributeValue(null, "url")
                                     if (medium == "image" ||
-                                            url.endsWith(".jpg") ||
-                                            url.endsWith(".png") ||
-                                            url.endsWith(".svg") ||
-                                            url.endsWith(".jpeg")) {
+                                        url.endsWith(".jpg") ||
+                                        url.endsWith(".png") ||
+                                        url.endsWith(".svg") ||
+                                        url.endsWith(".jpeg")) {
                                         img = url
                                     }
                                 }
@@ -201,7 +209,7 @@ object FeedLoader {
                             name.equals("title", ignoreCase = true) -> title = getText(parser)
                             name.equals("id", ignoreCase = true) -> link = getText(parser)
                             name.equals("published", ignoreCase = true) ||
-                                    name.equals("updated", ignoreCase = true) -> {
+                            name.equals("updated", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
                                 val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
                                 time = try { format.parse(text)!! } catch (e: Exception) { Date(0) }

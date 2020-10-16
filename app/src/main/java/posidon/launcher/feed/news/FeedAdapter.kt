@@ -36,17 +36,19 @@ class FeedAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     class ViewHolder(
-        val card: View,
-        val title: TextView,
-        val source: TextView,
-        val image: ImageView,
-        val gradient: View,
-        val swipeableLayout: SwipeableLayout?
+            val card: View,
+            val title: TextView,
+            val source: TextView?,
+            val image: ImageView,
+            val gradient: View,
+            val swipeableLayout: SwipeableLayout?
     ) : RecyclerView.ViewHolder(card)
 
     private val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
+
+        val showSource = Settings["news:cards:source", true]
 
         val image = ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -64,7 +66,7 @@ class FeedAdapter(
             setTextColor(Settings["feed:card_txt_color", -0x1])
         }
 
-        val source = TextView(context).apply {
+        val source = if (showSource) TextView(context).apply {
             run {
                 val h = 12.dp.toInt()
                 val v = 8.dp.toInt()
@@ -80,7 +82,7 @@ class FeedAdapter(
             }
             backgroundTintMode = PorterDuff.Mode.SRC_IN
             setTextColor(Settings["feed:card_txt_color", -0x1])
-        }
+        } else null
 
         val r = Settings["feed:card_radius", 15].dp
         val separateImg = Settings["news:cards:sep_txt", false]
@@ -108,12 +110,14 @@ class FeedAdapter(
                     addView(image, ViewGroup.LayoutParams(MATCH_PARENT, height))
                 }
                 addView(title, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-                addView(source, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                    run {
-                        val m = 6.dp.toInt()
-                        setMargins(m, m, m, m)
-                    }
-                })
+                if (source != null) {
+                    addView(source, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                        run {
+                            val m = 6.dp.toInt()
+                            setMargins(m, m, m, m)
+                        }
+                    })
+                }
             }, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
                 gravity = Gravity.BOTTOM
             })
@@ -146,7 +150,7 @@ class FeedAdapter(
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
         val feedItem = items[i]
         holder.title.text = feedItem.title
-        holder.source.text = feedItem.source.name
+        holder.source?.text = feedItem.source.name
 
         if (Settings["feed:delete_articles", false]) {
             val swipeableLayout = holder.swipeableLayout!!
@@ -218,10 +222,10 @@ class FeedAdapter(
                     val gradientDrawable = GradientDrawable()
                     if (it == null) {
                         gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
-                        holder.source.backgroundTintList = ColorStateList.valueOf(-0xdad9d9 and 0x00ffffff or -0x78000000)
+                        holder.source?.backgroundTintList = ColorStateList.valueOf(-0xdad9d9 and 0x00ffffff or -0x78000000)
                     } else {
                         gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
-                        holder.source.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        holder.source?.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
                     }
                     holder.gradient.background = gradientDrawable
                 }

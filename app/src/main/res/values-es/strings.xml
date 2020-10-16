@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">posidon</string>
+    <string name="app_name">posidon launcher</string>
     <string name="aboutbtn">Sobre</string>
     <string name="walls">Fondos</string>
 
@@ -186,17 +186,19 @@
     <string name="undo">Deshacer</string>
     <string name="fading_edge">Fading edge</string>
     <string name="opml">OPML</string>
-    <string name="export">Export</string>
-    <string name="_import">Import</string>
+    <string name="export">Exportar</string>
+    <string name="_import">Importar</string>
     <string name="max_cards">Max cards</string>
     <string name="widget">Widget</string>
     <string name="staggered">Staggered</string>
     <string name="adjust_height_to_content">Wrap content</string>
-    <string name="separate_text">Separate text</string>
-    <string name="source_radius">Source radius</string>
-    <string name="height">Height</string>
-    <string name="load_on_resume">Load on resume</string>
+    <string name="separate_text">Separar texto</string>
+    <string name="source_radius">Radius de fuente</string>
+    <string name="height">Altura</string>
+    <string name="load_on_resume">Cargar al resumir</string>
     <string name="include_hidden_apps">Incluir apps escondidas</string>
+    <string name="show_source">Mostrar fuente</string>
+    <string name="max_days_age">Max edad (días)</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>

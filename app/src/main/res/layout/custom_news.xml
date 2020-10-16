@@ -79,6 +79,14 @@
                     app:label="@string/load_on_resume"
                     app:key="news:load_on_resume"
                     app:def="true"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/max_days_age"
+                    app:key="news:max_days_age"
+                    app:def="5"
+                    app:max="30"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -186,6 +194,14 @@
                     app:drawable="@drawable/ic_apps"
                     app:label="@string/adjust_height_to_content"
                     app:key="news:cards:wrap_content"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/show_source"
+                    app:key="news:cards:source"
                     app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
