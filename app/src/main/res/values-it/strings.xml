@@ -1,0 +1,263 @@
+<resources>
+    <string name="app_name">posidon launcher</string>
+    <string name="aboutbtn">Informazioni</string>
+    <string name="walls">Walls</string>
+
+    <string name="appLabels">Etichette app</string>
+    <string name="icon_pack">Icon pack</string>
+    <string name="iconSize">Dimensioni icona</string>
+    <string name="columns">Colonne</string>
+
+    <string name="settings_title">Personalizzazioni</string>
+    <string name="settings_title_drawer">Cassetto app</string>
+    <string name="settings_title_clock_format">Orologio</string>
+    <string name="settings_title_search">Cerca</string>
+    <string name="settings_title_dev">Sviluppatore</string>
+    <string name="settings_title_dock">Dock</string>
+    <string name="settings_title_feed">Feed</string>
+    <string name="settings_title_theme">Tema</string>
+    <string name="settings_title_other">Altro</string>
+    <string name="settings_title_icons">Icone</string>
+    <string name="settings_title_icon_packs">Pacchetti di icone</string>
+    <string name="settings_title_folders" >Cartelle</string>
+    <string name="settings_title_news">Notizie</string>
+    <string name="settings_title_quickstep">QuickStep</string>
+    <string name="settings_title_gestures">Gesti</string>
+
+    <string name="defaultdateformat">d MMM | cccc</string>
+    <string name="settingsdateformat">Data</string>
+    <string name="searchbarhint">Cerca…</string>
+    <string name="feed_sources">Sorgenti</string>
+    <string name="example_feed_url">androidpolice.com/feed</string>
+    <string name="slogan">Minimale, ricco di funzionalità, diverso.</string>
+    <string name="developer">Leo Shneyderis</string>
+    <string name="settingshidestatus">Nascondi barra di stato</string>
+    <string name="spacing">Spaziatura</string>
+    <string name="permission_storage_description">Concedi l\'accesso allo spazio di archiviazione per cose come l\'accesso allo sfondo per la sfocatura nel cassetto delle app</string>
+    <string name="storage_access">Accesso allo spazio di archiviazione</string>
+    <string name="notification_access">Accesso alle notifiche</string>
+    <string name="permission_notifications_description">Concedi l\'accesso alle notifiche per visualizzare le tue notifiche sulla schermata Home</string>
+    <string name="pixel_stock_android">Pixel</string>
+    <string name="one_ui">Un\'interfaccia utente</string>
+    <string name="ios">iOS</string>
+    <string name="surprise_me">Sorprendimi...</string>
+    <string name="preset_chooser_title">Scegli da dove iniziare</string>
+    <string name="done">Fine</string>
+    <string name="explanation">Per accedere alle personalizzazioni o alla galleria di sfondi, a lungo premi o pizzica sulla schermata iniziale</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Sito web</string>
+    <string name="leoxshn_description">Creato il programma di avvio</string>
+    <string name="sajid_shaik">Sajid Shaik</string>
+    <string name="sajid_shaik_description">Progettato l\'icona di avvio</string>
+    <string name="app_name_hint">nome</string>
+    <string name="version">Versione</string>
+    <string name="uninstall">Disinstalla</string>
+    <string name="component">Componente</string>
+    <string name="propenties">Proprietà</string>
+    <string name="edit">Modifica</string>
+    <string name="remove_icon">Rimuovi icona</string>
+    <string name="colorpicker_hint">Codice esadecimale (ff000000 per nero)</string>
+    <string name="apply">apply</string>
+    <string name="setting_show_component">Mostra componente nelle proprietà dell\'app</string>
+    <string name="color">Colore</string>
+    <string name="radius">Raggio</string>
+    <string name="bottom_padding">Bottom padding</string>
+    <string name="blur">Blur</string>
+    <string name="setting_title_hide_apps">Nascondi app</string>
+    <string name="setting_hide_until_user_scrolls">Nascondi fino a quando l\'utente scorre</string>
+    <string name="corner_radius">Raggio angolo</string>
+    <string name="background">Sfondo</string>
+    <string name="text_color">Colore testo</string>
+    <string name="images">Immagini</string>
+    <string name="title_color">Colore titolo</string>
+    <string name="sans_serif">Sans Serif</string>
+    <string name="posidon_sans">Posidon Sans</string>
+    <string name="monospace">Monospace</string>
+    <string name="math_operation">Operazione matematica</string>
+    <string name="no_results_for">Nessun risultato per \"%1$s\"</string>
+    <string name="ip_address_external">indirizzo IP (esterno)</string>
+    <string name="failed_to_connect">Connessione non riuscita</string>
+    <string name="next">Avanti</string>
+    <string name="hint_color">Colore suggerimento</string>
+    <string name="hint_text">Testo suggerimento</string>
+    <string name="font">Carattere</string>
+    <string name="default_icon_theme">Sistema</string>
+    <string name="force_stop_launcher">Forza arresto / riavvio</string>
+    <string name="icon_shape">Forma icona</string>
+    <string name="squircle">Squircle</string>
+    <string name="square">Quadrato</string>
+    <string name="rounded_square">Quadrato arrotondato</string>
+    <string name="circle">Cerchio</string>
+    <string name="accent_color">Colore accento</string>
+    <string name="animated">Animato</string>
+    <string name="generate_adaptive_icons">Genera icone adattive</string>
+    <string name="in_dock">Nel dock</string>
+    <string name="in_drawer">Nel cassetto</string>
+    <string name="duration">Durata</string>
+    <string name="haptic_feedback">Feedback aptico</string>
+    <string name="minimal_statusbar">Barra di stato minima</string>
+    <string name="statusbar">Barra di stato</string>
+
+    <string name="notifications">Notifiche</string>
+    <string name="text_shadow">Text shadow</string>
+    <string name="ubuntu">Ubuntu</string>
+    <string name="lexend_deca">Lexend Deca</string>
+    <string name="wall_apply_home_screen">Schermata iniziale</string>
+    <string name="wall_apply_lock_screen">Schermata di blocco</string>
+    <string name="wall_apply_both">Entrambi</string>
+    <string name="settings_rows">Righe</string>
+    <string name="telegram">Telegram</string>
+    <string name="action_buttons">Pulsanti di azione</string>
+    <string name="sorting">Ordinamento</string>
+    <string name="blur_layers">Transizione livelli</string>
+    <string name="start">Avvia</string>
+    <string name="remove">Rimuovi</string>
+    <string name="labelColor">Colore etichetta</string>
+    <string name="num_notifications">%1$d notifiche</string>
+    <string name="collapse_notifications">Comprimi notifiche</string>
+    <string name="open_dyslexic">OpenDyslexic3</string>
+    <string name="app_open_animation">App aperta anim</string>
+    <string name="no">No</string>
+    <string name="yes">Sì</string>
+    <string name="would_you_like_to_rate_this_launcher">Vorresti valutare questo launcher?</string>
+    <string name="hidden_apps">App nascoste</string>
+    <string name="choose_a_launcher">Scegli un launcher</string>
+    <string name="horizontal_margin">Margine orizzontale</string>
+    <string name="vertical_margin">Margine verticale</string>
+    <string name="value_of_pi">Valore di π</string>
+    <string name="show_behind_dock">Mostra dietro dock</string>
+    <string name="some_quick_adjustments">Alcuni aggiustamenti rapidi</string>
+    <string name="mk_backup">Salva un backup</string>
+    <string name="use_backup">Ripristina dal backup</string>
+    <string name="permissions">Autorizzazioni</string>
+    <string name="grant">Concedi</string>
+    <string name="background_type">Tipo di sfondo</string>
+    <string name="max_image_width">Larghezza massima immagine</string>
+    <string name="scrollbar">Barra di scorrimento</string>
+    <string name="grouping">Raggruppamento</string>
+    <string name="recolor_white_bgs">Tinta sfondi bianchi</string>
+    <string name="oops">Oops!</string>
+    <string name="posidon_launcher_crashed">posidon launcher si è arrestato in modo anomalo</string>
+    <string name="send_bug_report">Invia segnalazione di bug</string>
+    <string name="show_name">Mostra nome</string>
+    <string name="name_color">Colore nome</string>
+    <string name="sections">Sezioni</string>
+    <string name="name_position">Posizione nome</string>
+    <string name="swipe_to_remove">Scorri per rimuovere</string>
+    <string name="removed">Rimosso</string>
+    <string name="restore">Ripristina</string>
+    <string name="reply">Rispondi</string>
+    <string name="show_below_apps">Mostra sotto app</string>
+    <string name="cards">Carte</string>
+    <string name="notification_badges">Badge di notifica</string>
+    <string name="read_method">Metodo di lettura</string>
+    <string name="console">Console</string>
+    <string name="inter">Inter</string>
+    <string name="search_as_home">Cerca come home</string>
+    <string name="gesture_top_overscroll">Top overscroll</string>
+    <string name="gesture_bottom_overscroll">Bottom overscroll</string>
+    <string name="pinch">Pizzica</string>
+    <string name="long_press">Premi a lungo</string>
+    <string name="back_button">Pulsante Indietro</string>
+    <string name="github">Github</string>
+    <string name="duckduckgo_results">Risultati DuckDuckGo</string>
+    <string name="media_player">Media player</string>
+    <string name="show_feed_spinner">Mostra feed spinner</string>
+    <string name="stack_results_from_bottom">Stack risultati dal basso</string>
+    <string name="airplane_mode">Modalità aereo</string>
+    <string name="power_usage">Consumo energetico</string>
+    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
+    <string name="device_info">Informazioni sul dispositivo</string>
+    <string name="contacts_access">Accesso ai contatti</string>
+    <string name="permission_contacts_description">Concedi l\'accesso ai contatti in modo che i tuoi contatti possano apparire nei risultati di ricerca</string>
+    <string name="github_contributors">Collaboratori Github</string>
+    <string name="lock_home">Blocca schermata home</string>
+    <string name="starred_contacts">Contatti speciali</string>
+    <string name="kustom_variables">Variabili Kustom</string>
+    <string name="swipe_bg_color">Scorri in background</string>
+    <string name="hide_crash_logs">Nascondi i log degli arresti anomali</string>
+    <string name="ignore_navbar_height">Ignora l\'altezza della barra di navigazione</string>
+    <string name="show_number">Show numero</string>
+    <string name="slide_up">Scorri verso l\'alto</string>
+    <string name="package_search">Ricerca pacchetto</string>
+    <string name="shortcuts">Scorciatoie</string>
+    <string name="contacts">Contatti</string>
+    <string name="keep_position">Mantieni posizione</string>
+    <string name="undo_popup">Annulla popup</string>
+    <string name="undo">Annulla</string>
+    <string name="fading_edge">Fading edge</string>
+    <string name="opml">OPML</string>
+    <string name="export">Esporta</string>
+    <string name="_import">Importa</string>
+    <string name="max_cards">Numero massimo di carte</string>
+    <string name="widget">Widget</string>
+    <string name="staggered">Sfalsato</string>
+    <string name="adjust_height_to_content">Avvolgi contenuto</string>
+    <string name="separate_text">Separa testo</string>
+    <string name="source_radius">Raggio sorgente</string>
+    <string name="height">Altezza</string>
+    <string name="load_on_resume">Carica su curriculum</string>
+    <string name="include_hidden_apps">Includi app nascoste</string>
+    <string name="show_source">Mostra sorgente</string>
+    <string name="max_days_age">Età massima (giorni)</string>
+
+    <array name="sortingAlgorithms">
+        <item>In ordine alfabetico</item>
+        <item>Per colore</item>
+    </array>
+
+    <array name="animationNames">
+        <item>posidon</item>
+        <item>rivelazione clip</item>
+        <item>ingrandisci</item>
+    </array>
+
+    <array name="bgModes">
+        <item>Solido</item>
+        <item>In basso bagliore</item>
+        <item>Floating</item>
+        <item>Suddivisione mobile</item>
+    </array>
+
+    <array name="notificationGrouping">
+        <item>Segui il sistema operativo</item>
+        <item>Raggruppa per app</item>
+        <item>Non raggruppare</item>
+    </array>
+
+    <array name="iconBackgrounds">
+        <item>Colore dominante</item>
+        <item>Colore chiaro e vibrante</item>
+        <item>Colore scuro vibrante</item>
+        <item>Colore tenue tenue</item>
+        <item>Colore tenue scuro</item>
+        <item>Personalizzato</item>
+    </array>
+
+    <array name="namePositions">
+        <item>In alto</item>
+        <item>Sinistra</item>
+        <item>Nascondi</item>
+    </array>
+
+    <array name="articleReadingMethods">
+        <item>Nel browser</item>
+        <item>Nella visualizzazione web</item>
+    </array>
+
+    <array name="actions">
+        <item>Niente</item>
+        <item>Non trascinare verso il basso ifications</item>
+        <item>Apri cassetto app</item>
+        <item>Apri ricerca</item>
+        <item>Apri panoramica</item>
+        <item>Aggiorna feed</item>
+        <item>Apri app</item>
+    </array>
+
+    <array name="notifBadgesBGs">
+        <item>Colore dominante</item>
+        <item>Accento</item>
+        <item>Personalizzato</item>
+    </array>
+</resources>
