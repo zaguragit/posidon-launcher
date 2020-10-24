@@ -195,11 +195,17 @@
                     app:label="@string/adjust_height_to_content"
                     app:key="news:cards:wrap_content"
                     app:def="true"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_visible"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     app:label="@string/show_source"
                     app:key="news:cards:source"
                     app:def="true"/>
@@ -207,10 +213,34 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:label="@string/source_radius"
+                    app:label="@string/radius"
                     app:key="news:cards:source:radius"
                     app:def="30"
                     app:max="30"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="news:cards:source:bg_color"
+                    app:def="#ff111213"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/tint_background"
+                    app:key="news:cards:source:tint_bg"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/text_color"
+                    app:key="news:cards:source:fg_color"
+                    app:def="#ffffffff"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

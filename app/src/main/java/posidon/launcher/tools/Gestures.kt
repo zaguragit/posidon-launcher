@@ -20,7 +20,7 @@ object Gestures {
         when (key) {
             PULL_DOWN_NOTIFICATIONS -> Tools.appContext!!.pullStatusbar()
             OPEN_APP_DRAWER -> Home.instance.drawer.state = BottomDrawerBehavior.STATE_EXPANDED
-            OPEN_SEARCH -> Tools.appContext!!.startActivity(Intent(Tools.appContext, SearchActivity::class.java))
+            OPEN_SEARCH -> Tools.appContext!!.startActivity(Intent(Tools.appContext, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             OPEN_OVERVIEW -> LauncherMenu.openOverview()
             REFRESH_FEED -> Home.instance.feed.loadNews(Home.instance)
             else -> {

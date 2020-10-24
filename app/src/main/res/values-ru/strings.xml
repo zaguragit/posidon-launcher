@@ -199,6 +199,7 @@
     <string name="include_hidden_apps">Include hidden apps</string>
     <string name="show_source">Show source</string>
     <string name="max_days_age">Max age (days)</string>
+    <string name="tint_background">Tint background</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
