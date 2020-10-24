@@ -67,6 +67,11 @@ class CustomNews : AppCompatActivity() {
         Global.customized = true
     }
 
+    override fun onPause() {
+        Global.customized = true
+        super.onPause()
+    }
+
     fun chooseFeeds(v: View) = startActivity(Intent(this, FeedChooser::class.java))
     fun seeRemovedArticles(v: View) = startActivity(Intent(this, RemovedArticles::class.java))
 
