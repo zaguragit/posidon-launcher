@@ -77,11 +77,11 @@ class FeedAdapter(
                 val bg = ShapeDrawable()
                 val r = Settings["news:cards:source:radius", 30].dp
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                bg.paint.color = 0xff111213.toInt()
+                bg.paint.color = Settings["news:cards:source:bg_color", 0xff111213.toInt()]
                 background = bg
             }
             backgroundTintMode = PorterDuff.Mode.SRC_IN
-            setTextColor(Settings["feed:card_txt_color", -0x1])
+            setTextColor(Settings["news:cards:source:fg_color", -0x1])
         } else null
 
         val r = Settings["feed:card_radius", 15].dp
@@ -222,10 +222,12 @@ class FeedAdapter(
                     val gradientDrawable = GradientDrawable()
                     if (it == null) {
                         gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
-                        holder.source?.backgroundTintList = ColorStateList.valueOf(-0xdad9d9 and 0x00ffffff or -0x78000000)
+                        holder.source?.backgroundTintList = null
                     } else {
                         gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
-                        holder.source?.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        if (Settings["news:cards:source:tint_bg", true]) {
+                            holder.source?.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                        }
                     }
                     holder.gradient.background = gradientDrawable
                 }

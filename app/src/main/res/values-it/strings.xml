@@ -200,6 +200,7 @@
     <string name="include_hidden_apps">Includi app nascoste</string>
     <string name="show_source">Mostra sorgente</string>
     <string name="max_days_age">Età massima (giorni)</string>
+    <string name="tint_background">Tint background</string>
 
     <array name="sortingAlgorithms">
         <item>In ordine alfabetico</item>
