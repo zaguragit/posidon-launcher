@@ -238,7 +238,7 @@ class SearchActivity : AppCompatActivity() {
         if (showHidden) {
             findViewById<View>(R.id.fail).visibility = View.GONE
             val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
-                startActivity(Intent(this, HiddenAppsActivity::class.java))
+                it.startActivity(Intent(applicationContext, HiddenAppsActivity::class.java))
             }
             results.add(app)
         }
@@ -346,9 +346,9 @@ class SearchActivity : AppCompatActivity() {
             grid.onItemClickListener = OnItemClickListener { _, view, i, _ ->
                 when (val r = results[i]) {
                     is App -> r.open(this@SearchActivity, view)
-                    is InternalItem -> r.open()
-                    is SettingsItem -> r.open()
-                    is ContactItem -> r.open()
+                    is InternalItem -> r.open(this@SearchActivity)
+                    is SettingsItem -> r.open(this@SearchActivity)
+                    is ContactItem -> r.open(this@SearchActivity)
                 }
             }
             grid.onItemLongClickListener = ItemLongPress.search(this, results)

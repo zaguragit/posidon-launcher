@@ -1,5 +1,6 @@
 package posidon.launcher.items
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -16,9 +17,9 @@ class SettingsItem private constructor(
     val action: String
 ) : LauncherItem() {
 
-    fun open() = try {
-        Tools.appContext!!.startActivity(Intent(action))
-    } catch (e: Exception) {}
+    fun open(context: Context) = try {
+        context.startActivity(Intent(action))
+    } catch (e: Exception) { e.printStackTrace() }
 
     companion object {
 
