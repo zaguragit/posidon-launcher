@@ -17,6 +17,7 @@ import posidon.launcher.tools.dp
 import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
@@ -28,9 +29,11 @@ class AppLoader (
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
     private val context: WeakReference<Context> = WeakReference(context)
+    private var lock = ReentrantLock()
 
     fun execute() { thread(isDaemon = true, block = ::run) }
     fun run() {
+        lock.lock()
         App.hidden.clear()
         val packageManager = context.get()!!.packageManager
         val iconSize = 65.dp.toInt()
@@ -164,7 +167,7 @@ class AppLoader (
                     }
                 }
 
-                App.putInSecondMap(app)
+                putInSecondMap(app)
                 if (Settings["app:$app:hidden", false]) {
                     App.hidden.add(app)
                 } else {
@@ -203,6 +206,7 @@ class AppLoader (
             }
         }
 
+        lock.unlock()
         System.gc()
 
         Home.instance.runOnUiThread {
@@ -216,8 +220,7 @@ class AppLoader (
                 Global.appSections = tmpAppSections
                 tmp.clear()
             }
-            App.swapMaps()
-            App.clearSecondMap()
+            App.setMapAndClearLast(appsByName)
             onEnd()
         }
     }
@@ -244,5 +247,22 @@ class AppLoader (
             App.removePackage(packageName)
             onAppLoaderEnd()
         }
+    }
+
+    private var appsByName = HashMap<String, ArrayList<App>>()
+    private fun putInSecondMap(app: App) {
+        val list = appsByName[app.packageName]
+        if (list == null) {
+            appsByName[app.packageName] = arrayListOf(app)
+            return
+        }
+        val thisAppI = list.indexOfFirst {
+            it.name == app.name && it.userHandle.hashCode() == app.userHandle.hashCode()
+        }
+        if (thisAppI == -1) {
+            list.add(app)
+            return
+        }
+        list[thisAppI] = app
     }
 }

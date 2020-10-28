@@ -100,7 +100,6 @@ class App(
 
     companion object {
         private var appsByName = HashMap<String, ArrayList<App>>()
-        private var appsByName2 = HashMap<String, ArrayList<App>>()
         val hidden = ArrayList<App>()
 
         operator fun get(component: String): App? {
@@ -125,33 +124,15 @@ class App(
 
         fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
 
-        fun putInSecondMap(app: App) {
-            val list = appsByName2[app.packageName]
-            if (list == null) {
-                appsByName2[app.packageName] = arrayListOf(app)
-                return
-            }
-            val thisAppI = list.indexOfFirst {
-                it.name == app.name && it.userHandle.hashCode() == app.userHandle.hashCode()
-            }
-            if (thisAppI == -1) {
-                list.add(app)
-                return
-            }
-            list[thisAppI] = app
-        }
-
-        fun swapMaps() {
-            val tmp = appsByName
-            appsByName = appsByName2
-            appsByName2 = tmp
-        }
-
-        fun clearSecondMap() = appsByName2.clear()
-
         fun removePackage(packageName: String) {
             hidden.removeAll { it.packageName == packageName }
             appsByName.remove(packageName)
+        }
+
+        fun setMapAndClearLast(appsByName: HashMap<String, ArrayList<App>>) {
+            val tmp = this.appsByName
+            this.appsByName = appsByName
+            tmp.clear()
         }
     }
 }
