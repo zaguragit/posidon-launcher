@@ -1,6 +1,7 @@
 package posidon.launcher.items
 
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
@@ -22,12 +23,12 @@ class ContactItem private constructor(
         }
     }
 
-    fun open() {
+    fun open(context: Context) {
         val viewContact = Intent(Intent.ACTION_VIEW)
         viewContact.data = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
         viewContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         viewContact.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-        Tools.appContext!!.startActivity(viewContact)
+        context.startActivity(viewContact)
     }
 
     override fun equals(other: Any?): Boolean {
