@@ -434,7 +434,9 @@ class Home : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(batteryInfoReceiver)
+        runCatching {
+            unregisterReceiver(batteryInfoReceiver)
+        }
         super.onDestroy()
     }
 
