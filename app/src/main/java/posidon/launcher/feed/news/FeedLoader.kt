@@ -21,12 +21,12 @@ object FeedLoader {
 
     private val pullParserFactory: XmlPullParserFactory = XmlPullParserFactory.newInstance()
     private val endStrings = arrayOf("",
-        "/feed",
-        "/rss",
-        "/feed.xml",
-        "/rss.xml",
         "/atom",
-        "/atom.xml")
+        "/atom.xml",
+        "/feed",
+        "/feed.xml",
+        "/rss",
+        "/rss.xml")
 
     fun loadFeed(
         onFinished: (success: Boolean, items: List<FeedItem>) -> Unit
@@ -171,10 +171,12 @@ object FeedLoader {
                             name.equals("link", ignoreCase = true) -> link = getText(parser)
                             name.equals("pubDate", ignoreCase = true) -> {
                                 val text = getText(parser).trim()
+                                    .substringAfter(',')
                                     .replace("GMT", "+0000")
+                                    .replace("EDT", "+0000")
                                     .replace(Regex("[-:, /]"), "")
                                 time = try {
-                                    SimpleDateFormat("cccddMMMyyyyHHmmssZ", Locale.ROOT).parse(text)!!
+                                    SimpleDateFormat("ddMMMyyyyHHmmssZ", Locale.ROOT).parse(text)!!
                                 } catch (e: Exception) {
                                     try { SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.ROOT).parse(text)!! }
                                     catch (e: Exception) { Date(0) }
@@ -214,7 +216,7 @@ object FeedLoader {
                                 val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT)
                                 time = try { format.parse(text)!! } catch (e: Exception) { Date(0) }
                             }
-                            (name.equals("isSummary", ignoreCase = true) || name.equals("content", ignoreCase = true)) && img == null -> {
+                            img == null && (name.equals("summary", ignoreCase = true) || name.equals("content", ignoreCase = true)) -> {
                                 val result = getText(parser)
                                 val i = result.indexOf("src=\"", result.indexOf("img"))
                                 if (i != -1) {
