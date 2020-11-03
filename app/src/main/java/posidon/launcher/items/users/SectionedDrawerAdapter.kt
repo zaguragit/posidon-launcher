@@ -1,15 +1,15 @@
 package posidon.launcher.items.users
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.SectionIndexer
 import posidon.launcher.Global
-import posidon.launcher.tools.Tools
 import posidon.launcher.view.HighlightAdapter
 import posidon.launcher.view.groupView.AppSectionView
 
-class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
+class SectionedDrawerAdapter(val context: Context) : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
     override fun getCount(): Int = Global.appSections.size
     override fun getItem(i: Int) = Global.appSections[i]
@@ -17,7 +17,7 @@ class SectionedDrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
         val section = Global.appSections[i]
-        val convertView = cv as AppSectionView? ?: AppSectionView(Tools.appContext!!)
+        val convertView = cv as AppSectionView? ?: AppSectionView(context)
         convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
         convertView.setItems(section, parent)
         convertView.title = section[0].label!![0].toUpperCase().toString()

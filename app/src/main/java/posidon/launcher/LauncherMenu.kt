@@ -8,10 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.Gravity
-import android.view.ScaleGestureDetector
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.launcher.customizations.Customizations
@@ -19,25 +16,13 @@ import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
-import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
 
-object LauncherMenu : OnLongClickListener {
-
-    override fun onLongClick(v: View): Boolean {
-        Gestures.performTrigger(Settings["gesture:long_press", Gestures.OPEN_OVERVIEW])
-        return true
-    }
-
-    internal class PinchListener : SimpleOnScaleGestureListener() {
-        override fun onScale(d: ScaleGestureDetector) = true
-        override fun onScaleEnd(d: ScaleGestureDetector) =
-            Gestures.performTrigger(Settings["gesture:pinch", Gestures.OPEN_OVERVIEW])
-    }
+object LauncherMenu {
 
     var isActive = false
     var dialog: Dialog? = null

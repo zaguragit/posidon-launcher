@@ -1,10 +1,13 @@
 package posidon.launcher.tools
 
 import android.content.Intent
+import android.view.ScaleGestureDetector
+import android.view.View
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.items.App
 import posidon.launcher.search.SearchActivity
+import posidon.launcher.storage.Settings
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 
 object Gestures {
@@ -15,6 +18,11 @@ object Gestures {
     const val OPEN_OVERVIEW = "overview"
     const val REFRESH_FEED = "refresh"
     const val OPEN_APP = "app"
+
+    fun onLongPress(v: View): Boolean {
+        performTrigger(Settings["gesture:long_press", Gestures.OPEN_OVERVIEW])
+        return true
+    }
 
     fun performTrigger(key: String) {
         when (key) {
@@ -51,5 +59,10 @@ object Gestures {
         5 -> REFRESH_FEED
         6 -> OPEN_APP
         else -> ""
+    }
+
+    class PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(d: ScaleGestureDetector) = true
+        override fun onScaleEnd(d: ScaleGestureDetector) = performTrigger(Settings["gesture:pinch", OPEN_OVERVIEW])
     }
 }
