@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.Global
 import posidon.launcher.Home
-import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.feed.news.FeedAdapter.ViewHolder
 import posidon.launcher.storage.Settings
@@ -93,7 +92,7 @@ class FeedAdapter(
             cardElevation = 0f
             preventCornerOverlap = true
 
-            setOnLongClickListener(LauncherMenu)
+            setOnLongClickListener(Gestures::onLongPress)
             setCardBackgroundColor(Settings["feed:card_bg", -0xdad9d9])
 
             val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else Settings["news:cards:height", 240].dp.toInt()

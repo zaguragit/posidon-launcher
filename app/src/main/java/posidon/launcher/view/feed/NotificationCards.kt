@@ -14,12 +14,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Global
-import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
 import posidon.launcher.view.LinearLayoutManager
@@ -70,7 +70,7 @@ class NotificationCards : LinearLayout, FeedSection {
         addView(parentNotificationTitle, LayoutParams(0, 48.dp.toInt(), 1f))
         addView(parentNotificationBtn, LayoutParams(48.dp.toInt(), 48.dp.toInt()))
 
-        setOnLongClickListener(LauncherMenu)
+        setOnLongClickListener(Gestures::onLongPress)
         setOnClickListener {
             if (notifications.visibility == VISIBLE)
                 collapse() else expand()

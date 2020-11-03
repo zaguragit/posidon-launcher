@@ -83,7 +83,7 @@ class Home : AppCompatActivity() {
 
             if (Global.shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
                 if (Settings["drawer:sections_enabled", false]) {
-                    drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+                    drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
                     drawer.drawerGrid.onItemClickListener = null
                     drawer.drawerGrid.onItemLongClickListener = null
                 } else {
@@ -334,7 +334,7 @@ class Home : AppCompatActivity() {
     private val onAppLoaderEnd = {
         val s = drawer.drawerGrid.scrollY
         if (Settings["drawer:sections_enabled", false]) {
-            drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+            drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
             drawer.drawerGrid.onItemClickListener = null
             drawer.drawerGrid.onItemLongClickListener = null
         } else {
@@ -422,7 +422,7 @@ class Home : AppCompatActivity() {
         super.onStart()
 
         if (Settings["drawer:sections_enabled", false]) {
-            drawer.drawerGrid.adapter = SectionedDrawerAdapter()
+            drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
             drawer.drawerGrid.onItemClickListener = null
             drawer.drawerGrid.onItemLongClickListener = null
         } else {

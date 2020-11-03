@@ -24,6 +24,7 @@ import posidon.launcher.external.Widget
 import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.onEnd
@@ -41,7 +42,7 @@ class Feed : FrameLayout {
 
     val desktopContent = LinearLayout(context).apply {
         orientation = VERTICAL
-        setOnLongClickListener(LauncherMenu)
+        setOnLongClickListener(Gestures::onLongPress)
     }
 
     val scroll = NestedScrollView(context).apply {
@@ -49,7 +50,8 @@ class Feed : FrameLayout {
         isNestedScrollingEnabled = false
         isSmoothScrollingEnabled = false
 
-        val scaleGestureDetector = ScaleGestureDetector(context, LauncherMenu.PinchListener())
+        setOnLongClickListener(Gestures::onLongPress)
+        val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener())
         setOnTouchListener { _, event ->
             if (hasWindowFocus()) {
                 scaleGestureDetector.onTouchEvent(event)
@@ -77,16 +79,7 @@ class Feed : FrameLayout {
         private set
 
     init {
-        val scaleGestureDetector = ScaleGestureDetector(context, LauncherMenu.PinchListener())
-        setOnLongClickListener(LauncherMenu)
-        setOnTouchListener { _, event ->
-            if (hasWindowFocus()) {
-                scaleGestureDetector.onTouchEvent(event)
-                false
-            } else true
-        }
-
-        addView(scroll, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+        addView(scroll, LayoutParams(MATCH_PARENT, MATCH_PARENT))
         addView(spinner, LayoutParams(48.dp.toInt(), 48.dp.toInt()).apply {
             topMargin = 72.dp.toInt()
             gravity = Gravity.CENTER_HORIZONTAL

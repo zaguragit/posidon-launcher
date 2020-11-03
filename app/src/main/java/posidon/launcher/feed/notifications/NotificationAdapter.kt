@@ -16,10 +16,10 @@ import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Home
-import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
+import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.view.SwipeableLayout
 
@@ -213,7 +213,7 @@ class NotificationAdapter(
                 view.findViewById<TextView>(R.id.txt).setTextColor(Settings["notificationtxtcolor", -0xdad9d9])
 
                 view.setOnClickListener { notification.open() }
-                view.setOnLongClickListener(LauncherMenu)
+                view.setOnLongClickListener(Gestures::onLongPress)
                 holder.linearLayout.addView(retView)
             }
         }
