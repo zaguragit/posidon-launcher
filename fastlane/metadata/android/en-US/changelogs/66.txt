@@ -1,0 +1,9 @@
+- Multiple widget support
+- Added news source suggestions
+- Made it possible to rearrange the elements of the feed
+- Added Italian translation
+- Changed news card customization a lot
+- OPML file support
+- Added more settings for search results
+- Added a search bar to the "Hide apps" section
+- Bug fixes
