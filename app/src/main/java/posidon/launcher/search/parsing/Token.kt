@@ -29,6 +29,26 @@ class Token(
         Bad
     }
 
+    fun toString(tokenBefore: Token?) = when (type) {
+        Type.OpenParenthesis -> "("
+        Type.ClosedParenthesis -> ")"
+        Type.Number -> data.toString()
+        Type.Operator -> when (data) {
+            PLUS -> if (tokenBefore?.type == Type.Number) " + " else " +"
+            MINUS -> if (tokenBefore?.type == Type.Number) " - " else " -"
+            TIMES -> " * "
+            DIV -> " / "
+            AND -> " & "
+            OR -> " | "
+            XOR -> " xor "
+            REM -> " % "
+            POW -> " ^ "
+            FACTORIAL -> "! "
+            else -> ""
+        }
+        else -> ""
+    }
+
     companion object {
         const val PLUS        = 0.0
         const val MINUS       = 1.0

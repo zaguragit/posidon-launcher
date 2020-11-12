@@ -285,11 +285,11 @@ class SearchActivity : AppCompatActivity() {
         }
         var isShowingSmartCard = false
         try {
-            val result = Parser(string).parseOperation()
+            val (result, operation) = Parser(string).parseOperation()
             smartBox.visibility = View.VISIBLE
             isShowingSmartCard = true
             findViewById<TextView>(R.id.type).setText(R.string.math_operation)
-            findViewById<TextView>(R.id.result).text = "$string = $result"
+            findViewById<TextView>(R.id.result).text = "$operation = $result"
             findViewById<View>(R.id.fail).visibility = View.GONE
         } catch (e: Exception) {
             e.printStackTrace()
