@@ -65,6 +65,28 @@ class Home : AppCompatActivity() {
 
     lateinit var feed: Feed
 
+    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            dock.battery.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+        }
+    }
+
+    private val onAppLoaderEnd = {
+        val s = drawer.drawerGrid.scrollY
+        if (Settings["drawer:sections_enabled", false]) {
+            drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
+            drawer.drawerGrid.onItemClickListener = null
+            drawer.drawerGrid.onItemLongClickListener = null
+        } else {
+            drawer.drawerGrid.adapter = DrawerAdapter()
+            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
+            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
+        }
+        drawer.drawerGrid.scrollY = s
+        drawerScrollBar.updateAdapter()
+        setDock()
+    }
+
     init {
         instance = this
 
@@ -157,15 +179,16 @@ class Home : AppCompatActivity() {
         Global.launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         Global.powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         Global.musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
         updateNavbarHeight(this@Home)
 
         if (Settings["search:asHome", false]) {
             startActivity(Intent(this, SearchActivity::class.java))
-            AppLoader(this.applicationContext, onAppLoaderEnd).execute()
             finish()
             return
         }
+
+        Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
+
         setContentView(R.layout.main)
 
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -325,28 +348,6 @@ class Home : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            dock.battery.progress = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-        }
-    }
-
-    private val onAppLoaderEnd = {
-        val s = drawer.drawerGrid.scrollY
-        if (Settings["drawer:sections_enabled", false]) {
-            drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
-            drawer.drawerGrid.onItemClickListener = null
-            drawer.drawerGrid.onItemLongClickListener = null
-        } else {
-            drawer.drawerGrid.adapter = DrawerAdapter()
-            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
-            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
-        }
-        drawer.drawerGrid.scrollY = s
-        drawerScrollBar.updateAdapter()
-        setDock()
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
@@ -369,37 +370,44 @@ class Home : AppCompatActivity() {
     }
 
     private fun onUpdate() {
-        val tmp = Tools.navbarHeight
-        updateNavbarHeight(this)
-        if (Tools.canBlurDrawer) {
-            val shouldHide = drawer.state == BottomDrawerBehavior.STATE_COLLAPSED || drawer.state == BottomDrawerBehavior.STATE_HIDDEN
-            thread (isDaemon = true) {
-                val blurLayers = Settings["blurLayers", 1]
-                val radius = Settings["drawer:blur:rad", 15f]
-                for (i in 0 until blurLayers) {
-                    val bmp = Tools.blurredWall(radius / blurLayers * (i + 1))
-                    val bd = FastBitmapDrawable(bmp)
-                    if (shouldHide) bd.alpha = 0
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)
-                    else {
-                        blurBg.setId(i, i)
-                        blurBg.setDrawableByLayerId(i, bd)
+        if (!Settings["search:asHome", false]) {
+            val tmp = Tools.navbarHeight
+            updateNavbarHeight(this)
+            if (Tools.canBlurDrawer) {
+                val shouldHide = drawer.state == BottomDrawerBehavior.STATE_COLLAPSED || drawer.state == BottomDrawerBehavior.STATE_HIDDEN
+                thread(isDaemon = true) {
+                    val blurLayers = Settings["blurLayers", 1]
+                    val radius = Settings["drawer:blur:rad", 15f]
+                    for (i in 0 until blurLayers) {
+                        val bmp = Tools.blurredWall(radius / blurLayers * (i + 1))
+                        val bd = FastBitmapDrawable(bmp)
+                        if (shouldHide) bd.alpha = 0
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)
+                        else {
+                            blurBg.setId(i, i)
+                            blurBg.setDrawableByLayerId(i, bd)
+                        }
                     }
                 }
             }
+            if (Global.customized || tmp != Tools.navbarHeight) {
+                setCustomizations()
+            } else if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
+                for (app in Global.apps) {
+                    tryAnimate(app.icon!!)
+                }
+            }
+            if (Settings["news:load_on_resume", true]) {
+                feed.loadNews(this)
+            }
+            if (feed.notifications != null || Settings["notif:badges", true]) {
+                NotificationService.onUpdate()
+            }
         }
-        if (Global.customized || tmp != Tools.navbarHeight) {
-            setCustomizations()
-        } else if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
+        if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in Global.apps) {
                 tryAnimate(app.icon!!)
             }
-        }
-        if (Settings["news:load_on_resume", true]) {
-            feed.loadNews(this)
-        }
-        if (feed.notifications != null || Settings["notif:badges", true]) {
-            NotificationService.onUpdate()
         }
     }
 
@@ -442,30 +450,31 @@ class Home : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            if (feed.notifications != null || Settings["notif:badges", true]) {
-                try { startService(Intent(this, NotificationService::class.java)) }
-                catch (e: Exception) {}
-            }
-            if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility =
-                    SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    SYSTEM_UI_FLAG_LOW_PROFILE
-            if (Global.shouldSetApps) {
-                AppLoader(this@Home, onAppLoaderEnd).execute()
-            }
-
-            if (Settings["kustom:variables:enable", false]) {
-                if (drawer.state == STATE_EXPANDED) {
-                    Kustom["screen"] = "drawer"
-                } else {
-                    Kustom["screen"] = "home"
+        if (!Settings["search:asHome", false]) {
+            if (hasFocus) {
+                if (feed.notifications != null || Settings["notif:badges", true]) {
+                    try { startService(Intent(this, NotificationService::class.java)) }
+                    catch (e: Exception) {}
                 }
+                if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility =
+                        SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        SYSTEM_UI_FLAG_LOW_PROFILE
+                if (Global.shouldSetApps) {
+                    AppLoader(this@Home, onAppLoaderEnd).execute()
+                }
+                if (Settings["kustom:variables:enable", false]) {
+                    if (drawer.state == STATE_EXPANDED) {
+                        Kustom["screen"] = "drawer"
+                    } else {
+                        Kustom["screen"] = "home"
+                    }
+                }
+            } else {
+                window.decorView.systemUiVisibility =
+                    SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             }
-        } else {
-            window.decorView.systemUiVisibility =
-                SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
     }
 
