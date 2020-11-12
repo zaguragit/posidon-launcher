@@ -31,22 +31,17 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.*
+import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.ItemLongPress
+import posidon.launcher.search.parsing.Parser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.searchOptimize
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.abs
-import kotlin.math.pow
-
-private typealias D = Double
-private interface Op : (D, D) -> D { val string: String }
 
 class SearchActivity : AppCompatActivity() {
 
-    private val operators: MutableMap<String, Op> = HashMap()
     private lateinit var smartBox: View
     private lateinit var answerBox: View
     private lateinit var grid: GridView
@@ -54,6 +49,11 @@ class SearchActivity : AppCompatActivity() {
     private var canReadContacts = false
 
     private var topPaddingWhenSmartBoxIsShown = 0
+
+    private var stillWantIP = false
+    private var currentString = ""
+
+    private val onAppLoaderEnd = { search(currentString) }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,80 +114,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        val add = object : Op {
-            override val string = "+"
-            override fun invoke(x: D, y: D) = x + y
-        }
-
-        val sub = object : Op {
-            override val string = "-"
-            override fun invoke(x: D, y: D) = x - y
-        }
-
-        val mul = object : Op {
-            override val string = "*"
-            override fun invoke(x: D, y: D) = x * y
-        }
-
-        val div = object : Op {
-            override val string = "/"
-            override fun invoke(x: D, y: D) = x / y
-        }
-
-
-        val rem = object : Op {
-            override val string = "%"
-            override fun invoke(x: D, y: D) = x % y
-        }
-
-        val pow = object : Op {
-            override val string = "^"
-            override fun invoke(x: D, y: D) = x.pow(y)
-        }
-
-
-        val and = object : Op {
-            override val string = "&"
-            override fun invoke(x: D, y: D) = (x.toInt() and y.toInt()).toDouble()
-        }
-
-        val or  = object : Op {
-            override val string = "|"
-            override fun invoke(x: D, y: D) = (x.toInt() or  y.toInt()).toDouble()
-        }
-
-        val xor = object : Op {
-            override val string = "xor"
-            override fun invoke(x: D, y: D) = (x.toInt() xor y.toInt()).toDouble()
-        }
-
-        operators["+"] = add
-        operators["plus"] = add
-        operators["add"] = add
-        operators["-"] = sub
-        operators["minus"] = sub
-        operators["subtract"] = sub
-        operators["*"] = mul
-        operators["x"] = mul
-        operators["times"] = mul
-        operators["multiply"] = mul
-        operators["/"] = div
-        operators[":"] = div
-        operators["over"] = div
-        operators["divide"] = div
-        operators["&"] = and
-        operators["and"] = and
-        operators["|"] = or
-        operators["or"] = or
-        operators["xor"] = xor
-        operators["%"] = rem
-        operators["rem"] = rem
-        operators["remainder"] = rem
-        operators["mod"] = rem
-        operators["pow"] = pow
-        operators["^"] = pow
-        operators["power"] = pow
-
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->
             when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
@@ -217,10 +143,12 @@ class SearchActivity : AppCompatActivity() {
 
         canReadContacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
         search("")
-    }
 
-    private var stillWantIP = false
-    private var currentString = ""
+        if (Settings["search:asHome", false]) {
+            Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
+            AppLoader(applicationContext, onAppLoaderEnd).execute()
+        }
+    }
 
     private fun search(string: String) {
         currentString = string
@@ -357,33 +285,14 @@ class SearchActivity : AppCompatActivity() {
         }
         var isShowingSmartCard = false
         try {
-            var tmp = string.trim { it <= ' ' }
-                .replace(Regex("[= ]"), "")
-                .replace(Regex("(\\+-|-\\+)"), "-")
-                .replace(Regex("(\\+\\+|--)"), "+")
-            for (op in operators.keys) {
-                tmp = tmp.replace(op, " $op ")
-            }
-            if (tmp[1] == '-') {
-                tmp = "-" + tmp.substring(3)
-            }
-            val math = tmp.toLowerCase().split(" ").toTypedArray()
-            var bufferNum = java.lang.Double.valueOf(math[0])
-            for (i in math.indices) {
-                try {
-                    math[i].toDouble()
-                } catch (e: Exception) {
-                    val op = operators[math[i]]!!
-                    bufferNum = op(bufferNum, java.lang.Double.valueOf(math[i + 1]))
-                    math[i] = op.string
-                    smartBox.visibility = View.VISIBLE
-                    isShowingSmartCard = true
-                    findViewById<TextView>(R.id.type).setText(R.string.math_operation)
-                    findViewById<TextView>(R.id.result).text = "${math.joinToString(" ")} = $bufferNum"
-                    findViewById<View>(R.id.fail).visibility = View.GONE
-                }
-            }
+            val result = Parser(string).parseOperation()
+            smartBox.visibility = View.VISIBLE
+            isShowingSmartCard = true
+            findViewById<TextView>(R.id.type).setText(R.string.math_operation)
+            findViewById<TextView>(R.id.result).text = "$string = $result"
+            findViewById<View>(R.id.fail).visibility = View.GONE
         } catch (e: Exception) {
+            e.printStackTrace()
             if (results.isEmpty()) {
                 findViewById<View>(R.id.fail).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
