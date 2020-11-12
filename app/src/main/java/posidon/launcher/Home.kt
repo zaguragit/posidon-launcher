@@ -43,7 +43,6 @@ import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.BottomSheetCallback
 import posidon.launcher.view.drawer.BottomDrawerBehavior.STATE_EXPANDED
-import posidon.launcher.view.drawer.DockView
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference
@@ -56,14 +55,20 @@ import kotlin.system.exitProcess
 
 class Home : AppCompatActivity() {
 
-    lateinit var drawer: DrawerView
-    private lateinit var drawerScrollBar: AlphabetScrollbar
+    val drawer by lazy { findViewById<DrawerView>(R.id.drawer) }
 
-    private lateinit var dock: DockView
+    val feed by lazy { findViewById<Feed>(R.id.feed) }
 
-    private lateinit var blurBg: LayerDrawable
+    private val drawerScrollBar by lazy { AlphabetScrollbar(drawer.drawerGrid) }
 
-    lateinit var feed: Feed
+    private val dock by lazy { drawer.dock }
+
+    private val blurBg = LayerDrawable(arrayOf<Drawable>(
+            ColorDrawable(0x0),
+            ColorDrawable(0x0),
+            ColorDrawable(0x0),
+            ColorDrawable(0x0)
+    ))
 
     private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -87,73 +92,71 @@ class Home : AppCompatActivity() {
         setDock()
     }
 
-    init {
-        instance = this
+    init { instance = this }
 
-        setCustomizations = {
+    private fun setCustomizations() {
 
-            feed.update(this, drawer)
+        feed.update(this, drawer)
 
-            dock.updateBG(drawer)
+        dock.updateBG(drawer)
 
-            setDockSearchBarVisible(Settings["docksearchbarenabled", false])
-            setDockSearchbarBelowApps(Settings["dock:search:below_apps", true])
-            setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
-            setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
-            setDockSearchbarRadius(Settings["dock:search:radius", 30])
-            setDockHorizontalMargin(Settings["dock:margin_x", 16])
+        setDockSearchBarVisible(Settings["docksearchbarenabled", false])
+        setDockSearchbarBelowApps(Settings["dock:search:below_apps", true])
+        setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
+        setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
+        setDockSearchbarRadius(Settings["dock:search:radius", 30])
+        setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
-            if (Global.shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
-                if (Settings["drawer:sections_enabled", false]) {
-                    drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
-                    drawer.drawerGrid.onItemClickListener = null
-                    drawer.drawerGrid.onItemLongClickListener = null
-                } else {
-                    drawer.drawerGrid.adapter = DrawerAdapter()
-                    drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
-                    drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
-                }
-                setDock()
-            }
-
+        if (Global.shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
             if (Settings["drawer:sections_enabled", false]) {
-                drawer.drawerGrid.numColumns = 1
-                drawer.drawerGrid.verticalSpacing = 0
+                drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
+                drawer.drawerGrid.onItemClickListener = null
+                drawer.drawerGrid.onItemLongClickListener = null
             } else {
-                drawer.drawerGrid.numColumns = Settings["drawer:columns", 4]
-                drawer.drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+                drawer.drawerGrid.adapter = DrawerAdapter()
+                drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
+                drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
             }
-
-            drawer.setLocked(!Settings["drawer:slide_up", true])
-
-            applyFontSetting()
-
-            if (Settings["hidestatus", false]) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            }
-
-            setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
-            setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
-            setDrawerSearchbarFGColor(Settings["searchtxtcolor", -0x1])
-            setDrawerSearchbarRadius(Settings["searchradius", 0])
-
-            setSearchHintText(Settings["searchhinttxt", "Search.."])
-
-            setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (Settings["gesture:back", ""] == "") {
-                    window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-                } else {
-                    window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
-                }
-            }
-
-            Global.shouldSetApps = false
-            Global.customized = false
+            setDock()
         }
+
+        if (Settings["drawer:sections_enabled", false]) {
+            drawer.drawerGrid.numColumns = 1
+            drawer.drawerGrid.verticalSpacing = 0
+        } else {
+            drawer.drawerGrid.numColumns = Settings["drawer:columns", 4]
+            drawer.drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+        }
+
+        drawer.setLocked(!Settings["drawer:slide_up", true])
+
+        applyFontSetting()
+
+        if (Settings["hidestatus", false]) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
+        setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
+        setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
+        setDrawerSearchbarFGColor(Settings["searchtxtcolor", -0x1])
+        setDrawerSearchbarRadius(Settings["searchradius", 0])
+
+        setSearchHintText(Settings["searchhinttxt", "Search.."])
+
+        setDrawerScrollbarEnabled(Settings["drawer:scrollbar_enabled", false])
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Settings["gesture:back", ""] == "") {
+                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+            } else {
+                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
+            }
+        }
+
+        Global.shouldSetApps = false
+        Global.customized = false
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -193,7 +196,7 @@ class Home : AppCompatActivity() {
 
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
-        feed = findViewById<Feed>(R.id.feed).apply {
+        feed.apply {
             onTopOverScroll = {
                 if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                     Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
@@ -206,7 +209,7 @@ class Home : AppCompatActivity() {
             }
         }
 
-        drawer = findViewById<DrawerView>(R.id.drawer).apply {
+        drawer.run {
             init()
             addCallback(object : BottomSheetCallback() {
 
@@ -294,15 +297,12 @@ class Home : AppCompatActivity() {
             })
         }
 
-        drawerScrollBar = AlphabetScrollbar(drawer.drawerGrid)
         drawer.drawerContent.addView(drawerScrollBar)
         (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
             width = 24.dp.toInt()
             gravity = Gravity.END
         }
         drawerScrollBar.bringToFront()
-
-        dock = drawer.dock
 
         setCustomizations()
         feed.loadNews(this)
@@ -329,12 +329,6 @@ class Home : AppCompatActivity() {
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        blurBg = LayerDrawable(arrayOf<Drawable>(
-                ColorDrawable(0x0),
-                ColorDrawable(0x0),
-                ColorDrawable(0x0),
-                ColorDrawable(0x0)
-        ))
         findViewById<ImageView>(R.id.blur).setImageDrawable(blurBg)
 
         System.gc()
@@ -489,8 +483,6 @@ class Home : AppCompatActivity() {
     companion object {
 
         lateinit var instance: Home private set
-
-        lateinit var setCustomizations: () -> Unit private set
 
         fun setDock() = instance.dock.loadApps(instance.drawer, instance.feed, instance.feed.desktopContent, instance)
 
