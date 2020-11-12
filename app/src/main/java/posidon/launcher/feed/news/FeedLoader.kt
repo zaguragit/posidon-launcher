@@ -40,7 +40,7 @@ object FeedLoader {
         val deletedIter = deleted.iterator()
         for (article in deletedIter) {
             val day = article.substringBefore(':').toDouble()
-            if (abs(day - today) >= maxAge) {
+            if (abs(day - today) >= if (maxAge == 0) 64 else maxAge) {
                 deletedIter.remove()
             }
         }
@@ -136,7 +136,7 @@ object FeedLoader {
                         name.equals("entry", ignoreCase = true) -> {
                             isItem = 0
                             if (title != null && link != null) {
-                                val isNewEnough = if (time == null) true else {
+                                val isNewEnough = if (time == null || maxAge == 0) true else {
                                     val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
                                     val day = Calendar.getInstance().apply { this.time = time }[Calendar.DAY_OF_YEAR]
                                     abs(day - today) < maxAge
