@@ -4,12 +4,22 @@ class Parser(val text: String) {
 
     class SyntaxError(parser: Parser, message: String) : kotlin.Exception("$message (tokens: ${parser.tokens.joinToString(", ") { it.type.toString() }})")
 
-    fun parseOperation(): Double {
+    fun parseOperation(): Pair<Double, String> {
         if (tokens.find { it.type == Token.Type.Operator } == null) throw SyntaxError(this, "doesn't contain operator")
-        return parseExpression()
+        return parseExpression() to format(tokens)
     }
 
     fun parseExpression() = parseBinaryExpression()
+
+    fun format(tokens: Array<Token>): String {
+        val builder = StringBuilder()
+        var i = 0
+        while (i < tokens.size) {
+            builder.append(tokens[i].toString(if (i == 0) null else tokens[i - 1]))
+            i++
+        }
+        return builder.toString()
+    }
 
     private fun factorial(num: Double): Double = if (num >= 1) num * factorial(num - 1) else 1.0
 

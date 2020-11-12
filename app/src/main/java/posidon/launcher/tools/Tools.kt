@@ -350,7 +350,9 @@ object Tools {
             catch (e: Exception) { e.printStackTrace() }
             return bitmap
         } catch (e: OutOfMemoryError) {
-            Toast.makeText(appContext, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
+            Home.instance.runOnUiThread {
+                Toast.makeText(appContext, "OutOfMemoryError: Couldn't blur wallpaper!", Toast.LENGTH_SHORT).show()
+            }
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }
