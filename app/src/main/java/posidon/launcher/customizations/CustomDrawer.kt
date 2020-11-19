@@ -6,7 +6,6 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
-import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -27,11 +26,7 @@ class CustomDrawer : AppCompatActivity() {
         icsize = findViewById(R.id.iconsizeslider)
         icsize!!.progress = Settings["icsize", 1]
 
-        findViewById<SwitchSettingView>(R.id.scrollbarEnabledSetting).run {
-            onCheckedChange = {
-                Home.setDrawerScrollbarEnabled(it)
-            }
-        }
+        findViewById<SwitchSettingView>(R.id.scrollbarEnabledSetting)
     }
 
     override fun onPause() {

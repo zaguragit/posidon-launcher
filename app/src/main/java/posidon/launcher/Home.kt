@@ -1,7 +1,6 @@
 package posidon.launcher
 
 import android.annotation.SuppressLint
-import android.app.ActivityOptions
 import android.app.WallpaperManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,7 +13,6 @@ import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
-import android.media.AudioManager
 import android.os.*
 import android.util.Log
 import android.view.*
@@ -30,7 +28,6 @@ import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.SectionedDrawerAdapter
-import posidon.launcher.search.ConsoleActivity
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -92,9 +89,116 @@ class Home : AppCompatActivity() {
         setDock()
     }
 
+    private lateinit var powerManager: PowerManager
+
     init { instance = this }
+    companion object { lateinit var instance: Home private set }
 
     private fun setCustomizations() {
+
+        fun setSearchHintText(text: String) {
+            drawer.searchTxt.text = text
+            dock.searchTxt.text = text
+        }
+
+        fun setDrawerSearchbarBGColor(color: Int) {
+            val bg = ShapeDrawable()
+            val tr = Settings["searchradius", 0].dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            bg.paint.color = color
+            drawer.searchBar.background = bg
+        }
+
+        fun setDrawerSearchbarRadius(radius: Int) {
+            val bg = ShapeDrawable()
+            val tr = radius.dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            bg.paint.color = Settings["searchcolor", 0x33000000]
+            drawer.searchBar.background = bg
+        }
+
+        fun setDrawerSearchbarFGColor(color: Int) {
+            drawer.searchTxt.setTextColor(color)
+            val searchIcon = drawer.searchIcon
+            searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
+        }
+
+        fun setDrawerSearchBarVisible(visible: Boolean) {
+            if (visible) {
+                drawer.drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
+                drawer.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
+                drawer.searchBar.visibility = VISIBLE
+            } else {
+                drawer.searchBar.visibility = GONE
+                drawer.drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
+            }
+        }
+
+        fun setDockSearchbarBGColor(color: Int) {
+            val bg = ShapeDrawable()
+            val tr = Settings["dock:search:radius", 30].dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
+            bg.paint.color = color
+            dock.searchBar.background = bg
+        }
+
+        fun setDockSearchbarRadius(radius: Int) {
+            val bg = ShapeDrawable()
+            val tr = radius.dp
+            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
+            bg.paint.color = Settings["docksearchcolor", -0x22000001]
+            dock.searchBar.background = bg
+        }
+
+        fun setDockSearchbarFGColor(color: Int) {
+            dock.searchTxt.setTextColor(color)
+            val dickSearchIcon = dock.searchIcon
+            dickSearchIcon.imageTintList = ColorStateList.valueOf(color)
+            val battery = dock.battery
+            battery.progressTintList = ColorStateList.valueOf(color)
+            battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+            battery.progressBackgroundTintList = ColorStateList.valueOf(color)
+            battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
+            (dock.battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
+        }
+
+        fun setDockSearchBarVisible(visible: Boolean) {
+            if (visible) {
+                dock.searchBar.visibility = VISIBLE
+                dock.battery.visibility = VISIBLE
+            } else {
+                dock.searchBar.visibility = GONE
+                dock.battery.visibility = GONE
+            }
+        }
+
+        fun setDockSearchbarBelowApps(isBelow: Boolean) {
+            if (isBelow) {
+                dock.searchBar.bringToFront()
+            } else {
+                dock.containerContainer.bringToFront()
+            }
+        }
+
+        fun setDrawerScrollbarEnabled(enabled: Boolean) {
+            if (enabled) {
+                drawerScrollBar.visibility = VISIBLE
+                (drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
+                        if (Settings["drawer:sections_enabled", false]) 0
+                        else 24.dp.toInt()
+                drawer.drawerGrid.layoutParams = drawer.drawerGrid.layoutParams
+                drawerScrollBar.update()
+            } else  {
+                drawerScrollBar.visibility = GONE
+                (drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
+                drawer.drawerGrid.layoutParams = drawer.drawerGrid.layoutParams
+            }
+        }
+
+        fun setDockHorizontalMargin(margin: Int) {
+            val m = margin.dp.toInt()
+            dock.setPadding(m, 0, m, 0)
+        }
 
         feed.update(this, drawer)
 
@@ -179,9 +283,6 @@ class Home : AppCompatActivity() {
         Global.accentColor = Settings["accent", 0x1155ff] or -0x1000000
         Kustom["accent"] = Global.accentColor.toUInt().toString(16)
 
-        Global.launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
-        Global.powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        Global.musicService = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         updateNavbarHeight(this@Home)
 
         if (Settings["search:asHome", false]) {
@@ -190,7 +291,8 @@ class Home : AppCompatActivity() {
             return
         }
 
-        Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
+        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
 
         setContentView(R.layout.main)
 
@@ -386,7 +488,7 @@ class Home : AppCompatActivity() {
             }
             if (Global.customized || tmp != Tools.navbarHeight) {
                 setCustomizations()
-            } else if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
+            } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
                 for (app in Global.apps) {
                     tryAnimate(app.icon!!)
                 }
@@ -398,7 +500,7 @@ class Home : AppCompatActivity() {
                 NotificationService.onUpdate()
             }
         }
-        if (!Global.powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
+        if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in Global.apps) {
                 tryAnimate(app.icon!!)
             }
@@ -478,132 +580,7 @@ class Home : AppCompatActivity() {
         else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
 
-    fun openSearch(v: View) = openSearch(this)
+    fun openSearch(v: View) = SearchActivity.open(this)
 
-    companion object {
-
-        lateinit var instance: Home private set
-
-        fun setDock() = instance.dock.loadApps(instance.drawer, instance.feed, instance.feed.desktopContent, instance)
-
-        fun openSearch(context: Context) = context.startActivity(
-            Intent(context, if (Settings["dev:console", false]) ConsoleActivity::class.java else SearchActivity::class.java),
-            ActivityOptions.makeCustomAnimation(context, R.anim.fadein, R.anim.fadeout).toBundle())
-
-        fun setSearchHintText(text: String) {
-            Settings["searchhinttxt"] = text
-            instance.drawer.searchTxt.text = text
-            instance.dock.searchTxt.text = text
-        }
-
-        fun setDrawerSearchbarBGColor(color: Int) {
-            Settings["searchcolor"] = color
-            val bg = ShapeDrawable()
-            val tr = Settings["searchradius", 0].dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-            bg.paint.color = color
-            instance.drawer.searchBar.background = bg
-        }
-
-        fun setDrawerSearchbarRadius(radius: Int) {
-            Settings["searchradius"] = radius
-            val bg = ShapeDrawable()
-            val tr = radius.dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-            bg.paint.color = Settings["searchcolor", 0x33000000]
-            instance.drawer.searchBar.background = bg
-        }
-
-        fun setDrawerSearchbarFGColor(color: Int) {
-            Settings["searchtxtcolor"] = color
-            instance.drawer.searchTxt.setTextColor(color)
-            val searchIcon = instance.drawer.searchIcon
-            searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-        }
-
-        fun setDrawerSearchBarVisible(visible: Boolean) {
-            Settings["drawersearchbarenabled"] = visible
-            if (visible) {
-                instance.drawer.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
-                instance.drawer.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
-                instance.drawer.searchBar.visibility = VISIBLE
-            } else {
-                instance.drawer.searchBar.visibility = GONE
-                instance.drawer.drawerGrid.setPadding(0, instance.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
-            }
-        }
-
-        fun setDockSearchbarBGColor(color: Int) {
-            Settings["docksearchcolor"] = color
-            val bg = ShapeDrawable()
-            val tr = Settings["dock:search:radius", 30].dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-            bg.paint.color = color
-            instance.dock.searchBar.background = bg
-        }
-
-        fun setDockSearchbarRadius(radius: Int) {
-            val bg = ShapeDrawable()
-            Settings["dock:search:radius"] = radius
-            val tr = radius.dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-            bg.paint.color = Settings["docksearchcolor", -0x22000001]
-            instance.dock.searchBar.background = bg
-        }
-
-        fun setDockSearchbarFGColor(color: Int) {
-            Settings["docksearchtxtcolor"] = color
-            instance.dock.searchTxt.setTextColor(color)
-            val dickSearchIcon = instance.dock.searchIcon
-            dickSearchIcon.imageTintList = ColorStateList.valueOf(color)
-            val battery = instance.dock.battery
-            battery.progressTintList = ColorStateList.valueOf(color)
-            battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-            battery.progressBackgroundTintList = ColorStateList.valueOf(color)
-            battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            (instance.dock.battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
-        }
-
-        fun setDockSearchBarVisible(visible: Boolean) {
-            Settings["docksearchbarenabled"] = visible
-            if (visible) {
-                instance.dock.searchBar.visibility = VISIBLE
-                instance.dock.battery.visibility = VISIBLE
-            } else {
-                instance.dock.searchBar.visibility = GONE
-                instance.dock.battery.visibility = GONE
-            }
-        }
-
-        fun setDockSearchbarBelowApps(isBelow: Boolean) {
-            Settings["dock:search:below_apps"] = isBelow
-            if (isBelow) {
-                instance.dock.searchBar.bringToFront()
-            } else {
-                instance.dock.containerContainer.bringToFront()
-            }
-        }
-
-        fun setDrawerScrollbarEnabled(enabled: Boolean) {
-            //Settings["drawer:scrollbar_enabled"] = enabled
-            if (enabled) {
-                instance.drawerScrollBar.visibility = VISIBLE
-                (instance.drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd =
-                    if (Settings["drawer:sections_enabled", false]) 0
-                    else 24.dp.toInt()
-                instance.drawer.drawerGrid.layoutParams = instance.drawer.drawerGrid.layoutParams
-                instance.drawerScrollBar.update()
-            } else  {
-                instance.drawerScrollBar.visibility = GONE
-                (instance.drawer.drawerGrid.layoutParams as FrameLayout.LayoutParams).marginEnd = 0
-                instance.drawer.drawerGrid.layoutParams = instance.drawer.drawerGrid.layoutParams
-            }
-        }
-
-        fun setDockHorizontalMargin(margin: Int) {
-            val m = margin.dp.toInt()
-            Settings["dock:margin_x"] = margin
-            instance.dock.setPadding(m, 0, m, 0)
-        }
-    }
+    fun setDock() = dock.loadApps(drawer, feed, feed.desktopContent, this)
 }

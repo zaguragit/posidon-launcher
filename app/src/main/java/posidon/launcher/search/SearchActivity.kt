@@ -2,7 +2,9 @@ package posidon.launcher.search
 
 import android.Manifest
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -145,7 +147,7 @@ class SearchActivity : AppCompatActivity() {
         search("")
 
         if (Settings["search:asHome", false]) {
-            Global.launcherApps.registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
+            (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
             AppLoader(applicationContext, onAppLoaderEnd).execute()
         }
     }
@@ -367,5 +369,11 @@ class SearchActivity : AppCompatActivity() {
                 Kustom["screen"] = "search"
             }
         }
+    }
+
+    companion object {
+        fun open(context: Context) = context.startActivity(
+            Intent(context, if (Settings["dev:console", false]) ConsoleActivity::class.java else SearchActivity::class.java),
+            ActivityOptions.makeCustomAnimation(context, R.anim.fadein, R.anim.fadeout).toBundle())
     }
 }

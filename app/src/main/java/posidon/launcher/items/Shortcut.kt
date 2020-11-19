@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Process
 import android.view.View
 import androidx.annotation.RequiresApi
-import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -20,11 +19,11 @@ class Shortcut : LauncherItem {
     val packageName: String
     val id: String
 
-    constructor(shortcut: ShortcutInfo) {
+    constructor(shortcut: ShortcutInfo, context: Context) {
         label = shortcut.shortLabel.toString()
         packageName = shortcut.`package`
         id = shortcut.id
-        icon = Global.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
+        icon = (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getShortcutBadgedIconDrawable(shortcut, 1)
         println("UAN__ $label $this")
         pinnedShortcuts.putIfAbsent(this.toString(), this)
     }
@@ -32,7 +31,8 @@ class Shortcut : LauncherItem {
     constructor(string: String) {
         packageName = string.substring(9).substringBefore('/')
         id = string.substring(10 + packageName.length)
-        val shortcuts = Global.launcherApps.getShortcuts(LauncherApps.ShortcutQuery().apply {
+        val launcherApps = Tools.appContext!!.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        val shortcuts = launcherApps.getShortcuts(LauncherApps.ShortcutQuery().apply {
             setPackage(packageName)
             //setShortcutIds(listOf(id))
             setQueryFlags(
@@ -43,7 +43,7 @@ class Shortcut : LauncherItem {
         }, Process.myUserHandle())
         val shortcut = shortcuts?.getOrNull(0)
         if (shortcut != null) {
-            icon = Global.launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
+            icon = launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
             label = shortcut.shortLabel?.toString()
         }
         for (s in shortcuts!!) {
@@ -57,7 +57,7 @@ class Shortcut : LauncherItem {
 
     fun open(context: Context, view: View) {
         try {
-            Global.launcherApps.startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
+            (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 "clip_reveal" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)

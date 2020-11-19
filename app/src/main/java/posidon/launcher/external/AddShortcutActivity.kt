@@ -1,5 +1,7 @@
 package posidon.launcher.external
 
+import android.content.Context
+import android.content.pm.LauncherApps
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
@@ -10,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -28,12 +29,13 @@ class AddShortcutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.add_shortcut_activity)
-        val shortcut = Global.launcherApps.getPinItemRequest(intent).shortcutInfo
-        val hasHostPermission = Global.launcherApps.hasShortcutHostPermission()
+        val launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        val shortcut = launcherApps.getPinItemRequest(intent).shortcutInfo
+        val hasHostPermission = launcherApps.hasShortcutHostPermission()
         if (shortcut == null || !hasHostPermission) return
-        val s = Shortcut(shortcut)
+        val s = Shortcut(shortcut, this)
 
-        Global.launcherApps.pinShortcuts(
+        launcherApps.pinShortcuts(
             shortcut.`package`,
             Shortcut.pinnedShortcuts.filter {
                 it.key == s.toString()
@@ -110,7 +112,7 @@ class AddShortcutActivity : AppCompatActivity() {
             val finalI = i
             view.setOnClickListener {
                 Dock.add(s, finalI)
-                Home.setDock()
+                Home.instance.setDock()
                 finishAffinity()
             }
             container.addView(view)

@@ -13,8 +13,8 @@ import android.widget.GridView.STRETCH_COLUMN_WIDTH
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.search.SearchActivity
 import posidon.launcher.tools.dp
 import posidon.launcher.view.GridView
 
@@ -64,7 +64,7 @@ class DrawerView : LinearLayout {
         orientation = HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         setOnClickListener {
-            Home.openSearch(context)
+            SearchActivity.open(context)
         }
         addView(searchIcon, LayoutParams(56.dp.toInt(), 56.dp.toInt()).apply {
             marginStart = 8.dp.toInt()
