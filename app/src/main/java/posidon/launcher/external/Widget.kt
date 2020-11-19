@@ -68,7 +68,11 @@ class Widget(
             } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
                 val appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
                 if (appWidgetId != -1) {
-                    tmpHost?.deleteAppWidgetId(appWidgetId)
+                    tmpHost?.let {
+                        it.deleteAppWidgetId(appWidgetId)
+                        it.deleteHost()
+                        tmpHost = null
+                    }
                 }
             }
             return null
@@ -76,9 +80,9 @@ class Widget(
 
         private var tmpHost: AppWidgetHost? = null
         fun selectWidget(activity: Activity) {
-            //val hostId = Tools.generateWidgetHostUid()
-            tmpHost = AppWidgetHost(Tools.appContext, HOST_ID)
-            val appWidgetId = tmpHost!!.allocateAppWidgetId()
+            val t = AppWidgetHost(Tools.appContext, HOST_ID)
+            val appWidgetId = t.allocateAppWidgetId()
+            tmpHost = t
             val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
             pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             val customInfo: ArrayList<out Parcelable?> = ArrayList()

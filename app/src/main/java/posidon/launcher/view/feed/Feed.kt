@@ -112,7 +112,7 @@ class Feed : FrameLayout {
         return section
     }
 
-    private fun updateTheme(activity: Activity, drawer: DrawerView) {
+    private fun updateTheme(activity: Home, drawer: DrawerView) {
         spinner.indeterminateDrawable.setTint(Global.accentColor)
 
         if (Settings["hidefeed", false]) {
@@ -166,7 +166,7 @@ class Feed : FrameLayout {
                     }
                     if (Settings["notif:badges", true]) activity.runOnUiThread {
                         drawer.drawerGrid.invalidateViews()
-                        Home.setDock()
+                        drawer.dock.loadApps(drawer, this, desktopContent, activity)
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
@@ -212,7 +212,7 @@ class Feed : FrameLayout {
         }
     }
 
-    fun update(activity: Activity, drawer: DrawerView) {
+    fun update(activity: Home, drawer: DrawerView) {
         val map = HashMap<String, FeedSection>()
         for (s in sections) {
             map[s.toString()] = s

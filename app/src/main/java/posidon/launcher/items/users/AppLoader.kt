@@ -86,7 +86,7 @@ class AppLoader (
 
         for (profile in userManager.userProfiles) {
 
-            val appList = Global.launcherApps.getActivityList(null, profile)
+            val appList = (context.get()!!.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getActivityList(null, profile)
 
             for (i in appList.indices) {
 

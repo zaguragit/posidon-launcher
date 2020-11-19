@@ -1,6 +1,5 @@
 package posidon.launcher.view.drawer
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
@@ -18,6 +17,7 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.*
 import posidon.launcher.items.users.ItemLongPress
+import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import kotlin.math.abs
@@ -59,7 +59,7 @@ class DockView : LinearLayout {
         gravity = Gravity.CENTER_VERTICAL
         orientation = HORIZONTAL
         setOnClickListener {
-            Home.openSearch(context)
+            SearchActivity.open(context)
         }
 
         addView(searchIcon, LayoutParams(56.dp.toInt(), 48.dp.toInt()))
@@ -91,7 +91,7 @@ class DockView : LinearLayout {
         addView(containerContainer, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
-    fun loadApps(drawer: DrawerView, desktop: View, desktopContent: View, activity: Activity) {
+    fun loadApps(drawer: DrawerView, desktop: View, desktopContent: View, activity: Home) {
         val columnCount = Settings["dock:columns", 5]
         val appSize = min(when (Settings["dockicsize", 1]) {
             0 -> 64.dp.toInt()
@@ -238,7 +238,7 @@ class DockView : LinearLayout {
                                 i++
                             }
                         }
-                        Home.setDock()
+                        loadApps(drawer, desktop, desktopContent, activity)
                     }
                 }
             }

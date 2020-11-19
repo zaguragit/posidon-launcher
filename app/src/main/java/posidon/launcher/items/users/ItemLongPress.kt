@@ -153,7 +153,7 @@ object ItemLongPress {
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     Dock[i] = null
-                    Home.setDock()
+                    Home.instance.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
@@ -190,7 +190,7 @@ object ItemLongPress {
                     folderWindow.dismiss()
                     folder.items.removeAt(folderI)
                     Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
-                    Home.setDock()
+                    Home.instance.setDock()
                 }
                 override fun onEdit(v: View) { showAppEditDialog(context, app, v) }
             }, true, app)
@@ -316,7 +316,7 @@ object ItemLongPress {
             val popupWindow = popupWindow(context, object : Methods {
                 override fun onRemove(v: View) {
                     Dock[i] = null
-                    Home.setDock()
+                    Home.instance.setDock()
                 }
                 override fun onEdit(v: View) {
                     val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
@@ -334,7 +334,7 @@ object ItemLongPress {
                         folder.label = editLabel.text.toString().replace('\t', ' ')
                         Settings["folder:${folder.uid}:label"] = folder.label
                         Dock[i] = folder
-                        Home.setDock()
+                        Home.instance.setDock()
                     }
                     editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
                 }
@@ -378,7 +378,7 @@ object ItemLongPress {
         editWindow.setOnDismissListener {
             Settings[app.packageName + "/" + app.name + "?label"] = editLabel.text.toString().replace('\t', ' ')
             Global.shouldSetApps = true
-            Home.setDock()
+            Home.instance.setDock()
         }
         editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
     }

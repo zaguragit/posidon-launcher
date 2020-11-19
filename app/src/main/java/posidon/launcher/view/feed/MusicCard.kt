@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.KeyEvent
@@ -19,7 +20,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
@@ -32,6 +32,8 @@ class MusicCard : CardView, FeedSection {
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
+
+    val musicService = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     val musicCardImage = ImageView(context).apply {
         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -54,8 +56,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_left)
         setOnClickListener {
-            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -64,13 +66,13 @@ class MusicCard : CardView, FeedSection {
         setImageResource(R.drawable.ic_play)
         setOnClickListener {
             it as ImageView
-            if (Global.musicService.isMusicActive) {
-                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
-                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
+            if (musicService.isMusicActive) {
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PAUSE))
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PAUSE))
                 it.setImageResource(R.drawable.ic_play)
             } else {
-                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
-                Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY))
+                musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY))
                 it.setImageResource(R.drawable.ic_pause)
             }
         }
@@ -83,8 +85,8 @@ class MusicCard : CardView, FeedSection {
         }
         setImageResource(R.drawable.ic_arrow_right)
         setOnClickListener {
-            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-            Global.musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+            musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
             musicPlay.setImageResource(R.drawable.ic_pause)
         }
     }
@@ -178,7 +180,7 @@ class MusicCard : CardView, FeedSection {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            if (Global.musicService.isMusicActive) {
+            if (musicService.isMusicActive) {
                 musicPlay.setImageResource(R.drawable.ic_pause)
             } else {
                 musicPlay.setImageResource(R.drawable.ic_play)

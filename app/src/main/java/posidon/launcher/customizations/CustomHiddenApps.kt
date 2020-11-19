@@ -1,8 +1,8 @@
 package posidon.launcher.customizations
 
 import android.content.Context
+import android.content.pm.LauncherApps
 import android.os.UserManager
-import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -15,7 +15,7 @@ class CustomHiddenApps : AppTickingActivity() {
 
         val userManager = Home.instance.getSystemService(Context.USER_SERVICE) as UserManager
         for (profile in userManager.userProfiles) {
-            val appList = Global.launcherApps.getActivityList(null, profile)
+            val appList = (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getActivityList(null, profile)
             for (i in appList.indices) {
                 App[appList[i].applicationInfo.packageName, appList[i].name, profile.hashCode()]?.let { apps.add(it) }
             }
