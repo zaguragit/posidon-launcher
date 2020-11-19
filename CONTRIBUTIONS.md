@@ -1,8 +1,5 @@
 # Contribution guidelines
 
-#### If you implement quickstep, you can code in whatever style or language you want, quickstep compensates for it!!
-I do accept Java contributions, since Kotlin's fully interoperable with Java, but I'll still translate them.
-
 #### Code style rules:
 - Please write the curly bracket on the same line as the function declaration.
 - Use the normal, Java/Kotlin naming convention
@@ -15,7 +12,7 @@ All dependencies have to be open-source and free
 
 ### Convenient functions
 
-There's a bunch of very convenient functions in the [tools folder](app/src/main/java/posidon/launcher/tools), use those if you can.
+There's a bunch of utility functions in the [tools folder](app/src/main/java/posidon/launcher/tools), use those if you can.
 
 ```kotlin
 // For example, instead of writing
