@@ -200,6 +200,10 @@
     <string name="show_source">Show source</string>
     <string name="max_days_age">Max age (days)</string>
     <string name="tint_background">Tint background</string>
+    <string name="text">Text</string>
+    <string name="layout">Layout</string>
+    <string name="align">Align</string>
+    <string name="show_above_text">Show above text</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
@@ -260,5 +264,11 @@
         <item>Dominant color</item>
         <item>Accent</item>
         <item>Custom</item>
+    </array>
+
+    <array name="horizontalAlignment">
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
     </array>
 </resources>

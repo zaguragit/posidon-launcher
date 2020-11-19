@@ -200,6 +200,10 @@
     <string name="show_source">Mostrar fuente</string>
     <string name="max_days_age">Max edad (días)</string>
     <string name="tint_background">Tint background</string>
+    <string name="text">Text</string>
+    <string name="layout">Layout</string>
+    <string name="align">Align</string>
+    <string name="show_above_text">Show above text</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
@@ -260,5 +264,11 @@
         <item>Color dominante</item>
         <item>Acento</item>
         <item>Escoger</item>
+    </array>
+
+    <array name="horizontalAlignment">
+        <item>Izquierda</item>
+        <item>Centro</item>
+        <item>Derecha</item>
     </array>
 </resources>
