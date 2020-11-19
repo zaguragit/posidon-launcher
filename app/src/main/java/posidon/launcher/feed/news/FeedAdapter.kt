@@ -1,5 +1,6 @@
 package posidon.launcher.feed.news
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -35,27 +36,26 @@ class FeedAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     class ViewHolder(
-            val card: View,
-            val title: TextView,
-            val source: TextView?,
-            val image: ImageView,
-            val gradient: View,
-            val swipeableLayout: SwipeableLayout?
+        val card: View,
+        val title: TextView?,
+        val source: TextView?,
+        val image: ImageView?,
+        val gradient: View?,
+        val swipeableLayout: SwipeableLayout?
     ) : RecyclerView.ViewHolder(card)
 
     private val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
 
+    @SuppressLint("RtlHardcoded")
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
 
-        val showSource = Settings["news:cards:source", true]
-
-        val image = ImageView(context).apply {
+        val image = if (Settings["news:cards:image", true]) ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
-        }
+        } else null
 
-        val gradient = View(context)
+        val gradient = if (Settings["feed:card_text_shadow", true]) View(context) else null
 
-        val title = TextView(context).apply {
+        val title = if (Settings["news:cards:title", true]) TextView(context).apply {
             this.gravity = Gravity.BOTTOM
             run {
                 val p = 16.dp.toInt()
@@ -63,9 +63,9 @@ class FeedAdapter(
             }
             textSize = 18f
             setTextColor(Settings["feed:card_txt_color", -0x1])
-        }
+        } else null
 
-        val source = if (showSource) TextView(context).apply {
+        val source = if (Settings["news:cards:source", true]) TextView(context).apply {
             run {
                 val h = 12.dp.toInt()
                 val v = 8.dp.toInt()
@@ -84,20 +84,21 @@ class FeedAdapter(
         } else null
 
         val r = Settings["feed:card_radius", 15].dp
-        val separateImg = Settings["news:cards:sep_txt", false]
 
         val v = CardView(context).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             radius = r
             cardElevation = 0f
             preventCornerOverlap = true
-
             setOnLongClickListener(Gestures::onLongPress)
             setCardBackgroundColor(Settings["feed:card_bg", -0xdad9d9])
+        }
 
+        v.run {
+            val separateImg = Settings["news:cards:sep_txt", false]
             val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else Settings["news:cards:height", 240].dp.toInt()
 
-            if (!separateImg) {
+            if (!separateImg && image != null) {
                 addView(image, ViewGroup.LayoutParams(MATCH_PARENT, height))
             }
             addView(gradient, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
@@ -105,18 +106,29 @@ class FeedAdapter(
             })
             addView(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                if (separateImg) {
+
+                fun selectAlignment(i: Int) = when (i) {
+                    1 -> Gravity.CENTER_HORIZONTAL
+                    2 -> Gravity.RIGHT
+                    else -> Gravity.LEFT
+                }
+
+                if (separateImg && image != null) {
                     addView(image, ViewGroup.LayoutParams(MATCH_PARENT, height))
                 }
-                addView(title, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+
+                val sourceGoesFirst = Settings["news:cards:source:show_above_text", false]
+                if (!sourceGoesFirst && title != null) addView(title, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+
                 if (source != null) {
                     addView(source, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                        run {
-                            val m = 6.dp.toInt()
-                            setMargins(m, m, m, m)
-                        }
+                        val m = 6.dp.toInt()
+                        setMargins(m, m, m, m)
+                        gravity = selectAlignment(Settings["news:cards:source:align", 0])
                     })
                 }
+
+                if (sourceGoesFirst && title != null) addView(title, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
             }, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
                 gravity = Gravity.BOTTOM
             })
@@ -139,16 +151,12 @@ class FeedAdapter(
             }
         }, title, source, image, gradient, swipeableLayout)
 
-        if (!Settings["feed:card_img_enabled", true]) {
-            holder.image.visibility = View.GONE
-        }
-
         return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
         val feedItem = items[i]
-        holder.title.text = feedItem.title
+        holder.title?.text = feedItem.title
         holder.source?.text = feedItem.source.name
 
         if (Settings["feed:delete_articles", false]) {
@@ -157,7 +165,7 @@ class FeedAdapter(
             swipeableLayout.onSwipeAway = { deleteArticle(feedItem, i) }
         }
 
-        if (Settings["feed:card_img_enabled", true]) when {
+        if (holder.image != null) when {
             feedItem.img == null -> holder.image.visibility = View.GONE
             images.containsKey(feedItem.img) -> {
                 holder.image.visibility = View.VISIBLE
@@ -214,23 +222,25 @@ class FeedAdapter(
     companion object {
         private val images = HashMap<String?, Bitmap?>()
 
-        private fun onImageLoadEnd(holder: ViewHolder, img: Bitmap) = try {
-            holder.image.setImageBitmap(img)
-            if (Settings["feed:card_text_shadow", true]) {
-                Palette.from(img).generate {
-                    val gradientDrawable = GradientDrawable()
-                    if (it == null) {
-                        gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
-                        holder.source?.backgroundTintList = null
-                    } else {
-                        gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
-                        if (Settings["news:cards:source:tint_bg", true]) {
-                            holder.source?.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+        private fun onImageLoadEnd(holder: ViewHolder, img: Bitmap) {
+            try {
+                holder.image?.setImageBitmap(img)
+                if (holder.gradient != null) {
+                    Palette.from(img).generate {
+                        val gradientDrawable = GradientDrawable()
+                        if (it == null) {
+                            gradientDrawable.colors = intArrayOf(0x0, -0x1000000)
+                            holder.source?.backgroundTintList = null
+                        } else {
+                            gradientDrawable.colors = intArrayOf(0x0, it.getDarkMutedColor(-0x1000000))
+                            if (Settings["news:cards:source:tint_bg", true]) {
+                                holder.source?.backgroundTintList = ColorStateList.valueOf(it.getDarkMutedColor(-0xdad9d9) and 0x00ffffff or -0x78000000)
+                            }
                         }
+                        holder.gradient.background = gradientDrawable
                     }
-                    holder.gradient.background = gradientDrawable
                 }
-            } else holder.gradient.visibility = View.GONE
-        } catch (e: Exception) { e.printStackTrace() }
+            } catch (e: Exception) { e.printStackTrace() }
+        }
     }
 }
