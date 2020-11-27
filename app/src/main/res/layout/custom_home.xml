@@ -36,8 +36,8 @@
                         style="@style/settingsbtn"
                         android:onClick="openFeedOrder"
                         android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/cards" />
+                        android:drawableStart="@drawable/ic_sections"
+                        android:text="@string/sections" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout

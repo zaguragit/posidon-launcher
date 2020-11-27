@@ -19,9 +19,9 @@
         android:layout_weight="1"
         android:src="@drawable/walls"/>
     <ImageView
-        android:id="@+id/widgetpickerbtn"
+        android:id="@+id/sectionsBtn"
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/widgets"/>
+        android:src="@drawable/sections"/>
 </LinearLayout>

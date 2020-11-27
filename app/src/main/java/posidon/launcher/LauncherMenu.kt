@@ -2,7 +2,6 @@ package posidon.launcher
 
 import android.app.ActivityOptions
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
@@ -13,10 +12,11 @@ import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.Kustom
-import posidon.launcher.external.Widget
+import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.open
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
@@ -42,19 +42,15 @@ object LauncherMenu {
             dialog!!.setContentView(R.layout.menu)
             dialog!!.window!!.setGravity(Gravity.BOTTOM)
             dialog!!.findViewById<View>(R.id.custombtn).setOnClickListener {
-                val i = Intent(context, Customizations::class.java)
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
+                context.open(Customizations::class.java, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
                 dialog!!.dismiss()
             }
             dialog!!.findViewById<View>(R.id.wallbtn).setOnClickListener {
-                val i = Intent(context, Gallery::class.java)
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-                context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
+                context.open(Gallery::class.java, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
                 dialog!!.dismiss()
             }
-            dialog!!.findViewById<View>(R.id.widgetpickerbtn).setOnClickListener {
-                Widget.selectWidget(Home.instance)
+            dialog!!.findViewById<View>(R.id.sectionsBtn).setOnClickListener {
+                context.open(FeedOrderActivity::class.java, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
                 dialog!!.dismiss()
             }
             page.setBackgroundResource(R.drawable.page)
