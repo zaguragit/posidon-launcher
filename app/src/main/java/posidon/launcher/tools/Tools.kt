@@ -13,6 +13,7 @@ import android.graphics.*
 import android.graphics.drawable.*
 import android.media.AudioAttributes
 import android.os.Build
+import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
@@ -610,6 +611,15 @@ inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = a
     override fun onAnimationStart(animation: Animator?) {}
     override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
 })
+
+inline fun Context.open(action: String, b: Bundle? = null, block: Intent.() -> Unit) = startActivity(Intent(action)
+    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK).also(block), b)
+inline fun Context.open(c: Class<*>, b: Bundle? = null, block: Intent.() -> Unit) = startActivity(Intent(this, c)
+    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK).also(block), b)
+inline fun Context.open(action: String, b: Bundle? = null) = startActivity(Intent(action)
+    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK), b)
+inline fun Context.open(c: Class<*>, b: Bundle? = null) = startActivity(Intent(this, c)
+    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK), b)
 
 fun <T> Context.loadRaw(id: Int, fn: (BufferedReader) -> T) =
     resources.openRawResource(id).use { stream ->

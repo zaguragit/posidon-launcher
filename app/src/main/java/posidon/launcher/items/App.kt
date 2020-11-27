@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.open
 import posidon.launcher.tools.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
@@ -78,10 +79,9 @@ class App(
         }
         d.findViewById<View>(R.id.openinsettings)!!.setOnClickListener {
             d.dismiss()
-            val i = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            i.data = Uri.parse("package:$packageName")
-            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle())
+            context.open(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.home_exit).toBundle()) {
+                data = Uri.parse("package:$packageName")
+            }
         }
         d.findViewById<View>(R.id.uninstallbtn)!!.setOnClickListener {
             context.vibrate()

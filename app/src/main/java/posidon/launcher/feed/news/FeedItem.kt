@@ -11,6 +11,7 @@ import posidon.launcher.feed.news.readers.ArticleActivity
 import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Loader
+import posidon.launcher.tools.open
 import java.util.*
 
 class FeedItem(
@@ -51,15 +52,13 @@ class FeedItem(
         ).toBundle()
 
         when (Settings["feed:openLinks", "browse"]) {
-            "webView" -> context.startActivity(Intent(context, WebViewActivity::class.java).apply {
+            "webView" -> context.open(WebViewActivity::class.java, activityOptions) {
                 putExtra("url", link)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-            }, activityOptions)
-            "app" -> context.startActivity(Intent(context, ArticleActivity::class.java).apply {
+            }
+            "app" -> context.open(ArticleActivity::class.java, activityOptions) {
                 putExtra("url", link)
                 putExtra("sourceName", source.name)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-            }, activityOptions)
+            }
             else -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link.trim { it <= ' ' })), activityOptions)
         }
     } catch (e: Exception) { e.printStackTrace() }

@@ -9,6 +9,7 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.open
 import posidon.launcher.tools.toBitmapDrawable
 
 class SettingsItem private constructor(
@@ -18,7 +19,7 @@ class SettingsItem private constructor(
 ) : LauncherItem() {
 
     fun open(context: Context) = try {
-        context.startActivity(Intent(action))
+        context.open(action)
     } catch (e: Exception) { e.printStackTrace() }
 
     companion object {
