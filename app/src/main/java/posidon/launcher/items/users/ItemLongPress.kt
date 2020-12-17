@@ -197,7 +197,7 @@ object ItemLongPress {
 
             if (!Settings["locked", false]) {
                 val myShadow = View.DragShadowBuilder(icon)
-                val clipData = ClipData.newPlainText(app.toString(), i.toString(16)).apply { addItem(ClipData.Item(folderI.toString(16))) }
+                val clipData = ClipData.newPlainText(app.toString(), i.toString(16))
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     icon.startDragAndDrop(clipData, myShadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
                 } else {
