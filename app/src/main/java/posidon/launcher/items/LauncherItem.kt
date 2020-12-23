@@ -7,6 +7,8 @@ open class LauncherItem {
     open var icon: Drawable? = null
     open var label: String? = null
 
+    open fun getColor(): Int = -0xdad9d9
+
     companion object {
         operator fun invoke(string: String): LauncherItem? {
             return when {

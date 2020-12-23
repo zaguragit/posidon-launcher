@@ -281,7 +281,15 @@ class SearchActivity : AppCompatActivity() {
                     is ContactItem -> r.open(this@SearchActivity)
                 }
             }
-            grid.onItemLongClickListener = ItemLongPress.search(this, results)
+            grid.setOnItemLongClickListener { _, view, i, _ ->
+                val app = results[i]
+                if (app is App) {
+                    ItemLongPress.showPopupWindow(this, view, app, {
+                        app.showAppEditDialog(this@SearchActivity, it)
+                    }, null)
+                }
+                true
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

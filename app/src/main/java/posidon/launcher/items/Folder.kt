@@ -1,6 +1,7 @@
 package posidon.launcher.items
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
@@ -13,6 +14,7 @@ import android.widget.*
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
+import posidon.launcher.items.users.CustomAppIcon
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -301,6 +303,32 @@ class Folder(string: String) : LauncherItem() {
             }
         }
         return appIcon
+    }
+
+    fun onLongPress(context: Context, i: Int, view: View) {
+        ItemLongPress.showPopupWindow(context, view, this, onRemove = {
+            Dock[i] = null
+            Home.instance.setDock()
+        }, onEdit = {
+            val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
+            val editWindow = PopupWindow(editContent, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, true)
+            val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
+            editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(this@Folder.icon)
+            editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
+                val intent = Intent(context, CustomAppIcon::class.java)
+                intent.putExtra("key", "folder:${uid}:icon")
+                context.startActivity(intent)
+                editWindow.dismiss()
+            }
+            editLabel.setText(label)
+            editWindow.setOnDismissListener {
+                label = editLabel.text.toString().replace('\t', ' ')
+                Settings["folder:${uid}:label"] = label
+                Dock[i] = this@Folder
+                Home.instance.setDock()
+            }
+            editWindow.showAtLocation(it, Gravity.CENTER, 0, 0)
+        }, dockI = i)
     }
 
     companion object {

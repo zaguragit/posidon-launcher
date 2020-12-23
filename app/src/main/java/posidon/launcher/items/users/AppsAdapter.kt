@@ -32,8 +32,8 @@ class AppsAdapter(
         val viewHolder: ViewHolder
         if (convertView == null) {
             val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, null) else {
-                convertView = li.inflate(R.layout.list_item, null)
+            if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, parent, false) else {
+                convertView = li.inflate(R.layout.list_item, parent, false)
                 if (Settings["drawer:columns", 4] == 2) convertView.findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
             viewHolder = ViewHolder(

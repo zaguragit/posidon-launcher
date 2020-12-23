@@ -83,6 +83,9 @@ class Home : AppCompatActivity() {
             drawer.drawerGrid.adapter = DrawerAdapter()
             drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
             drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
+            drawer.drawerGrid.setOnItemClickListener { parent, view, i, id ->
+                ItemLongPress.drawer(this, Global.apps[i]).onLongClick(view)
+            }
         }
         drawer.drawerGrid.scrollY = s
         drawerScrollBar.updateAdapter()
