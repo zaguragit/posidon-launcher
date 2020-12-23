@@ -4,11 +4,10 @@
 - Please write the curly bracket on the same line as the function declaration.
 - Use the normal, Java/Kotlin naming convention
 
-### Avoid adding unnecessary dependencies
+### Dependencies
 
-The less dependencies, the better.
-Only add dependencies if they're essential.
-All dependencies have to be open-source and free
+Avoid adding dependencies for trivial things, like image loading
+All dependencies must to be open-source and free
 
 ### Convenient functions
 
