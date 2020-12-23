@@ -8,17 +8,28 @@ import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.os.UserHandle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.ListPopupWindow
+import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.launcher.Global
+import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.items.users.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
@@ -91,6 +102,40 @@ class App(
             context.startActivity(uninstallIntent)
         }
         d.show()
+    }
+
+    fun showAppEditDialog(context: Context, v: View) {
+        val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
+        val editWindow = PopupWindow(editContent, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
+        val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
+        editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(icon)
+        editContent.findViewById<View>(R.id.edit).backgroundTintList = ColorStateList.valueOf(Palette.from(icon!!.toBitmap()).generate().let {
+            it.getDarkVibrantColor(it.getDarkMutedColor(0xff1155ff.toInt()))
+        })
+        editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
+            val intent = Intent(context, CustomAppIcon::class.java)
+            intent.putExtra("key", "app:$this:icon")
+            context.startActivity(intent)
+            editWindow.dismiss()
+        }
+        editLabel.setText(Settings["$packageName/$name?label", label!!])
+        editWindow.setOnDismissListener {
+            Settings["$packageName/$name?label"] = editLabel.text.toString().replace('\t', ' ')
+            Global.shouldSetApps = true
+            Home.instance.setDock()
+        }
+        editWindow.showAtLocation(v, Gravity.CENTER, 0, 0)
+    }
+
+    override fun getColor(): Int {
+        val palette = Palette.from(icon!!.toBitmap()).generate()
+        var color = palette.getDominantColor(-0xdad9d9)
+        val hsv = FloatArray(3)
+        Color.colorToHSV(color, hsv)
+        if (hsv[1] < 0.2f) {
+            color = palette.getVibrantColor(-0xdad9d9)
+        }
+        return color
     }
 
     override fun toString() = "$packageName/$name/${userHandle.hashCode()}"
