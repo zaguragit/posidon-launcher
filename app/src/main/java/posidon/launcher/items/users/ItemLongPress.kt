@@ -11,13 +11,11 @@ import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
@@ -194,17 +192,6 @@ object ItemLongPress {
             Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
             Home.instance.setDock()
         }, onEdit = { app.showAppEditDialog(context, v) }, dockI = i, folderI = folderI, parentView = v)
-        true
-    }
-
-    fun olddrawer(context: Context) = OnItemLongClickListener { _, view, position, _ ->
-        val app = Global.apps[position]
-        showPopupWindow(context, view, app, { app.showAppEditDialog(context, it) }, null)
-        true
-    }
-
-    fun drawer(context: Context, app: App) = View.OnLongClickListener {
-        showPopupWindow(context, it, app, { app.showAppEditDialog(context, it) }, null)
         true
     }
 }

@@ -90,7 +90,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 } else { visibility = View.GONE }
             }
             setOnClickListener { item.open(context, it) }
-            setOnLongClickListener(ItemLongPress.drawer(context, item))
+            setOnLongClickListener {
+                ItemLongPress.showPopupWindow(context, it, item, { item.showAppEditDialog(context, it) }, null)
+                true
+            }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
         }
     }
