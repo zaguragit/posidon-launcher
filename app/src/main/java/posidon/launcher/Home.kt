@@ -82,9 +82,10 @@ class Home : AppCompatActivity() {
         } else {
             drawer.drawerGrid.adapter = DrawerAdapter()
             drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
-            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
-            drawer.drawerGrid.setOnItemClickListener { parent, view, i, id ->
-                ItemLongPress.drawer(this, Global.apps[i]).onLongClick(view)
+            drawer.drawerGrid.setOnItemLongClickListener { _, view, position, _ ->
+                val app = Global.apps[position]
+                ItemLongPress.showPopupWindow(this, view, app, { app.showAppEditDialog(this, it) }, null)
+                true
             }
         }
         drawer.drawerGrid.scrollY = s
@@ -214,18 +215,9 @@ class Home : AppCompatActivity() {
         setDockSearchbarRadius(Settings["dock:search:radius", 30])
         setDockHorizontalMargin(Settings["dock:margin_x", 16])
 
-        if (Global.shouldSetApps) AppLoader(this@Home, onAppLoaderEnd).execute() else {
-            if (Settings["drawer:sections_enabled", false]) {
-                drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
-                drawer.drawerGrid.onItemClickListener = null
-                drawer.drawerGrid.onItemLongClickListener = null
-            } else {
-                drawer.drawerGrid.adapter = DrawerAdapter()
-                drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
-                drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
-            }
-            setDock()
-        }
+        if (Global.shouldSetApps) {
+            AppLoader(this@Home, onAppLoaderEnd).execute()
+        } else onAppLoaderEnd()
 
         if (Settings["drawer:sections_enabled", false]) {
             drawer.drawerGrid.numColumns = 1
@@ -527,17 +519,7 @@ class Home : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        if (Settings["drawer:sections_enabled", false]) {
-            drawer.drawerGrid.adapter = SectionedDrawerAdapter(this)
-            drawer.drawerGrid.onItemClickListener = null
-            drawer.drawerGrid.onItemLongClickListener = null
-        } else {
-            drawer.drawerGrid.adapter = DrawerAdapter()
-            drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
-            drawer.drawerGrid.onItemLongClickListener = ItemLongPress.olddrawer(this@Home)
-        }
-        drawerScrollBar.updateAdapter()
+        onAppLoaderEnd()
     }
 
     override fun onDestroy() {
