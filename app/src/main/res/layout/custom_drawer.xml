@@ -98,21 +98,74 @@
                     app:array="@array/sortingAlgorithms"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
-                    android:id="@+id/scrollbarEnabledSetting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_label"
-                    app:label="@string/scrollbar"
-                    app:key="drawer:scrollbar_enabled"
-                    app:def="false"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_arrow_up"
                     app:label="@string/slide_up"
                     app:key="drawer:slide_up"
                     app:def="true"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/scrollbar"
+                    app:key="drawer:scrollbar:enabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/show_outside"
+                    app:key="drawer:scrollbar:show_outside"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/text_color"
+                    app:key="drawer:scrollbar:text_color"
+                    app:def="#aaeeeeee"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/accent_color"
+                    app:key="drawer:scrollbar:highlight_color"
+                    app:def="#ffffffff"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/floating_color"
+                    app:key="drawer:scrollbar:floating_color"
+                    app:def="#ffffffff"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/background"
+                    app:key="drawer:scrollbar:bg_color"
+                    app:def="#00000000"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/width"
+                    app:key="drawer:scrollbar:width"
+                    app:def="24"
+                    app:max="64"/>
             </LinearLayout>
 
             <LinearLayout

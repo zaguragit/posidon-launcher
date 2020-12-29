@@ -8,26 +8,57 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.AbsListView
 import android.widget.SectionIndexer
+import androidx.annotation.IntDef
 import posidon.launcher.items.users.ItemLongPress
-import posidon.launcher.storage.Settings
+import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.mainFont
+import kotlin.math.roundToInt
 
 class AlphabetScrollbar(
     private val listView: AbsListView,
+    @Orientation
+    val orientation: Int,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(listView.context, attrs, defStyleAttr) {
+
+    var onStartScroll = {}
+    var onCancelScroll = {}
+
+    var floatingFactor = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var textColor = 0
+    var floatingColor = 0
+    var highlightColor = 0
+
+    fun updateAdapter() {
+        sectionIndexer = listView.adapter.let {
+            if (it is SectionIndexer && it.sections.isArrayOf<Char>()) it else null
+        }
+    }
+
+    fun updateTheme() {
+        paint.apply {
+            typeface = context.mainFont
+            textSize = 16.dp
+        }
+        invalidate()
+    }
+
+    private var paint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        isAntiAlias = true
+    }
 
     private var sectionIndexer: SectionIndexer? = listView.adapter.let {
         if (it is SectionIndexer && it.sections.isArrayOf<Char>())
             it else null
     }
-
-    private var fg = 0
-    private var topPadding = 0f
-    private var paint = Paint()
 
     init {
         listView.setOnScrollListener(object : AbsListView.OnScrollListener {
@@ -36,52 +67,49 @@ class AlphabetScrollbar(
                 ItemLongPress.currentPopup?.dismiss()
             }
         })
-        update()
-    }
-
-    fun updateAdapter() {
-        sectionIndexer = listView.adapter.let {
-            if (it is SectionIndexer && it.sections.isArrayOf<Char>()) it else null
-        }
-    }
-
-    fun update() {
-        fg = Settings["labelColor", -0x11111112]
-        topPadding = listView.paddingTop + context.getStatusBarHeight() + Settings["dockbottompadding", 10].dp
-        paint.apply {
-            color = fg
-            alpha = 180
-            isAntiAlias = true
-            typeface = context.mainFont
-            textSize = 16.dp
-        }
-        invalidate()
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         if (sectionIndexer != null && sectionIndexer!!.sections.isNotEmpty()) {
-            val sectionHeight = (height - topPadding - listView.paddingBottom) / sectionIndexer!!.sections.size
+            if (floatingFactor != 0f) {
+                paint.setShadowLayer(floatingFactor * 8f, 0f, floatingFactor * 3f, 0x33000000)
+                paint.color = ColorTools.blendColors(floatingColor, textColor, floatingFactor)
+            } else {
+                paint.clearShadowLayer()
+                paint.color = textColor
+            }
             for (i in sectionIndexer!!.sections.indices) {
-                if (getLetterIToHighlight() == i) {
+                val (x, y) = if (orientation == VERTICAL) {
+                    width / 2f to ((height - paddingTop - paddingBottom) / sectionIndexer!!.sections.size) * i + paddingTop.toFloat()
+                } else {
+                    ((width - paddingStart - paddingEnd) / sectionIndexer!!.sections.size) * i + paddingStart.toFloat() to height / 2f
+                }
+                if (getSectionI() == i && floatingFactor == 0f) {
                     val tmp = paint.typeface
                     paint.typeface = Typeface.create(tmp, Typeface.BOLD)
-                    paint.alpha = 255
-                    canvas.drawText(sectionIndexer!!.sections[i].toString(), 0f, sectionHeight * i + topPadding, paint)
-                    paint.alpha = 180
+                    paint.color = highlightColor
+                    canvas.drawText(sectionIndexer!!.sections[i].toString(), x, y, paint)
+                    paint.color = textColor
                     paint.typeface = tmp
-                } else canvas.drawText(sectionIndexer!!.sections[i].toString(), 0f, sectionHeight * i + topPadding, paint)
+                } else canvas.drawText(sectionIndexer!!.sections[i].toString(), x, y, paint)
             }
         }
     }
 
-    private inline fun getLetterIToHighlight() = sectionIndexer?.getSectionForPosition(listView.firstVisiblePosition) ?: -1
+    private inline fun getSectionI() = if (currentSection == -1)
+        sectionIndexer?.getSectionForPosition(listView.firstVisiblePosition) ?: -1
+    else currentSection
+
+    private var currentSection = -1
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
-                sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let {
-                    listView.smoothScrollToPositionFromTop(it, topPadding.toInt(), 150)
+                val i = coordsToIndex(event.x, event.y)
+                currentSection = i
+                sectionIndexer?.getPositionForSection(i)?.let {
+                    listView.smoothScrollToPositionFromTop(it, paddingTop, 150)
                     if (sectionIndexer is HighlightAdapter) {
                         (sectionIndexer as HighlightAdapter).highlight(it)
                         listView.invalidateViews()
@@ -90,13 +118,16 @@ class AlphabetScrollbar(
                 invalidate()
             }
             MotionEvent.ACTION_DOWN -> {
+                onStartScroll()
                 parent.requestDisallowInterceptTouchEvent(true)
                 listView.adapter.let {
                     if (it is SectionIndexer && it.sections.isArrayOf<Char>()) {
                         sectionIndexer = it
                     }
-                    sectionIndexer?.getPositionForSection(yToIndex(event.y))?.let { it1 ->
-                        listView.smoothScrollToPositionFromTop(it1, topPadding.toInt(), 150)
+                    val i = coordsToIndex(event.x, event.y)
+                    currentSection = i
+                    sectionIndexer?.getPositionForSection(i)?.let { it1 ->
+                        listView.smoothScrollToPositionFromTop(it1, paddingTop, 150)
                         if (sectionIndexer is HighlightAdapter) {
                             (sectionIndexer as HighlightAdapter).highlight(it1)
                             listView.invalidateViews()
@@ -110,15 +141,36 @@ class AlphabetScrollbar(
                     (sectionIndexer as HighlightAdapter).unhighlight()
                     listView.invalidateViews()
                 }
+                currentSection = -1
             }
+            MotionEvent.ACTION_CANCEL -> {
+                onCancelScroll()
+                currentSection = -1
+            }
+            else -> currentSection = -1
         }
         return true
     }
 
-    private fun yToIndex(y: Float): Int {
-        val out = ((y - topPadding) / (height - topPadding - listView.paddingBottom) * sectionIndexer!!.sections.size).toInt()
-        if (out < 0) return 0
-        if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
-        return out
+    private fun coordsToIndex(x: Float, y: Float): Int {
+        if (orientation == VERTICAL) {
+            val out = ((y - paddingTop) / (height - paddingTop - paddingBottom) * sectionIndexer!!.sections.size).roundToInt()
+            if (out < 0) return 0
+            if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
+            return out
+        } else {
+            val out = ((x - paddingStart) / (width - paddingStart - paddingEnd) * sectionIndexer!!.sections.size).roundToInt()
+            if (out < 0) return 0
+            if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
+            return out
+        }
+    }
+
+    companion object {
+        @IntDef(VERTICAL, HORIZONTAL)
+        annotation class Orientation
+
+        const val VERTICAL = 0
+        const val HORIZONTAL = 1
     }
 }

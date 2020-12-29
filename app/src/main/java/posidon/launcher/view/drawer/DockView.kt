@@ -8,7 +8,10 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.DragEvent
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
@@ -185,10 +188,13 @@ class DockView : LinearLayout {
         drawer.drawerContent.layoutParams.height = metrics.heightPixels
         (activity.findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
         if (Settings["feed:show_behind_dock", false]) {
-            (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, 0)
+            (desktop.layoutParams as MarginLayoutParams).topMargin = dockHeight
             desktopContent.setPadding(0, 12.dp.toInt(), 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
         } else {
-            (desktop.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, dockHeight, 0, dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt())
+            (desktop.layoutParams as MarginLayoutParams).run {
+                topMargin = dockHeight
+                bottomMargin = dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10]-18).dp.toInt()
+            }
             desktopContent.setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
         }
         if (Settings["dock:background_type", 0] == 1) {
