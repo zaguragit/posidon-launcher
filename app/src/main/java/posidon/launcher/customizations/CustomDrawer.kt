@@ -10,7 +10,6 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.view.setting.SwitchSettingView
 
 class CustomDrawer : AppCompatActivity() {
 
@@ -25,8 +24,6 @@ class CustomDrawer : AppCompatActivity() {
 
         icsize = findViewById(R.id.iconsizeslider)
         icsize!!.progress = Settings["icsize", 1]
-
-        findViewById<SwitchSettingView>(R.id.scrollbarEnabledSetting)
     }
 
     override fun onPause() {

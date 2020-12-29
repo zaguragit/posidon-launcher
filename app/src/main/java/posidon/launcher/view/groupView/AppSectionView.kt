@@ -56,13 +56,13 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
         val parentWidth = (parent as View).measuredWidth
         return (if (columns > 2) {
             LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false).apply {
-                layoutParams.width = min(if (Settings["drawer:scrollbar_enabled", false]) {
+                layoutParams.width = min(if (Settings["drawer:scrollbar:enabled", false]) {
                     parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
                 } else { parentWidth - 24.dp.toInt() } / columns, appSize)
             }
         } else LayoutInflater.from(context).inflate(R.layout.list_item, gridLayout, false).apply {
             if (columns == 2) {
-                layoutParams.width = if (Settings["drawer:scrollbar_enabled", false]) {
+                layoutParams.width = if (Settings["drawer:scrollbar:enabled", false]) {
                     parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
                 } else { parentWidth - 24.dp.toInt() } / 2
             }

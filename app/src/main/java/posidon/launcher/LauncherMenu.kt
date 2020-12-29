@@ -14,10 +14,7 @@ import posidon.launcher.customizations.Customizations
 import posidon.launcher.external.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.open
-import posidon.launcher.tools.vibrate
+import posidon.launcher.tools.*
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
@@ -34,8 +31,16 @@ object LauncherMenu {
             isActive = true
             context.vibrate()
             val homescreen = window.decorView.findViewById<View>(android.R.id.content)
+            val scrollbarWidth = if (Settings["drawer:scrollbar:enabled", false] && Settings["drawer:scrollbar:show_outside", false]) {
+                val config = context.resources.configuration
+                if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                    -Settings["drawer:scrollbar:width", 24].dp
+                }
+                else Settings["drawer:scrollbar:width", 24].dp
+            } else 0f
             val page = homescreen.findViewById<View>(R.id.feed)
-            page.animate().scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
+            page.animate().translationX(scrollbarWidth / 2f).scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
+            Home.instance.drawerScrollBar.animate().translationX(scrollbarWidth).duration = 100L
             val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
             drawer.state = BottomDrawerBehavior.STATE_HIDDEN
             dialog = Dialog(Home.instance, R.style.longpressmenusheet)
@@ -72,9 +77,10 @@ object LauncherMenu {
     }
 
     private fun exit(homescreen: View, window: Window, drawer: DrawerView) {
+        Home.instance.drawerScrollBar.animate().translationX(0f)
         drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         val page = homescreen.findViewById<View>(R.id.feed)
-        page.animate().scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
+        page.animate().translationX(0f).scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
         page.setBackgroundColor(0x0)
         window.setBackgroundDrawableResource(android.R.color.transparent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {

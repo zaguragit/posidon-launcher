@@ -204,6 +204,9 @@
     <string name="layout">Layout</string>
     <string name="align">Align</string>
     <string name="show_above_text">Show above text</string>
+    <string name="show_outside">Show outside</string>
+    <string name="floating_color">Floating color</string>
+    <string name="width">Width</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
