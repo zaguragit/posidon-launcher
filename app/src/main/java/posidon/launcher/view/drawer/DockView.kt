@@ -2,12 +2,14 @@ package posidon.launcher.view.drawer
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.DragEvent
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -27,6 +29,90 @@ import kotlin.math.abs
 import kotlin.math.min
 
 class DockView : LinearLayout {
+
+    fun updateTheme(drawer: View) {
+
+        layoutParams = (layoutParams as MarginLayoutParams).apply {
+            val m = Settings["dock:margin_x", 16].dp.toInt()
+            leftMargin = m
+            rightMargin = m
+        }
+        val bgColor = Settings["dock:background_color", -0x78000000]
+        when (val bgType = Settings["dock:background_type", 0]) {
+            0 -> {
+                background = null
+                containerContainer.background = null
+                drawer.background = ShapeDrawable().apply {
+                    val tr = Settings["dockradius", 30].dp
+                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = bgColor
+                }
+            }
+            1 -> {
+                background = null
+                containerContainer.background = null
+                drawer.background = LayerDrawable(arrayOf(
+                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor and 0x00ffffff, bgColor)),
+                        GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor,
+                                Settings["drawer:background_color", -0x78000000]))
+                ))
+            }
+            2 -> {
+                val r = Settings["dockradius", 30].dp
+                drawer.background = ShapeDrawable().apply {
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = 0
+                }
+                containerContainer.background = null
+                background = ShapeDrawable().apply {
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                    paint.color = bgColor
+                }
+            }
+            3 -> {
+                val r = Settings["dockradius", 30].dp
+                drawer.background = ShapeDrawable().apply {
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = 0
+                }
+                background = null
+                containerContainer.background = ShapeDrawable().apply {
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+                    paint.color = bgColor
+                }
+            }
+            else -> {
+                Settings["dock:background_type"] = 0
+                Log.e("posidon launcher", "dock:background_type can't be $bgType")
+            }
+        }
+
+
+        if (!Settings["docksearchbarenabled", false]) {
+            searchBar.visibility = GONE
+            battery.visibility = GONE
+            return
+        }
+        searchBar.visibility = VISIBLE
+        battery.visibility = VISIBLE
+        if (Settings["dock:search:below_apps", true]) { searchBar.bringToFront() }
+        else { containerContainer.bringToFront() }
+        run {
+            val color = Settings["docksearchtxtcolor", -0x1000000]
+            searchTxt.setTextColor(color)
+            searchIcon.imageTintList = ColorStateList.valueOf(color)
+            battery.progressTintList = ColorStateList.valueOf(color)
+            battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
+            battery.progressBackgroundTintList = ColorStateList.valueOf(color)
+            battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
+            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
+        }
+        searchBar.background = ShapeDrawable().apply {
+            val r = Settings["dock:search:radius", 30].dp
+            shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
+            paint.color = Settings["docksearchcolor", -0x22000001]
+        }
+    }
 
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
@@ -72,9 +158,7 @@ class DockView : LinearLayout {
         })
     }
 
-    val container = GridLayout(context).apply {
-
-    }
+    val container = GridLayout(context)
 
     val containerContainer = FrameLayout(context).apply {
         addView(container, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
@@ -94,19 +178,20 @@ class DockView : LinearLayout {
         addView(containerContainer, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
-    fun loadApps(drawer: DrawerView, desktop: View, desktopContent: View, activity: Home) {
+    fun loadApps(drawer: DrawerView, feed: View, desktopContent: View, home: Home) {
         val columnCount = Settings["dock:columns", 5]
+        val marginX = Settings["dock:margin_x", 16].dp.toInt()
         val appSize = min(when (Settings["dockicsize", 1]) {
             0 -> 64.dp.toInt()
             2 -> 84.dp.toInt()
             else -> 74.dp.toInt()
-        }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
+        }, (Device.displayWidth - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
-        val container = container.apply {
-            this.removeAllViews()
+        container.run {
+            removeAllViews()
             this.columnCount = columnCount
             this.rowCount = rowCount
         }
@@ -170,7 +255,13 @@ class DockView : LinearLayout {
                 } else { badge.visibility = View.GONE }
                 img.setImageDrawable(item.icon)
                 view.setOnClickListener { item.open(context, it) }
-                view.setOnLongClickListener(ItemLongPress.dock(context, item, i))
+                view.setOnLongClickListener { view ->
+                    ItemLongPress.showPopupWindow(context, view, item, onRemove = {
+                        Dock[i] = null
+                        Home.instance.setDock()
+                    }, onEdit = { item.showAppEditDialog(context, it) }, dockI = i)
+                    true
+                }
             }
             container.addView(view)
             i++
@@ -181,29 +272,34 @@ class DockView : LinearLayout {
         } else {
             containerHeight + 14.dp.toInt()
         }
+        val addition = home.drawerScrollBar.updateTheme(drawer, feed, this)
+        dockHeight += addition
         container.layoutParams.height = containerHeight
+        containerContainer.layoutParams = (containerContainer.layoutParams as MarginLayoutParams).apply {
+            bottomMargin = addition
+        }
         drawer.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
         val metrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getRealMetrics(metrics)
+        home.windowManager.defaultDisplay.getRealMetrics(metrics)
         drawer.drawerContent.layoutParams.height = metrics.heightPixels
-        (activity.findViewById<View>(R.id.homeView).layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
+        (home.homeView.layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
         if (Settings["feed:show_behind_dock", false]) {
-            (desktop.layoutParams as MarginLayoutParams).topMargin = dockHeight
+            (feed.layoutParams as MarginLayoutParams).topMargin = dockHeight
             desktopContent.setPadding(0, 12.dp.toInt(), 0, (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt())
         } else {
-            (desktop.layoutParams as MarginLayoutParams).run {
+            (feed.layoutParams as MarginLayoutParams).run {
                 topMargin = dockHeight
                 bottomMargin = dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10]-18).dp.toInt()
             }
             desktopContent.setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
         }
-        if (Settings["dock:background_type", 0] == 1) {
-            val bg = drawer.background as LayerDrawable
+        val bg = drawer.background
+        if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
             bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
             bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
         }
-        (activity.findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
-        activity.window.decorView.setOnDragListener { _, event ->
+        (home.findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
+        home.window.decorView.setOnDragListener { _, event ->
             when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
                     val view = event.localState as View?
@@ -244,63 +340,11 @@ class DockView : LinearLayout {
                                 i++
                             }
                         }
-                        loadApps(drawer, desktop, desktopContent, activity)
+                        loadApps(drawer, feed, desktopContent, home)
                     }
                 }
             }
             true
-        }
-    }
-
-    fun updateBG(drawer: View) {
-        when (Settings["dock:background_type", 0]) {
-            0 -> {
-                background = null
-                containerContainer.background = null
-                drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }
-            }
-            1 -> {
-                background = null
-                containerContainer.background = null
-                drawer.background = LayerDrawable(arrayOf(
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                        Settings["dock:background_color", -0x78000000] and 0x00ffffff,
-                        Settings["dock:background_color", -0x78000000])),
-                    GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(
-                        Settings["dock:background_color", -0x78000000],
-                        Settings["drawer:background_color", -0x78000000]))
-                ))
-            }
-            2 -> {
-                drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = 0
-                }
-                containerContainer.background = null
-                background = ShapeDrawable().apply {
-                    val r = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }
-            }
-            3 -> {
-                drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-                    paint.color = 0
-                }
-                background = null
-                containerContainer.background = ShapeDrawable().apply {
-                    val r = Settings["dockradius", 30].dp
-                    shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
-                    paint.color = Settings["dock:background_color", -0x78000000]
-                }
-            }
         }
     }
 }

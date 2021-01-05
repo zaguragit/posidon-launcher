@@ -207,6 +207,8 @@
     <string name="show_outside">Show outside</string>
     <string name="floating_color">Floating color</string>
     <string name="width">Width</string>
+    <string name="reserve_space">Reserve space</string>
+    <string name="position">Position</string>
 
     <array name="sortingAlgorithms">
         <item>Alfabeticamente</item>
