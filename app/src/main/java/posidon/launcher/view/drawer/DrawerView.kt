@@ -3,9 +3,12 @@ package posidon.launcher.view.drawer
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
@@ -15,10 +18,39 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import posidon.launcher.R
 import posidon.launcher.search.SearchActivity
+import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.view.GridView
 
 class DrawerView : LinearLayout {
+
+    fun updateTheme() {
+        val searchBarEnabled = Settings["drawersearchbarenabled", true]
+        run {
+            val searchBarHeight = if (searchBarEnabled) 56.dp.toInt() else 0
+            val scrollbarWidth = if (
+                Settings["drawer:scrollbar:enabled", false] && // isEnabled
+                Settings["drawer:scrollbar:position", 1] == 2 // isHorizontal
+            ) Settings["drawer:scrollbar:width", 24].dp.toInt() else 0
+            searchBarVBox.setPadding(0, 0, 0, Tools.navbarHeight + if (Settings["drawer:scrollbar:show_outside", false]) scrollbarWidth else 0)
+            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + searchBarHeight + scrollbarWidth + 12.dp.toInt())
+        }
+        if (!searchBarEnabled) {
+            searchBar.visibility = GONE
+            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
+            return
+        }
+        searchBar.visibility = VISIBLE
+        searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
+        searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
+        searchBarVBox.background = ShapeDrawable().apply {
+            val tr = Settings["searchradius", 0].dp
+            shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
+            paint.color = Settings["searchcolor", 0x33000000]
+        }
+    }
 
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
@@ -59,24 +91,30 @@ class DrawerView : LinearLayout {
         gravity = Gravity.CENTER_VERTICAL
         textSize = 16f
     }
-
     val searchBar = LinearLayout(context).apply {
         orientation = HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         setOnClickListener {
             SearchActivity.open(context)
         }
-        addView(searchIcon, LayoutParams(56.dp.toInt(), 56.dp.toInt()).apply {
+        val height = 56.dp.toInt()
+        addView(searchIcon, LayoutParams(height, height).apply {
             marginStart = 8.dp.toInt()
         })
-        addView(searchTxt, LayoutParams(MATCH_PARENT, 56.dp.toInt()).apply {
+        addView(searchTxt, LayoutParams(MATCH_PARENT, height).apply {
             marginStart = -16.dp.toInt()
         })
     }
 
+    val searchBarVBox = LinearLayout(context).apply {
+        orientation = VERTICAL
+        gravity = Gravity.CENTER_HORIZONTAL
+        addView(searchBar, ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+    }
+
     val drawerContent = FrameLayout(context).apply {
         addView(drawerGrid, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        addView(searchBar, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+        addView(searchBarVBox, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
             this.gravity = Gravity.BOTTOM
         })
     }

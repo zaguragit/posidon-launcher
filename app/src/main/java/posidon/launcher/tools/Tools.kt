@@ -17,10 +17,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewPropertyAnimator
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -488,6 +485,36 @@ object Tools {
     inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
         val threshold = 16.dp
         return abs(startX - endX) < threshold && abs(startY - endY) < threshold
+    }
+
+    /**
+     * @return Triple(x, y, gravity)
+     */
+    inline fun getPopupLocationFromView(view: View): Triple<Int, Int, Int> {
+
+        val location = IntArray(2).also {
+            view.getLocationOnScreen(it)
+        }
+
+        var gravity: Int
+
+        val x = if (location[0] > Device.displayWidth / 2) {
+            gravity = Gravity.END
+            Device.displayWidth - location[0] - view.measuredWidth
+        } else {
+            gravity = Gravity.START
+            location[0]
+        }
+
+        val y = if (location[1] < Device.displayHeight / 2) {
+            gravity = gravity or Gravity.TOP
+            location[1] + view.measuredHeight + 4.dp.toInt()
+        } else {
+            gravity = gravity or Gravity.BOTTOM
+            Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight
+        }
+
+        return Triple(x, y, gravity)
     }
 }
 

@@ -207,6 +207,8 @@
     <string name="show_outside">Show outside</string>
     <string name="floating_color">Floating color</string>
     <string name="width">Width</string>
+    <string name="reserve_space">Reserve space</string>
+    <string name="position">Position</string>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>
@@ -273,5 +275,11 @@
         <item>Left</item>
         <item>Center</item>
         <item>Right</item>
+    </array>
+
+    <array name="scrollBarPosition">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Bottom</item>
     </array>
 </resources>

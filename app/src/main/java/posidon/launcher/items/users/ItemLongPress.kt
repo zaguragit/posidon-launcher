@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -116,27 +115,7 @@ object ItemLongPress {
 
             val icon = view.findViewById<View>(R.id.iconimg)
 
-            val location = IntArray(2).also {
-                icon.getLocationOnScreen(it)
-            }
-
-            var gravity: Int
-
-            val x = if (location[0] > Device.displayWidth / 2) {
-                gravity = Gravity.END
-                Device.displayWidth - location[0] - icon.measuredWidth
-            } else {
-                gravity = Gravity.START
-                location[0]
-            }
-
-            val y = if (location[1] < Device.displayHeight / 2) {
-                gravity = gravity or Gravity.TOP
-                location[1] + icon.measuredHeight + 4.dp.toInt()
-            } else {
-                gravity = gravity or Gravity.BOTTOM
-                Device.displayHeight - location[1] + 4.dp.toInt() + Tools.navbarHeight
-            }
+            val (x, y, gravity) = Tools.getPopupLocationFromView(icon)
 
             val realItem = if (folderI != -1 && item is Folder) item.items[folderI] else item
 
@@ -175,14 +154,6 @@ object ItemLongPress {
 
             popupWindow.showAtLocation(parentView, gravity, x, y)
         }
-    }
-
-	fun dock(context: Context, app: App, i: Int) = View.OnLongClickListener { view ->
-        showPopupWindow(context, view, app, onRemove = {
-            Dock[i] = null
-            Home.instance.setDock()
-        }, onEdit = { app.showAppEditDialog(context, it) }, dockI = i)
-        true
     }
 
     fun insideFolder(context: Context, app: App, i: Int, v: View, folderI: Int, folderWindow: PopupWindow, folder: Folder) = View.OnLongClickListener { view ->

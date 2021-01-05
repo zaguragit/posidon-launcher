@@ -15,10 +15,10 @@ import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
 import kotlin.math.roundToInt
 
-class AlphabetScrollbar(
+open class AlphabetScrollbar(
     private val listView: AbsListView,
     @Orientation
-    val orientation: Int,
+    var orientation: Int,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(listView.context, attrs, defStyleAttr) {
@@ -79,11 +79,18 @@ class AlphabetScrollbar(
                 paint.clearShadowLayer()
                 paint.color = textColor
             }
+            val insideHeight = height - paddingTop - paddingBottom
+            val insideWidth = width - paddingLeft - paddingRight
+            val (a, b) = if (orientation == VERTICAL) {
+                insideHeight / sectionIndexer!!.sections.lastIndex.toFloat() to insideWidth / 2f + paddingLeft
+            } else {
+                insideWidth / sectionIndexer!!.sections.lastIndex.toFloat() to (insideHeight + paint.textSize) / 2f + paddingTop
+            }
             for (i in sectionIndexer!!.sections.indices) {
                 val (x, y) = if (orientation == VERTICAL) {
-                    width / 2f to ((height - paddingTop - paddingBottom) / sectionIndexer!!.sections.size) * i + paddingTop.toFloat()
+                    b to a * i + paddingTop
                 } else {
-                    ((width - paddingStart - paddingEnd) / sectionIndexer!!.sections.size) * i + paddingStart.toFloat() to height / 2f
+                    a * i + paddingLeft to b
                 }
                 if (getSectionI() == i && floatingFactor == 0f) {
                     val tmp = paint.typeface
@@ -103,13 +110,17 @@ class AlphabetScrollbar(
 
     private var currentSection = -1
 
+    private inline fun scrollTo(i: Int) {
+        listView.smoothScrollToPositionFromTop(i, listView.paddingTop, 150)
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
                 val i = coordsToIndex(event.x, event.y)
                 currentSection = i
                 sectionIndexer?.getPositionForSection(i)?.let {
-                    listView.smoothScrollToPositionFromTop(it, paddingTop, 150)
+                    scrollTo(it)
                     if (sectionIndexer is HighlightAdapter) {
                         (sectionIndexer as HighlightAdapter).highlight(it)
                         listView.invalidateViews()
@@ -127,7 +138,7 @@ class AlphabetScrollbar(
                     val i = coordsToIndex(event.x, event.y)
                     currentSection = i
                     sectionIndexer?.getPositionForSection(i)?.let { it1 ->
-                        listView.smoothScrollToPositionFromTop(it1, paddingTop, 150)
+                        scrollTo(it1)
                         if (sectionIndexer is HighlightAdapter) {
                             (sectionIndexer as HighlightAdapter).highlight(it1)
                             listView.invalidateViews()
@@ -154,12 +165,12 @@ class AlphabetScrollbar(
 
     private fun coordsToIndex(x: Float, y: Float): Int {
         if (orientation == VERTICAL) {
-            val out = ((y - paddingTop) / (height - paddingTop - paddingBottom) * sectionIndexer!!.sections.size).roundToInt()
+            val out = ((y - paddingTop) / (height - paddingTop - paddingBottom) * sectionIndexer!!.sections.lastIndex).roundToInt()
             if (out < 0) return 0
             if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
             return out
         } else {
-            val out = ((x - paddingStart) / (width - paddingStart - paddingEnd) * sectionIndexer!!.sections.size).roundToInt()
+            val out = ((x - paddingLeft) / (width - paddingLeft - paddingRight) * sectionIndexer!!.sections.lastIndex).roundToInt()
             if (out < 0) return 0
             if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
             return out

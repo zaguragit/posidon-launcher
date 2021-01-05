@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherApps
-import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
@@ -17,12 +15,9 @@ import android.os.*
 import android.util.Log
 import android.view.*
 import android.view.View.*
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.AdapterView
-import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
@@ -38,6 +33,7 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.AlphabetScrollbar
+import posidon.launcher.view.AlphabetScrollbarWrapper
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.*
@@ -57,15 +53,17 @@ class Home : AppCompatActivity() {
 
     val feed by lazy { findViewById<Feed>(R.id.feed) }
 
-    val drawerScrollBar by lazy { AlphabetScrollbar(drawer.drawerGrid, AlphabetScrollbar.VERTICAL) }
+    val drawerScrollBar by lazy { AlphabetScrollbarWrapper(drawer.drawerGrid, AlphabetScrollbar.VERTICAL) }
+
+    val homeView by lazy { findViewById<ViewGroup>(R.id.homeView) }
 
     private val dock by lazy { drawer.dock }
 
     private val blurBg = LayerDrawable(arrayOf<Drawable>(
-            ColorDrawable(0x0),
-            ColorDrawable(0x0),
-            ColorDrawable(0x0),
-            ColorDrawable(0x0)
+        ColorDrawable(0),
+        ColorDrawable(0),
+        ColorDrawable(0),
+        ColorDrawable(0)
     ))
 
     private val batteryInfoReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -101,105 +99,9 @@ class Home : AppCompatActivity() {
 
     private fun setCustomizations() {
 
-        fun setSearchHintText(text: String) {
-            drawer.searchTxt.text = text
-            dock.searchTxt.text = text
-        }
-
-        fun setDrawerSearchbarBGColor(color: Int) {
-            val bg = ShapeDrawable()
-            val tr = Settings["searchradius", 0].dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-            bg.paint.color = color
-            drawer.searchBar.background = bg
-        }
-
-        fun setDrawerSearchbarRadius(radius: Int) {
-            val bg = ShapeDrawable()
-            val tr = radius.dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
-            bg.paint.color = Settings["searchcolor", 0x33000000]
-            drawer.searchBar.background = bg
-        }
-
-        fun setDrawerSearchbarFGColor(color: Int) {
-            drawer.searchTxt.setTextColor(color)
-            val searchIcon = drawer.searchIcon
-            searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
-        }
-
-        fun setDrawerSearchBarVisible(visible: Boolean) {
-            if (visible) {
-                drawer.drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 56.dp.toInt())
-                drawer.searchBar.setPadding(0, 0, 0, Tools.navbarHeight)
-                drawer.searchBar.visibility = VISIBLE
-            } else {
-                drawer.searchBar.visibility = GONE
-                drawer.drawerGrid.setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
-            }
-        }
-
-        fun setDockSearchbarBGColor(color: Int) {
-            val bg = ShapeDrawable()
-            val tr = Settings["dock:search:radius", 30].dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-            bg.paint.color = color
-            dock.searchBar.background = bg
-        }
-
-        fun setDockSearchbarRadius(radius: Int) {
-            val bg = ShapeDrawable()
-            val tr = radius.dp
-            bg.shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, tr, tr, tr, tr), null, null)
-            bg.paint.color = Settings["docksearchcolor", -0x22000001]
-            dock.searchBar.background = bg
-        }
-
-        fun setDockSearchbarFGColor(color: Int) {
-            dock.searchTxt.setTextColor(color)
-            val dickSearchIcon = dock.searchIcon
-            dickSearchIcon.imageTintList = ColorStateList.valueOf(color)
-            val battery = dock.battery
-            battery.progressTintList = ColorStateList.valueOf(color)
-            battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
-            battery.progressBackgroundTintList = ColorStateList.valueOf(color)
-            battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            (dock.battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
-        }
-
-        fun setDockSearchBarVisible(visible: Boolean) {
-            if (visible) {
-                dock.searchBar.visibility = VISIBLE
-                dock.battery.visibility = VISIBLE
-            } else {
-                dock.searchBar.visibility = GONE
-                dock.battery.visibility = GONE
-            }
-        }
-
-        fun setDockSearchbarBelowApps(isBelow: Boolean) {
-            if (isBelow) {
-                dock.searchBar.bringToFront()
-            } else {
-                dock.containerContainer.bringToFront()
-            }
-        }
-
-        fun setDockHorizontalMargin(margin: Int) {
-            val m = margin.dp.toInt()
-            dock.setPadding(m, 0, m, 0)
-        }
-
         feed.update(this, drawer)
 
-        dock.updateBG(drawer)
-
-        setDockSearchBarVisible(Settings["docksearchbarenabled", false])
-        setDockSearchbarBelowApps(Settings["dock:search:below_apps", true])
-        setDockSearchbarBGColor(Settings["docksearchcolor", -0x22000001])
-        setDockSearchbarFGColor(Settings["docksearchtxtcolor", -0x1000000])
-        setDockSearchbarRadius(Settings["dock:search:radius", 30])
-        setDockHorizontalMargin(Settings["dock:margin_x", 16])
+        dock.updateTheme(drawer)
 
         if (Global.shouldSetApps) {
             AppLoader(this@Home, onAppLoaderEnd).execute()
@@ -223,63 +125,12 @@ class Home : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
 
-        setDrawerSearchBarVisible(Settings["drawersearchbarenabled", true])
-        setDrawerSearchbarBGColor(Settings["searchcolor", 0x33000000])
-        setDrawerSearchbarFGColor(Settings["searchtxtcolor", -0x1])
-        setDrawerSearchbarRadius(Settings["searchradius", 0])
+        drawer.updateTheme()
 
-        setSearchHintText(Settings["searchhinttxt", "Search.."])
-
-        run { // setDrawerScrollbarEnabled
-            (drawerScrollBar.parent as ViewGroup?)?.removeView(drawerScrollBar)
-            if (Settings["drawer:scrollbar:enabled", false]) {
-                val scrollbarWidth = Settings["drawer:scrollbar:width", 24].dp.toInt()
-                drawerScrollBar.visibility = VISIBLE
-                drawerScrollBar.textColor = Settings["drawer:scrollbar:text_color", 0xaaeeeeee.toInt()]
-                drawerScrollBar.highlightColor = Settings["drawer:scrollbar:highlight_color", 0xffffffff.toInt()]
-                drawerScrollBar.floatingColor = Settings["drawer:scrollbar:floating_color", 0xffffffff.toInt()]
-                drawerScrollBar.setBackgroundColor(Settings["drawer:scrollbar:bg_color", 0])
-                drawerScrollBar.updateTheme()
-                drawer.drawerGrid.layoutParams = (drawer.drawerGrid.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                    marginEnd = if (Settings["drawer:sections_enabled", false]) 0 else scrollbarWidth
-                }
-                if (Settings["drawer:scrollbar:show_outside", false]) {
-                    findViewById<ViewGroup>(R.id.homeView).addView(drawerScrollBar)
-                    drawerScrollBar.layoutParams = (drawerScrollBar.layoutParams as CoordinatorLayout.LayoutParams).apply {
-                        width = scrollbarWidth
-                        height = Device.displayHeight
-                        gravity = Gravity.END or Gravity.BOTTOM
-                    }
-                    feed.layoutParams = (feed.layoutParams as ViewGroup.MarginLayoutParams).apply { marginEnd = scrollbarWidth }
-                    drawerScrollBar.setPadding(0, getStatusBarHeight(), 0, dock.dockHeight)
-                    drawerScrollBar.onStartScroll = {
-                        if (drawer.state != STATE_EXPANDED)
-                            drawer.state = STATE_EXPANDED
-                    }
-                    drawerScrollBar.onCancelScroll = { drawer.state = STATE_COLLAPSED }
-                    drawerScrollBar.floatingFactor = 1f
-                    drawerScrollBar.alpha = 1f
-                } else {
-                    drawer.drawerContent.addView(drawerScrollBar)
-                    drawerScrollBar.layoutParams = (drawerScrollBar.layoutParams as FrameLayout.LayoutParams).apply {
-                        width = scrollbarWidth
-                        height = MATCH_PARENT
-                        gravity = Gravity.END or Gravity.TOP
-                    }
-                    feed.layoutParams = (feed.layoutParams as ViewGroup.MarginLayoutParams).apply { marginEnd = 0 }
-                    drawerScrollBar.setPadding(0, (drawer.drawerGrid.paddingTop + getStatusBarHeight() + Settings["dockbottompadding", 10].dp).roundToInt(), 0, drawer.drawerGrid.paddingBottom)
-                    drawerScrollBar.onStartScroll = {}
-                    drawerScrollBar.onCancelScroll = {}
-                    drawerScrollBar.floatingFactor = 0f
-                }
-                drawerScrollBar.bringToFront()
-            } else  {
-                drawerScrollBar.visibility = GONE
-                feed.layoutParams = (feed.layoutParams as ViewGroup.MarginLayoutParams).apply { marginEnd = 0 }
-                drawer.drawerGrid.layoutParams = (drawer.drawerGrid.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                    marginEnd = 0
-                }
-            }
+        run {
+            val searchHint = Settings["searchhinttxt", "Search.."]
+            drawer.searchTxt.text = searchHint
+            dock.searchTxt.text = searchHint
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -329,7 +180,7 @@ class Home : AppCompatActivity() {
 
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
-        feed.apply {
+        feed.run {
             onTopOverScroll = {
                 if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                     Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
@@ -422,9 +273,13 @@ class Home : AppCompatActivity() {
                                 }
                             }
                         } catch (e: Exception) { e.printStackTrace() }
-                    } else if (!Settings["feed:show_behind_dock", false]) {
-                        (feed.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
-                        feed.requestLayout()
+                    } else {
+                        val scrollbarPosition = Settings["drawer:scrollbar:position", 1]
+                        if (scrollbarPosition == 2) drawerScrollBar.translationY = drawerScrollBar.height.toFloat() * -slideOffset
+                        if (!Settings["feed:show_behind_dock", false]) {
+                            (feed.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
+                            feed.requestLayout()
+                        }
                     }
                     dock.alpha = inverseOffset
                 }
@@ -434,7 +289,9 @@ class Home : AppCompatActivity() {
         setCustomizations()
         feed.loadNews(this)
 
-        findViewById<View>(R.id.homeView).setOnTouchListener { v, event ->
+
+
+        homeView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Home).sendWallpaperCommand(
                     v.windowToken,

@@ -166,6 +166,23 @@
                     app:key="drawer:scrollbar:width"
                     app:def="24"
                     app:max="64"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_sections"
+                    app:label="@string/reserve_space"
+                    app:key="drawer:scrollbar:reserve_space"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.SpinnerSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/position"
+                    app:key="drawer:scrollbar:position"
+                    app:def="1"
+                    app:array="@array/scrollBarPosition"/>
             </LinearLayout>
 
             <LinearLayout

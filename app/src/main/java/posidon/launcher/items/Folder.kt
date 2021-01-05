@@ -178,22 +178,6 @@ class Folder(string: String) : LauncherItem() {
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
             }
-            val location = IntArray(2)
-            view.getLocationInWindow(location)
-            val gravity = if (location[0] > Device.displayWidth / 2) {
-                Gravity.END
-            } else {
-                Gravity.START
-            }
-            val x = if (location[0] > Device.displayWidth / 2) {
-                Device.displayWidth - location[0] - view.measuredWidth
-            } else {
-                location[0]
-            }
-            var y = (-view.y + view.height * Settings["dock:rows", 1] + Tools.navbarHeight + (Settings["dockbottompadding", 10] + 14).dp).toInt()
-            if (Settings["docksearchbarenabled", false] && Settings["dock:search:below_apps", true] && !context.isTablet) {
-                y += 68.dp.toInt()
-            }
             popupWindow.contentView.setOnDragListener { _, event ->
                 when (event.action) {
                     DragEvent.ACTION_DRAG_LOCATION -> {
@@ -259,6 +243,7 @@ class Folder(string: String) : LauncherItem() {
                 }
                 true
             }
+            val (x, y, gravity) = Tools.getPopupLocationFromView(view)
             popupWindow.showAtLocation(view, Gravity.BOTTOM or gravity, x, y)
         }
     }
