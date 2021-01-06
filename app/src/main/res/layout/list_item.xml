@@ -32,8 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:maxLines="1"
         android:textColor="@color/cardtxt"
         android:layout_marginStart="12dp"
-        android:singleLine="true"/>
+        android:marqueeRepeatLimit="marquee_forever"/>
 </LinearLayout>

@@ -39,7 +39,6 @@ class DrawerView : LinearLayout {
         }
         if (!searchBarEnabled) {
             searchBar.visibility = GONE
-            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + 12.dp.toInt())
             return
         }
         searchBar.visibility = VISIBLE

@@ -1,9 +1,9 @@
 package posidon.launcher.view.groupView
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -15,6 +15,7 @@ import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.sp
 import kotlin.math.min
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
@@ -33,9 +34,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             1 -> {
                 orientation = HORIZONTAL
                 textView.layoutParams.run {
-                    width = WRAP_CONTENT
+                    width = 28.sp.toInt()
                 }
-                textView.setPaddingRelative(12.dp.toInt(), 0, 0, 0)
+                textView.gravity = Gravity.END
+                textView.setPaddingRelative(0, 0, 0, 0)
             }
         }
 
