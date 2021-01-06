@@ -275,9 +275,7 @@ class DockView : LinearLayout {
         val addition = home.drawerScrollBar.updateTheme(drawer, feed, this)
         dockHeight += addition
         container.layoutParams.height = containerHeight
-        containerContainer.layoutParams = (containerContainer.layoutParams as MarginLayoutParams).apply {
-            bottomMargin = addition
-        }
+        setPadding(0, 0, 0, addition)
         drawer.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
         val metrics = DisplayMetrics()
         home.windowManager.defaultDisplay.getRealMetrics(metrics)

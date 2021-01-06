@@ -79,6 +79,23 @@
                     app:label="@string/appLabels"
                     app:key="labelsenabled"
                     app:def="false"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/max_lines"
+                    app:key="drawer:labels:max_lines"
+                    app:startsWith1="true"
+                    app:def="1"
+                    app:max="3"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_arrow_right"
+                    app:label="@string/marquee"
+                    app:key="drawer:labels:marquee"
+                    app:def="true"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

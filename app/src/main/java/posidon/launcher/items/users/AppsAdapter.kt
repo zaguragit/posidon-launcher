@@ -22,6 +22,12 @@ class AppsAdapter(
     override fun getItem(position: Int) = null
     override fun getItemId(position: Int): Long = 0
 
+    private val appSize = when (Settings["icsize", 1]) {
+        0 -> 64.dp.toInt()
+        2 -> 84.dp.toInt()
+        else -> 74.dp.toInt()
+    }
+
     class ViewHolder(
         var icon: ImageView,
         var iconFrame: View,
@@ -29,36 +35,34 @@ class AppsAdapter(
 
     override fun getView(position: Int, cv: View?, parent: ViewGroup): View? {
         var convertView = cv
-        val viewHolder: ViewHolder
+        val holder: ViewHolder
+        val app = apps[position]
         if (convertView == null) {
             val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, parent, false) else {
                 convertView = li.inflate(R.layout.list_item, parent, false)
                 if (Settings["drawer:columns", 4] == 2) convertView.findViewById<TextView>(R.id.icontxt).textSize = 18f
             }
-            viewHolder = ViewHolder(
+            holder = ViewHolder(
                 convertView.findViewById(R.id.iconimg),
                 convertView.findViewById(R.id.iconFrame),
                 convertView.findViewById(R.id.icontxt))
-            convertView.tag = viewHolder
-        } else viewHolder = convertView.tag as ViewHolder
 
-        val app = apps[position]
-        viewHolder.icon.setImageDrawable(app.icon)
-        if (Settings["labelsenabled", false]) {
-            viewHolder.text.text = app.label
-            viewHolder.text.visibility = View.VISIBLE
-            viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
-        } else viewHolder.text.visibility = View.INVISIBLE
+            if (Settings["labelsenabled", false]) {
+                holder.text.text = app.label
+                holder.text.visibility = View.VISIBLE
+                holder.text.setTextColor(Settings["labelColor", -0x11111112])
+            } else holder.text.visibility = View.INVISIBLE
 
-        var appSize = 0
-        when (Settings["icsize", 1]) {
-            0 -> appSize = 64.dp.toInt()
-            1 -> appSize = 74.dp.toInt()
-            2 -> appSize = 84.dp.toInt()
+            holder.iconFrame.layoutParams.height = appSize
+            holder.iconFrame.layoutParams.width = appSize
+
+            convertView.tag = holder
+        } else {
+            holder = convertView.tag as ViewHolder
+            holder.text.text = app.label
         }
-        viewHolder.iconFrame.layoutParams.height = appSize
-        viewHolder.iconFrame.layoutParams.width = appSize
+        holder.icon.setImageDrawable(app.icon)
         return convertView
     }
 

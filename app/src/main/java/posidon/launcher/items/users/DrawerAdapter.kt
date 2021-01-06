@@ -1,6 +1,7 @@
 package posidon.launcher.items.users
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,14 +32,14 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         val text: TextView,
         val notificationBadge: TextView)
 
-    override fun getView(i: Int, cv: View?, parent: ViewGroup): View? {
+    override fun getView(i: Int, cv: View?, parent: ViewGroup): View {
         var convertView = cv
         val holder: ViewHolder
         val app = Global.apps[i]
         if (convertView == null) {
             val li = Tools.appContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
-            else li.inflate(R.layout.list_item, parent, false)
+                else li.inflate(R.layout.list_item, parent, false)
             holder = ViewHolder(
                 convertView.findViewById(R.id.iconimg),
                 convertView.findViewById(R.id.iconFrame),
@@ -52,15 +53,18 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
                 holder.text.setTextColor(Settings["labelColor", -0x11111112])
+                val maxLines = Settings["drawer:labels:max_lines", 1]
+                holder.text.isSingleLine = maxLines == 1
+                holder.text.maxLines = maxLines
+                holder.text.ellipsize = if (Settings["drawer:labels:marquee", true] && maxLines == 1) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
+                holder.text.isSelected = true
+                holder.text.isHorizontalFadingEdgeEnabled = true
+                holder.text.setFadingEdgeLength(5.dp.toInt())
             } else holder.text.visibility = View.INVISIBLE
 
         } else {
             holder = convertView.tag as ViewHolder
-
-            if (Settings["labelsenabled", false]) {
-                holder.text.text = app.label
-                holder.text.setTextColor(Settings["labelColor", -0x11111112])
-            }
+            holder.text.text = app.label
         }
         convertView!!.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
         holder.icon.setImageDrawable(app.icon)

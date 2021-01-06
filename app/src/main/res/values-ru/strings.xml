@@ -209,6 +209,8 @@
     <string name="width">Width</string>
     <string name="reserve_space">Reserve space</string>
     <string name="position">Position</string>
+    <string name="max_lines">Max lines</string>
+    <string name="marquee">Marquee</string>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>
