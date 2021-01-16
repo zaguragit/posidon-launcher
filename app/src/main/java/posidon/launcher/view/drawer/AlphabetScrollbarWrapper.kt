@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.drawer
 
 import android.annotation.SuppressLint
 import android.util.AttributeSet
@@ -14,9 +14,6 @@ import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
-import posidon.launcher.view.drawer.BottomDrawerBehavior
-import posidon.launcher.view.drawer.DockView
-import posidon.launcher.view.drawer.DrawerView
 import kotlin.math.roundToInt
 
 class AlphabetScrollbarWrapper(

@@ -15,7 +15,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.recyclerview.widget.RecyclerView
-import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.App
@@ -28,7 +27,7 @@ import posidon.launcher.view.LinearLayoutManager
 object ItemLongPress {
 
     var currentPopup: PopupWindow? = null
-    fun makePopupWindow(context: Context, onEdit: (View) -> Unit, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, item: LauncherItem): PopupWindow {
+    fun makePopupWindow(context: Context, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, item: LauncherItem): PopupWindow {
 
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "popup"
@@ -87,9 +86,11 @@ object ItemLongPress {
             (editBtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
         }
 
-        editBtn.setOnClickListener {
-            window.dismiss()
-            onEdit(it)
+        if (onEdit == null) editBtn.visibility = View.GONE else {
+            editBtn.setOnClickListener {
+                window.dismiss()
+                onEdit(it)
+            }
         }
 
         if (onRemove == null) removeBtn.visibility = View.GONE else {
@@ -109,7 +110,7 @@ object ItemLongPress {
         return window
     }
 
-    fun showPopupWindow(context: Context, view: View, item: LauncherItem, onEdit: (View) -> Unit, onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view) {
+    fun showPopupWindow(context: Context, view: View, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view) {
         if (currentPopup == null) {
             context.vibrate()
 
@@ -119,14 +120,14 @@ object ItemLongPress {
 
             val realItem = if (folderI != -1 && item is Folder) item.items[folderI] else item
 
-            val popupWindow = makePopupWindow(context, onEdit, onRemove, if (item is App) ({
+            val popupWindow = makePopupWindow(context, onEdit, onRemove, if (realItem is App) ({
                 val color = item.getColor()
                 val hsv = FloatArray(3)
                 Color.colorToHSV(color, hsv)
                 if (hsv[2] > 0.5f) {
                     hsv[2] = 0.5f
                 }
-                item.showProperties(context, Color.HSVToColor(hsv))
+                realItem.showProperties(context, Color.HSVToColor(hsv))
             }) else null, realItem)
 
             if (!Settings["locked", false]) {
@@ -154,15 +155,5 @@ object ItemLongPress {
 
             popupWindow.showAtLocation(parentView, gravity, x, y)
         }
-    }
-
-    fun insideFolder(context: Context, app: App, i: Int, v: View, folderI: Int, folderWindow: PopupWindow, folder: Folder) = View.OnLongClickListener { view ->
-        showPopupWindow(context, view, folder, onRemove = {
-            folderWindow.dismiss()
-            folder.items.removeAt(folderI)
-            Dock[i] = if (folder.items.size == 1) folder.items[0] else folder
-            Home.instance.setDock()
-        }, onEdit = { app.showAppEditDialog(context, v) }, dockI = i, folderI = folderI, parentView = v)
-        true
     }
 }

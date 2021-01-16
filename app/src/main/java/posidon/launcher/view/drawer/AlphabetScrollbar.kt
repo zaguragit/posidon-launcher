@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.drawer
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -6,13 +6,13 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.AbsListView
-import android.widget.SectionIndexer
+import android.widget.*
 import androidx.annotation.IntDef
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
+import posidon.launcher.view.HighlightAdapter
 import kotlin.math.roundToInt
 
 open class AlphabetScrollbar(
@@ -111,7 +111,7 @@ open class AlphabetScrollbar(
     private var currentSection = -1
 
     private inline fun scrollTo(i: Int) {
-        listView.smoothScrollToPositionFromTop(i, listView.paddingTop, 150)
+        listView.smoothScrollToPositionFromTop(i, listView.height / 2, 150)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

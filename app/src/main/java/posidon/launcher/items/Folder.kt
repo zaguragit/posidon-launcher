@@ -248,8 +248,8 @@ class Folder(string: String) : LauncherItem() {
         }
     }
 
-    private fun createItem(i1: Int, context: Context, container: GridLayout?, appSize: Int, labelsEnabled: Boolean, notifBadgesEnabled: Boolean, notifBadgesShowNum: Boolean, popupWindow: PopupWindow, i: Int, view: View): View? {
-        val item = items[i1]
+    private fun createItem(folderI: Int, context: Context, container: GridLayout?, appSize: Int, labelsEnabled: Boolean, notifBadgesEnabled: Boolean, notifBadgesShowNum: Boolean, popupWindow: PopupWindow, i: Int, view: View): View? {
+        val item = items[folderI]
         val appIcon = LayoutInflater.from(context).inflate(R.layout.drawer_item, container, false)
         val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
         appIcon.findViewById<View>(R.id.iconFrame).run {
@@ -278,7 +278,15 @@ class Folder(string: String) : LauncherItem() {
                 item.open(context, v)
                 popupWindow.dismiss()
             }
-            appIcon.setOnLongClickListener(ItemLongPress.insideFolder(context, item, i, view, i1, popupWindow, this))
+            appIcon.setOnLongClickListener { v ->
+                ItemLongPress.showPopupWindow(context, v, this, onRemove = {
+                    popupWindow.dismiss()
+                    items.removeAt(folderI)
+                    Dock[i] = if (items.size == 1) items[0] else this
+                    Home.instance.setDock()
+                }, onEdit = null, dockI = i, folderI = folderI, parentView = view)
+                true
+            }
         } else if (item is Shortcut) {
             appIcon.setOnClickListener { v ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
