@@ -284,9 +284,7 @@ class SearchActivity : AppCompatActivity() {
             grid.setOnItemLongClickListener { _, view, i, _ ->
                 val app = results[i]
                 if (app is App) {
-                    ItemLongPress.showPopupWindow(this, view, app, {
-                        app.showAppEditDialog(this@SearchActivity, it)
-                    }, null)
+                    ItemLongPress.showPopupWindow(this, view, app, null, null)
                 }
                 true
             }

@@ -14,19 +14,22 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
-        <TextView
+        <EditText
+            style="@style/settingsInput"
             android:id="@+id/appname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="56dp"
+            android:imeOptions="actionGo"
+            android:inputType="textNoSuggestions"
+            android:hint="@string/app_name_hint"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
             android:gravity="start|center_vertical"
             android:textColor="#ffffff"
-            android:layout_marginStart="12dp"
-            android:textSize="32sp"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textSize="32sp"/>
         <ImageView
             android:id="@+id/openinsettings"
             android:layout_width="56dp"
@@ -34,6 +37,7 @@
             android:layout_gravity="end|center_vertical"
             android:src="@drawable/ic_settings"
             android:padding="8dp"
+            android:layout_marginEnd="-6dp"
             android:tint="#ffffff"/>
     </LinearLayout>
     <LinearLayout
@@ -42,11 +46,24 @@
         android:layout_height="128dp"
         android:orientation="horizontal"
         android:layout_marginBottom="10dp">
-        <ImageView
-            android:id="@+id/iconimg"
+        <FrameLayout
+            android:id="@+id/iconFrame"
             android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:padding="12dp"/>
+            android:layout_height="128dp">
+            <ImageView
+                android:id="@+id/iconimg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:id="@+id/edit"
+                android:background="@drawable/button_bg_round"
+                android:backgroundTint="#1155ff"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_edit"/>
+        </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="128dp"

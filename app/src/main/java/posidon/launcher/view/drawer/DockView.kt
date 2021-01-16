@@ -259,7 +259,7 @@ class DockView : LinearLayout {
                     ItemLongPress.showPopupWindow(context, view, item, onRemove = {
                         Dock[i] = null
                         Home.instance.setDock()
-                    }, onEdit = { item.showAppEditDialog(context, it) }, dockI = i)
+                    }, onEdit = null, dockI = i)
                     true
                 }
             }

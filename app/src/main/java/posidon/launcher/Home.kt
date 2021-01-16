@@ -32,9 +32,9 @@ import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.drawable.FastBitmapDrawable
 import posidon.launcher.tutorial.WelcomeActivity
-import posidon.launcher.view.AlphabetScrollbar
-import posidon.launcher.view.AlphabetScrollbarWrapper
 import posidon.launcher.view.ResizableLayout
+import posidon.launcher.view.drawer.AlphabetScrollbar
+import posidon.launcher.view.drawer.AlphabetScrollbarWrapper
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.*
 import posidon.launcher.view.drawer.DrawerView
@@ -83,7 +83,7 @@ class Home : AppCompatActivity() {
             drawer.drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(this@Home, v) }
             drawer.drawerGrid.setOnItemLongClickListener { _, view, position, _ ->
                 val app = Global.apps[position]
-                ItemLongPress.showPopupWindow(this, view, app, { app.showAppEditDialog(this, it) }, null)
+                ItemLongPress.showPopupWindow(this, view, app, null, null)
                 true
             }
         }

@@ -79,8 +79,24 @@ class App(
         val g = context.getDrawable(R.drawable.bottom_sheet) as GradientDrawable
         g.setColor(appcolor)
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).background = g
-        d.findViewById<TextView>(R.id.appname)!!.text = label
-        d.findViewById<ImageView>(R.id.iconimg)!!.setImageBitmap(icon!!.toBitmap())
+        val appName = d.findViewById<EditText>(R.id.appname)!!.apply {
+            setText(label)
+        }
+        d.findViewById<View>(R.id.iconFrame)!!.run {
+            findViewById<ImageView>(R.id.iconimg)!!.run {
+                setImageBitmap(icon!!.toBitmap())
+            }
+            Palette.from(icon!!.toBitmap()).generate {
+                if (it != null)
+                    findViewById<View>(R.id.edit)!!.backgroundTintList = ColorStateList.valueOf(it.getDarkVibrantColor(it.getDarkMutedColor(0xff1155ff.toInt())))
+            }
+            setOnClickListener {
+                val intent = Intent(context, CustomAppIcon::class.java)
+                intent.putExtra("key", "app:${this@App}:icon")
+                context.startActivity(intent)
+                d.dismiss()
+            }
+        }
         try {
             d.findViewById<TextView>(R.id.version)!!.text = context.packageManager.getPackageInfo(packageName, 0).versionName
         } catch (ignored: PackageManager.NameNotFoundException) {}
@@ -100,6 +116,11 @@ class App(
             val uninstallIntent = Intent("android.intent.action.DELETE")
             uninstallIntent.data = Uri.parse("package:$packageName")
             context.startActivity(uninstallIntent)
+        }
+        d.setOnDismissListener {
+            Settings["$packageName/$name?label"] = appName.text.toString().replace('\t', ' ')
+            Global.shouldSetApps = true
+            Home.instance.setDock()
         }
         d.show()
     }
@@ -129,11 +150,12 @@ class App(
 
     override fun getColor(): Int {
         val palette = Palette.from(icon!!.toBitmap()).generate()
-        var color = palette.getDominantColor(-0xdad9d9)
+        val def = -0xdad9d9
+        var color = palette.getDominantColor(def)
         val hsv = FloatArray(3)
         Color.colorToHSV(color, hsv)
         if (hsv[1] < 0.2f) {
-            color = palette.getVibrantColor(-0xdad9d9)
+            color = palette.getVibrantColor(def)
         }
         return color
     }

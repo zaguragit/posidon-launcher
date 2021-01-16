@@ -93,7 +93,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             setOnClickListener { item.open(context, it) }
             setOnLongClickListener {
-                ItemLongPress.showPopupWindow(context, it, item, { item.showAppEditDialog(context, it) }, null)
+                ItemLongPress.showPopupWindow(context, it, item, null, null)
                 true
             }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
