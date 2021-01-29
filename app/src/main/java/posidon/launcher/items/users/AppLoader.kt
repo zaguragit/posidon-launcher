@@ -28,13 +28,13 @@ class AppLoader (
 
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
+    private var tmpHidden = ArrayList<App>()
     private val context: WeakReference<Context> = WeakReference(context)
     private var lock = ReentrantLock()
 
     fun execute() { thread(isDaemon = true, block = ::run) }
     fun run() {
         lock.lock()
-        App.hidden.clear()
         val packageManager = context.get()!!.packageManager
         val iconSize = 65.dp.toInt()
         val iconPackName = Settings["iconpack", "system"]
@@ -169,7 +169,7 @@ class AppLoader (
 
                 putInSecondMap(app)
                 if (Settings["app:$app:hidden", false]) {
-                    App.hidden.add(app)
+                    tmpHidden.add(app)
                 } else {
                     tmpApps.add(app)
                 }
@@ -207,22 +207,13 @@ class AppLoader (
         }
 
         lock.unlock()
-        System.gc()
 
         Home.instance.runOnUiThread {
-            run {
-                val tmp = Global.apps
-                Global.apps = tmpApps
-                tmp.clear()
-            }
-            run {
-                val tmp = Global.appSections
-                Global.appSections = tmpAppSections
-                tmp.clear()
-            }
-            App.setMapAndClearLast(appsByName)
+            App.onFinishLoad(tmpApps, tmpAppSections, tmpHidden, appsByName)
             onEnd()
         }
+
+        System.gc()
     }
 
     class Callback(

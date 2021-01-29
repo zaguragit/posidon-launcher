@@ -69,9 +69,9 @@ class Shortcut : LauncherItem {
         }
     }
 
+    inline fun isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
+
     companion object {
         val pinnedShortcuts = HashMap<String, Shortcut>()
     }
 }
-
-inline fun Shortcut.isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)

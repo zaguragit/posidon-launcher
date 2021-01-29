@@ -31,7 +31,6 @@ import kotlin.math.min
 class DockView : LinearLayout {
 
     fun updateTheme(drawer: View) {
-
         layoutParams = (layoutParams as MarginLayoutParams).apply {
             val m = Settings["dock:margin_x", 16].dp.toInt()
             leftMargin = m
@@ -86,8 +85,6 @@ class DockView : LinearLayout {
                 Log.e("posidon launcher", "dock:background_type can't be $bgType")
             }
         }
-
-
         if (!Settings["docksearchbarenabled", false]) {
             searchBar.visibility = GONE
             battery.visibility = GONE
@@ -182,10 +179,10 @@ class DockView : LinearLayout {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Settings["dock:margin_x", 16].dp.toInt()
         val appSize = min(when (Settings["dockicsize", 1]) {
-            0 -> 64.dp.toInt()
-            2 -> 84.dp.toInt()
-            else -> 74.dp.toInt()
-        }, (Device.displayWidth - marginX * 2) / columnCount)
+            0 -> 64
+            2 -> 84
+            else -> 74
+        }.dp.toInt(), (Device.displayWidth - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
@@ -195,8 +192,7 @@ class DockView : LinearLayout {
             this.columnCount = columnCount
             this.rowCount = rowCount
         }
-        var i = 0
-        while (i < columnCount * rowCount) {
+        loop@ for (i in 0 until columnCount * rowCount) {
             val view = LayoutInflater.from(context).inflate(R.layout.drawer_item, container, false)
             val img = view.findViewById<ImageView>(R.id.iconimg)
             view.findViewById<View>(R.id.iconFrame).run {
@@ -211,60 +207,51 @@ class DockView : LinearLayout {
             } else {
                 label.visibility = GONE
             }
-            if (item is Folder) {
+            if (item != null) {
                 img.setImageDrawable(item.icon)
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
-                    val notificationCount = item.calculateNotificationCount()
-                    if (notificationCount != 0) {
+                    val c = item.notificationCount
+                    if (c != 0) {
                         badge.visibility = View.VISIBLE
-                        badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
+                        badge.text = if (notifBadgesShowNum) c.toString() else ""
                         ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
                     } else { badge.visibility = View.GONE }
                 } else { badge.visibility = View.GONE }
-
-                val finalI = i
-                view.setOnClickListener { item.open(context, view, finalI) }
-                view.setOnLongClickListener { item.onLongPress(context, finalI, view); true }
-            } else if (item is Shortcut) {
-                if (item.isInstalled(context.packageManager)) {
-                    img.setImageDrawable(item.icon)
-                    view.setOnClickListener {
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) item.open(context, it)
+                when (item) {
+                    is Folder -> {
+                        view.setOnClickListener { item.open(context, view, i) }
+                        view.setOnLongClickListener { item.onLongPress(context, i, view); true }
                     }
-                } else {
-                    Dock[i] = null
-                    continue
-                }
-            } else if (item is App) {
-                if (!item.isInstalled(context.packageManager)) {
-                    Dock[i] = null
-                    continue
-                }
-                val badge = view.findViewById<TextView>(R.id.notificationBadge)
-                if (notifBadgesEnabled && item.notificationCount != 0) {
-                    badge.visibility = View.VISIBLE
-                    badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                    ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
-                        badge.background = bg
-                        badge.setTextColor(fg)
+                    is Shortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        if (!item.isInstalled(context.packageManager)) {
+                            Dock[i] = null
+                            continue@loop
+                        }
+                        view.setOnClickListener {
+                            item.open(context, it)
+                        }
                     }
-                } else { badge.visibility = View.GONE }
-                img.setImageDrawable(item.icon)
-                view.setOnClickListener { item.open(context, it) }
-                view.setOnLongClickListener { view ->
-                    ItemLongPress.showPopupWindow(context, view, item, onRemove = {
-                        Dock[i] = null
-                        Home.instance.setDock()
-                    }, onEdit = null, dockI = i)
-                    true
+                    is App -> {
+                        if (!item.isInstalled(context.packageManager)) {
+                            Dock[i] = null
+                            continue@loop
+                        }
+                        view.setOnClickListener { item.open(context, it) }
+                        view.setOnLongClickListener { view ->
+                            ItemLongPress.onItemLongPress(context, view, item, onRemove = {
+                                Dock[i] = null
+                                loadApps(drawer, feed, desktopContent, home)
+                            }, onEdit = null, dockI = i)
+                            true
+                        }
+                    }
                 }
             }
             container.addView(view)
-            i++
         }
         val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp.toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !context.isTablet) {
@@ -272,13 +259,17 @@ class DockView : LinearLayout {
         } else {
             containerHeight + 14.dp.toInt()
         }
-        val addition = home.drawerScrollBar.updateTheme(drawer, feed, this)
+        val addition = drawer.scrollBar.updateTheme(drawer, feed, this)
         dockHeight += addition
         container.layoutParams.height = containerHeight
         setPadding(0, 0, 0, addition)
         drawer.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
         val metrics = DisplayMetrics()
-        home.windowManager.defaultDisplay.getRealMetrics(metrics)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            home.display?.getRealMetrics(metrics)
+        } else {
+            home.windowManager.defaultDisplay.getRealMetrics(metrics)
+        }
         drawer.drawerContent.layoutParams.height = metrics.heightPixels
         (home.homeView.layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
         if (Settings["feed:show_behind_dock", false]) {

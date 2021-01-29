@@ -112,7 +112,6 @@
     <string name="start">Start</string>
     <string name="remove">Remove</string>
     <string name="labelColor">Label color</string>
-    <string name="num_notifications">%1$d notifications</string>
     <string name="collapse_notifications">Collapse notifications</string>
     <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">App open anim</string>
@@ -211,6 +210,11 @@
     <string name="position">Position</string>
     <string name="max_lines">Max lines</string>
     <string name="marquee">Marquee</string>
+
+    <plurals name="num_notifications">
+        <item quantity="one">%1$d notification</item>
+        <item quantity="other">%1$d notifications</item>
+    </plurals>
 
     <array name="sortingAlgorithms">
         <item>Alphabetically</item>

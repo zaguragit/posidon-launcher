@@ -119,15 +119,16 @@ class Folder(string: String) : LauncherItem() {
         items.clear()
     }
 
-    fun calculateNotificationCount(): Int {
-        var count = 0
-        for (item in items) {
-            if (item is App) {
-                count += item.notificationCount
+    override val notificationCount: Int
+        get() {
+            var count = 0
+            for (item in items) {
+                if (item is App) {
+                    count += item.notificationCount
+                }
             }
+            return count
         }
-        return count
-    }
 
     fun open(context: Context, view: View, i: Int) {
         if (currentlyOpen == null) {
@@ -279,7 +280,7 @@ class Folder(string: String) : LauncherItem() {
                 popupWindow.dismiss()
             }
             appIcon.setOnLongClickListener { v ->
-                ItemLongPress.showPopupWindow(context, v, this, onRemove = {
+                ItemLongPress.onItemLongPress(context, v, this, onRemove = {
                     popupWindow.dismiss()
                     items.removeAt(folderI)
                     Dock[i] = if (items.size == 1) items[0] else this
@@ -299,7 +300,7 @@ class Folder(string: String) : LauncherItem() {
     }
 
     fun onLongPress(context: Context, i: Int, view: View) {
-        ItemLongPress.showPopupWindow(context, view, this, onRemove = {
+        ItemLongPress.onItemLongPress(context, view, this, onRemove = {
             Dock[i] = null
             Home.instance.setDock()
         }, onEdit = {

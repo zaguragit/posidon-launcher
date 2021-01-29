@@ -22,4 +22,6 @@ open class LauncherItem {
             }
         }
     }
+
+    open val notificationCount = 0
 }

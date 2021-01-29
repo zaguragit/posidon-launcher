@@ -17,7 +17,6 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.Shortcut
-import posidon.launcher.items.isInstalled
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import kotlin.math.min
@@ -61,7 +60,7 @@ class AddShortcutActivity : AppCompatActivity() {
             else -> 74.dp.toInt()
         }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
         var i = 0
-        while (i < columnCount * rowCount) {
+        loop@ while (i < columnCount * rowCount) {
             val view = LayoutInflater.from(applicationContext).inflate(R.layout.drawer_item, null)
             val img = view.findViewById<ImageView>(R.id.iconimg)
             view.findViewById<View>(R.id.iconFrame).run {
@@ -73,41 +72,45 @@ class AddShortcutActivity : AppCompatActivity() {
                 view.findViewById<TextView>(R.id.icontxt).text = item.label
                 view.findViewById<TextView>(R.id.icontxt).setTextColor(Settings["dockLabelColor", -0x11111112])
             }
-            if (item is Folder) {
-                img.setImageDrawable(item.icon)
-                val badge = view.findViewById<TextView>(R.id.notificationBadge)
-                if (notifBadgesEnabled) {
-                    val notificationCount = item.calculateNotificationCount()
-                    if (notificationCount != 0) {
+            when (item) {
+                is Folder -> {
+                    img.setImageDrawable(item.icon)
+                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                    if (notifBadgesEnabled) {
+                        val notificationCount = item.notificationCount
+                        if (notificationCount != 0) {
+                            badge.visibility = View.VISIBLE
+                            badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
+                            ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
+                                badge.background = bg
+                                badge.setTextColor(fg)
+                            }
+                        } else { badge.visibility = View.GONE }
+                    } else { badge.visibility = View.GONE }
+                }
+                is Shortcut -> {
+                    if (item.isInstalled(packageManager)) {
+                        img.setImageDrawable(item.icon)
+                    } else {
+                        Dock[i] = null
+                    }
+                }
+                is App -> {
+                    if (!item.isInstalled(packageManager)) {
+                        Dock[i] = null
+                        continue@loop
+                    }
+                    val badge = view.findViewById<TextView>(R.id.notificationBadge)
+                    if (notifBadgesEnabled && item.notificationCount != 0) {
                         badge.visibility = View.VISIBLE
-                        badge.text = if (notifBadgesShowNum) notificationCount.toString() else ""
-                        ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
+                        badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
+                        ThemeTools.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
                     } else { badge.visibility = View.GONE }
-                } else { badge.visibility = View.GONE }
-            } else if (item is Shortcut) {
-                if (item.isInstalled(packageManager)) {
                     img.setImageDrawable(item.icon)
-                } else {
-                    Dock[i] = null
                 }
-            } else if (item is App) {
-                if (!item.isInstalled(packageManager)) {
-                    Dock[i] = null
-                    continue
-                }
-                val badge = view.findViewById<TextView>(R.id.notificationBadge)
-                if (notifBadgesEnabled && item.notificationCount != 0) {
-                    badge.visibility = View.VISIBLE
-                    badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                    ThemeTools.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
-                        badge.background = bg
-                        badge.setTextColor(fg)
-                    }
-                } else { badge.visibility = View.GONE }
-                img.setImageDrawable(item.icon)
             }
             val finalI = i
             view.setOnClickListener {

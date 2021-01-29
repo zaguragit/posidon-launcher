@@ -112,7 +112,6 @@
     <string name="start">Старт</string>
     <string name="remove">Удалить</string>
     <string name="labelColor">Цвет текста</string>
-    <string name="num_notifications">%1$d уведомлений</string>
     <string name="collapse_notifications">Сворачивать уведомления</string>
     <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">Анимация открытия приложения</string>
@@ -211,6 +210,12 @@
     <string name="position">Position</string>
     <string name="max_lines">Max lines</string>
     <string name="marquee">Marquee</string>
+
+    <plurals name="num_notifications">
+        <item quantity="one">%1$d уведомление</item>
+        <item quantity="few">%1$d уведомления</item>
+        <item quantity="many">%1$d уведомлений</item>
+    </plurals>
 
     <array name="sortingAlgorithms">
         <item>По имени</item>

@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.external.Kustom
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
@@ -105,7 +104,6 @@ class CustomTheme : AppCompatActivity() {
         findViewById<ColorSettingView>(R.id.accentColorSetting).onSelected = {
             Global.accentColor = it
             Global.customized = true
-            Kustom["accent"] = Global.accentColor.toUInt().toString(16)
         }
 
         findViewById<Spinner>(R.id.iconBackgrounds).apply {

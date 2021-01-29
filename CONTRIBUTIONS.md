@@ -7,7 +7,7 @@
 ### Dependencies
 
 Avoid adding dependencies for trivial things, like image loading
-All dependencies must to be open-source and free
+All dependencies must be open-source and free
 
 ### Convenient functions
 

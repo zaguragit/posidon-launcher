@@ -111,9 +111,10 @@ class NotificationCards : LinearLayout, FeedSection {
         if (Settings["collapseNotifications", false]) {
             if (NotificationService.notificationsAmount > 1) {
                 parentNotification.visibility = VISIBLE
-                parentNotificationTitle.text = resources.getString(
-                        R.string.num_notifications,
-                        NotificationService.notificationsAmount
+                parentNotificationTitle.text = resources.getQuantityString(
+                    R.plurals.num_notifications,
+                    NotificationService.notificationsAmount,
+                    NotificationService.notificationsAmount
                 )
                 if (notifications.visibility == VISIBLE) {
                     parentNotification.background.alpha = 127

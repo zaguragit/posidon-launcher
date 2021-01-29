@@ -110,7 +110,7 @@ object ItemLongPress {
         return window
     }
 
-    fun showPopupWindow(context: Context, view: View, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view) {
+    inline fun onItemLongPress(context: Context, view: View, item: LauncherItem, noinline onEdit: ((View) -> Unit)?, noinline onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view) {
         if (currentPopup == null) {
             context.vibrate()
 

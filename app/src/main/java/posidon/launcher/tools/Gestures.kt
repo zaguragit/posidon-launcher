@@ -20,7 +20,7 @@ object Gestures {
     const val OPEN_APP = "app"
 
     fun onLongPress(v: View): Boolean {
-        performTrigger(Settings["gesture:long_press", Gestures.OPEN_OVERVIEW])
+        performTrigger(Settings["gesture:long_press", OPEN_OVERVIEW])
         return true
     }
 
@@ -61,7 +61,7 @@ object Gestures {
         else -> ""
     }
 
-    class PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+    object PinchListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(d: ScaleGestureDetector) = true
         override fun onScaleEnd(d: ScaleGestureDetector) = performTrigger(Settings["gesture:pinch", OPEN_OVERVIEW])
     }

@@ -23,8 +23,7 @@ class HiddenAppsActivity : AppCompatActivity() {
             App.hidden[i].open(this, view)
         }
         grid.setOnItemLongClickListener { _, view, i, _ ->
-            val app = App.hidden[i]
-            ItemLongPress.showPopupWindow(this, view, app, null, null)
+            ItemLongPress.onItemLongPress(this, view, App.hidden[i], null, null)
             true
         }
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->

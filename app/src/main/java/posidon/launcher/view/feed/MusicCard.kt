@@ -136,6 +136,7 @@ class MusicCard : CardView, FeedSection {
             leftMargin = marginX
             rightMargin = marginX
             bottomMargin = marginY
+            topMargin = marginY
         }
         radius = Settings["feed:card_radius", 15].dp
     }

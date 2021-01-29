@@ -112,7 +112,6 @@
     <string name="start">Starten</string>
     <string name="remove">Verwijderen</string>
     <string name="labelColor">Labelkleur</string>
-    <string name="num_notifications">%1$d meldingen</string>
     <string name="collapse_notifications">Meldingen inklappen</string>
     <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">Animatie bij openen van app</string>
@@ -211,6 +210,11 @@
     <string name="position">Position</string>
     <string name="max_lines">Max lines</string>
     <string name="marquee">Marquee</string>
+
+    <plurals name="num_notifications">
+        <item quantity="one">%1$d meldingen</item>
+        <item quantity="other">%1$d meldingen</item>
+    </plurals>
 
     <array name="sortingAlgorithms">
         <item>Alfabetisch</item>
