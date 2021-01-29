@@ -1,5 +1,6 @@
 package posidon.launcher
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.app.Dialog
 import android.graphics.Rect
@@ -24,7 +25,7 @@ object LauncherMenu {
     var isActive = false
     var dialog: Dialog? = null
 
-    fun openOverview(home: Home) {
+    fun openOverview(home: Activity) {
         if (!isActive) {
             val window = home.window
             isActive = true
@@ -38,15 +39,15 @@ object LauncherMenu {
                 else Settings["drawer:scrollbar:width", 24].dp
             } else 0f
             val page = homescreen.findViewById<View>(R.id.feed)
+            val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
             page.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth / 2f)
             }.scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
-            home.drawerScrollBar.animate().apply {
+            drawer.scrollBar.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth)
             }.duration = 100L
-            val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
             drawer.state = BottomDrawerBehavior.STATE_HIDDEN
             dialog = Dialog(home, R.style.longpressmenusheet)
             dialog!!.setContentView(R.layout.menu)
@@ -70,7 +71,7 @@ object LauncherMenu {
                 window.setBackgroundDrawableResource(R.drawable.black_gradient)
             }
             homescreen.setOnClickListener { dialog!!.dismiss() }
-            dialog!!.setOnDismissListener { exit(homescreen, window, drawer, home) }
+            dialog!!.setOnDismissListener { exit(homescreen, window, drawer) }
             dialog!!.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 homescreen.systemGestureExclusionRects = listOf()
@@ -81,8 +82,8 @@ object LauncherMenu {
         }
     }
 
-    private fun exit(homescreen: View, window: Window, drawer: DrawerView, home: Home) {
-        home.drawerScrollBar.animate().translationX(0f).translationY(0f)
+    private fun exit(homescreen: View, window: Window, drawer: DrawerView) {
+        drawer.scrollBar.animate().translationX(0f).translationY(0f)
         drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
         val page = homescreen.findViewById<View>(R.id.feed)
         page.animate().translationX(0f).scaleX(1f).scaleY(1f).translationY(0f).duration = 400L

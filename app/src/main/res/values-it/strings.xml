@@ -40,7 +40,7 @@
     <string name="pixel_stock_android">Pixel</string>
     <string name="one_ui">Un\'interfaccia utente</string>
     <string name="ios">iOS</string>
-    <string name="surprise_me">Sorprendimi...</string>
+    <string name="surprise_me">Sorprendimi…</string>
     <string name="preset_chooser_title">Scegli da dove iniziare</string>
     <string name="done">Fine</string>
     <string name="explanation">Per accedere alle personalizzazioni o alla galleria di sfondi, a lungo premi o pizzica sulla schermata iniziale</string>
@@ -113,7 +113,6 @@
     <string name="start">Avvia</string>
     <string name="remove">Rimuovi</string>
     <string name="labelColor">Colore etichetta</string>
-    <string name="num_notifications">%1$d notifiche</string>
     <string name="collapse_notifications">Comprimi notifiche</string>
     <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">App aperta anim</string>
@@ -212,6 +211,11 @@
     <string name="position">Position</string>
     <string name="max_lines">Max lines</string>
     <string name="marquee">Marquee</string>
+
+    <plurals name="num_notifications">
+        <item quantity="one">%1$d notifiche</item>
+        <item quantity="other">%1$d notifiche</item>
+    </plurals>
 
     <array name="sortingAlgorithms">
         <item>In ordine alfabetico</item>

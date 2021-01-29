@@ -21,10 +21,10 @@ import kotlin.math.min
 class AppSectionView(context: Context) : ItemGroupView(context) {
 
     private val appSize = when (Settings["icsize", 1]) {
-        0 -> 64.dp.toInt()
-        2 -> 84.dp.toInt()
-        else -> 74.dp.toInt()
-    }
+        0 -> 64
+        2 -> 84
+        else -> 74
+    }.dp.toInt()
 
     init {
         when (Settings["drawer:sec_name_pos", 0]) {
@@ -35,9 +35,9 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 orientation = HORIZONTAL
                 textView.layoutParams.run {
                     width = 28.sp.toInt()
+                    gravity = Gravity.END
+                    setPaddingRelative(0, 0, 0, 0)
                 }
-                textView.gravity = Gravity.END
-                textView.setPaddingRelative(0, 0, 0, 0)
             }
         }
 
@@ -93,7 +93,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             setOnClickListener { item.open(context, it) }
             setOnLongClickListener {
-                ItemLongPress.showPopupWindow(context, it, item, null, null)
+                ItemLongPress.onItemLongPress(context, it, item, null, null)
                 true
             }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()

@@ -1,5 +1,6 @@
 package posidon.launcher
 
+import posidon.launcher.external.Kustom
 import posidon.launcher.items.App
 
 object Global {
@@ -11,4 +12,8 @@ object Global {
     var customized = false
 
     var accentColor = -0xeeaa01
+        set(value) {
+            field = value
+            Kustom["accent"] = value.toUInt().toString(16)
+        }
 }

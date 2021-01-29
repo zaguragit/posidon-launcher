@@ -34,6 +34,19 @@ import posidon.launcher.view.drawer.DrawerView
 
 class Feed : FrameLayout {
 
+    inline fun init(drawer: DrawerView) {
+        onTopOverScroll = {
+            if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
+                Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
+            }
+        }
+        onBottomOverScroll = {
+            if (!LauncherMenu.isActive) {
+                Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
+            }
+        }
+    }
+
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
@@ -51,7 +64,7 @@ class Feed : FrameLayout {
         isSmoothScrollingEnabled = false
 
         setOnLongClickListener(Gestures::onLongPress)
-        val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener())
+        val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener)
         setOnTouchListener { _, event ->
             if (hasWindowFocus()) {
                 scaleGestureDetector.onTouchEvent(event)

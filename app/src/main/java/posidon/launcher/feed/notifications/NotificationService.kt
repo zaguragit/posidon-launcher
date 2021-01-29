@@ -216,7 +216,6 @@ class NotificationService : NotificationListenerService() {
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
             } catch (e: Exception) { e.printStackTrace() }
-            val color = Palette.from(icon!!.toBitmap(true)).generate().getDominantColor(Settings["notificationbgcolor", -0x1])
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
@@ -227,7 +226,9 @@ class NotificationService : NotificationListenerService() {
             var subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
             if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
-            Home.instance.runOnUiThread {
+            Palette.from(icon!!.toBitmap(true)).generate {
+                val def = Settings["notificationbgcolor", -0x1]
+                val color = it?.getDominantColor(def) ?: def
                 Home.instance.feed.musicCard?.visibility = View.VISIBLE
                 Home.instance.feed.musicCard?.updateTrack(color, title, subtitle, icon, notification.notification.contentIntent)
             }

@@ -5,6 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp"
+    android:fadingEdge="vertical"
+    android:fadingEdgeLength="24dp"
+    android:requiresFadingEdge="vertical"
     android:id="@+id/bg">
     <LinearLayout
         android:layout_width="match_parent"
