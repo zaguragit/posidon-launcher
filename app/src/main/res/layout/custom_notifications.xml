@@ -167,7 +167,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_color_dropper"
                     app:label="@string/background_type"
                     app:key="notif:badges:bg_type"
                     app:def="0"

@@ -2,6 +2,7 @@ package posidon.launcher.view.feed
 
 import android.app.Activity
 import posidon.launcher.external.Widget
+import posidon.launcher.view.feed.news.NewsCards
 
 interface FeedSection {
 

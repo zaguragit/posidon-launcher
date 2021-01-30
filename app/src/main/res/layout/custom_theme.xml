@@ -114,7 +114,7 @@
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_color_dropper"
                         android:text="@string/background_type"/>
                     <posidon.launcher.view.Spinner
                         style="@style/settingsbtn"
@@ -134,7 +134,7 @@
                     android:id="@+id/recolorWhiteBGSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
+                    app:drawable="@drawable/ic_color_dropper"
                     app:label="@string/recolor_white_bgs"
                     app:key="icon:tint_white_bg"
                     app:def="true"/>

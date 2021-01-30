@@ -1,23 +1,23 @@
-package posidon.launcher.view.feed
+package posidon.launcher.view.feed.news
 
 import android.app.Activity
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import posidon.launcher.feed.news.FeedAdapter
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.onEnd
 import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.feed.FeedSection
 import kotlin.math.pow
 
 class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
 
     init {
         isNestedScrollingEnabled = false
-        adapter = FeedAdapter(ArrayList(), c)
+        adapter = NewsAdapter(ArrayList(), c)
     }
 
     var wasHiddenLastTime = true
@@ -41,14 +41,14 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
     }
 
     inline fun updateFeed(items: List<FeedItem>) {
-        (adapter as FeedAdapter).updateFeed(items)
+        (adapter as NewsAdapter).updateFeed(items)
     }
 
     override fun updateTheme(activity: Activity) {
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
         layoutManager = if (Settings["news:cards:is_staggered", false]) StaggeredGridLayoutManager(2, VERTICAL) else LinearLayoutManager(context)
-        adapter = FeedAdapter((adapter as FeedAdapter).items, activity)
+        adapter = NewsAdapter((adapter as NewsAdapter).items, activity)
     }
 
     override fun toString() = "news"
