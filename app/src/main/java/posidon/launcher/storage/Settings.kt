@@ -85,24 +85,25 @@ object Settings {
         lock.unlock()
     }
 
-    operator fun get(key: String, default: Int): Int {
+    inline operator fun get(key: String, default: Int): Int = getInt(key) ?: default
+    inline operator fun get(key: String, default: Float): Float = getFloat(key) ?: default
+    inline operator fun get(key: String, default: Boolean): Boolean = getBoolean(key) ?: default
+    inline operator fun get(key: String, default: String): String = getString(key) ?: default
+
+
+    fun getInt(key: String): Int? {
         lock.lock()
-        return (ints[key] ?: default).also { lock.unlock() }
+        return ints[key].also { lock.unlock() }
     }
 
-    operator fun get(key: String, default: Float): Float {
+    fun getFloat(key: String): Float? {
         lock.lock()
-        return (floats[key] ?: default).also { lock.unlock() }
+        return floats[key].also { lock.unlock() }
     }
 
-    operator fun get(key: String, default: Boolean): Boolean {
+    fun getBoolean(key: String): Boolean? {
         lock.lock()
-        return (bools[key] ?: default).also { lock.unlock() }
-    }
-
-    operator fun get(key: String, default: String): String {
-        lock.lock()
-        return (getString(key) ?: default).also { lock.unlock() }
+        return bools[key].also { lock.unlock() }
     }
 
     fun getString(key: String): String? {
@@ -110,12 +111,12 @@ object Settings {
         return (strings[key]).also { lock.unlock() }
     }
 
-    fun getStrings(key: String): java.util.ArrayList<String> {
+    fun getStrings(key: String): ArrayList<String> {
         lock.lock()
         return (lists[key] ?: ArrayList<String>().also { lists[key] = it }).also { lock.unlock() }
     }
 
-    fun getStringsOrSet(key: String, def: () -> ArrayList<String>): java.util.ArrayList<String> {
+    fun getStringsOrSet(key: String, def: () -> ArrayList<String>): ArrayList<String> {
         lock.lock()
         return (lists[key] ?: def().also { lists[key] = it }).also { lock.unlock() }
     }

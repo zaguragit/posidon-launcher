@@ -94,35 +94,46 @@ class ConsoleActivity : AppCompatActivity() {
                             val tokens = string.split(' ')
                             when (tokens[0]) {
                                 "conf" -> {
-                                    if (tokens.size != 3 && tokens.size != 4) {
-                                        print("\nusage: conf <type (int|float|string|bool)> <setting> <value (optional)>")
-                                    } else when (tokens[1]) {
-                                        "int" -> {
-                                            val value: Int? = tokens[3].toIntOrNull()
-                                            if (value == null) {
-                                                printError("\n\"${tokens[3]}\" isn't of type int!")
-                                            } else {
-                                                Settings[tokens[2]] = value
+                                    when (tokens.size) {
+                                        3 -> {
+                                            when (tokens[1]) {
+                                                "int" -> print("\n" + Settings.getInt(tokens[2]))
+                                                "float" -> print("\n" + Settings.getFloat(tokens[2]))
+                                                "string" -> print("\n" + Settings.getString(tokens[2])?.let { "\"$it\"" })
+                                                "bool" -> print("\n" + Settings.getBoolean(tokens[2]))
+                                                "list" -> print("\n" + Settings.getStrings(tokens[2]).joinToString(prefix = "[", separator = ", ", postfix = "]") { "\"$it\"" })
+                                                else -> printError("\n\"${tokens[1]}\" isn't a valid type!")
                                             }
                                         }
-                                        "float" -> {
-                                            val value: Float? = tokens[3].toFloatOrNull()
-                                            if (value == null) {
-                                                printError("\n\"${tokens[3]}\" isn't of type float!")
-                                            } else {
-                                                Settings[tokens[2]] = value
+                                        4 -> when (tokens[1]) {
+                                            "int" -> {
+                                                val value: Int? = tokens[3].toIntOrNull()
+                                                if (value == null) {
+                                                    printError("\n\"${tokens[3]}\" isn't of type int!")
+                                                } else {
+                                                    Settings[tokens[2]] = value
+                                                }
                                             }
-                                        }
-                                        "string" -> Settings[tokens[2]] = tokens[3]
-                                        "bool" -> {
-                                            val value: Boolean = tokens[3] == "true"
-                                            if (!value && tokens[3] != "false") {
-                                                printError("\n\"${tokens[3]}\" isn't of type bool!")
-                                            } else {
-                                                Settings[tokens[2]] = value
+                                            "float" -> {
+                                                val value: Float? = tokens[3].toFloatOrNull()
+                                                if (value == null) {
+                                                    printError("\n\"${tokens[3]}\" isn't of type float!")
+                                                } else {
+                                                    Settings[tokens[2]] = value
+                                                }
                                             }
+                                            "string" -> Settings[tokens[2]] = tokens[3]
+                                            "bool" -> {
+                                                val value: Boolean = tokens[3] == "true"
+                                                if (!value && tokens[3] != "false") {
+                                                    printError("\n\"${tokens[3]}\" isn't of type bool!")
+                                                } else {
+                                                    Settings[tokens[2]] = value
+                                                }
+                                            }
+                                            else -> printError("\n\"${tokens[1]}\" isn't a valid type!")
                                         }
-                                        else -> printError("\n\"${tokens[1]}\" isn't a valid type!")
+                                        else -> print("\nusage: conf <type (int|float|string|bool|list(not writeable))> <setting> <value (optional)>")
                                     }
                                 }
                                 else -> printError("\n\"$string\" isn't a valid command!")
@@ -141,6 +152,7 @@ class ConsoleActivity : AppCompatActivity() {
         window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
     }
 
+    private inline fun print(any: Any?) = text.append(any.toString())
     private inline fun print(string: CharSequence) = text.append(string)
 
     private inline fun printError(string: CharSequence) = print(SpannableString(string).apply {

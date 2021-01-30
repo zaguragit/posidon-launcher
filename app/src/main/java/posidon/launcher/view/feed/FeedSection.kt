@@ -10,8 +10,8 @@ interface FeedSection {
     fun onPause() {}
     fun onResume(activity: Activity) {}
 
-    fun onAdd(feed: Feed) {}
-
+    fun onAdd(feed: Feed, i: Int) {}
+    fun updateIndex(i: Int) {}
     fun onDelete(feed: Feed) {}
 
     companion object {
@@ -27,10 +27,9 @@ interface FeedSection {
                 val key = string.substringBefore(':')
                 val value = string.substringAfter(':')
                 when (key) {
-                    "widget" -> {
-                        WidgetSection(context, Widget(value.toInt()))
-                    }
-                    else -> throw Exception("Invalid feed section type found")
+                    "widget" -> WidgetSection(context, Widget(value.toInt()))
+                    "spacer" -> SpacerSection(context)
+                    else -> throw Exception("Invalid feed section type found: $key")
                 }
             }
         }

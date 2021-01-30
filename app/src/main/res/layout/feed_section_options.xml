@@ -104,4 +104,24 @@
             android:textColor="@color/cardtxt"
             android:textSize="15sp"/>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/spacer_section"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_margin="8dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_apps"
+            android:tint="#ffffff"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/spacer"
+            android:textColor="@color/cardtxt"
+            android:textSize="15sp"/>
+    </LinearLayout>
 </LinearLayout>

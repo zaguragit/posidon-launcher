@@ -12,9 +12,8 @@ class WidgetSection(
     var widget: Widget
 ) : ResizableLayout(context), FeedSection {
 
-    override fun onAdd(feed: Feed) {
+    override fun onAdd(feed: Feed, i: Int) {
         layoutParams.height = Settings["widget:${widget.widgetId}:height", ViewGroup.LayoutParams.WRAP_CONTENT]
-
         onResizeListener = object : OnResizeListener {
             override fun onStop(newHeight: Int) { Settings["widget:${widget.widgetId}:height"] = newHeight }
             override fun onCrossPress() = feed.remove(this@WidgetSection)
