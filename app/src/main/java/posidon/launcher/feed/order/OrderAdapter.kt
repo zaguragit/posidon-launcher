@@ -103,6 +103,11 @@ class OrderAdapter(
                         holder.icon.setImageDrawable(App.getJustPackage(packageName)?.get(0)?.icon ?: context.packageManager.getApplicationIcon(packageName))
                         holder.icon.imageTintList = null
                     }
+                    "spacer" -> {
+                        holder.text.text = context.getString(R.string.spacer)
+                        holder.icon.setImageResource(R.drawable.ic_apps)
+                        holder.icon.imageTintList = ColorStateList.valueOf(0xffffffff.toInt())
+                    }
                     else -> {
                         sections.remove(section)
                         notifyDataSetChanged()

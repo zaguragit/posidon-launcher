@@ -102,26 +102,34 @@ class Feed : FrameLayout {
     var onTopOverScroll by scroll::onTopOverScroll
     var onBottomOverScroll by scroll::onBottomOverScroll
 
-    fun add(section: FeedSection) = add(section, 0)
-    fun add(section: FeedSection, i: Int) {
-        getSectionsFromSettings().add(i,section.toString())
+    inline fun add(section: FeedSection) {
+        getSectionsFromSettings().add(section.toString())
         Settings.apply()
-        sections.add(i, section)
-        desktopContent.addView(section as View, i)
-        section.onAdd(this)
+        internalAdd(section)
     }
+
     fun remove(section: FeedSection) {
-        getSectionsFromSettings().remove(section.toString())
+        getSectionsFromSettings().remove(section.toString()).let { if (!it) println("Couldn't remove feed section: $section") }
         Settings.apply()
         sections.remove(section)
         desktopContent.removeView(section as View)
         section.onDelete(this)
     }
 
-    fun internalAdd(section: FeedSection, i: Int): FeedSection {
-        sections.add(i, section)
-        desktopContent.addView(section as View, i)
-        section.onAdd(this)
+    fun remove(section: FeedSection, i: Int) {
+        getSectionsFromSettings().removeAt(i)
+        Settings.apply()
+        sections.removeAt(i)
+        desktopContent.removeViewAt(i)
+        section.onDelete(this)
+        updateIndices(i + 1)
+    }
+
+    fun internalAdd(section: FeedSection): FeedSection {
+        val i = sections.size
+        sections.add(section)
+        desktopContent.addView(section as View)
+        section.onAdd(this, i)
         return section
     }
 
@@ -236,8 +244,9 @@ class Feed : FrameLayout {
         musicCard = null
         notifications = null
         newsCards = null
-        for (section in s.reversed()) {
-            internalAdd(map[section] ?: FeedSection(activity, section), 0).also {
+        for (i in s.indices) {
+            val section = s[i]
+            internalAdd(map[section] ?: FeedSection(activity, section)).also {
                 when (it) {
                     is MusicCard -> musicCard = it
                     is NotificationCards -> notifications = it
@@ -247,6 +256,11 @@ class Feed : FrameLayout {
             }
         }
         updateTheme(activity, drawer)
+    }
+
+    fun updateIndices(fromI: Int) {
+        for (i in fromI until sections.size)
+            sections[i].updateIndex(i)
     }
 
     companion object {
@@ -294,6 +308,10 @@ class Feed : FrameLayout {
                 }
                 findViewById<View>(R.id.widget_section)!!.setOnClickListener {
                     Widget.selectWidget(activity)
+                    dismiss()
+                }
+                findViewById<View>(R.id.spacer_section)!!.setOnClickListener {
+                    onSelect("spacer:128")
                     dismiss()
                 }
                 show()
