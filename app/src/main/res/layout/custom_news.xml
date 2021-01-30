@@ -111,7 +111,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_staggered_grid"
                     app:label="@string/staggered"
                     app:key="news:cards:is_staggered"
                     app:def="false"/>
@@ -261,7 +261,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_color_dropper"
                     app:label="@string/tint_background"
                     app:key="news:cards:source:tint_bg"
                     app:def="true"/>

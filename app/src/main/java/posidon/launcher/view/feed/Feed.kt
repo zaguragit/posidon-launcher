@@ -31,6 +31,7 @@ import posidon.launcher.tools.onEnd
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
+import posidon.launcher.view.feed.news.NewsCards
 
 class Feed : FrameLayout {
 

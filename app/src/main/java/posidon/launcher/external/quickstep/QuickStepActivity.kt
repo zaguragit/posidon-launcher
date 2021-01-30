@@ -7,9 +7,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.quickstep.*
+import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -29,6 +32,9 @@ class QuickStepActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
 
+        val taskDescription = findViewById<LinearLayout>(R.id.taskDescription)
+        val recycler = findViewById<RecyclerView>(R.id.recycler)
+
         (taskDescription.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = max(Tools.navbarHeight, 24.dp.toInt()) + 32.dp.toInt()
 
         if (QuickStepService.recentTasks.isEmpty()) {
@@ -47,6 +53,8 @@ class QuickStepActivity : AppCompatActivity() {
     }
 
     fun setTaskI(i: Int) {
+        val icon = findViewById<ImageView>(R.id.icon)
+        val label = findViewById<TextView>(R.id.label)
         val info = packageManager.resolveActivity(QuickStepService.recentTasks[i]!!.baseIntent, 0)!!
         icon.setImageDrawable(App[info.resolvePackageName, info.activityInfo.parentActivityName]?.icon ?: info.loadIcon(packageManager))
         label.text = info.loadLabel(packageManager)

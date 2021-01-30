@@ -153,7 +153,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_lock"
                     app:label="@string/lock_home"
                     app:key="locked"
                     app:def="false"/>
@@ -186,7 +186,7 @@
                         style="@style/settingsbtn"
                         android:onClick="mkBackup"
                         android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_save"
                         android:text="@string/mk_backup" />
                     <TextView
                         style="@style/settingsbtn"

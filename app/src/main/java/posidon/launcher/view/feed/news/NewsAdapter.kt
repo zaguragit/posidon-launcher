@@ -1,4 +1,4 @@
-package posidon.launcher.feed.news
+package posidon.launcher.view.feed.news
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -24,15 +24,16 @@ import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.feed.news.FeedAdapter.ViewHolder
+import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.view.SwipeableLayout
+import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*
 
-class FeedAdapter(
-    val items: ArrayList<FeedItem>,
-    private val context: Activity
+class NewsAdapter(
+        val items: ArrayList<FeedItem>,
+        private val context: Activity
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     class ViewHolder(
@@ -136,7 +137,7 @@ class FeedAdapter(
 
         var swipeableLayout: SwipeableLayout? = null
 
-        val holder = ViewHolder((if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
+        return ViewHolder((if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
             val bg = Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]
             setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
@@ -144,14 +145,12 @@ class FeedAdapter(
             radius = r
             swipeableLayout = this
         } else v).apply {
-            layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
+            layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
                 val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
                 val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
                 setMargins(marginX, marginY, marginX, marginY)
             }
         }, title, source, image, gradient, swipeableLayout)
-
-        return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
