@@ -28,8 +28,13 @@ class NotificationService : NotificationListenerService() {
 
     init {
         update = {
-            if (!updating) try { loadNotifications(activeNotifications) }
-            catch (e: Exception) { loadNotifications(null) }
+            if (!Settings["search:asHome", false]) {
+                if (!updating) try {
+                    loadNotifications(activeNotifications)
+                } catch (e: Exception) {
+                    loadNotifications(null)
+                }
+            }
         }
     }
 

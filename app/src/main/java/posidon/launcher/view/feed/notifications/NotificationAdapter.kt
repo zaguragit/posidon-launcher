@@ -1,4 +1,4 @@
-package posidon.launcher.feed.notifications
+package posidon.launcher.view.feed.notifications
 
 import android.app.RemoteInput
 import android.content.Context
@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Gestures

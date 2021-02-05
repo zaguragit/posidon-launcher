@@ -117,7 +117,7 @@ object FeedLoader {
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private inline fun parseFeed(inputStream: InputStream, source: Source, lock: ReentrantLock, feedItems: ArrayList<FeedItem>, deleted: java.util.ArrayList<String>, maxAge: Int) {
+    private inline fun parseFeed(inputStream: InputStream, source: Source, lock: ReentrantLock, feedItems: ArrayList<FeedItem>, deleted: ArrayList<String>, maxAge: Int) {
         var title: String? = null
         var link: String? = null
         var img: String? = null

@@ -127,7 +127,6 @@ class Home : AppCompatActivity() {
         feed.init(drawer)
 
         setCustomizations()
-        feed.loadNews(this)
 
         homeView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == STATE_COLLAPSED)
@@ -218,7 +217,7 @@ class Home : AppCompatActivity() {
         }
         drawer.state = STATE_COLLAPSED
         if (!Settings["feed:keep_pos", false]) {
-            feed.scroll.scrollTo(0, if (Settings["feed:rest_at_bottom", false]) feed.scroll.maxScrollAmount else 0)
+            feed.scroll.scrollTo(0, if (Settings["feed:rest_at_bottom", false]) feed.desktopContent.height else 0)
         }
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "?"
@@ -229,6 +228,7 @@ class Home : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         drawer.onAppLoaderEnd()
+        feed.loadNews(this)
     }
 
     override fun onDestroy() {

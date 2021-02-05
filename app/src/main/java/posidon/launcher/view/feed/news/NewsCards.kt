@@ -45,9 +45,16 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
     }
 
     override fun updateTheme(activity: Activity) {
+        val restAtBottom = Settings["feed:rest_at_bottom", false]
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
-        layoutManager = if (Settings["news:cards:is_staggered", false]) StaggeredGridLayoutManager(2, VERTICAL) else LinearLayoutManager(context)
+        layoutManager = if (Settings["news:cards:is_staggered", false]) {
+            StaggeredGridLayoutManager(2, VERTICAL).apply {
+                reverseLayout = restAtBottom
+            }
+        } else LinearLayoutManager(context).apply {
+            reverseLayout = restAtBottom
+        }
         adapter = NewsAdapter((adapter as NewsAdapter).items, activity)
     }
 
