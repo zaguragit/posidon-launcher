@@ -211,6 +211,7 @@
     <string name="max_lines">Max lines</string>
     <string name="marquee">Marquee</string>
     <string name="spacer">Spacer</string>
+    <string name="rest_at_bottom">Rest at bottom</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notification</item>

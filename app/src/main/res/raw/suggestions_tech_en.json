@@ -1,11 +1,19 @@
 [
   {
-    "name": "Engadget",
-    "url": "https://www.engadget.com/rss.xml"
-  },
-  {
     "name": "It's FOSS",
     "url": "https://itsfoss.com/feed"
+  },
+  {
+    "name": "OMG! Ubuntu!",
+    "url": "https://www.omgubuntu.co.uk/rss"
+  },
+  {
+    "name": "GameFromScratch",
+    "url": "https://gamefromscratch.com/atom"
+  },
+  {
+    "name": "CNet News",
+    "url": "https://www.cnet.com/rss/news/"
   },
   {
     "name": "Android Police",
@@ -16,11 +24,7 @@
     "url": "https://www.androidauthority.com/feed/"
   },
   {
-    "name": "CNet News",
-    "url": "https://www.cnet.com/rss/news/"
-  },
-  {
-    "name": "OMG! Ubuntu!",
-    "url": "https://www.omgubuntu.co.uk/rss"
+    "name": "Engadget",
+    "url": "https://www.engadget.com/rss.xml"
   }
 ]

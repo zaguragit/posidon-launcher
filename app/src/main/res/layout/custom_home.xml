@@ -89,6 +89,14 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_arrow_down"
+                    app:label="@string/rest_at_bottom"
+                    app:key="feed:rest_at_bottom"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_visible"
                     app:label="@string/fading_edge"
                     app:key="feed:fading_edge"

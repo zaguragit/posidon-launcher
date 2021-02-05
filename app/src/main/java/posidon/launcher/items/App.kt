@@ -175,7 +175,7 @@ class App(
             tmp.clear()
         }
 
-        fun onFinishLoad(tmpApps: java.util.ArrayList<App>, tmpAppSections: java.util.ArrayList<java.util.ArrayList<App>>, tmpHidden: java.util.ArrayList<App>, appsByName: HashMap<String, java.util.ArrayList<App>>) {
+        fun onFinishLoad(tmpApps: ArrayList<App>, tmpAppSections: ArrayList<ArrayList<App>>, tmpHidden: ArrayList<App>, appsByName: HashMap<String, ArrayList<App>>) {
             run {
                 val tmp = Global.apps
                 Global.apps = tmpApps

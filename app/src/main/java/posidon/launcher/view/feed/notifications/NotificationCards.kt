@@ -1,4 +1,4 @@
-package posidon.launcher.view.feed
+package posidon.launcher.view.feed.notifications
 
 import android.app.Activity
 import android.content.Context
@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.feed.notifications.NotificationAdapter
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.ColorTools
@@ -23,6 +22,8 @@ import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
 import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.feed.Feed
+import posidon.launcher.view.feed.FeedSection
 
 class NotificationCards : LinearLayout, FeedSection {
 
@@ -84,15 +85,25 @@ class NotificationCards : LinearLayout, FeedSection {
     }
 
     fun collapse() {
+        val firstScroll = feed.scroll.scrollY
+        val firstMaxScroll = feed.desktopContent.height
         notifications.visibility = GONE
         arrowUp.visibility = GONE
         parentNotification.background.alpha = 255
+        feed.scroll.post {
+            feed.scrollUpdate(firstScroll, firstMaxScroll)
+        }
     }
 
     fun expand() {
+        val firstScroll = feed.scroll.scrollY
+        val firstMaxScroll = feed.desktopContent.height
         notifications.visibility = VISIBLE
         arrowUp.visibility = VISIBLE
         parentNotification.background.alpha = 127
+        feed.scroll.post {
+            feed.scrollUpdate(firstScroll, firstMaxScroll)
+        }
     }
 
     var isCollapsingEnabled = true
@@ -106,6 +117,12 @@ class NotificationCards : LinearLayout, FeedSection {
                 parentNotification.visibility = GONE
             }
         }
+
+    private lateinit var feed: Feed
+
+    override fun onAdd(feed: Feed, i: Int) {
+        this.feed = feed
+    }
 
     fun update() {
         if (Settings["collapseNotifications", false]) {
@@ -153,6 +170,12 @@ class NotificationCards : LinearLayout, FeedSection {
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
         isCollapsingEnabled = Settings["collapseNotifications", false] && NotificationService.notificationsAmount > 1
+        val restAtBottom = Settings["feed:rest_at_bottom", false]
+        (notifications.layoutManager as LinearLayoutManager).apply {
+            reverseLayout = restAtBottom
+        }
+        removeView(parentNotification)
+        addView(parentNotification, if (restAtBottom) 1 else 0)
     }
 
     override fun onPause() {

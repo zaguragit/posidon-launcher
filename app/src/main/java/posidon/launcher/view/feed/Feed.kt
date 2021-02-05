@@ -32,6 +32,7 @@ import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.news.NewsCards
+import posidon.launcher.view.feed.notifications.NotificationCards
 
 class Feed : FrameLayout {
 
@@ -205,21 +206,41 @@ class Feed : FrameLayout {
         if (Settings["feed:show_spinner", true]) {
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
-            FeedLoader.loadFeed { success, items ->
-                activity.runOnUiThread {
-                    if (success) {
-                        newsCards.updateFeed(items)
+            FeedLoader.loadFeed { success, items -> post {
+                if (success) {
+                    var firstScroll = 0
+                    var firstMaxScroll = 0
+                    scroll.post {
+                        firstScroll = scroll.scrollY
+                        firstMaxScroll = desktopContent.height
                     }
-                    spinner.animate().translationY((-72).dp).alpha(0f).onEnd {
-                        spinner.visibility = GONE
+                    newsCards.updateFeed(items)
+                    scroll.post {
+                        scrollUpdate(firstScroll, firstMaxScroll)
                     }
                 }
-            }
+                spinner.animate().translationY((-72).dp).alpha(0f).onEnd {
+                    spinner.visibility = GONE
+                }
+            }}
         } else FeedLoader.loadFeed { success, items ->
-            if (success) activity.runOnUiThread {
+            if (success) post {
+                var firstScroll = 0
+                var firstMaxScroll = 0
+                scroll.post {
+                    firstScroll = scroll.scrollY
+                    firstMaxScroll = desktopContent.height
+                }
                 newsCards.updateFeed(items)
+                scroll.post {
+                    scrollUpdate(firstScroll, firstMaxScroll)
+                }
             }
         }
+    }
+
+    inline fun scrollUpdate(firstScroll: Int, firstMaxScroll: Int) {
+        scroll.scrollTo(0, if (Settings["feed:rest_at_bottom", false]) firstScroll + desktopContent.height - firstMaxScroll else firstScroll)
     }
 
     fun onResume(activity: Activity) {
