@@ -33,7 +33,8 @@
                 android:gravity="bottom"
                 android:textSize="15sp"
                 android:lineSpacingExtra="6dp"
-                android:textColor="@color/cardtitle"/>
+                android:textColor="@color/cardtitle"
+                android:ellipsize="end"/>
         </LinearLayout>
     </LinearLayout>
     <HorizontalScrollView

@@ -90,6 +90,20 @@ class NotificationAdapter(
                         }
                     }.apply {
                         setBackgroundColor(Settings["notificationbgcolor", -0x1])
+                        findViewById<TextView>(R.id.txt).maxLines = Settings["notif:text:max_lines", 12]
+                        val padding = 8.dp.toInt()
+                        when {
+                            notificationI == 0 || (notificationI == 1 && group[0].isSummary) -> {
+                                if (notificationI == group.lastIndex) {
+                                    setPadding(padding, padding, padding, padding)
+                                }
+                                else {
+                                    setPadding(padding, padding, padding, 0)
+                                }
+                            }
+                            notificationI == group.lastIndex -> setPadding(padding, 0, padding, padding)
+                            else -> setPadding(padding, 0, padding, 0)
+                        }
                     }
                     retView = SwipeableLayout(v1) {
                         try {
@@ -106,21 +120,6 @@ class NotificationAdapter(
                         val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
                         setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
                         setSwipeColor(bg)
-                    }
-                    v1.apply {
-                        val padding = 8.dp.toInt()
-                        when {
-                            notificationI == 0 || (notificationI == 1 && group[0].isSummary) -> {
-                                if (notificationI == group.lastIndex) {
-                                    setPadding(padding, padding, padding, padding)
-                                }
-                                else {
-                                    setPadding(padding, padding, padding, 0)
-                                }
-                            }
-                            notificationI == group.lastIndex -> setPadding(padding, 0, padding, padding)
-                            else -> setPadding(padding, 0, padding, 0)
-                        }
                     }
                     if (notification.actions != null && Settings["notificationActionsEnabled", false]) {
                         v1.findViewById<LinearLayout>(R.id.action_list).visibility = View.VISIBLE
@@ -206,12 +205,16 @@ class NotificationAdapter(
                     v1
                 }
 
-                view.findViewById<TextView>(R.id.title).text = notification.title
-                view.findViewById<TextView>(R.id.txt).text = notification.text
+                view.findViewById<TextView>(R.id.title).run {
+                    text = notification.title
+                    setTextColor(Settings["notificationtitlecolor", -0xeeeded])
+                }
+                view.findViewById<TextView>(R.id.txt).run {
+                    text = notification.text
+                    setTextColor(Settings["notificationtxtcolor", -0xdad9d9])
+                }
 
                 view.findViewById<ImageView>(R.id.iconimg).setImageDrawable(notification.icon)
-                view.findViewById<TextView>(R.id.title).setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-                view.findViewById<TextView>(R.id.txt).setTextColor(Settings["notificationtxtcolor", -0xdad9d9])
 
                 view.setOnClickListener { notification.open() }
                 view.setOnLongClickListener(Gestures::onLongPress)

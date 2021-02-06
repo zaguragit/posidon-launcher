@@ -44,22 +44,6 @@
                     app:label="@string/background"
                     app:key="notificationbgcolor"
                     app:def="#FFFFFFFF"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/title_color"
-                    app:key="notificationtitlecolor"
-                    app:def="#FF111213"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/text_color"
-                    app:key="notificationtxtcolor"
-                    app:def="#FF252627"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -103,6 +87,43 @@
                     app:label="@string/swipe_bg_color"
                     app:key="notif:card_swipe_bg_color"
                     app:def="#880d0e0f"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSettingView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/text"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/title_color"
+                    app:key="notificationtitlecolor"
+                    app:def="#FF111213"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/text_color"
+                    app:key="notificationtxtcolor"
+                    app:def="#FF252627"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/max_lines"
+                    app:startsWith1="true"
+                    app:key="notif:text:max_lines"
+                    app:def="3"
+                    app:max="12"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
