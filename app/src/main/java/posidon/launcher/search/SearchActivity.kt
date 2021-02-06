@@ -18,7 +18,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.DragEvent
-import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView.OnItemClickListener
@@ -57,6 +56,14 @@ class SearchActivity : AppCompatActivity() {
 
     private val onAppLoaderEnd = { search(currentString) }
 
+    private val daxResultIcon by lazy {
+        ThemeTools.badgeMaybe(if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            ThemeTools.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!)
+        } else {
+            getDrawable(R.drawable.dax)!!
+        }, false)
+    }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_layout)
@@ -79,13 +86,21 @@ class SearchActivity : AppCompatActivity() {
                 search(s.toString())
             }
         })
-        searchTxt.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER ||
-                    actionId == EditorInfo.IME_ACTION_DONE) {
-                onPause()
+        searchTxt.setOnEditorActionListener { v, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> onPause()
+                EditorInfo.IME_ACTION_GO -> {
+                    val a = grid.adapter
+                    if (a != null && a.count != 0) {
+                        a.getItem(0).let { it as LauncherItem }.open(this, v, -1)
+                    } else {
+                        DuckInstantAnswer.search(this, searchTxt.text.toString())
+                    }
+                }
             }
             false
         }
+        searchTxt.imeOptions = if (Settings["search:enter_is_go", false]) EditorInfo.IME_ACTION_GO else EditorInfo.IME_ACTION_DONE
         findViewById<View>(R.id.searchbar).background = ShapeDrawable().apply {
             val tr = Settings["searchradius", 0].dp
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
@@ -98,7 +113,6 @@ class SearchActivity : AppCompatActivity() {
             window.setBackgroundDrawable(ColorDrawable(Settings["searchUiBg", -0x78000000]))
         }
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
-        findViewById<TextView>(R.id.failtxt).setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
         searchTxt.hint = Settings["searchhinttxt", "Search.."]
         findViewById<ImageView>(R.id.searchIcon).apply {
@@ -158,7 +172,6 @@ class SearchActivity : AppCompatActivity() {
         val packageSearch = Settings["search:use_package_names", false]
         if (string.isEmpty()) {
             grid.adapter = SearchAdapter(this, listOf())
-            findViewById<View>(R.id.fail).visibility = View.GONE
             answerBox.visibility = View.GONE
             return
         }
@@ -166,13 +179,11 @@ class SearchActivity : AppCompatActivity() {
         val results = ArrayList<LauncherItem>()
         val showHidden = searchOptimizedString == searchOptimize("hidden") || searchOptimizedString == searchOptimize("hiddenapps")
         if (showHidden) {
-            findViewById<View>(R.id.fail).visibility = View.GONE
-            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) {
-                it.startActivity(Intent(applicationContext, HiddenAppsActivity::class.java))
+            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) { context, _, _ ->
+                context.startActivity(Intent(applicationContext, HiddenAppsActivity::class.java))
             }
             results.add(app)
         }
-        findViewById<View>(R.id.fail).visibility = View.GONE
         val appLoaderThread = thread (isDaemon = true) {
             var i = 0
             for (app in Global.apps) {
@@ -266,20 +277,21 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+
         kotlin.runCatching {
             appLoaderThread.join()
             settingLoaderThread.join()
         }
+
         try {
-            Sort.labelSort(results)
+            if (results.isEmpty()) {
+                results.add(InternalItem(getString(R.string.x_on_duckduckgo, string), daxResultIcon) { context, _, _ ->
+                    DuckInstantAnswer.search(context, string)
+                })
+            } else Sort.labelSort(results)
             grid.adapter = SearchAdapter(this, results)
             grid.onItemClickListener = OnItemClickListener { _, view, i, _ ->
-                when (val r = results[i]) {
-                    is App -> r.open(this@SearchActivity, view)
-                    is InternalItem -> r.open(this@SearchActivity)
-                    is SettingsItem -> r.open(this@SearchActivity)
-                    is ContactItem -> r.open(this@SearchActivity)
-                }
+                results[i].open(this, view, -1)
             }
             grid.setOnItemLongClickListener { _, view, i, _ ->
                 val app = results[i]
@@ -298,13 +310,8 @@ class SearchActivity : AppCompatActivity() {
             isShowingSmartCard = true
             findViewById<TextView>(R.id.type).setText(R.string.math_operation)
             findViewById<TextView>(R.id.result).text = "$operation = $result"
-            findViewById<View>(R.id.fail).visibility = View.GONE
         } catch (e: Exception) {
             e.printStackTrace()
-            if (results.isEmpty()) {
-                findViewById<View>(R.id.fail).visibility = View.VISIBLE
-                findViewById<TextView>(R.id.failtxt).text = getString(R.string.no_results_for, string)
-            }
             val words = string.toLowerCase().split(' ', ',', '.', '-', '+', '&', '_')
             if (words.contains("ip")) {
                 stillWantIP = true
@@ -315,7 +322,6 @@ class SearchActivity : AppCompatActivity() {
                 Loader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }}
-                findViewById<View>(R.id.fail).visibility = View.GONE
             } else if (
                 words.contains("pi") ||
                 words.contains("π")
@@ -324,7 +330,6 @@ class SearchActivity : AppCompatActivity() {
                 isShowingSmartCard = true
                 findViewById<TextView>(R.id.type).setText(R.string.value_of_pi)
                 findViewById<TextView>(R.id.result).text = "\u03c0 = ${Math.PI}"
-                findViewById<View>(R.id.fail).visibility = View.GONE
             } else {
                 smartBox.visibility = View.GONE
             }
@@ -335,7 +340,6 @@ class SearchActivity : AppCompatActivity() {
                 if (currentString == string) {
                     runOnUiThread {
                         answerBox.visibility = View.VISIBLE
-                        findViewById<View>(R.id.fail).visibility = View.GONE
                         answerBox.findViewById<TextView>(R.id.instantAnswerTitle).text = instantAnswer.title
                         answerBox.findViewById<TextView>(R.id.instantAnswerText).text = instantAnswer.description
                         answerBox.findViewById<TextView>(R.id.instantAnswerSource).apply {

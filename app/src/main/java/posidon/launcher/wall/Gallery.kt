@@ -132,7 +132,7 @@ class Gallery : AppCompatActivity() {
             } catch (e: Exception) {
                 runOnUiThread {
                     loading.visibility = View.GONE
-                    findViewById<View>(R.id.fail).visibility = View.VISIBLE
+                    //findViewById<View>(R.id.fail).visibility = View.VISIBLE
                     clearAnimation(loading.drawable)
                 }
                 e.printStackTrace()

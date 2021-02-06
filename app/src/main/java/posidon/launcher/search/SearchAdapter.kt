@@ -21,7 +21,7 @@ internal class SearchAdapter(
 ) : BaseAdapter() {
 
     override fun getCount(): Int = results.size
-    override fun getItem(position: Int): Any? = null
+    override fun getItem(i: Int): Any = results[i]
     override fun getItemId(position: Int): Long = 0
 
     class ViewHolder(

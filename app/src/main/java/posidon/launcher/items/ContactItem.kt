@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
+import android.view.View
 import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
 
@@ -23,7 +24,7 @@ class ContactItem private constructor(
         }
     }
 
-    fun open(context: Context) {
+    override fun open(context: Context, view: View, dockI: Int) {
         val viewContact = Intent(Intent.ACTION_VIEW)
         viewContact.data = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
         viewContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

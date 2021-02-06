@@ -212,6 +212,9 @@
     <string name="marquee">Marquee</string>
     <string name="spacer">Spacer</string>
     <string name="rest_at_bottom">Rest at bottom</string>
+    <string name="results">Results</string>
+    <string name="enter_is_go">Open first result on enter</string>
+    <string name="x_on_duckduckgo">\"%1$s\" on DuckDuckGo</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d meldingen</item>

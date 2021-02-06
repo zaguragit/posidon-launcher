@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.provider.Settings
+import android.view.View
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.ThemeTools
@@ -18,7 +19,7 @@ class SettingsItem private constructor(
     val action: String
 ) : LauncherItem() {
 
-    fun open(context: Context) = try {
+    override fun open(context: Context, view: View, dockI: Int) = try {
         context.open(action)
     } catch (e: Exception) { e.printStackTrace() }
 

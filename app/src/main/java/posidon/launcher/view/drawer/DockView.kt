@@ -232,7 +232,7 @@ class DockView : LinearLayout {
                             continue@loop
                         }
                         view.setOnClickListener {
-                            item.open(context, it)
+                            item.open(context, it, -1)
                         }
                     }
                     is App -> {

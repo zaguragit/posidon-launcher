@@ -100,12 +100,26 @@
                     app:label="@string/search_as_home"
                     app:key="search:asHome"
                     app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_arrow_right"
+                    app:label="@string/enter_is_go"
+                    app:key="search:enter_is_go"
+                    app:def="false"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSettingView
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/results"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

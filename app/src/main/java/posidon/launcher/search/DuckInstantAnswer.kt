@@ -1,8 +1,12 @@
 package posidon.launcher.search
 
+import android.app.ActivityOptions
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import org.json.JSONException
 import org.json.JSONObject
+import posidon.launcher.R
 import posidon.launcher.tools.Loader
 
 class DuckInstantAnswer private constructor(
@@ -14,6 +18,15 @@ class DuckInstantAnswer private constructor(
 ) {
 
     companion object {
+
+        fun search(context: Context, string: String) {
+            val encoded = Uri.encode(string)
+            val url = "https://duckduckgo.com/?q=$encoded&t=posidon.launcher"
+            val uri = Uri.parse(url)
+            val i = Intent(Intent.ACTION_VIEW, uri)
+            context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slidedown).toBundle())
+        }
+
         fun load(string: String, onLoad: (DuckInstantAnswer) -> Unit) {
             val encoded = Uri.encode(string)
             val url = "https://api.duckduckgo.com/?q=$encoded&format=json&t=posidon.launcher"

@@ -6,26 +6,6 @@
     android:orientation="vertical"
     android:id="@+id/bg">
     <LinearLayout
-        android:id="@+id/fail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="256dp"
-            android:src="@drawable/sadfish"
-            android:layout_marginTop="80dp"/>
-        <TextView
-            android:id="@+id/failtxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textColor="#ffffff"
-            android:textSize="26sp"
-            android:padding="20dp"/>
-    </LinearLayout>
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -165,7 +145,6 @@
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:hint="@string/searchbarhint"
-            android:imeOptions="actionDone"
             android:inputType="textFilter"
             android:padding="12dp"
             android:textColor="@color/cardtxt"

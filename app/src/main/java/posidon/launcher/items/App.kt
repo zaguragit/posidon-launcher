@@ -42,6 +42,7 @@ class App(
 
     override var notificationCount = 0
 
+    override fun open(context: Context, view: View, dockI: Int) = open(context, view)
     inline fun open(context: Context, view: View?) {
         try {
             val intent = Intent(Intent.ACTION_MAIN)
