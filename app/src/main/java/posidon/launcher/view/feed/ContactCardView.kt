@@ -51,7 +51,7 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             findViewById<TextView>(R.id.icontxt).text = item.label
             findViewById<TextView>(R.id.icontxt).setTextColor(Settings["contacts_card:text_color", 0xff252627.toInt()])
             findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE
-            setOnClickListener { item.open(context) }
+            setOnClickListener { v -> item.open(context, v, -1) }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
         }
     }

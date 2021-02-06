@@ -130,7 +130,7 @@ class Folder(string: String) : LauncherItem() {
             return count
         }
 
-    fun open(context: Context, view: View, i: Int) {
+    override fun open(context: Context, view: View, dockI: Int) {
         if (currentlyOpen == null) {
 
             val bgColor = Settings["folderBG", -0x22eeeded]
@@ -168,7 +168,7 @@ class Folder(string: String) : LauncherItem() {
             var i1 = 0
             val appListSize = items.size
             while (i1 < appListSize) {
-                val appIcon = createItem(i1, context, container, appSize, labelsEnabled, notifBadgesEnabled, notifBadgesShowNum, popupWindow, i, view)
+                val appIcon = createItem(i1, context, container, appSize, labelsEnabled, notifBadgesEnabled, notifBadgesShowNum, popupWindow, dockI, view)
                 container.addView(appIcon)
                 i1++
             }
@@ -249,7 +249,7 @@ class Folder(string: String) : LauncherItem() {
         }
     }
 
-    private fun createItem(folderI: Int, context: Context, container: GridLayout?, appSize: Int, labelsEnabled: Boolean, notifBadgesEnabled: Boolean, notifBadgesShowNum: Boolean, popupWindow: PopupWindow, i: Int, view: View): View? {
+    private fun createItem(folderI: Int, context: Context, container: GridLayout?, appSize: Int, labelsEnabled: Boolean, notifBadgesEnabled: Boolean, notifBadgesShowNum: Boolean, popupWindow: PopupWindow, dockI: Int, view: View): View? {
         val item = items[folderI]
         val appIcon = LayoutInflater.from(context).inflate(R.layout.drawer_item, container, false)
         val icon = appIcon.findViewById<ImageView>(R.id.iconimg)
@@ -283,15 +283,15 @@ class Folder(string: String) : LauncherItem() {
                 ItemLongPress.onItemLongPress(context, v, this, onRemove = {
                     popupWindow.dismiss()
                     items.removeAt(folderI)
-                    Dock[i] = if (items.size == 1) items[0] else this
+                    Dock[dockI] = if (items.size == 1) items[0] else this
                     Home.instance.setDock()
-                }, onEdit = null, dockI = i, folderI = folderI, parentView = view)
+                }, onEdit = null, dockI = dockI, folderI = folderI, parentView = view)
                 true
             }
         } else if (item is Shortcut) {
             appIcon.setOnClickListener { v ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    item.open(context, v)
+                    item.open(context, v, -1)
                 }
                 popupWindow.dismiss()
             }

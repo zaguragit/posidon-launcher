@@ -1,15 +1,40 @@
 package posidon.launcher.items
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.view.View
 
-open class LauncherItem {
+abstract class LauncherItem {
+
     open var icon: Drawable? = null
     open var label: String? = null
 
+    /**
+     * Color used for item long-press menus and similar stuff
+     */
     open fun getColor(): Int = -0xdad9d9
 
+    /**
+     * What to do when the item is clicked
+     *
+     * [view]       The view that was clicked
+     * [dockI]      The place in the dock that the item occupies, if it's not in the dock a -1 will be passed
+     */
+    abstract fun open(context: Context, view: View, dockI: Int)
+
+    /**
+     * The number to show in the notification badge
+     * If value is 0, the badge won't be shown
+     */
+    open val notificationCount = 0
+
     companion object {
+
+        /**
+         * Converts a string to an item
+         * Used for item storage in places like the dock
+         */
         operator fun invoke(string: String): LauncherItem? {
             return when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && string.startsWith("shortcut:") -> Shortcut(string)
@@ -22,6 +47,4 @@ open class LauncherItem {
             }
         }
     }
-
-    open val notificationCount = 0
 }

@@ -55,7 +55,7 @@ class Shortcut : LauncherItem {
 
     override fun toString() = "shortcut:$packageName/$id"
 
-    fun open(context: Context, view: View) {
+    override fun open(context: Context, view: View, dockI: Int) {
         try {
             (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
