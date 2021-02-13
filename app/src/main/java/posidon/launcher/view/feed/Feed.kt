@@ -329,7 +329,9 @@ class Feed : FrameLayout {
                     }
                 }
                 findViewById<View>(R.id.widget_section)!!.setOnClickListener {
-                    Widget.selectWidget(activity)
+                    Widget.selectWidget(activity) {
+                        onSelect(it.toString())
+                    }
                     dismiss()
                 }
                 findViewById<View>(R.id.spacer_section)!!.setOnClickListener {

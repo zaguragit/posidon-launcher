@@ -24,6 +24,8 @@ class FeedOrderActivity : AppCompatActivity() {
 
     lateinit var recycler: RecyclerView
 
+    val sections = Feed.getSectionsFromSettings()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyFontSetting()
@@ -36,8 +38,6 @@ class FeedOrderActivity : AppCompatActivity() {
             val p = 4.dp.toInt()
             recycler.setPadding(p, getStatusBarHeight(), p, Tools.navbarHeight + p)
         }
-
-        val sections = Feed.getSectionsFromSettings()
 
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recycler.isNestedScrollingEnabled = false
@@ -74,14 +74,16 @@ class FeedOrderActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener {
-            Feed.selectFeedSectionToAdd(this) {
-                sections.add(0, it)
-                Settings.apply()
-                recycler.adapter!!.notifyItemInserted(0)
-            }
+            Feed.selectFeedSectionToAdd(this, ::onItemSelect)
         }
 
         Global.customized = true
+    }
+
+    private fun onItemSelect(it: String) {
+        sections.add(0, it)
+        Settings.apply()
+        recycler.adapter!!.notifyItemInserted(0)
     }
 
     override fun onPause() {
@@ -91,12 +93,7 @@ class FeedOrderActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val w = Widget.handleActivityResult(this, requestCode, resultCode, data)
-        if (w != null) {
-            val sections = Feed.getSectionsFromSettings()
-            sections.add(0, w.toString())
-            Settings.apply()
-            recycler.adapter!!.notifyItemInserted(0)
-        }
+        w?.let { it1 -> onItemSelect(it1.toString()) }
         super.onActivityResult(requestCode, resultCode, data)
     }
 }

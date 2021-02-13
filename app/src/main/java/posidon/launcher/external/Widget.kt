@@ -5,15 +5,28 @@ import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
+import android.content.ComponentName
 import android.content.Intent
-import android.os.Parcelable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Home
+import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.view.GridLayoutManager
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.feed.WidgetSection
 
@@ -22,48 +35,32 @@ class Widget(
 ) {
 
     companion object {
-        const val REQUEST_PICK_APPWIDGET = 0
         const val REQUEST_CREATE_APPWIDGET = 1
         const val REQUEST_BIND_WIDGET = 2
 
-        fun fromIntent(activity: Activity, data: Intent?): WidgetSection? {
+        fun fromIntent(activity: Activity, id: Int, provider: ComponentName): WidgetSection? {
             val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
-            try {
-                val widgetId = data!!.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-                //val hostId = Tools.generateWidgetHostUid()
-                val providerInfo = widgetManager.getAppWidgetInfo(widgetId)
-                if (!widgetManager.bindAppWidgetIdIfAllowed(widgetId, providerInfo.provider)) {
+            return try {
+                if (!widgetManager.bindAppWidgetIdIfAllowed(id, provider)) {
                     val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider)
                     activity.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
-                Settings["widget:$widgetId"] = providerInfo.provider.packageName + "/" + providerInfo.provider.className + "/" + widgetId
-                return WidgetSection(Tools.appContext!!, Widget(widgetId))
+                Settings["widget:$id"] = provider.packageName + "/" + provider.className + "/" + id
+                WidgetSection(Tools.appContext!!, Widget(id))
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
+                null
             }
         }
 
         fun handleActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?): WidgetSection? {
             if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_PICK_APPWIDGET) {
+                if (requestCode == REQUEST_CREATE_APPWIDGET) {
                     val extras = data!!.extras
-                    if (extras != null) {
-                        val id = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
-                        val widgetInfo = AppWidgetManager.getInstance(Tools.appContext).getAppWidgetInfo(id)
-                        if (widgetInfo.configure != null) {
-                            val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
-                            intent.component = widgetInfo.configure
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
-                            runCatching {
-                                activity.startActivityForResult(intent, REQUEST_CREATE_APPWIDGET)
-                            }
-                        } else return fromIntent(activity, data)
-                    } else return fromIntent(activity, data)
-                } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
-                    return fromIntent(activity, data)
+                    val id = extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+                    return fromIntent(activity, id, tmpProvider!!).also { tmpProvider = null }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED && data != null) {
                 val appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
@@ -79,17 +76,112 @@ class Widget(
         }
 
         private var tmpHost: AppWidgetHost? = null
-        fun selectWidget(activity: Activity) {
-            val t = AppWidgetHost(Tools.appContext, HOST_ID)
-            val appWidgetId = t.allocateAppWidgetId()
-            tmpHost = t
-            val pickIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_PICK)
-            pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            val customInfo: ArrayList<out Parcelable?> = ArrayList()
-            pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_INFO, customInfo)
-            val customExtras: ArrayList<out Parcelable?> = ArrayList()
-            pickIntent.putParcelableArrayListExtra(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, customExtras)
-            activity.startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET)
+        private var tmpProvider: ComponentName? = null
+
+        fun selectWidget(activity: Activity, onSelect: (WidgetSection) -> Unit) {
+
+            val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
+
+            BottomSheetDialog(activity, R.style.bottomsheet).apply {
+                setContentView(LinearLayout(context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    addView(TextView(context).apply {
+                        setText(R.string.widgets)
+                        setTextColor(context.resources.getColor(R.color.cardtitle))
+                        textSize = 24f
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        val p = 8.dp.toInt()
+                        setPadding(p, p, p, p)
+                    })
+                    addView(RecyclerView(context).apply {
+                        isVerticalFadingEdgeEnabled = true
+                        setFadingEdgeLength(28.dp.toInt())
+                        layoutManager = GridLayoutManager(context, 2)
+
+                        class VH(
+                            view: View,
+                            val label: TextView,
+                            val preview: ImageView,
+                            val icon: ImageView
+                        ) : RecyclerView.ViewHolder(view)
+
+                        val providers = widgetManager.installedProviders
+                        val pm = context.packageManager
+                        adapter = object : RecyclerView.Adapter<VH>() {
+
+                            override fun getItemCount() = providers.size
+
+                            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+                                val label = TextView(context).apply {
+                                    setTextColor(context.resources.getColor(R.color.cardtxt))
+                                    textSize = 12f
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                                val preview = ImageView(context)
+                                val icon = ImageView(context).apply {
+                                    val p = 8.dp.toInt()
+                                    setPadding(p, p, p, p)
+                                }
+                                val v = CardView(context).apply {
+                                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
+                                        val m = 8.dp.toInt()
+                                        setMargins(m, m, m, m)
+                                    }
+                                    setCardBackgroundColor(resources.getColor(R.color.cardbg))
+                                    cardElevation = 10f
+                                    radius = 16.dp
+                                    preventCornerOverlap = true
+                                    clipToPadding = true
+                                    addView(LinearLayout(context).apply {
+                                        orientation = LinearLayout.VERTICAL
+                                        val h = 48.dp.toInt()
+                                        addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.displayWidth / 2 - h))
+                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2.dp.toInt()))
+                                        addView(LinearLayout(context).apply {
+                                            orientation = LinearLayout.HORIZONTAL
+                                            addView(icon, LinearLayout.LayoutParams(h, h))
+                                            addView(label, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h))
+                                        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h))
+                                    })
+                                }
+                                return VH(v, label, preview, icon)
+                            }
+
+                            val iconCache = arrayOfNulls<Drawable>(providers.size)
+                            val previewCache = arrayOfNulls<Drawable>(providers.size)
+
+                            override fun onBindViewHolder(holder: VH, i: Int) {
+                                val p = providers[i]
+                                holder.label.text = p.loadLabel(pm)
+                                holder.preview.setImageDrawable(previewCache[i]
+                                    ?: p.loadPreviewImage(context, resources.displayMetrics.densityDpi).also { previewCache[i] = it })
+                                holder.icon.setImageDrawable(iconCache[i]
+                                    ?: p.loadIcon(context, resources.displayMetrics.densityDpi).also { iconCache[i] = it })
+                                holder.itemView.setOnClickListener {
+                                    val widgetId = AppWidgetHost(Tools.appContext, HOST_ID)
+                                        .also { tmpHost = it }
+                                        .allocateAppWidgetId()
+                                    if (p.configure != null) {
+                                        try {
+                                            tmpProvider = p.provider
+                                            activity.startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
+                                                component = p.configure
+                                                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                                            }, REQUEST_CREATE_APPWIDGET)
+                                        } catch (e: Exception) { e.printStackTrace() }
+                                    } else fromIntent(activity, widgetId, p.provider)?.let { it1 -> onSelect(it1) }
+                                    dismiss()
+                                }
+                            }
+                        }
+                    })
+                })
+                window!!.findViewById<View>(R.id.design_bottom_sheet).background = ShapeDrawable().apply {
+                    val r = 18.dp
+                    shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
+                    paint.color = 0xff0d0e0f.toInt()
+                }
+            }.show()
         }
 
         const val HOST_ID: Int = 0x3eed6ee2

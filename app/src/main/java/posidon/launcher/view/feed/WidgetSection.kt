@@ -25,7 +25,7 @@ class WidgetSection(
         }
 
         if (!widget.fromSettings(this)) {
-            (parent as Feed).remove(this)
+            feed.remove(this)
             return
         }
         widget.startListening()

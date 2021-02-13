@@ -99,9 +99,14 @@ class OrderAdapter(
                     "widget" -> {
                         val component = Settings["widget:$value", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
                         val packageName = component.substringBefore('/')
-                        holder.text.text = "Widget" + " | " + (App.getJustPackage(packageName)?.get(0)?.label ?: context.packageManager.getApplicationInfo(packageName, 0).loadLabel(context.packageManager))
-                        holder.icon.setImageDrawable(App.getJustPackage(packageName)?.get(0)?.icon ?: context.packageManager.getApplicationIcon(packageName))
-                        holder.icon.imageTintList = null
+                        try {
+                            holder.text.text = "Widget" + " | " + (App.getJustPackage(packageName)?.get(0)?.label ?: context.packageManager.getApplicationInfo(packageName, 0).loadLabel(context.packageManager))
+                            holder.icon.setImageDrawable(App.getJustPackage(packageName)?.get(0)?.icon ?: context.packageManager.getApplicationIcon(packageName))
+                            holder.icon.imageTintList = null
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            println(component)
+                        }
                     }
                     "spacer" -> {
                         holder.text.text = context.getString(R.string.spacer)

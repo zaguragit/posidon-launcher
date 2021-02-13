@@ -10,7 +10,7 @@ import android.view.Gravity
 import androidx.appcompat.widget.AppCompatSeekBar
 import posidon.launcher.Global
 
-class Seekbar(context: Context?, attrs: AttributeSet? = null) : AppCompatSeekBar(context, attrs) {
+class Seekbar(context: Context, attrs: AttributeSet? = null) : AppCompatSeekBar(context, attrs) {
 
     init {
         progressDrawable = generateDrawable()

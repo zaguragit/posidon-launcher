@@ -17,7 +17,6 @@ import android.view.View.*
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.external.Kustom
-import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -195,14 +194,6 @@ class Home : AppCompatActivity() {
 
         Global.shouldSetApps = false
         Global.customized = false
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val w = Widget.handleActivityResult(this, requestCode, resultCode, data)
-        if (w != null) {
-            feed.add(w)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
