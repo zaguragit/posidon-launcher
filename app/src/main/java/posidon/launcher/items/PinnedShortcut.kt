@@ -14,7 +14,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 @RequiresApi(Build.VERSION_CODES.O)
-class Shortcut : LauncherItem {
+class PinnedShortcut : LauncherItem {
 
     val packageName: String
     val id: String
@@ -25,7 +25,6 @@ class Shortcut : LauncherItem {
         id = shortcut.id
         icon = (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getShortcutBadgedIconDrawable(shortcut, 1)
         println("UAN__ $label $this")
-        pinnedShortcuts.putIfAbsent(this.toString(), this)
     }
 
     constructor(string: String) {
@@ -50,13 +49,20 @@ class Shortcut : LauncherItem {
             println("\tTRII___ ${shortcut?.id}")
         }
         println("TUU__ $label $this")
-        pinnedShortcuts.putIfAbsent(this.toString(), this)
     }
 
     override fun toString() = "shortcut:$packageName/$id"
 
     override fun open(context: Context, view: View, dockI: Int) {
         try {
+            (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getShortcuts(LauncherApps.ShortcutQuery()
+                .setQueryFlags(
+                    LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED or
+                    LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC or
+                    LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or
+                    LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY), Process.myUserHandle()).also {
+                println("ANASTASALANEFASA" + it?.size + "aaa" + it?.joinToString { "\n" + it.`package` + " / " + it.id })
+            }
             (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 "clip_reveal" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -72,6 +78,39 @@ class Shortcut : LauncherItem {
     inline fun isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
 
     companion object {
-        val pinnedShortcuts = HashMap<String, Shortcut>()
+        private val pinnedShortcuts = HashMap<String, PinnedShortcut>().apply {
+            Settings.getStrings("pinned_shortcuts")?.forEach {
+                put(it, PinnedShortcut(it))
+            }
+        }
+
+        private val data get() = Settings.getStrings("pinned_shortcuts")
+
+        fun pin(context: Context, shortcut: PinnedShortcut) {
+            val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+            pinnedShortcuts.putIfAbsent(shortcut.toString(), shortcut)
+            data?.add(shortcut.toString())
+            Settings.apply()
+            launcherApps.pinShortcuts(
+                shortcut.packageName,
+                pinnedShortcuts.filter { it.value.packageName == shortcut.packageName }.map { it.value.id },
+                Process.myUserHandle()
+            )
+        }
+
+        fun unpin(context: Context, shortcut: PinnedShortcut): Boolean {
+            val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+            if (pinnedShortcuts.remove(shortcut.toString(), shortcut)) {
+                data?.remove(shortcut.toString())
+                Settings.apply()
+                launcherApps.pinShortcuts(
+                    shortcut.packageName,
+                    pinnedShortcuts.filter { it.value.packageName == shortcut.packageName }.map { it.value.id },
+                    Process.myUserHandle()
+                )
+                return true
+            }
+            return false
+        }
     }
 }

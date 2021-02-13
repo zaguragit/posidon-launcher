@@ -189,7 +189,7 @@ class Feed : FrameLayout {
                     }
                     if (Settings["notif:badges", true]) activity.runOnUiThread {
                         drawer.drawerGrid.invalidateViews()
-                        drawer.dock.loadApps(drawer, this, desktopContent, activity)
+                        drawer.dock.loadAppsAndUpdateHome(drawer, this, desktopContent, activity)
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }
@@ -267,14 +267,14 @@ class Feed : FrameLayout {
         notifications = null
         newsCards = null
         for (i in s.indices) {
-            val section = s[i]
-            internalAdd(map[section] ?: FeedSection(activity, section)).also {
-                when (it) {
-                    is MusicCard -> musicCard = it
-                    is NotificationCards -> notifications = it
-                    is NewsCards -> newsCards = it
+            map[s[i]] ?: FeedSection(activity, s, i)?.let { section ->
+                internalAdd(section)
+                when (section) {
+                    is MusicCard -> musicCard = section
+                    is NotificationCards -> notifications = section
+                    is NewsCards -> newsCards = section
                 }
-                it.updateTheme(activity)
+                section.updateTheme(activity)
             }
         }
         updateTheme(activity, drawer)

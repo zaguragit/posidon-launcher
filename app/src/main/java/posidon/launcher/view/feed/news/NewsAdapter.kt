@@ -191,7 +191,7 @@ class NewsAdapter(
         notifyItemRangeChanged(i, items.size - i)
         val day = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
         val a = "$day:" + feedItem.link + ':' + feedItem.title
-        Settings.getStrings("feed:deleted_articles").add(a)
+        Settings.getStringsOrSetEmpty("feed:deleted_articles").add(a)
         Settings.apply()
         if (Settings["feed:undo_article_removal_opt", false]) {
             Snackbar.make(context.findViewById(android.R.id.content), R.string.removed, Snackbar.LENGTH_LONG).apply {
@@ -199,7 +199,7 @@ class NewsAdapter(
                     items.add(i, feedItem)
                     notifyItemInserted(i)
                     notifyItemRangeChanged(i, items.size - i)
-                    Settings.getStrings("feed:deleted_articles").remove(a)
+                    Settings.getStringsOrSetEmpty("feed:deleted_articles").remove(a)
                     Settings.apply()
                 }
                 view.setPadding(0, 0, 0, Tools.navbarHeight)

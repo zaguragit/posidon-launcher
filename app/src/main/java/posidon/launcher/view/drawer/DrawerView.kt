@@ -19,6 +19,7 @@ import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
+import posidon.launcher.items.Folder
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.items.users.ItemLongPress
@@ -107,7 +108,7 @@ class DrawerView : LinearLayout {
         }
         drawerGrid.scrollY = s
         scrollBar.updateAdapter()
-        dock.loadApps(this, home.feed, home.feed.desktopContent, home)
+        dock.loadAppsAndUpdateHome(this, home.feed, home.feed.desktopContent, home)
     }
 
     fun setKustomVars() {
@@ -242,7 +243,20 @@ class DrawerView : LinearLayout {
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
 
-    val dock = DockView(context)
+    val dock = DockView(context).apply {
+        onItemClick = { context, view, i, item ->
+            item.open(context, view, i)
+        }
+        onItemLongClick = { context, view, i, item ->
+            ItemLongPress.onItemLongPress(context, view, item, onRemove = {
+                Dock[i] = null
+                loadApps()
+            }, onEdit = if (item is Folder) {
+                { item.edit(it, i) }
+            } else null, dockI = i)
+            true
+        }
+    }
 
     val drawerGrid = GridView(context).apply {
         gravity = Gravity.CENTER_HORIZONTAL

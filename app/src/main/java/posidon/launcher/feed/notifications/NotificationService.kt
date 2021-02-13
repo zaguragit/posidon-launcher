@@ -22,6 +22,7 @@ import posidon.launcher.tools.Tools
 import posidon.launcher.tools.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 
 class NotificationService : NotificationListenerService() {
@@ -29,7 +30,7 @@ class NotificationService : NotificationListenerService() {
     init {
         update = {
             if (!Settings["search:asHome", false]) {
-                if (!updating) try {
+                try {
                     loadNotifications(activeNotifications)
                 } catch (e: Exception) {
                     loadNotifications(null)
@@ -70,10 +71,10 @@ class NotificationService : NotificationListenerService() {
         }
 
         var hasMusic = false
-        updating = true
         val groups = ArrayList<ArrayList<Notification>>()
         var i = 0
         var notificationsAmount2 = 0
+        lock.lock()
         try {
             for (app in Global.apps) {
                 app.notificationCount = 0
@@ -189,10 +190,10 @@ class NotificationService : NotificationListenerService() {
         }
         val tmp = notificationGroups
         notificationGroups = groups
-        tmp.clear()
         notificationsAmount = notificationsAmount2
         onUpdate()
-        updating = false
+        lock.unlock()
+        tmp.clear()
     }
 
     companion object {
@@ -205,7 +206,7 @@ class NotificationService : NotificationListenerService() {
         var onUpdate = {}
 
 		var notificationsAmount = 0
-        private var updating = false
+        private val lock = ReentrantLock()
 
         var update = {}
             private set
