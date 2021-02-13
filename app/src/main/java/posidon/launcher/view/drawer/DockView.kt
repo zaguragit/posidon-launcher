@@ -21,7 +21,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.*
-import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -29,6 +28,9 @@ import kotlin.math.abs
 import kotlin.math.min
 
 class DockView : LinearLayout {
+
+    var onItemClick: (Context, View, dockI: Int, item: LauncherItem) -> Unit = { _, _, _, _ -> }
+    var onItemLongClick: (Context, View, dockI: Int, item: LauncherItem) -> Boolean = { _, _, _, _ -> false }
 
     fun updateTheme(drawer: View) {
         layoutParams = (layoutParams as MarginLayoutParams).apply {
@@ -175,7 +177,12 @@ class DockView : LinearLayout {
         addView(containerContainer, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
-    fun loadApps(drawer: DrawerView, feed: View, desktopContent: View, home: Home) {
+    fun loadAppsAndUpdateHome(drawer: DrawerView, feed: View, desktopContent: View, home: Home) {
+        loadApps()
+        updateDimensions(drawer, feed, desktopContent, home)
+    }
+
+    fun loadApps() {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Settings["dock:margin_x", 16].dp.toInt()
         val appSize = min(when (Settings["dockicsize", 1]) {
@@ -208,6 +215,20 @@ class DockView : LinearLayout {
                 label.visibility = GONE
             }
             if (item != null) {
+                when (item) {
+                    is PinnedShortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        if (!item.isInstalled(context.packageManager)) {
+                            Dock[i] = null
+                            continue@loop
+                        }
+                    }
+                    is App -> {
+                        if (!item.isInstalled(context.packageManager)) {
+                            Dock[i] = null
+                            continue@loop
+                        }
+                    }
+                }
                 img.setImageDrawable(item.icon)
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
@@ -221,38 +242,26 @@ class DockView : LinearLayout {
                         }
                     } else { badge.visibility = View.GONE }
                 } else { badge.visibility = View.GONE }
-                when (item) {
-                    is Folder -> {
-                        view.setOnClickListener { item.open(context, view, i) }
-                        view.setOnLongClickListener { item.onLongPress(context, i, view); true }
-                    }
-                    is Shortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        if (!item.isInstalled(context.packageManager)) {
-                            Dock[i] = null
-                            continue@loop
-                        }
-                        view.setOnClickListener {
-                            item.open(context, it, -1)
-                        }
-                    }
-                    is App -> {
-                        if (!item.isInstalled(context.packageManager)) {
-                            Dock[i] = null
-                            continue@loop
-                        }
-                        view.setOnClickListener { item.open(context, it) }
-                        view.setOnLongClickListener { view ->
-                            ItemLongPress.onItemLongPress(context, view, item, onRemove = {
-                                Dock[i] = null
-                                loadApps(drawer, feed, desktopContent, home)
-                            }, onEdit = null, dockI = i)
-                            true
-                        }
-                    }
+                view.setOnClickListener {
+                    onItemClick(context, view, i, item)
+                }
+                view.setOnLongClickListener { view ->
+                    onItemLongClick(context, view, i, item)
                 }
             }
             container.addView(view)
         }
+    }
+
+    fun updateDimensions(drawer: DrawerView, feed: View, desktopContent: View, home: Home) {
+        val columnCount = Settings["dock:columns", 5]
+        val marginX = Settings["dock:margin_x", 16].dp.toInt()
+        val appSize = min(when (Settings["dockicsize", 1]) {
+            0 -> 64
+            2 -> 84
+            else -> 74
+        }.dp.toInt(), (Device.displayWidth - marginX * 2) / columnCount)
+        val rowCount = Settings["dock:rows", 1]
         val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp.toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !context.isTablet) {
             containerHeight + 84.dp.toInt()
@@ -264,11 +273,12 @@ class DockView : LinearLayout {
         container.layoutParams.height = containerHeight
         setPadding(0, 0, 0, addition)
         drawer.peekHeight = (dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp).toInt()
-        val metrics = DisplayMetrics()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            home.display?.getRealMetrics(metrics)
-        } else {
-            home.windowManager.defaultDisplay.getRealMetrics(metrics)
+        val metrics = DisplayMetrics().also {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                home.display?.getRealMetrics(it)
+            } else {
+                home.windowManager.defaultDisplay.getRealMetrics(it)
+            }
         }
         drawer.drawerContent.layoutParams.height = metrics.heightPixels
         (home.homeView.layoutParams as FrameLayout.LayoutParams).topMargin = -dockHeight
@@ -282,58 +292,32 @@ class DockView : LinearLayout {
             }
             desktopContent.setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
         }
-        val bg = drawer.background
-        if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
-            bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
-            bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
+        run {
+            val bg = drawer.background
+            if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
+                bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
+                bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
+            }
         }
         (home.findViewById<View>(R.id.blur).layoutParams as CoordinatorLayout.LayoutParams).topMargin = dockHeight
-        home.window.decorView.setOnDragListener { _, event ->
-            when (event.action) {
-                DragEvent.ACTION_DRAG_LOCATION -> {
-                    val view = event.localState as View?
-                    if (view != null) {
-                        val location = IntArray(2)
-                        view.getLocationOnScreen(location)
-                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
-                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
-                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
-                            ItemLongPress.currentPopup?.dismiss()
-                            Folder.currentlyOpen?.dismiss()
-                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                        }
-                    }
+    }
+
+    inline fun onItemDrop(event: DragEvent): Boolean {
+        if (event.y > Device.displayHeight - dockHeight) {
+            val item = LauncherItem(event.clipData.description.label.toString())!!
+            val location = IntArray(2)
+            var i = 0
+            while (i < container.childCount) {
+                container.getChildAt(i).getLocationOnScreen(location)
+                val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
+                if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
+                    Dock.add(item, i)
+                    loadApps()
+                    return true
                 }
-                DragEvent.ACTION_DRAG_STARTED -> {
-                    (event.localState as View?)?.visibility = INVISIBLE
-                }
-                DragEvent.ACTION_DRAG_ENDED -> {
-                    (event.localState as View?)?.visibility = VISIBLE
-                    ItemLongPress.currentPopup?.isFocusable = true
-                    ItemLongPress.currentPopup?.update()
-                }
-                DragEvent.ACTION_DROP -> {
-                    (event.localState as View?)?.visibility = VISIBLE
-                    if (drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
-                        if (event.y > Device.displayHeight - dockHeight) {
-                            val item = LauncherItem(event.clipData.description.label.toString())!!
-                            val location = IntArray(2)
-                            var i = 0
-                            while (i < container.childCount) {
-                                container.getChildAt(i).getLocationOnScreen(location)
-                                val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp)
-                                if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
-                                    Dock.add(item, i)
-                                    break
-                                }
-                                i++
-                            }
-                        }
-                        loadApps(drawer, feed, desktopContent, home)
-                    }
-                }
+                i++
             }
-            true
         }
+        return false
     }
 }

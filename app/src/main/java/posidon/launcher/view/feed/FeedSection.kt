@@ -1,6 +1,7 @@
 package posidon.launcher.view.feed
 
 import android.app.Activity
+import android.util.Log
 import posidon.launcher.external.Widget
 import posidon.launcher.view.feed.news.NewsCards
 import posidon.launcher.view.feed.notifications.NotificationCards
@@ -19,8 +20,9 @@ interface FeedSection {
     companion object {
         operator fun invoke(
             context: Activity,
-            string: String
-        ): FeedSection = when (string) {
+            sections: MutableList<String>,
+            i: Int
+        ): FeedSection? = when (val string = sections[i]) {
             "starred_contacts" -> ContactCardView(context)
             "news" -> NewsCards(context)
             "music" -> MusicCard(context)
@@ -31,7 +33,11 @@ interface FeedSection {
                 when (key) {
                     "widget" -> WidgetSection(context, Widget(value.toInt()))
                     "spacer" -> SpacerSection(context)
-                    else -> throw Exception("Invalid feed section type found: $key")
+                    else -> {
+                        Log.e("posidon launcher", "Invalid feed section type found: $key")
+                        sections.removeAt(i)
+                        null
+                    }
                 }
             }
         }

@@ -32,7 +32,7 @@ object FeedLoader {
         onFinished: (success: Boolean, items: List<FeedItem>) -> Unit
     ) = thread (isDaemon = true) {
         val feedItems = ArrayList<FeedItem>()
-        val deleted = Settings.getStrings("feed:deleted_articles")
+        val deleted = Settings.getStringsOrSetEmpty("feed:deleted_articles")
         val lock = ReentrantLock()
 
         val maxAge = Settings["news:max_days_age", 5]

@@ -19,7 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.external.Kustom
 import posidon.launcher.external.Widget
 import posidon.launcher.feed.notifications.NotificationService
+import posidon.launcher.items.Folder
+import posidon.launcher.items.LauncherItem
+import posidon.launcher.items.PinnedShortcut
 import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -32,6 +36,7 @@ import posidon.launcher.view.drawer.BottomDrawerBehavior.*
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference
+import kotlin.math.abs
 import kotlin.system.exitProcess
 
 class Home : AppCompatActivity() {
@@ -53,41 +58,6 @@ class Home : AppCompatActivity() {
 
     init { instance = this }
     companion object { lateinit var instance: Home private set }
-
-    private fun setCustomizations() {
-
-        feed.update(this, drawer)
-        dock.updateTheme(drawer)
-        drawer.update()
-        drawer.locked = !Settings["drawer:slide_up", true]
-
-        applyFontSetting()
-
-        if (Settings["hidestatus", false]) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        }
-
-        drawer.updateTheme()
-
-        run {
-            val searchHint = Settings["searchhinttxt", "Search.."]
-            drawer.searchTxt.text = searchHint
-            dock.searchTxt.text = searchHint
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (Settings["gesture:back", ""] == "") {
-                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
-            } else {
-                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
-            }
-        }
-
-        Global.shouldSetApps = false
-        Global.customized = false
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,7 +122,79 @@ class Home : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.blur).setImageDrawable(drawer.blurBg)
 
+        window.decorView.setOnDragListener { _, event ->
+            when (event.action) {
+                DragEvent.ACTION_DRAG_LOCATION -> {
+                    val view = event.localState as View?
+                    if (view != null) {
+                        val location = IntArray(2)
+                        view.getLocationOnScreen(location)
+                        val x = abs(event.x - location[0] - view.measuredWidth / 2f)
+                        val y = abs(event.y - location[1] - view.measuredHeight / 2f)
+                        if (x > view.width / 3.5f || y > view.height / 3.5f) {
+                            ItemLongPress.currentPopup?.dismiss()
+                            Folder.currentlyOpen?.dismiss()
+                            drawer.state = STATE_COLLAPSED
+                        }
+                    }
+                }
+                DragEvent.ACTION_DRAG_STARTED -> {
+                    (event.localState as View?)?.visibility = INVISIBLE
+                }
+                DragEvent.ACTION_DRAG_ENDED -> {
+                    (event.localState as View?)?.visibility = VISIBLE
+                    ItemLongPress.currentPopup?.isFocusable = true
+                    ItemLongPress.currentPopup?.update()
+                }
+                DragEvent.ACTION_DROP -> {
+                    (event.localState as View?)?.visibility = VISIBLE
+                    if (drawer.state == STATE_EXPANDED || !dock.onItemDrop(event)) {
+                        val item = LauncherItem(event.clipData.description.label.toString())!!
+                        if (item is PinnedShortcut) {
+                            PinnedShortcut.unpin(this, item)
+                        }
+                    }
+                }
+            }
+            true
+        }
+
         System.gc()
+    }
+
+    private fun setCustomizations() {
+
+        feed.update(this, drawer)
+        dock.updateTheme(drawer)
+        drawer.update()
+        drawer.locked = !Settings["drawer:slide_up", true]
+
+        applyFontSetting()
+
+        if (Settings["hidestatus", false]) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
+        drawer.updateTheme()
+
+        run {
+            val searchHint = Settings["searchhinttxt", "Search.."]
+            drawer.searchTxt.text = searchHint
+            dock.searchTxt.text = searchHint
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Settings["gesture:back", ""] == "") {
+                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+            } else {
+                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
+            }
+        }
+
+        Global.shouldSetApps = false
+        Global.customized = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -166,7 +208,7 @@ class Home : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
-        dock.loadApps(drawer, feed, feed.desktopContent, this)
+        dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent, this)
     }
 
     override fun onResume() {
@@ -268,5 +310,5 @@ class Home : AppCompatActivity() {
 
     fun openSearch(v: View) = SearchActivity.open(this)
 
-    fun setDock() = dock.loadApps(drawer, feed, feed.desktopContent, this)
+    fun setDock() = dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent, this)
 }

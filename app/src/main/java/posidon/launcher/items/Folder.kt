@@ -263,38 +263,27 @@ class Folder(string: String) : LauncherItem() {
             iconTxt.text = item.label
             iconTxt.setTextColor(Settings["folder:label_color", -0x22000001])
         } else iconTxt.visibility = View.GONE
-        if (item is App) {
+        if (notifBadgesEnabled && item.notificationCount != 0) {
             val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
-            if (notifBadgesEnabled && item.notificationCount != 0) {
-                badge.visibility = View.VISIBLE
-                badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-                ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
-                    badge.background = bg
-                    badge.setTextColor(fg)
-                }
-            } else {
-                badge.visibility = View.GONE
+            badge.visibility = View.VISIBLE
+            badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
+            ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                badge.background = bg
+                badge.setTextColor(fg)
             }
-            appIcon.setOnClickListener { v ->
-                item.open(context, v)
+        }
+        appIcon.setOnLongClickListener { v ->
+            ItemLongPress.onItemLongPress(context, v, this, onRemove = {
                 popupWindow.dismiss()
-            }
-            appIcon.setOnLongClickListener { v ->
-                ItemLongPress.onItemLongPress(context, v, this, onRemove = {
-                    popupWindow.dismiss()
-                    items.removeAt(folderI)
-                    Dock[dockI] = if (items.size == 1) items[0] else this
-                    Home.instance.setDock()
-                }, onEdit = null, dockI = dockI, folderI = folderI, parentView = view)
-                true
-            }
-        } else if (item is Shortcut) {
-            appIcon.setOnClickListener { v ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    item.open(context, v, -1)
-                }
-                popupWindow.dismiss()
-            }
+                items.removeAt(folderI)
+                Dock[dockI] = if (items.size == 1) items[0] else this
+                Home.instance.setDock()
+            }, onEdit = null, dockI = dockI, folderI = folderI, parentView = view)
+            true
+        }
+        appIcon.setOnClickListener { v ->
+            item.open(context, v, -1)
+            popupWindow.dismiss()
         }
         return appIcon
     }
@@ -303,26 +292,29 @@ class Folder(string: String) : LauncherItem() {
         ItemLongPress.onItemLongPress(context, view, this, onRemove = {
             Dock[i] = null
             Home.instance.setDock()
-        }, onEdit = {
-            val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
-            val editWindow = PopupWindow(editContent, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, true)
-            val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
-            editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(this@Folder.icon)
-            editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
-                val intent = Intent(context, CustomAppIcon::class.java)
-                intent.putExtra("key", "folder:${uid}:icon")
-                context.startActivity(intent)
-                editWindow.dismiss()
-            }
-            editLabel.setText(label)
-            editWindow.setOnDismissListener {
-                label = editLabel.text.toString().replace('\t', ' ')
-                Settings["folder:${uid}:label"] = label
-                Dock[i] = this@Folder
-                Home.instance.setDock()
-            }
-            editWindow.showAtLocation(it, Gravity.CENTER, 0, 0)
-        }, dockI = i)
+        }, onEdit = { edit(it, i) }, dockI = i)
+    }
+
+    inline fun edit(view: View, dockI: Int) {
+        val context = view.context
+        val editContent = LayoutInflater.from(context).inflate(R.layout.app_edit_menu, null)
+        val editWindow = PopupWindow(editContent, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, true)
+        val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
+        editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(this@Folder.icon)
+        editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
+            val intent = Intent(context, CustomAppIcon::class.java)
+            intent.putExtra("key", "folder:${uid}:icon")
+            context.startActivity(intent)
+            editWindow.dismiss()
+        }
+        editLabel.setText(label)
+        editWindow.setOnDismissListener {
+            label = editLabel.text.toString().replace('\t', ' ')
+            Settings["folder:${uid}:label"] = label
+            Dock[dockI] = this@Folder
+            Home.instance.setDock()
+        }
+        editWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
     }
 
     companion object {

@@ -111,10 +111,12 @@ object Settings {
         return (strings[key]).also { lock.unlock() }
     }
 
-    fun getStrings(key: String): ArrayList<String> {
+    fun getStrings(key: String): ArrayList<String>? {
         lock.lock()
-        return (lists[key] ?: ArrayList<String>().also { lists[key] = it }).also { lock.unlock() }
+        return lists[key].also { lock.unlock() }
     }
+
+    inline fun getStringsOrSetEmpty(key: String): ArrayList<String> = getStringsOrSet(key) { ArrayList() }
 
     fun getStringsOrSet(key: String, def: () -> ArrayList<String>): ArrayList<String> {
         lock.lock()

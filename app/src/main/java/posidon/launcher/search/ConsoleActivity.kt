@@ -101,7 +101,7 @@ class ConsoleActivity : AppCompatActivity() {
                                                 "float" -> print("\n" + Settings.getFloat(tokens[2]))
                                                 "string" -> print("\n" + Settings.getString(tokens[2])?.let { "\"$it\"" })
                                                 "bool" -> print("\n" + Settings.getBoolean(tokens[2]))
-                                                "list" -> print("\n" + Settings.getStrings(tokens[2]).joinToString(prefix = "[", separator = ", ", postfix = "]") { "\"$it\"" })
+                                                "list" -> print("\n" + Settings.getStrings(tokens[2])?.joinToString(prefix = "[", separator = ", ", postfix = "]") { "\"$it\"" })
                                                 else -> printError("\n\"${tokens[1]}\" isn't a valid type!")
                                             }
                                         }
