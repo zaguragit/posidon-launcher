@@ -43,11 +43,11 @@ object ItemLongPress {
             recyclerView.isNestedScrollingEnabled = false
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = ShortcutAdapter(context, shortcuts!!, txtColor)
-            val bg = ShapeDrawable()
-            val r = 18.dp
-            bg.shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
-            bg.paint.color = 0x33000000
-            recyclerView.background = bg
+            recyclerView.background = ShapeDrawable().apply {
+                val r = 18.dp
+                shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
+                paint.color = 0x33000000
+            }
             c
         } else LayoutInflater.from(context).inflate(R.layout.app_long_press_menu, null)
         val window = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)

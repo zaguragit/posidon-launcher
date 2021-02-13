@@ -215,6 +215,7 @@
     <string name="results">Results</string>
     <string name="enter_is_go">Open first result on enter</string>
     <string name="x_on_duckduckgo">\"%1$s\" on DuckDuckGo</string>
+    <string name="widgets">Widgets</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d уведомление</item>
