@@ -65,22 +65,6 @@
                         android:layout_weight="1"
                         android:max="2"/>
                 </LinearLayout>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_label"
-                    app:label="@string/appLabels"
-                    app:key="dockLabelsEnabled"
-                    app:def="false"/>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/labelColor"
-                    app:key="dockLabelColor"
-                    app:def="#EEEEEEEE"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -128,6 +112,36 @@
                     app:key="dock:margin_x"
                     app:def="16"
                     app:max="32"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/appLabels"
+                    app:key="dockLabelsEnabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.SwitchSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_arrow_right"
+                    app:label="@string/marquee"
+                    app:key="dock:labels:marquee"
+                    app:def="true"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/labelColor"
+                    app:key="dockLabelColor"
+                    app:def="#EEEEEEEE"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

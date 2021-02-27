@@ -2,22 +2,23 @@ package posidon.launcher
 
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
-import android.graphics.Rect
+import android.graphics.*
 import android.graphics.drawable.*
 import android.os.*
 import android.util.Log
 import android.view.*
 import android.view.View.*
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.feed_chooser_option_edit_dialog.view.*
 import posidon.launcher.external.Kustom
+import posidon.launcher.external.sysGestures.GestureNavContract
 import posidon.launcher.feed.notifications.NotificationService
+import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.PinnedShortcut
@@ -35,8 +36,10 @@ import posidon.launcher.view.drawer.BottomDrawerBehavior.*
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference
+import java.util.*
 import kotlin.math.abs
 import kotlin.system.exitProcess
+
 
 class Home : AppCompatActivity() {
 
@@ -100,11 +103,11 @@ class Home : AppCompatActivity() {
         homeView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == STATE_COLLAPSED)
                 WallpaperManager.getInstance(this@Home).sendWallpaperCommand(
-                    v.windowToken,
-                    WallpaperManager.COMMAND_TAP,
-                    event.x.toInt(),
-                    event.y.toInt(),
-                    0, null)
+                        v.windowToken,
+                        WallpaperManager.COMMAND_TAP,
+                        event.x.toInt(),
+                        event.y.toInt(),
+                        0, null)
             false
         }
         if (Settings["mnmlstatus", false]) {
@@ -164,8 +167,7 @@ class Home : AppCompatActivity() {
     private fun setCustomizations() {
 
         feed.update(this, drawer)
-        dock.updateTheme(drawer)
-        drawer.update()
+        drawer.updateTheme()
         drawer.locked = !Settings["drawer:slide_up", true]
 
         applyFontSetting()
@@ -175,8 +177,6 @@ class Home : AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-
-        drawer.updateTheme()
 
         run {
             val searchHint = Settings["searchhinttxt", "Search.."]
@@ -212,7 +212,9 @@ class Home : AppCompatActivity() {
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "home"
         }
-        overridePendingTransition(R.anim.home_enter, R.anim.appexit)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            overridePendingTransition(R.anim.home_enter, R.anim.appexit)
+        }
         onUpdate()
         feed.onResume(this)
     }
@@ -302,4 +304,116 @@ class Home : AppCompatActivity() {
     fun openSearch(v: View) = SearchActivity.open(this)
 
     fun setDock() = dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent, this)
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val isActionMain = intent?.action == Intent.ACTION_MAIN
+        if (isActionMain) try {
+            handleGestureContract(intent!!)
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    val picture = Picture()
+
+    override fun onEnterAnimationComplete() {
+        super.onEnterAnimationComplete()
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //picture.beginRecording(1, 1)
+                //picture.endRecording()
+                //homeView.removeView(surfaceView)
+            }
+        } catch (e: Exception) {}
+    }
+
+    private val surfaceView by lazy { SurfaceView(this).apply {
+        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        homeView.addView(this, 0)
+        holder.setFormat(PixelFormat.TRANSLUCENT)
+        holder.addCallback(object : SurfaceHolder.Callback2 {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                //drawOnSurface(holder)
+            }
+
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                //drawOnSurface(holder)
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+            }
+
+            override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                //drawOnSurface(holder)
+            }
+        })
+    }}
+
+    private fun drawOnSurface(holder: SurfaceHolder) {
+        val c = try { holder.lockHardwareCanvas() } catch (e: Exception) { holder.lockCanvas() }
+        if (c != null) {
+            picture.draw(c)
+            holder.unlockCanvasAndPost(c)
+        }
+    }
+
+    /**
+     * Handles gesture nav contract
+     */
+    private fun handleGestureContract(intent: Intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val gnc = GestureNavContract.fromIntent(intent)
+            if (gnc != null) {
+                val r = RectF(0f, 0f, 0f, 0f)
+                val i = getLocationForApp(gnc.componentName, gnc.user, r)
+                //val app = App[gnc.componentName.packageName, gnc.componentName.className, gnc.user.hashCode()] ?: Dock[i]
+                //val icon = app!!.icon!!
+                /*picture.run {
+                    val c = beginRecording(r.width().toInt(), r.height().toInt())
+                    //c.translate(-r.left, -r.top)
+                    //dock.container.getChildAt(i).draw(c)
+                    icon.draw(c)
+                    endRecording()
+                }*/
+                //drawOnSurface(surfaceView.holder)
+                gnc.sendEndPosition(r, surfaceView.surfaceControl)
+            }
+        }
+    }
+
+    /**
+     * Sets [outLocation] to the location of the icon
+     * @return index in dock
+     * If icon isn't in the dock, outLocation will be zeroed out and -1 will be returned
+     */
+    fun getLocationForApp(c: ComponentName, user: UserHandle, outLocation: RectF): Int {
+        val packageName = c.packageName
+        val list = LinkedList<Pair<String, Int>>()
+        for ((item, i) in Dock.indexed()) {
+            when (item) {
+                is App -> if (
+                    item.packageName == packageName &&
+                    item.userHandle == user
+                ) list.add(item.name!! to i)
+                is Folder -> for (folderItem in item.items) {
+                    if (folderItem is App &&
+                        folderItem.packageName == packageName &&
+                        folderItem.userHandle == user) {
+                        list.add(folderItem.name!! to i)
+                        break
+                    }
+                }
+            }
+        }
+        val className = c.className
+        for ((name, i) in list) if (name == className) {
+            dock.getPositionOnScreen(i, outLocation)
+            return i
+        }
+        var retI = -1
+        list.firstOrNull()?.let {
+            retI = it.second
+            dock.getPositionOnScreen(it.second, outLocation)
+        }
+        return retI
+    }
 }

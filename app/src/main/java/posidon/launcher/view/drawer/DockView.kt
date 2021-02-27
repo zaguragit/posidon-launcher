@@ -3,10 +3,12 @@ package posidon.launcher.view.drawer
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
+import android.graphics.RectF
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
@@ -201,20 +203,31 @@ class DockView : LinearLayout {
         }
         loop@ for (i in 0 until columnCount * rowCount) {
             val view = LayoutInflater.from(context).inflate(R.layout.drawer_item, container, false)
-            val img = view.findViewById<ImageView>(R.id.iconimg)
             view.findViewById<View>(R.id.iconFrame).run {
                 layoutParams.height = appSize
                 layoutParams.width = appSize
             }
             val item = Dock[i]
-            val label = view.findViewById<TextView>(R.id.icontxt)
-            if (showLabels) {
-                label.text = item?.label
-                label.setTextColor(Settings["dockLabelColor", -0x11111112])
-            } else {
-                label.visibility = GONE
-            }
             if (item != null) {
+                val label = view.findViewById<TextView>(R.id.icontxt)
+                if (showLabels) {
+                    label.text = item.label
+                    label.setTextColor(Settings["dockLabelColor", -0x11111112])
+                    label.isSingleLine = true
+                    label.maxLines = 1
+                    label.ellipsize = if (Settings["dock:labels:marquee", true]) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
+                    label.isSelected = true
+                    label.isHorizontalFadingEdgeEnabled = true
+                    label.setFadingEdgeLength(5.dp.toInt())
+                    label.freezesText = true
+                    label.setHorizontallyScrolling(true)
+                    label.isSelected = true
+                    label.isFocusable = true
+                    label.isFocusableInTouchMode = true
+                    label.isEnabled = true
+                } else {
+                    label.visibility = GONE
+                }
                 when (item) {
                     is PinnedShortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                         if (!item.isInstalled(context.packageManager)) {
@@ -229,6 +242,7 @@ class DockView : LinearLayout {
                         }
                     }
                 }
+                val img = view.findViewById<ImageView>(R.id.iconimg)
                 img.setImageDrawable(item.icon)
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
@@ -319,5 +333,18 @@ class DockView : LinearLayout {
             }
         }
         return false
+    }
+
+    fun getPositionOnScreen(i: Int, rectF: RectF) {
+        val v = container
+        val columns = container.columnCount
+        val iconWidth = v.measuredWidth.toFloat() / columns
+        val location = intArrayOf(0, 0)
+        v.getLocationOnScreen(location)
+        val left = location[0].toFloat() + iconWidth * (i % columns)
+        val bottom = Device.displayHeight - location[0].toFloat() + iconWidth * (i / columns)
+        val right = left + iconWidth
+        val top = bottom - v.measuredHeight.toFloat()
+        rectF.set(left, top, right, bottom)
     }
 }

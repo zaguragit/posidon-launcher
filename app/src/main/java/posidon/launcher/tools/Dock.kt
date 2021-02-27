@@ -33,4 +33,22 @@ object Dock {
     inline operator fun set(i: Int, item: LauncherItem?) {
         Settings["dock:icon:$i"] = item?.toString()
     }
+
+    inline operator fun iterator() = object : Iterator<LauncherItem?> {
+
+        var i = 0
+        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 1]
+
+        override fun hasNext() = i < iconCount
+        override fun next() = get(i++)
+    }
+
+    inline fun indexed() = object : Iterator<Pair<LauncherItem?, Int>> {
+
+        var i = 0
+        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 1]
+
+        override fun hasNext() = i < iconCount
+        override fun next() = get(i) to i++
+    }
 }

@@ -1,4 +1,4 @@
-package posidon.launcher.external
+package posidon.launcher.external.widgets
 
 import android.app.Activity
 import android.appwidget.AppWidgetHost

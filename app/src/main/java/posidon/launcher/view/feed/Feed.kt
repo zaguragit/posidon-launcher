@@ -20,7 +20,7 @@ import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
-import posidon.launcher.external.Widget
+import posidon.launcher.external.widgets.Widget
 import posidon.launcher.feed.news.FeedLoader
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
@@ -103,6 +103,14 @@ class Feed : FrameLayout {
 
     var onTopOverScroll by scroll::onTopOverScroll
     var onBottomOverScroll by scroll::onBottomOverScroll
+
+    fun clearSections() {
+        sections.clear()
+        desktopContent.removeAllViews()
+        musicCard = null
+        notifications = null
+        newsCards = null
+    }
 
     inline fun add(section: FeedSection) {
         getSectionsFromSettings().add(section.toString())
@@ -260,14 +268,10 @@ class Feed : FrameLayout {
         for (s in sections) {
             map[s.toString()] = s
         }
-        sections.clear()
-        desktopContent.removeAllViews()
+        clearSections()
         val s = getSectionsFromSettings()
-        musicCard = null
-        notifications = null
-        newsCards = null
         for (i in s.indices) {
-            map[s[i]] ?: FeedSection(activity, s, i)?.let { section ->
+            (map[s[i]] ?: FeedSection(activity, s, i))?.let { section ->
                 internalAdd(section)
                 when (section) {
                     is MusicCard -> musicCard = section

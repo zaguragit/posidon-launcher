@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.external.Widget
+import posidon.launcher.external.widgets.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
@@ -32,16 +32,14 @@ class FeedOrderActivity : AppCompatActivity() {
         setContentView(R.layout.custom_feed_order)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        recycler = findViewById(R.id.recycler)
-
-        run {
+        recycler = findViewById<RecyclerView>(R.id.recycler).apply {
             val p = 4.dp.toInt()
-            recycler.setPadding(p, getStatusBarHeight(), p, Tools.navbarHeight + p)
-        }
+            setPadding(p, getStatusBarHeight(), p, Tools.navbarHeight + p)
 
-        recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        recycler.isNestedScrollingEnabled = false
-        recycler.adapter = OrderAdapter(this, sections)
+            layoutManager = LinearLayoutManager(this@FeedOrderActivity, RecyclerView.VERTICAL, false)
+            isNestedScrollingEnabled = false
+            adapter = OrderAdapter(this@FeedOrderActivity, sections)
+        }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END, 0
@@ -67,14 +65,13 @@ class FeedOrderActivity : AppCompatActivity() {
 
         }).attachToRecyclerView(recycler)
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab).apply {
+        findViewById<FloatingActionButton>(R.id.fab).apply {
             backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
             imageTintList = ColorStateList.valueOf(Global.accentColor)
             (layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
-        }
-
-        fab.setOnClickListener {
-            Feed.selectFeedSectionToAdd(this, ::onItemSelect)
+            setOnClickListener {
+                Feed.selectFeedSectionToAdd(this@FeedOrderActivity, ::onItemSelect)
+            }
         }
 
         Global.customized = true

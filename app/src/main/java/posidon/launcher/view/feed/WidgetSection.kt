@@ -3,7 +3,7 @@ package posidon.launcher.view.feed
 import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
-import posidon.launcher.external.Widget
+import posidon.launcher.external.widgets.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.ResizableLayout
 

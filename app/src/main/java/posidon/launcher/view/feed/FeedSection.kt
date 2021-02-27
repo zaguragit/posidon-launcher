@@ -2,7 +2,7 @@ package posidon.launcher.view.feed
 
 import android.app.Activity
 import android.util.Log
-import posidon.launcher.external.Widget
+import posidon.launcher.external.widgets.Widget
 import posidon.launcher.view.feed.news.NewsCards
 import posidon.launcher.view.feed.notifications.NotificationCards
 
