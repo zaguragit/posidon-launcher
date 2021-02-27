@@ -71,11 +71,34 @@
                     app:key="verticalspacing"
                     app:def="12"
                     app:max="48"/>
+                <posidon.launcher.view.setting.SpinnerSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/sorting"
+                    app:key="drawer:sorting"
+                    app:def="0"
+                    app:array="@array/sortingAlgorithms"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_label"
+                    app:drawable="@drawable/ic_arrow_up"
+                    app:label="@string/slide_up"
+                    app:key="drawer:slide_up"
+                    app:def="true"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
                     app:label="@string/appLabels"
                     app:key="labelsenabled"
                     app:def="false"/>
@@ -104,23 +127,6 @@
                     app:label="@string/labelColor"
                     app:key="labelColor"
                     app:def="#EEEEEEEE"/>
-                <posidon.launcher.view.setting.SpinnerSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
-                    app:label="@string/sorting"
-                    app:key="drawer:sorting"
-                    app:def="0"
-                    app:array="@array/sortingAlgorithms"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_arrow_up"
-                    app:label="@string/slide_up"
-                    app:key="drawer:slide_up"
-                    app:def="true"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

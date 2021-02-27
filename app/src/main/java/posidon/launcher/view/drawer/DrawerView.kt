@@ -47,6 +47,17 @@ class DrawerView : LinearLayout {
     ))
 
     fun updateTheme() {
+        dock.updateTheme(this)
+        if (Global.shouldSetApps) {
+            AppLoader(context, ::onAppLoaderEnd).execute()
+        } else onAppLoaderEnd()
+        if (Settings["drawer:sections_enabled", false]) {
+            drawerGrid.numColumns = 1
+            drawerGrid.verticalSpacing = 0
+        } else {
+            drawerGrid.numColumns = Settings["drawer:columns", 4]
+            drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+        }
         val searchBarEnabled = Settings["drawersearchbarenabled", true]
         run {
             val searchBarHeight = if (searchBarEnabled) 56.dp.toInt() else 0
@@ -68,19 +79,6 @@ class DrawerView : LinearLayout {
             val tr = Settings["searchradius", 0].dp
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
-        }
-    }
-
-    fun update() {
-        if (Global.shouldSetApps) {
-            AppLoader(context, ::onAppLoaderEnd).execute()
-        } else onAppLoaderEnd()
-        if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.numColumns = 1
-            drawerGrid.verticalSpacing = 0
-        } else {
-            drawerGrid.numColumns = Settings["drawer:columns", 4]
-            drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
         }
     }
 
