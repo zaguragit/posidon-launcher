@@ -16,9 +16,11 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.Graphics
+import posidon.launcher.tools.theme.Icons
 
 class CustomAppIcon : AppCompatActivity() {
 
@@ -36,17 +38,17 @@ class CustomAppIcon : AppCompatActivity() {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, null).apply {
                 runCatching {
-                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(ThemeTools.badgeMaybe(
+                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(Icons.badgeMaybe(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            ThemeTools.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
+                            Icons.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
                         } else {
                             packageManager.getApplicationIcon("com.android.systemui")
                         }, false
                     ))
                 }
-                findViewById<TextView>(R.id.icontxt).text = "Default"
+                findViewById<TextView>(R.id.icontxt).text = context.getString(R.string._default)
                 setOnClickListener {
-                    Settings[key] = ""
+                    Settings[key] = null
                     finish()
                 }
                 defaultOption = this
@@ -78,13 +80,12 @@ class CustomAppIcon : AppCompatActivity() {
         mainIntent.addCategory("com.anddoes.launcher.THEME")
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
-            iconPacks.add(App(pacslist[i].activityInfo.packageName))
-            iconPacks[i].icon = Tools.tryAnimate(ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ThemeTools.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
+            iconPacks.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name, label = pacslist[i].loadLabel(packageManager).toString()))
+            iconPacks[i].icon = Graphics.tryAnimate(Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
             } else {
                 pacslist[i].loadIcon(packageManager)
             }, false))
-            iconPacks[i].label = pacslist[i].loadLabel(packageManager).toString()
         }
 
         gridView.adapter = IconpacksAdapter()
@@ -115,13 +116,13 @@ class CustomAppIcon : AppCompatActivity() {
                     convertView.findViewById(R.id.iconimg),
                     convertView.findViewById(R.id.icontxt))
                 viewHolder.text.visibility = View.VISIBLE
-                viewHolder.text.setTextColor(Settings["labelColor", -0x11111112])
+                Customizer.styleLabel("drawer:labels", viewHolder.text, -0x11111112)
                 convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
                     val appSize = when (Settings["icsize", 1]) {
-                        0 -> 64.dp.toInt()
-                        2 -> 84.dp.toInt()
-                        else -> 74.dp.toInt()
-                    }
+                        0 -> 64
+                        2 -> 84
+                        else -> 74
+                    }.dp.toInt()
                     width = appSize
                     height = appSize
                 }
@@ -142,7 +143,7 @@ class CustomAppIcon : AppCompatActivity() {
         private val searchResults = ArrayList<String>()
 
         init {
-            icons = try { ThemeTools.getResourceNames(themeRes, iconPack) }
+            icons = try { Icons.getResourceNames(themeRes, iconPack) }
                     catch (e: Exception) { ArrayList() }
             searchResults.addAll(icons)
         }
@@ -190,8 +191,8 @@ class CustomAppIcon : AppCompatActivity() {
                 viewHolder.icon.setImageDrawable(null)
                 viewHolder.icon.setOnClickListener(null)
             } else {
-                viewHolder.icon.setImageDrawable(Tools.tryAnimate(ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    ThemeTools.generateAdaptiveIcon(themeRes.getDrawable(intRes))
+                viewHolder.icon.setImageDrawable(Graphics.tryAnimate(Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes))
                 } else {
                     themeRes.getDrawable(intRes)
                 }, false)))

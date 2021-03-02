@@ -1,11 +1,12 @@
-package posidon.launcher.tools
+package posidon.launcher.tools.theme
 
-import android.app.WallpaperManager
+import android.content.Context
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.*
 import android.graphics.drawable.*
 import android.os.Build
+import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
 import org.xmlpull.v1.XmlPullParser
@@ -13,16 +14,19 @@ import org.xmlpull.v1.XmlPullParserFactory
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 import posidon.launcher.tools.drawable.MaskedDrawable
+import posidon.launcher.tools.mainFont
+import posidon.launcher.tools.sp
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-object ThemeTools {
+object Icons {
 
     class IconPackInfo {
         var scaleFactor = 1f
@@ -121,26 +125,6 @@ object ThemeTools {
         } catch (ignore: Exception) {}
         return strings
     }
-
-    fun setWallpaper(
-        img: Bitmap,
-        flag: Int
-    ) = thread {
-        val wallpaperManager = WallpaperManager.getInstance(Tools.appContext)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            try {
-                wallpaperManager.setBitmap(img, null, true, when (flag) {
-                    0 -> WallpaperManager.FLAG_SYSTEM
-                    1 -> WallpaperManager.FLAG_LOCK
-                    else -> WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK
-                })
-            } catch (e: Exception) {}
-        } else {
-            try { wallpaperManager.setBitmap(img) }
-            catch (e: Exception) {}
-        }
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun generateAdaptiveIcon(drawable: Drawable): Drawable {
@@ -327,6 +311,14 @@ object ThemeTools {
             }
         } else {
             onGenerated(ColorTools.iconBadge(customBG), if (ColorTools.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
+        }
+    }
+
+    inline fun animateIfShould(context: Context, drawable: Drawable) {
+        if (!(context.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
+            try {
+                Graphics.tryAnimate(drawable)
+            } catch (e: Exception) {}
         }
     }
 }

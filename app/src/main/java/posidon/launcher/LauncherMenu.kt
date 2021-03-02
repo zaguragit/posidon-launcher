@@ -16,6 +16,7 @@ import posidon.launcher.external.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
@@ -66,7 +67,7 @@ object LauncherMenu {
             }
             page.setBackgroundResource(R.drawable.page)
             if (Tools.canBlurDrawer) {
-                window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(home.resources, Tools.blurredWall(Settings["drawer:blur:rad", 15f])), home.getDrawable(R.drawable.black_gradient))))
+                window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(home.resources, Wallpaper.blurredWall(Settings["drawer:blur:rad", 15f])), home.getDrawable(R.drawable.black_gradient))))
             } else {
                 window.setBackgroundDrawableResource(R.drawable.black_gradient)
             }
@@ -93,6 +94,7 @@ object LauncherMenu {
             homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
         }
         isActive = false
+        dialog = null
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "home"
         }

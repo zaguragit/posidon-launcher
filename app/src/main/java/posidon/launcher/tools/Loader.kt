@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import com.pixplicity.sharp.Sharp
+import posidon.launcher.tools.theme.toBitmap
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
@@ -29,16 +30,19 @@ import posidon.launcher.items.users.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
-import posidon.launcher.tools.toBitmap
+import posidon.launcher.tools.theme.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
 import kotlin.collections.ArrayList
 
 class App(
     val packageName: String,
-    val name: String? = null,
-    val userHandle: UserHandle = Process.myUserHandle()
+    val name: String,
+    val userHandle: UserHandle = Process.myUserHandle(),
+    override val label: String
 ) : LauncherItem() {
+
+    override var icon: Drawable? = null
 
     override var notificationCount = 0
 
@@ -46,7 +50,7 @@ class App(
     inline fun open(context: Context, view: View?) {
         try {
             val intent = Intent(Intent.ACTION_MAIN)
-            intent.component = ComponentName(packageName, name!!)
+            intent.component = ComponentName(packageName, name)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
@@ -117,7 +121,7 @@ class App(
         d.setOnDismissListener {
             Settings["$packageName/$name?label"] = appName.text.toString().replace('\t', ' ')
             Global.shouldSetApps = true
-            Home.instance.setDock()
+            Home.instance.dock.loadApps()
         }
         d.show()
     }

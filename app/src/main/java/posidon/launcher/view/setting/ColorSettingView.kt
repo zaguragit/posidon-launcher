@@ -7,8 +7,8 @@ import android.util.AttributeSet
 import android.view.View
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.ColorTools
 import kotlin.math.max
 import kotlin.math.min
 

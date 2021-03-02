@@ -74,7 +74,6 @@
     <string name="posidon_sans">Posidon Sans</string>
     <string name="monospace">Monospace</string>
     <string name="math_operation">Operación matematica</string>
-    <string name="no_results_for">No hay resultados para \"%1$s\"</string>
     <string name="ip_address_external">IP (externo)</string>
     <string name="failed_to_connect">No se pudo conectar</string>
     <string name="next">Siguiente</string>
@@ -192,7 +191,6 @@
     <string name="staggered">Staggered</string>
     <string name="adjust_height_to_content">Wrap content</string>
     <string name="separate_text">Separar texto</string>
-    <string name="source_radius">Radius de fuente</string>
     <string name="height">Altura</string>
     <string name="load_on_resume">Cargar al resumir</string>
     <string name="include_hidden_apps">Incluir apps escondidas</string>
@@ -207,18 +205,19 @@
     <string name="floating_color">Floating color</string>
     <string name="width">Width</string>
     <string name="reserve_space">Reservar espacio</string>
-    <string name="position">Posicion</string>
-    <string name="max_lines">Max lineas</string>
+    <string name="position">Posición</string>
+    <string name="max_lines">Max líneas</string>
     <string name="marquee">Marquee</string>
     <string name="spacer">Espaciador</string>
     <string name="rest_at_bottom">Rest at bottom</string>
-    <string name="results">Results</string>
-    <string name="enter_is_go">Open first result on enter</string>
+    <string name="results">Resultados</string>
+    <string name="enter_is_go">Abrir primer resultado al presionar enter</string>
     <string name="x_on_duckduckgo">\"%1$s\" en DuckDuckGo</string>
     <string name="widgets">Widgets</string>
+    <string name="_default">Por defecto</string>
 
     <plurals name="num_notifications">
-        <item quantity="one">%1$d notification</item>
+        <item quantity="one">%1$d notificacion</item>
         <item quantity="other">%1$d notificaciones</item>
     </plurals>
 

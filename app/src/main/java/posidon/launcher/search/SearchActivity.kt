@@ -38,6 +38,8 @@ import posidon.launcher.search.parsing.Parser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.searchOptimize
+import posidon.launcher.tools.theme.Icons
+import posidon.launcher.tools.theme.Wallpaper
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -57,8 +59,8 @@ class SearchActivity : AppCompatActivity() {
     private val onAppLoaderEnd = { search(currentString) }
 
     private val daxResultIcon by lazy {
-        ThemeTools.badgeMaybe(if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            ThemeTools.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!)
+        Icons.badgeMaybe(if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!)
         } else {
             getDrawable(R.drawable.dax)!!
         }, false)
@@ -107,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
             paint.color = Settings["searchcolor", 0x33000000]
         }
         if (Tools.canBlurSearch) {
-            val arr = arrayOf(BitmapDrawable(Tools.blurredWall(Settings["search:blur:rad", 15f])), ColorDrawable(Settings["searchUiBg", -0x78000000]))
+            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:rad", 15f])), ColorDrawable(Settings["searchUiBg", -0x78000000]))
             window.setBackgroundDrawable(LayerDrawable(arr))
         } else {
             window.setBackgroundDrawable(ColorDrawable(Settings["searchUiBg", -0x78000000]))
@@ -179,7 +181,7 @@ class SearchActivity : AppCompatActivity() {
         val results = ArrayList<LauncherItem>()
         val showHidden = searchOptimizedString == searchOptimize("hidden") || searchOptimizedString == searchOptimize("hiddenapps")
         if (showHidden) {
-            val app = InternalItem("Hidden apps", getDrawable(R.drawable.hidden_apps)) { context, _, _ ->
+            val app = LauncherItem.make("Hidden apps", getDrawable(R.drawable.hidden_apps)) { context, _, _ ->
                 context.startActivity(Intent(applicationContext, HiddenAppsActivity::class.java))
             }
             results.add(app)
@@ -187,8 +189,8 @@ class SearchActivity : AppCompatActivity() {
         val appLoaderThread = thread (isDaemon = true) {
             var i = 0
             for (app in Global.apps) {
-                if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
-                    app.label!!.contains(string) ||
+                if (searchOptimize(app.label).contains(searchOptimizedString) ||
+                    app.label.contains(string) ||
                     packageSearch && (
                         searchOptimize(app.packageName).contains(searchOptimizedString) ||
                         app.packageName.contains(string)
@@ -197,7 +199,7 @@ class SearchActivity : AppCompatActivity() {
                     i++
                     continue
                 }
-                for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
+                for (word in app.label.split(' ', ',', '.', '-', '+', '&', '_')) {
                     if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                         results.add(app)
                         i++
@@ -208,8 +210,8 @@ class SearchActivity : AppCompatActivity() {
             }
             if (Settings["search:include_hidden_apps", false]) {
                 for (app in App.hidden) {
-                    if (searchOptimize(app.label!!).contains(searchOptimizedString) ||
-                        app.label!!.contains(string) ||
+                    if (searchOptimize(app.label).contains(searchOptimizedString) ||
+                        app.label.contains(string) ||
                         packageSearch && (
                             searchOptimize(app.packageName).contains(searchOptimizedString) ||
                             app.packageName.contains(string)
@@ -218,7 +220,7 @@ class SearchActivity : AppCompatActivity() {
                         i++
                         continue
                     }
-                    for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
+                    for (word in app.label.split(' ', ',', '.', '-', '+', '&', '_')) {
                         if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                             results.add(app)
                             i++
@@ -258,15 +260,15 @@ class SearchActivity : AppCompatActivity() {
                 val contactList = ContactItem.getList()
                 var i = 0
                 for (contact in contactList) {
-                    if (searchOptimize(contact.label!!).contains(searchOptimizedString) ||
-                        contact.label!!.contains(string) ||
+                    if (searchOptimize(contact.label).contains(searchOptimizedString) ||
+                        contact.label.contains(string) ||
                         contact.phone.contains(searchOptimizedString) ||
                         contact.phone.contains(string)) {
                         results.add(contact)
                         i++
                         continue
                     }
-                    for (word in contact.label!!.split(' ', '-', '_')) {
+                    for (word in contact.label.split(' ', '-', '_')) {
                         if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                             results.add(contact)
                             i++
@@ -285,7 +287,7 @@ class SearchActivity : AppCompatActivity() {
 
         try {
             if (results.isEmpty()) {
-                results.add(InternalItem(getString(R.string.x_on_duckduckgo, string), daxResultIcon) { context, _, _ ->
+                results.add(LauncherItem.make(getString(R.string.x_on_duckduckgo, string), daxResultIcon) { context, _, _ ->
                     DuckInstantAnswer.search(context, string)
                 })
             } else Sort.labelSort(results)

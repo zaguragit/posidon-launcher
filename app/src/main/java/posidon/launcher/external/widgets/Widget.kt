@@ -35,6 +35,8 @@ class Widget(
 ) {
 
     companion object {
+
+        const val HOST_ID: Int = 0x3eed6ee2
         const val REQUEST_CREATE_APPWIDGET = 1
         const val REQUEST_BIND_WIDGET = 2
 
@@ -183,8 +185,6 @@ class Widget(
                 }
             }.show()
         }
-
-        const val HOST_ID: Int = 0x3eed6ee2
     }
 
     private var hostView: AppWidgetHostView? = null

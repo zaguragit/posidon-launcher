@@ -18,17 +18,23 @@ import posidon.launcher.items.users.CustomAppIcon
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.Icons
+import posidon.launcher.tools.theme.toBitmap
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import kotlin.math.abs
 import kotlin.math.min
 
-class Folder(string: String) : LauncherItem() {
+class Folder : LauncherItem {
 
-    val items = ArrayList<LauncherItem>()
-
+    val items: ArrayList<LauncherItem>
     var uid: String
 
-    init {
+    override val icon: Drawable?
+    override var label: String?
+
+    constructor(string: String) : super() {
+        this.items = ArrayList()
         val appsList = string.substring(7, string.length).split('\t')
         uid = appsList[0]
         for (i in 1 until appsList.size) {
@@ -37,23 +43,26 @@ class Folder(string: String) : LauncherItem() {
                 items.add(app)
             }
         }
-
         label = Settings["folder:$uid:label", "folder"]
+        val customIcon = Customizer.getCustomIcon("folder:$uid:icon")
+        icon = (customIcon?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Icons.generateAdaptiveIcon(it)
+            } else it
+        } ?: icon(Tools.appContext!!))?.let {
+            Icons.animateIfShould(Tools.appContext!!, it)
+            Icons.badgeMaybe(it, false)
+        }
+    }
 
-        val customIcon = Settings["folder:$uid:icon", ""]
-        icon = if (customIcon != "") {
-            try {
-                val data = customIcon.split(':').toTypedArray()[1].split('|').toTypedArray()
-                val t = Tools.appContext!!.packageManager.getResourcesForApplication(data[0])
-                val intRes = t.getIdentifier(data[1], "drawable", data[0])
-                ThemeTools.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    ThemeTools.generateAdaptiveIcon(t.getDrawable(intRes))
-                } else t.getDrawable(intRes), false)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                icon(Tools.appContext!!)
-            }
-        } else icon(Tools.appContext!!)
+    constructor(items: ArrayList<LauncherItem>) {
+        this.items = items
+        uid = generateUid()
+        label = "folder"
+        icon = icon(Tools.appContext!!)?.let {
+            Icons.animateIfShould(Tools.appContext!!, it)
+            Icons.badgeMaybe(it, false)
+        }
     }
 
     override fun toString(): String {
@@ -104,13 +113,13 @@ class Folder(string: String) : LauncherItem() {
 
             val icShape = Settings["icshape", 4]
             if (icShape != 3) {
-                canvas.drawPath(ThemeTools.getAdaptiveIconPath(icShape, width, height), Paint().apply {
+                canvas.drawPath(Icons.getAdaptiveIconPath(icShape, width, height), Paint().apply {
                     isAntiAlias = true
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 })
             }
 
-            return ThemeTools.badgeMaybe(BitmapDrawable(Tools.appContext!!.resources, bitmap), false)
+            return BitmapDrawable(Tools.appContext!!.resources, bitmap)
         } catch (e: Exception) { e.printStackTrace() }
         return null
     }
@@ -132,18 +141,6 @@ class Folder(string: String) : LauncherItem() {
 
     override fun open(context: Context, view: View, dockI: Int) {
         if (currentlyOpen == null) {
-
-            val bgColor = Settings["folderBG", -0x22eeeded]
-            val r = Settings["folderCornerRadius", 18].dp
-            val labelsEnabled = Settings["folderLabelsEnabled", false]
-            val columnCount = Settings["dock:columns", 5]
-            val appSize = min(when (Settings["dockicsize", 1]) {
-                0 -> 64.dp.toInt()
-                2 -> 84.dp.toInt()
-                else -> 74.dp.toInt()
-            }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
-            val notifBadgesEnabled = Settings["notif:badges", true]
-            val notifBadgesShowNum = Settings["notif:badges:show_num", true]
 
             if (Settings["kustom:variables:enable", false]) {
                 Kustom["screen"] = "folder"
@@ -167,6 +164,17 @@ class Folder(string: String) : LauncherItem() {
             }
             var i1 = 0
             val appListSize = items.size
+
+            val columnCount = Settings["dock:columns", 5]
+            val appSize = min(when (Settings["dockicsize", 1]) {
+                0 -> 64.dp.toInt()
+                2 -> 84.dp.toInt()
+                else -> 74.dp.toInt()
+            }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
+            val notifBadgesEnabled = Settings["notif:badges", true]
+            val notifBadgesShowNum = Settings["notif:badges:show_num", true]
+            val labelsEnabled = Settings["folderLabelsEnabled", false]
+
             while (i1 < appListSize) {
                 val appIcon = createItem(i1, context, container, appSize, labelsEnabled, notifBadgesEnabled, notifBadgesShowNum, popupWindow, dockI, view)
                 container.addView(appIcon)
@@ -176,6 +184,8 @@ class Folder(string: String) : LauncherItem() {
                 currentlyOpen = null
             }
             content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
+                val bgColor = Settings["folderBG", -0x22eeeded]
+                val r = Settings["folderCornerRadius", 18].dp
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
             }
@@ -261,13 +271,13 @@ class Folder(string: String) : LauncherItem() {
         val iconTxt = appIcon.findViewById<TextView>(R.id.icontxt)
         if (labelsEnabled) {
             iconTxt.text = item.label
-            iconTxt.setTextColor(Settings["folder:label_color", -0x22000001])
+            Customizer.styleLabel("folder:labels", iconTxt, -0x22000001)
         } else iconTxt.visibility = View.GONE
         if (notifBadgesEnabled && item.notificationCount != 0) {
             val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)
             badge.visibility = View.VISIBLE
             badge.text = if (notifBadgesShowNum) item.notificationCount.toString() else ""
-            ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+            Icons.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                 badge.background = bg
                 badge.setTextColor(fg)
             }
@@ -277,7 +287,7 @@ class Folder(string: String) : LauncherItem() {
                 popupWindow.dismiss()
                 items.removeAt(folderI)
                 Dock[dockI] = if (items.size == 1) items[0] else this
-                Home.instance.setDock()
+                Home.instance.dock.loadApps()
             }, onEdit = null, dockI = dockI, folderI = folderI, parentView = view)
             true
         }
@@ -286,13 +296,6 @@ class Folder(string: String) : LauncherItem() {
             popupWindow.dismiss()
         }
         return appIcon
-    }
-
-    fun onLongPress(context: Context, i: Int, view: View) {
-        ItemLongPress.onItemLongPress(context, view, this, onRemove = {
-            Dock[i] = null
-            Home.instance.setDock()
-        }, onEdit = { edit(it, i) }, dockI = i)
     }
 
     inline fun edit(view: View, dockI: Int) {
@@ -309,15 +312,25 @@ class Folder(string: String) : LauncherItem() {
         }
         editLabel.setText(label)
         editWindow.setOnDismissListener {
-            label = editLabel.text.toString().replace('\t', ' ')
+            label = editLabel.text.toString()
             Settings["folder:${uid}:label"] = label
             Dock[dockI] = this@Folder
-            Home.instance.setDock()
+            Home.instance.dock.loadApps()
         }
         editWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
     }
 
     companion object {
         var currentlyOpen: PopupWindow? = null
+
+        private var uidCounter = -1
+        fun generateUid(): String {
+            if (uidCounter == -1) {
+                uidCounter = Settings["folder:uids:count", 0]
+            }
+            val str = uidCounter++.toString(16).padStart(8, '_')
+            Settings["folder:uids:count"] = uidCounter
+            return str
+        }
     }
 }

@@ -20,8 +20,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.launcher.R
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools.centerCropWallpaper
-import posidon.launcher.tools.Tools.tryAnimate
+import posidon.launcher.tools.theme.Graphics
+import posidon.launcher.tools.theme.Wallpaper
+import posidon.launcher.tools.theme.toBitmap
 import java.io.File
 import java.io.FileOutputStream
 
@@ -38,7 +39,7 @@ class WallActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         var image = img
         if (image != null && image.height / image.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) {
-            image = centerCropWallpaper(image)
+            image = Wallpaper.centerCropWallpaper(image)
         }
         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
         val extras = intent.extras
@@ -46,11 +47,11 @@ class WallActivity : AppCompatActivity() {
             loading!!.visibility = View.GONE
             findViewById<View>(R.id.downloadbtn).visibility = View.GONE
         } else {
-            tryAnimate(loading!!.drawable)
+            Graphics.tryAnimate(loading!!.drawable)
             index = extras.getInt("index")
 
             fun onImgLoaded() {
-                Tools.clearAnimation(loading!!.drawable)
+                Graphics.clearAnimation(loading!!.drawable)
                 loading!!.visibility = View.GONE
                 findViewById<View>(R.id.applybtn).setOnClickListener {
                     findViewById<View>(R.id.bottomstuff).animate().alpha(0f)
@@ -59,17 +60,17 @@ class WallActivity : AppCompatActivity() {
                     dialog.window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundColor(0x0)
                     dialog.findViewById<View>(R.id.home)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.home)!!.setOnClickListener {
-                        ThemeTools.setWallpaper(image!!, 0)
+                        Wallpaper.setWallpaper(image!!, 0)
                         dialog.dismiss()
                     }
                     dialog.findViewById<View>(R.id.lock)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.lock)!!.setOnClickListener {
-                        ThemeTools.setWallpaper(image!!, 1)
+                        Wallpaper.setWallpaper(image!!, 1)
                         dialog.dismiss()
                     }
                     dialog.findViewById<View>(R.id.both)!!.background = dialogBtnBG()
                     dialog.findViewById<View>(R.id.both)!!.setOnClickListener {
-                        ThemeTools.setWallpaper(image!!, 2)
+                        Wallpaper.setWallpaper(image!!, 2)
                         dialog.dismiss()
                     }
                     dialog.setOnDismissListener { findViewById<View>(R.id.bottomstuff).animate().alpha(1f) }
@@ -96,7 +97,7 @@ class WallActivity : AppCompatActivity() {
                         it.toBitmap(width, height).let {
                             image = it
                             if (it.height / it.width < displayHeight / displayWidth)
-                                image = centerCropWallpaper(it)
+                                image = Wallpaper.centerCropWallpaper(it)
                         }
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
@@ -107,7 +108,7 @@ class WallActivity : AppCompatActivity() {
                     onImgLoaded()
                     if (it != null) {
                         image = it
-                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = centerCropWallpaper(it)
+                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = Wallpaper.centerCropWallpaper(it)
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }}

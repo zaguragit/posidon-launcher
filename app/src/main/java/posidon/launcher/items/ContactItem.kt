@@ -3,26 +3,25 @@ package posidon.launcher.items
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
-import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.theme.Icons
 
 
 class ContactItem private constructor(
-    override var label: String?,
+    override var label: String,
     val iconUri: Uri?,
     val lookupKey: String,
     val phone: String,
     val id: Int
 ) : LauncherItem() {
 
-    init {
-        if (iconUri == null) {
-            icon = ThemeTools.generateContactPicture(label!!)
-        }
-    }
+    override val icon: Drawable? = if (iconUri == null)
+        Icons.generateContactPicture(label)
+    else null
 
     override fun open(context: Context, view: View, dockI: Int) {
         val viewContact = Intent(Intent.ACTION_VIEW)
@@ -122,4 +121,6 @@ class ContactItem private constructor(
             return contactMap.values
         }
     }
+
+    override fun toString() = id.toString()
 }

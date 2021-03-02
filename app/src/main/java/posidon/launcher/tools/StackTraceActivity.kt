@@ -1,5 +1,6 @@
 package posidon.launcher.tools
 
+import android.app.ActivityManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -31,11 +32,16 @@ class StackTraceActivity : AppCompatActivity() {
         val str = StringBuilder().apply {
             appendLine(t.toString())
             appendLine()
-            appendLine("Device.api: " + Build.VERSION.SDK_INT)
-            appendLine("Device.brand: " + Build.BRAND)
-            appendLine("Device.model: " + Build.MODEL)
-            appendLine("Version.code: " + BuildConfig.VERSION_CODE)
-            appendLine("Version.name: " + BuildConfig.VERSION_NAME)
+            appendLine("Device info:")
+            appendLine("    api: " + Build.VERSION.SDK_INT)
+            appendLine("    brand: " + Build.BRAND)
+            appendLine("    model: " + Build.MODEL)
+            appendLine("    ram: " + run {
+                val memInfo = ActivityManager.MemoryInfo()
+                (getSystemService(ACTIVITY_SERVICE) as ActivityManager).getMemoryInfo(memInfo)
+                memInfo.totalMem
+            })
+            appendLine("Version: " + BuildConfig.VERSION_NAME + " (code: " + BuildConfig.VERSION_CODE + ')')
             appendLine()
             for (tr in t.stackTrace) append("at: ").append(tr).append("\n")
             for (throwable in t.suppressed)
@@ -48,11 +54,11 @@ class StackTraceActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.send).setOnClickListener {
             ShareCompat.IntentBuilder.from(this)
-                    .setType("text/plain")
-                    .setText(str)
-                    .setSubject("posidon launcher: crash log")
-                    .addEmailTo("it@posidon.io")
-                    .startChooser()
+                .setType("text/plain")
+                .setText(str)
+                .setSubject("posidon launcher: crash log")
+                .addEmailTo("it@posidon.io")
+                .startChooser()
         }
     }
 }

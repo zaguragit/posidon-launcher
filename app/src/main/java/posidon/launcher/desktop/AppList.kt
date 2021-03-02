@@ -14,7 +14,7 @@ import posidon.launcher.R
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.theme.Wallpaper
 
 class AppList : FragmentActivity() {
 
@@ -34,7 +34,7 @@ class AppList : FragmentActivity() {
             finish()
         }
 
-        findViewById<ImageView>(R.id.blur).setImageBitmap(Tools.blurredWall(Settings["drawer:blur:rad", 15f]))
+        findViewById<ImageView>(R.id.blur).setImageBitmap(Wallpaper.blurredWall(Settings["drawer:blur:rad", 15f]))
     }
 
     fun openSearch(v: View) { startActivity(Intent(this, SearchActivity::class.java), ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle()) }

@@ -1,4 +1,4 @@
-package posidon.launcher.tools
+package posidon.launcher.tools.theme
 
 import android.Manifest
 import android.app.WallpaperManager
@@ -21,6 +21,8 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.R
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
 import posidon.launcher.view.LinearLayoutManager
 
 object ColorTools {
@@ -336,14 +338,14 @@ object ColorTools {
         override fun getItemCount() = colors.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                ColorViewHolder(ImageView(Tools.appContext).apply {
-                    maxWidth = 72.dp.toInt()
-                    maxHeight = 72.dp.toInt()
-                    minimumWidth = 72.dp.toInt()
-                    minimumHeight = 72.dp.toInt()
-                    val p = 8.dp.toInt()
-                    setPadding(p, p, p, p)
-                })
+            ColorViewHolder(ImageView(Tools.appContext).apply {
+                maxWidth = 72.dp.toInt()
+                maxHeight = 72.dp.toInt()
+                minimumWidth = 72.dp.toInt()
+                minimumHeight = 72.dp.toInt()
+                val p = 8.dp.toInt()
+                setPadding(p, p, p, p)
+            })
 
         override fun onBindViewHolder(holder: ColorViewHolder, i: Int) {
             holder.imageView.apply {

@@ -23,9 +23,9 @@ import androidx.cardview.widget.CardView
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Device
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.ColorTools
 
 class MusicCard : CardView, FeedSection {
 

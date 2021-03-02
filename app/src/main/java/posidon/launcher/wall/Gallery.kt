@@ -22,9 +22,9 @@ import posidon.launcher.R
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.ColorTools.pickColorNoAlpha
-import posidon.launcher.tools.Tools.clearAnimation
-import posidon.launcher.tools.Tools.tryAnimate
+import posidon.launcher.tools.theme.ColorTools.pickColorNoAlpha
+import posidon.launcher.tools.theme.Graphics
+import posidon.launcher.tools.theme.toBitmap
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -69,7 +69,7 @@ class Gallery : AppCompatActivity() {
             }
         }
         val loading = findViewById<ImageView>(R.id.loading)
-        tryAnimate(loading.drawable)
+        Graphics.tryAnimate(loading.drawable)
         val gallery = findViewById<GridView>(R.id.gallery)
 
 
@@ -121,7 +121,7 @@ class Gallery : AppCompatActivity() {
                 runOnUiThread {
                     loading.visibility = View.GONE
                     gallery.adapter = WallAdapter(this@Gallery)
-                    clearAnimation(loading.drawable)
+                    Graphics.clearAnimation(loading.drawable)
                     gallery.setOnItemClickListener { _, _, i, _ ->
                         val intent = Intent(this, WallActivity::class.java)
                         intent.putExtra("index", i)
@@ -133,7 +133,7 @@ class Gallery : AppCompatActivity() {
                 runOnUiThread {
                     loading.visibility = View.GONE
                     //findViewById<View>(R.id.fail).visibility = View.VISIBLE
-                    clearAnimation(loading.drawable)
+                    Graphics.clearAnimation(loading.drawable)
                 }
                 e.printStackTrace()
             }

@@ -48,13 +48,12 @@ class IconPackPicker : AppCompatActivity() {
         mainIntent.addCategory("com.anddoes.launcher.THEME")
         val pacslist = pm.queryIntentActivities(mainIntent, 0)
         val apps = Array(pacslist.size) {
-            val app = App(pacslist[it].activityInfo.packageName)
+            val app = App(pacslist[it].activityInfo.packageName, pacslist[it].activityInfo.name, label = pacslist[it].loadLabel(pm).toString())
             app.icon = pacslist[it].loadIcon(pm)
-            app.label = pacslist[it].loadLabel(pm).toString()
             app
         }
         apps.sortWith { o1, o2 ->
-            o1.label!!.compareTo(o2.label!!, ignoreCase = true)
+            o1.label.compareTo(o2.label, ignoreCase = true)
         }
         val grid = findViewById<GridView>(R.id.grid)
         grid.adapter = IconPackListAdapter(this, apps)

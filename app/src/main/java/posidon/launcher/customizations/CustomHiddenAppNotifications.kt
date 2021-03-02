@@ -4,7 +4,7 @@ import android.os.Build
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Sort
-import posidon.launcher.tools.ThemeTools
+import posidon.launcher.tools.theme.Icons
 
 class CustomHiddenAppNotifications : AppTickingActivity() {
 
@@ -13,13 +13,12 @@ class CustomHiddenAppNotifications : AppTickingActivity() {
 
         val pacslist = packageManager.getInstalledPackages(0)
         for (i in pacslist.indices) {
-            apps.add(App(pacslist[i].packageName).apply {
+            apps.add(App(pacslist[i].packageName, pacslist[i].activities.firstOrNull()?.name ?: "", label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()).apply {
                 icon = pacslist[i].applicationInfo.loadIcon(packageManager)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    icon = ThemeTools.generateAdaptiveIcon(icon!!)
+                    icon = Icons.generateAdaptiveIcon(icon!!)
                 }
-                icon = ThemeTools.badgeMaybe(icon!!, false)
-                label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()
+                icon = Icons.badgeMaybe(icon!!, false)
             })
         }
 

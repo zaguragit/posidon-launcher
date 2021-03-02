@@ -17,10 +17,10 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
+import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
 import posidon.launcher.view.feed.FeedSection

@@ -8,7 +8,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
@@ -26,6 +25,9 @@ import posidon.launcher.items.*
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.ColorTools
+import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.Icons
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -212,19 +214,7 @@ class DockView : LinearLayout {
                 val label = view.findViewById<TextView>(R.id.icontxt)
                 if (showLabels) {
                     label.text = item.label
-                    label.setTextColor(Settings["dockLabelColor", -0x11111112])
-                    label.isSingleLine = true
-                    label.maxLines = 1
-                    label.ellipsize = if (Settings["dock:labels:marquee", true]) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
-                    label.isSelected = true
-                    label.isHorizontalFadingEdgeEnabled = true
-                    label.setFadingEdgeLength(5.dp.toInt())
-                    label.freezesText = true
-                    label.setHorizontallyScrolling(true)
-                    label.isSelected = true
-                    label.isFocusable = true
-                    label.isFocusableInTouchMode = true
-                    label.isEnabled = true
+                    Customizer.styleLabel("dock:labels", label, -0x11111112)
                 } else {
                     label.visibility = GONE
                 }
@@ -250,7 +240,7 @@ class DockView : LinearLayout {
                     if (c != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) c.toString() else ""
-                        ThemeTools.generateNotificationBadgeBGnFG { bg, fg ->
+                        Icons.generateNotificationBadgeBGnFG { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
@@ -302,7 +292,7 @@ class DockView : LinearLayout {
         } else {
             (feed.layoutParams as MarginLayoutParams).run {
                 topMargin = dockHeight
-                bottomMargin = dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10]-18).dp.toInt()
+                bottomMargin = dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toInt()
             }
             desktopContent.setPadding(0, 12.dp.toInt(), 0, 24.dp.toInt())
         }

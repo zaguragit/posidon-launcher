@@ -27,6 +27,7 @@ import posidon.launcher.R
 import posidon.launcher.feed.news.FeedItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.SwipeableLayout
 import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*

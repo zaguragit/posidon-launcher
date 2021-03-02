@@ -28,6 +28,8 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.drawable.FastBitmapDrawable
+import posidon.launcher.tools.theme.ColorTools
+import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.GridView
 import kotlin.concurrent.thread
 import kotlin.math.max
@@ -126,7 +128,7 @@ class DrawerView : LinearLayout {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["drawer:blur:rad", 15f]
                 for (i in 0 until blurLayers) {
-                    val bmp = Tools.blurredWall(radius / blurLayers * (i + 1))
+                    val bmp = Wallpaper.blurredWall(radius / blurLayers * (i + 1))
                     val bd = FastBitmapDrawable(bmp)
                     if (shouldHide) bd.alpha = 0
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)

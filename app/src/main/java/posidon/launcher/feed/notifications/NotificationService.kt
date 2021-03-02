@@ -19,7 +19,8 @@ import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.toBitmap
+import posidon.launcher.tools.theme.Graphics
+import posidon.launcher.tools.theme.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -218,7 +219,7 @@ class NotificationService : NotificationListenerService() {
             } catch (ignore: Exception) {}
             if (icon == null) try {
                 icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
-                Tools.tryAnimate(icon)
+                Graphics.tryAnimate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
             } catch (e: Exception) { e.printStackTrace() }
@@ -254,7 +255,7 @@ class NotificationService : NotificationListenerService() {
             } catch (ignore: Exception) {}
             if (icon == null) try {
                 icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
-                Tools.tryAnimate(icon)
+                Graphics.tryAnimate(icon)
                 val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
                 icon.setTintList(colorList)
             } catch (e: Exception) { e.printStackTrace() }

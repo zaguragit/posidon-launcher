@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Process
 import android.view.View
@@ -18,6 +19,9 @@ class PinnedShortcut : LauncherItem {
 
     val packageName: String
     val id: String
+
+    override val icon: Drawable?
+    override val label: String?
 
     constructor(shortcut: ShortcutInfo, context: Context) {
         label = shortcut.shortLabel.toString()
@@ -44,6 +48,9 @@ class PinnedShortcut : LauncherItem {
         if (shortcut != null) {
             icon = launcherApps.getShortcutBadgedIconDrawable(shortcut, 1)
             label = shortcut.shortLabel?.toString()
+        } else {
+            icon = null
+            label = null
         }
         for (s in shortcuts!!) {
             println("\tTRII___ ${shortcut?.id}")
