@@ -17,6 +17,7 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.LinearLayoutManager
 
 class RemovedArticles : AppCompatActivity() {

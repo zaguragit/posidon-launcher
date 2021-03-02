@@ -3,6 +3,7 @@ package posidon.launcher.tools
 import android.graphics.Color
 import androidx.palette.graphics.Palette
 import posidon.launcher.items.LauncherItem
+import posidon.launcher.tools.theme.toBitmap
 
 object Sort {
 

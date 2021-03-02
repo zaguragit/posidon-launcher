@@ -145,14 +145,30 @@ object Settings {
                     lists = HashMap()
                 }
             }
+            updateKeys()
             isInitialized = true
         }
         lock.unlock()
     }
 
+    private fun updateKeys() {
+        getInt("labelColor")?.let {
+            set("drawer:labels:color", it)
+            ints.remove("labelColor")
+        }
+        getInt("dockLabelColor")?.let {
+            set("dock:labels:color", it)
+            ints.remove("dockLabelColor")
+        }
+        getInt("folder:label_color")?.let {
+            set("folder:labels:color", it)
+            ints.remove("folder:label_color")
+        }
+    }
+
     fun saveBackup() = ExternalStorage.writeDataOutsideScope(
             SettingsFile(ints, floats, bools, strings, lists), context.get()!!,
-            "${SimpleDateFormat("MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
+            "${SimpleDateFormat("home_MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
 
     fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context.get()!!, uri)?.let {
         if (it is SettingsFile) {

@@ -27,11 +27,10 @@ import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.Tools.tryAnimate
 import posidon.launcher.tools.Tools.updateNavbarHeight
+import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.ResizableLayout
-import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.BottomDrawerBehavior.*
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
@@ -44,7 +43,7 @@ import kotlin.system.exitProcess
 class Home : AppCompatActivity() {
 
     val drawer by lazy { findViewById<DrawerView>(R.id.drawer)!! }
-    private val dock by lazy { drawer.dock }
+    val dock by lazy { drawer.dock }
 
     val feed by lazy { findViewById<Feed>(R.id.feed)!! }
 
@@ -226,21 +225,23 @@ class Home : AppCompatActivity() {
             drawer.tryBlur()
             if (Global.customized || tmp != Tools.navbarHeight) {
                 setCustomizations()
-            } else if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
-                for (app in Global.apps) {
-                    tryAnimate(app.icon!!)
-                }
-            }
+            } else animateAllIconsIfShould()
             if (Settings["news:load_on_resume", true]) {
                 feed.loadNews(this)
             }
             if (feed.notifications != null || Settings["notif:badges", true]) {
                 NotificationService.onUpdate()
             }
-        }
+        } else animateAllIconsIfShould()
+    }
+
+    private fun animateAllIconsIfShould() {
         if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in Global.apps) {
-                tryAnimate(app.icon!!)
+                Graphics.tryAnimate(app.icon!!)
+            }
+            for (item in Dock) {
+                item?.let { Graphics.tryAnimate(it.icon!!) }
             }
         }
     }
@@ -296,14 +297,12 @@ class Home : AppCompatActivity() {
     }
 
     override fun onBackPressed() = when {
-        drawer.state == BottomDrawerBehavior.STATE_EXPANDED -> drawer.state = STATE_COLLAPSED
+        drawer.state == STATE_EXPANDED -> drawer.state = STATE_COLLAPSED
         ResizableLayout.currentlyResizing != null -> ResizableLayout.currentlyResizing?.resizing = false
         else -> Gestures.performTrigger(Settings["gesture:back", ""])
     }
 
     fun openSearch(v: View) = SearchActivity.open(this)
-
-    fun setDock() = dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent, this)
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -393,12 +392,12 @@ class Home : AppCompatActivity() {
                 is App -> if (
                     item.packageName == packageName &&
                     item.userHandle == user
-                ) list.add(item.name!! to i)
+                ) list.add(item.name to i)
                 is Folder -> for (folderItem in item.items) {
                     if (folderItem is App &&
                         folderItem.packageName == packageName &&
                         folderItem.userHandle == user) {
-                        list.add(folderItem.name!! to i)
+                        list.add(folderItem.name to i)
                         break
                     }
                 }

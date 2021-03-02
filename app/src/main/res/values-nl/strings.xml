@@ -74,7 +74,6 @@
     <string name="posidon_sans">Posidon Sans</string>
     <string name="monospace">Monospace</string>
     <string name="math_operation">Wiskunde-opdracht</string>
-    <string name="no_results_for">Geen resultaten gevonden voor \"%1$s\"</string>
     <string name="ip_address_external">IP-adres (extern)</string>
     <string name="failed_to_connect">Kan niet verbinden</string>
     <string name="next">Volgende</string>
@@ -192,7 +191,6 @@
     <string name="staggered">Staggered</string>
     <string name="adjust_height_to_content">Wrap content</string>
     <string name="separate_text">Separate text</string>
-    <string name="source_radius">Source radius</string>
     <string name="height">Height</string>
     <string name="load_on_resume">Load on resume</string>
     <string name="include_hidden_apps">Include hidden apps</string>
@@ -216,6 +214,7 @@
     <string name="enter_is_go">Open first result on enter</string>
     <string name="x_on_duckduckgo">\"%1$s\" on DuckDuckGo</string>
     <string name="widgets">Widgets</string>
+    <string name="_default">Default</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d meldingen</item>

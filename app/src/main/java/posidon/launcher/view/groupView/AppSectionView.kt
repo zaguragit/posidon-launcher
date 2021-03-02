@@ -13,9 +13,10 @@ import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.sp
+import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.Icons
 import kotlin.math.min
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
@@ -33,10 +34,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             1 -> {
                 orientation = HORIZONTAL
-                textView.layoutParams.run {
-                    width = 28.sp.toInt()
+                textView.layoutParams.width = 28.sp.toInt()
+                textView.run {
+                    setPadding(0, 0, 0, 0)
                     gravity = Gravity.END
-                    setPaddingRelative(0, 0, 0, 0)
                 }
             }
         }
@@ -48,7 +49,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
         }
         textView.run {
-            setTextColor(Settings["labelColor", -0x11111112])
+            setTextColor(Settings["drawer:labels:color", -0x11111112])
         }
     }
 
@@ -78,14 +79,14 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 if (Settings["labelsenabled", false]) {
                     text = item.label
                     visibility = View.VISIBLE
-                    setTextColor(Settings["labelColor", -0x11111112])
+                    Customizer.styleLabel("drawer:labels", this, -0x11111112)
                 } else visibility = View.GONE
             }
             findViewById<TextView>(R.id.notificationBadge).run {
                 if (Settings["notif:badges", true] && item.notificationCount != 0) {
                     visibility = View.VISIBLE
                     text = if (Settings["notif:badges:show_num", true]) item.notificationCount.toString() else ""
-                    ThemeTools.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
+                    Icons.generateNotificationBadgeBGnFG(item.icon!!) { bg, fg ->
                         background = bg
                         setTextColor(fg)
                     }

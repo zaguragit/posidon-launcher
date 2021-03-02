@@ -119,8 +119,8 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
             var i = 0
             for (app in originalApps) {
-                if (Tools.searchOptimize(app.label!!).contains(searchOptimizedString) ||
-                    app.label!!.contains(string) ||
+                if (Tools.searchOptimize(app.label).contains(searchOptimizedString) ||
+                    app.label.contains(string) ||
                     packageSearch && (
                         Tools.searchOptimize(app.packageName).contains(searchOptimizedString) ||
                         app.packageName.contains(string)
@@ -129,7 +129,7 @@ abstract class AppTickingActivity : AppCompatActivity() {
                     i++
                     continue
                 }
-                for (word in app.label!!.split(' ', ',', '.', '-', '+', '&', '_')) {
+                for (word in app.label.split(' ', ',', '.', '-', '+', '&', '_')) {
                     if (Tools.searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
                         results.add(app)
                         i++

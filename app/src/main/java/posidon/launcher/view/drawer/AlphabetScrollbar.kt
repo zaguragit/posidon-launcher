@@ -9,9 +9,9 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.IntDef
 import posidon.launcher.items.users.ItemLongPress
-import posidon.launcher.tools.ColorTools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
+import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.HighlightAdapter
 import kotlin.math.roundToInt
 

@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_color"
                     app:label="@string/labelColor"
-                    app:key="labelColor"
+                    app:key="drawer:labels:color"
                     app:def="#EEEEEEEE"/>
             </LinearLayout>
             <LinearLayout

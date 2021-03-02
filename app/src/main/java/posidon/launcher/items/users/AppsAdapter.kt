@@ -12,6 +12,7 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.Customizer
 
 class AppsAdapter(
     private val context: Context,
@@ -51,7 +52,7 @@ class AppsAdapter(
             if (Settings["labelsenabled", false]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
-                holder.text.setTextColor(Settings["labelColor", -0x11111112])
+                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112)
             } else holder.text.visibility = View.INVISIBLE
 
             holder.iconFrame.layoutParams.height = appSize
@@ -68,19 +69,19 @@ class AppsAdapter(
 
     private val savedSections = ArrayList<Char>().apply {
         for (i in apps.indices) {
-            val char = apps[i].label!![0].toUpperCase()
-            if (i == 0 || apps[i - 1].label!![0].toUpperCase() != char) add(char)
+            val char = apps[i].label[0].toUpperCase()
+            if (i == 0 || apps[i - 1].label[0].toUpperCase() != char) add(char)
         }
     }.toTypedArray()
 
     override fun getSections(): Array<Char> = savedSections
 
     override fun getSectionForPosition(i: Int): Int =
-            savedSections.indexOf(apps[i].label!![0].toUpperCase())
+            savedSections.indexOf(apps[i].label[0].toUpperCase())
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
-        for (j in apps.indices) if (apps[j].label!![0].toUpperCase() == char) return j
+        for (j in apps.indices) if (apps[j].label[0].toUpperCase() == char) return j
         return 0
     }
 

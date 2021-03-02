@@ -1,7 +1,6 @@
 package posidon.launcher.items.users
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,10 @@ import android.widget.*
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.ThemeTools
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.HighlightAdapter
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
@@ -52,14 +52,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             if (Settings["labelsenabled", false]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
-                holder.text.setTextColor(Settings["labelColor", -0x11111112])
-                val maxLines = Settings["drawer:labels:max_lines", 1]
-                holder.text.isSingleLine = maxLines == 1
-                holder.text.maxLines = maxLines
-                holder.text.ellipsize = if (Settings["drawer:labels:marquee", true] && maxLines == 1) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
-                holder.text.isSelected = true
-                holder.text.isHorizontalFadingEdgeEnabled = true
-                holder.text.setFadingEdgeLength(5.dp.toInt())
+                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112)
             } else holder.text.visibility = View.INVISIBLE
 
         } else {
@@ -72,7 +65,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             val badge = holder.notificationBadge
             badge.visibility = View.VISIBLE
             badge.text = if (Settings["notif:badges:show_num", true]) app.notificationCount.toString() else ""
-            ThemeTools.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
+            Icons.generateNotificationBadgeBGnFG(app.icon!!) { bg, fg ->
                 badge.background = bg
                 badge.setTextColor(fg)
             }
@@ -82,19 +75,19 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         return convertView
     }
 
-    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label!![0].toUpperCase() }
+    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label[0].toUpperCase() }
 
     override fun getSections(): Array<Char> = savedSections
 
     override fun getSectionForPosition(i: Int): Int {
-        val label = Global.apps[i].label!!
+        val label = Global.apps[i].label
         return savedSections.indexOf(if (label.isEmpty()) ' ' else label[0].toUpperCase())
     }
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
         for (j in Global.apps.indices) {
-            val label = Global.apps[j].label!!
+            val label = Global.apps[j].label
             if (char == if (label.isEmpty()) ' ' else label[0].toUpperCase()) {
                 return j
             }

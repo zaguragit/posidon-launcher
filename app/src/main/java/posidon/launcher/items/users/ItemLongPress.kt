@@ -21,7 +21,11 @@ import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.theme.ColorTools
+import posidon.launcher.tools.vibrate
 import posidon.launcher.view.LinearLayoutManager
 
 object ItemLongPress {

@@ -7,8 +7,8 @@ import android.view.View
 
 abstract class LauncherItem {
 
-    open var icon: Drawable? = null
-    open var label: String? = null
+    abstract val icon: Drawable?
+    abstract val label: String?
 
     /**
      * Color used for item long-press menus and similar stuff
@@ -29,6 +29,11 @@ abstract class LauncherItem {
      */
     open val notificationCount = 0
 
+    /**
+     * Text representation of the item, used to save it
+     */
+    abstract override fun toString(): String
+
     companion object {
 
         /**
@@ -45,6 +50,23 @@ abstract class LauncherItem {
                 }}
                 else -> App[string]
             }
+        }
+
+        /**
+         * Creates a custom launcher item
+         * Used for stuff like the DuckDuckGo search icon in the search screen
+         */
+        inline fun make(
+            label: String,
+            icon: Drawable?,
+            crossinline openFn: (context: Context, view: View, dockI: Int) -> Unit
+        ) = object : LauncherItem() {
+
+            override var icon: Drawable? = icon
+            override var label: String? = label
+
+            override fun open(context: Context, view: View, dockI: Int) = openFn(context, view, dockI)
+            override fun toString() = ""
         }
     }
 }
