@@ -1,4 +1,4 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.os.Bundle
 import android.view.View
@@ -11,28 +11,30 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 
-class CustomDrawer : AppCompatActivity() {
+
+class CustomDock : AppCompatActivity() {
 
     private var icsize: SeekBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyFontSetting()
-        setContentView(R.layout.custom_drawer)
+        setContentView(R.layout.custom_dock)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        icsize = findViewById(R.id.iconsizeslider)
-        icsize!!.progress = Settings["icsize", 1]
+        icsize = findViewById(R.id.dockiconsizeslider)
+        icsize!!.progress = Settings["dockicsize", 1]
+
+        Global.customized = true
     }
 
     override fun onPause() {
+        Global.customized = true
         Settings.apply {
-            putNotSave("icsize", icsize!!.progress)
+            putNotSave("dockicsize", icsize!!.progress)
             apply()
         }
-        Global.shouldSetApps = true
-        Global.customized = true
         super.onPause()
     }
 }

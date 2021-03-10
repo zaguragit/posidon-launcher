@@ -150,6 +150,9 @@ object ItemLongPress {
                 if (dockI != -1) {
                     if (folderI != -1 && item is Folder) {
                         item.items.removeAt(folderI)
+                        if (folderI < 4) {
+                            item.updateIcon()
+                        }
                         Dock[dockI] = if (item.items.size == 1) item.items[0] else item
                     } else {
                         Dock[dockI] = null

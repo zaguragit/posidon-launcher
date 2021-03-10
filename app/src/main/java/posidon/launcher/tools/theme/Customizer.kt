@@ -1,6 +1,8 @@
 package posidon.launcher.tools.theme
 
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.GradientDrawable.RECTANGLE
 import android.text.TextUtils
 import android.widget.TextView
 import posidon.launcher.storage.Settings
@@ -40,5 +42,15 @@ object Customizer {
             }
         }
         return null
+    }
+
+    fun genBG(namespace: String, onlyCurveTop: Boolean, defRadius: Int, defColor: Int): Drawable {
+        return GradientDrawable().apply {
+            val r = Settings["$namespace:radius", defRadius].dp
+            shape = RECTANGLE
+            cornerRadii = if (onlyCurveTop) floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f) else floatArrayOf(r, r, r, r, r, r, r, r)
+            setColor(Settings["$namespace:color", defColor])
+            setStroke(Settings["$namespace:stroke:width", 0].dp.toInt(), Settings["$namespace:stroke:color", 0])
+        }
     }
 }

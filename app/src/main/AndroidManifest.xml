@@ -26,33 +26,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/hometheme">
-<!--
-        <meta-data
-            android:name="xyz.paphonb.quickstepswitcher.minSdk"
-            android:value="29"/>
-        <meta-data
-            android:name="xyz.paphonb.quickstepswitcher.maxSdk"
-            android:value="29"/>
-
-        <service
-            android:name="posidon.launcher.external.quickstep.QuickStepService"
-            android:permission="android.permission.STATUS_BAR_SERVICE"
-            android:directBootAware="true"
-            tools:targetApi="q">
-            <intent-filter>
-                <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
-            </intent-filter>
-        </service>
-
-        <activity android:name="posidon.launcher.external.quickstep.QuickStepActivity"
-            android:exported="true"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:screenOrientation="unspecified"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
-            tools:targetApi="q"/>-->
 
         <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
@@ -117,7 +90,7 @@
             android:theme="@style/hometheme" />
 
         <activity
-            android:name=".customizations.Customizations"
+            android:name=".customizations.settingScreens.Customizations"
             android:icon="@drawable/customizations"
             android:label="@string/settings_title"
             android:taskAffinity="posidon.launcher.Customizations"
@@ -128,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomDrawer"
+            android:name=".customizations.settingScreens.CustomDrawer"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -137,7 +110,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomHome"
+            android:name=".customizations.settingScreens.CustomHome"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -146,7 +119,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomNews"
+            android:name=".customizations.settingScreens.CustomNews"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -155,7 +128,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomNotifications"
+            android:name=".customizations.settingScreens.CustomNotifications"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -164,7 +137,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomDock"
+            android:name=".customizations.settingScreens.CustomDock"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -181,7 +154,7 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomFolders"
+            android:name=".customizations.settingScreens.CustomFolders"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -190,7 +163,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomSearch"
+            android:name=".customizations.settingScreens.CustomSearch"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -199,7 +172,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomTheme"
+            android:name=".customizations.settingScreens.CustomTheme"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -208,7 +181,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.CustomGestures"
+            android:name=".customizations.settingScreens.CustomGestures"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings">
             <intent-filter>
@@ -221,27 +194,23 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomHiddenApps"
+            android:name=".customizations.settingScreens.CustomHiddenApps"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomHiddenAppNotifications"
+            android:name=".customizations.settingScreens.CustomHiddenAppNotifications"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomOther"
+            android:name=".customizations.settingScreens.CustomOther"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomQuickStep"
+            android:name=".customizations.settingScreens.CustomDev"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".customizations.CustomDev"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
-        <activity
-            android:name=".customizations.About"
+            android:name=".customizations.settingScreens.About"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
 
@@ -336,7 +305,7 @@
             android:theme="@style/settings"/>
 
 
-        <activity android:name=".items.users.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
+        <activity android:name=".items.users.customAppIcon.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>

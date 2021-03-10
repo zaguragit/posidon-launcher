@@ -11,7 +11,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
-import posidon.launcher.customizations.Customizations
+import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.external.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings

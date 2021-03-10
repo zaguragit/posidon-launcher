@@ -26,7 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.items.users.CustomAppIcon
+import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open

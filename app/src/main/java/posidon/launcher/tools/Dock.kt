@@ -13,16 +13,24 @@ object Dock {
         when {
             item is Folder -> {
                 if (currentItem is Folder) {
+                    val l = currentItem.items.size
                     currentItem.items.addAll(0, item.items)
                     set(i, currentItem)
+                    if (l < 4) {
+                        currentItem.updateIcon()
+                    }
                 } else {
                     item.items.add(0, currentItem)
                     set(i, currentItem)
                 }
             }
             currentItem is Folder -> {
+                val l = currentItem.items.size
                 currentItem.items.add(item)
                 set(i, currentItem)
+                if (l < 4) {
+                    currentItem.updateIcon()
+                }
             }
             else -> set(i, Folder(arrayListOf(currentItem, item)))
         }

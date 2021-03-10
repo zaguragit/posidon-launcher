@@ -31,10 +31,12 @@ class NotificationCards : LinearLayout, FeedSection {
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
 
+    private val notificationAdapter = NotificationAdapter()
 
     private val notifications = RecyclerView(context).apply {
         isNestedScrollingEnabled = false
         layoutManager = LinearLayoutManager(context)
+        adapter = notificationAdapter
     }
 
 
@@ -145,7 +147,7 @@ class NotificationCards : LinearLayout, FeedSection {
                 notifications.visibility = VISIBLE
             }
         }
-        notifications.adapter = NotificationAdapter(context)
+        notificationAdapter.update(NotificationService.notificationGroups)
     }
 
     override fun updateTheme(activity: Activity) {

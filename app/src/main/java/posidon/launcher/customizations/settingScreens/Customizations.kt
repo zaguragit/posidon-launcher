@@ -1,4 +1,4 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -45,7 +45,6 @@ class Customizations : AppCompatActivity() {
     fun openFolders (v: View) = startActivity(Intent(this, CustomFolders       ::class.java))
     fun openTheme   (v: View) = startActivity(Intent(this, CustomTheme         ::class.java))
     fun openGestures(v: View) = startActivity(Intent(this, CustomGestures      ::class.java))
-    fun openQStep   (v: View) = startActivity(Intent(this, CustomQuickStep     ::class.java))
     fun openOther   (v: View) = startActivity(Intent(this, CustomOther         ::class.java))
     fun openDev     (v: View) = startActivity(Intent(this, CustomDev           ::class.java))
     fun openAbout   (v: View) = startActivity(Intent(this, About               ::class.java))
@@ -77,8 +76,8 @@ class Customizations : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         findViewById<View>(R.id.devoptions).visibility =
-                if (Settings["dev:enabled", false]) View.VISIBLE
-                else View.GONE
+            if (Settings["dev:enabled", false]) View.VISIBLE
+            else View.GONE
         cardThing()
     }
 }

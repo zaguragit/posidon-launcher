@@ -55,7 +55,7 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
         } else LinearLayoutManager(context).apply {
             reverseLayout = restAtBottom
         }
-        adapter = NewsAdapter((adapter as NewsAdapter).items, activity)
+        adapter!!.notifyDataSetChanged()
     }
 
     override fun toString() = "news"
