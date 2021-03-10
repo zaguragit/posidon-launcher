@@ -19,7 +19,7 @@ abstract class SettingView(
     protected lateinit var labelView: TextView
     protected open val doSpecialIcon = false
 
-    protected lateinit var key: String
+    lateinit var key: String
 
     init {
         init(attrs, defStyle, defStyleRes)
@@ -59,4 +59,6 @@ abstract class SettingView(
 
     open fun populateIcon(a: TypedArray) {}
     abstract fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int)
+
+    var label: CharSequence by labelView::text
 }

@@ -13,6 +13,7 @@ import android.os.UserHandle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.palette.graphics.Palette
 import posidon.launcher.Global
 import posidon.launcher.Home
@@ -189,12 +190,10 @@ class NotificationService : NotificationListenerService() {
             notificationsAmount2 = 0
             System.gc()
         }
-        val tmp = notificationGroups
         notificationGroups = groups
         notificationsAmount = notificationsAmount2
         onUpdate()
         lock.unlock()
-        tmp.clear()
     }
 
     companion object {
@@ -213,16 +212,7 @@ class NotificationService : NotificationListenerService() {
             private set
 
         private fun handleMusicNotification(notification: StatusBarNotification) {
-            var icon: Drawable? = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(Tools.appContext)
-            } catch (ignore: Exception) {}
-            if (icon == null) try {
-                icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
-                Graphics.tryAnimate(icon)
-                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
-                icon.setTintList(colorList)
-            } catch (e: Exception) { e.printStackTrace() }
+            val icon = getIcon(notification)
 
             var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
@@ -249,16 +239,7 @@ class NotificationService : NotificationListenerService() {
                 try { title = Tools.appContext!!.packageManager.getApplicationLabel(Tools.appContext!!.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
-            var icon: Drawable? = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
-                icon = notification.notification.getLargeIcon().loadDrawable(Tools.appContext)
-            } catch (ignore: Exception) {}
-            if (icon == null) try {
-                icon = Tools.appContext!!.createPackageContext(notification.packageName, 0).resources.getDrawable(notification.notification.icon)
-                Graphics.tryAnimate(icon)
-                val colorList = ColorStateList.valueOf(if (notification.notification.color == Settings["notificationbgcolor", -0x1] || notification.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else notification.notification.color)
-                icon.setTintList(colorList)
-            } catch (e: Exception) { e.printStackTrace() }
+            val icon = getIcon(notification)
             var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
             if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
@@ -273,10 +254,11 @@ class NotificationService : NotificationListenerService() {
                 }
             }
 
-            //val progress = extras.getInt(android.app.Notification.EXTRA_PROGRESS, -1)
-            //println("PROGRESSSSSSSS: --->>>>>$progress")
-            //println("MAXXXX PROGRES: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX, -1))
-            //println("INTETERMINATTE: --->>>>>" + extras.getInt(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, -1))
+            //println(extras.keySet().joinToString("\n") { "$it -> " + extras[it].toString() })
+
+            val progress = extras.getInt(android.app.Notification.EXTRA_PROGRESS, -1)
+            val maxProgress = extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX, -1)
+            val intermediate = extras.getBoolean(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, false)
 
             var bigPic: Drawable? = null
             val b = extras[android.app.Notification.EXTRA_PICTURE] as Bitmap?
@@ -285,11 +267,28 @@ class NotificationService : NotificationListenerService() {
                 catch (e: Exception) { e.printStackTrace() }
             }
             return Notification(
-                    title, text, isSummary, bigPic, icon,
-                    notification.notification.actions,
-                    notification.notification.contentIntent,
-                    notification.key, -1
-            )
+                title, text, isSummary, bigPic, icon,
+                notification.notification.actions,
+                notification.notification.contentIntent,
+                notification.key, when {
+                    intermediate -> -2f
+                    maxProgress > 0 -> progress.toFloat() / maxProgress
+                    else -> -1f
+                })
+        }
+
+        private inline fun getIcon(n: StatusBarNotification): Drawable? {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
+                return n.notification.getLargeIcon().loadDrawable(Tools.appContext)
+            } catch (ignore: Exception) {}
+            try {
+                return ResourcesCompat.getDrawable(Tools.appContext!!.createPackageContext(n.packageName, 0).resources, n.notification.icon, null)?.also {
+                    Graphics.tryAnimate(it)
+                    val colorList = ColorStateList.valueOf(if (n.notification.color == Settings["notificationbgcolor", -0x1] || n.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else n.notification.color)
+                    it.setTintList(colorList)
+                }
+            } catch (e: Exception) { e.printStackTrace() }
+            return null
         }
     }
 }

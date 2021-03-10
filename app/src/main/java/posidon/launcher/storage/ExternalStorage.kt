@@ -14,7 +14,7 @@ import java.io.*
 
 object ExternalStorage {
 
-    fun write(context: Context, name: String, fn: (OutputStream, String) -> Unit) {
+    inline fun write(context: Context, name: String, fn: (OutputStream, String) -> Unit) {
         val dir: File? = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, name)
         FileOutputStream(file).use {
@@ -22,7 +22,7 @@ object ExternalStorage {
         }
     }
 
-    fun writeOutsideScope(context: Context, name: String, fn: (OutputStream, String) -> Unit) {
+    inline fun writeOutsideScope(context: Context, name: String, fn: (OutputStream, String) -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {
                 put(MediaStore.Downloads.DISPLAY_NAME, name)
@@ -41,19 +41,6 @@ object ExternalStorage {
             values.put(MediaStore.Downloads.IS_PENDING, 0)
             context.contentResolver.update(uri, values, null, null)
         } else write(context, name, fn)
-    }
-
-    fun writeData(data: Serializable, context: Context, name: String, feedbackPopup: Boolean) {
-        write(context, name) { o, path ->
-            val out = ObjectOutputStream(o)
-            try {
-                out.writeObject(data)
-                if (feedbackPopup) Toast.makeText(context, "Saved: $path", Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                if (feedbackPopup) Toast.makeText(context, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     fun writeDataOutsideScope(data: Serializable, context: Context, name: String, feedbackPopup: Boolean) {

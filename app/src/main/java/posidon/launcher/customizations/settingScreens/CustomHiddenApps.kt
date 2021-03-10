@@ -1,9 +1,10 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.UserManager
 import posidon.launcher.Home
+import posidon.launcher.customizations.settingScreens.general.AppTickingActivity
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Sort

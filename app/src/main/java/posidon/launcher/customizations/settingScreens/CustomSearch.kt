@@ -1,4 +1,4 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.os.Bundle
 import android.view.View

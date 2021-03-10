@@ -5,15 +5,15 @@ import android.app.PendingIntent
 import android.graphics.drawable.Drawable
 
 class Notification(
-        val title: CharSequence?,
-        val text: CharSequence?,
-        val isSummary: Boolean,
-        val bigPic: Drawable?,
-        val icon: Drawable?,
-        val actions: Array<Notification.Action>?,
-        private val contentIntent: PendingIntent?,
-        val key: String,
-        val progress: Int
+    val title: CharSequence?,
+    val text: CharSequence?,
+    val isSummary: Boolean,
+    val bigPic: Drawable?,
+    val icon: Drawable?,
+    val actions: Array<Notification.Action>?,
+    private val contentIntent: PendingIntent?,
+    val key: String,
+    val progress: Float
 ) {
     fun open() {
         try { contentIntent?.send() }
@@ -40,7 +40,7 @@ class Notification(
         result = 31 * result + (actions?.contentHashCode() ?: 0)
         result = 31 * result + (contentIntent?.hashCode() ?: 0)
         result = 31 * result + key.hashCode()
-        result = 31 * result + progress
+        result = 31 * result + progress.toInt()
         return result
     }
 }

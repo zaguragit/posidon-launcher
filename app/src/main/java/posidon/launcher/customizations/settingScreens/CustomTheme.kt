@@ -1,4 +1,4 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.app.Dialog
 import android.content.Intent
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting

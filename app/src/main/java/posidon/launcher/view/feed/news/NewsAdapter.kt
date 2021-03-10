@@ -33,8 +33,8 @@ import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*
 
 class NewsAdapter(
-        val items: ArrayList<FeedItem>,
-        private val context: Activity
+    private val items: ArrayList<FeedItem>,
+    private val activity: Activity
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     class ViewHolder(
@@ -50,6 +50,7 @@ class NewsAdapter(
 
     @SuppressLint("RtlHardcoded")
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
+        val context = parent.context
 
         val image = if (Settings["news:cards:image", true]) ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -182,7 +183,7 @@ class NewsAdapter(
         }
 
         holder.card.setOnClickListener {
-            feedItem.open(context)
+            feedItem.open(holder.itemView.context)
         }
     }
 
@@ -195,7 +196,7 @@ class NewsAdapter(
         Settings.getStringsOrSetEmpty("feed:deleted_articles").add(a)
         Settings.apply()
         if (Settings["feed:undo_article_removal_opt", false]) {
-            Snackbar.make(context.findViewById(android.R.id.content), R.string.removed, Snackbar.LENGTH_LONG).apply {
+            Snackbar.make(activity.findViewById(android.R.id.content), R.string.removed, Snackbar.LENGTH_LONG).apply {
                 setAction(R.string.undo) {
                     items.add(i, feedItem)
                     notifyItemInserted(i)

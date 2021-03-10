@@ -123,7 +123,7 @@
                     app:startsWith1="true"
                     app:key="notif:text:max_lines"
                     app:def="3"
-                    app:max="12"/>
+                    app:max="24"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

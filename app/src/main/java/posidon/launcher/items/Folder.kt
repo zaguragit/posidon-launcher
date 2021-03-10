@@ -14,8 +14,8 @@ import android.widget.*
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
-import posidon.launcher.items.users.CustomAppIcon
 import posidon.launcher.items.users.ItemLongPress
+import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.Customizer
@@ -30,7 +30,8 @@ class Folder : LauncherItem {
     val items: ArrayList<LauncherItem>
     var uid: String
 
-    override val icon: Drawable?
+    override var icon: Drawable? = null
+        private set
     override var label: String?
 
     constructor(string: String) : super() {
@@ -44,15 +45,7 @@ class Folder : LauncherItem {
             }
         }
         label = Settings["folder:$uid:label", "folder"]
-        val customIcon = Customizer.getCustomIcon("folder:$uid:icon")
-        icon = (customIcon?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Icons.generateAdaptiveIcon(it)
-            } else it
-        } ?: icon(Tools.appContext!!))?.let {
-            Icons.animateIfShould(Tools.appContext!!, it)
-            Icons.badgeMaybe(it, false)
-        }
+        updateIcon()
     }
 
     constructor(items: ArrayList<LauncherItem>) {
@@ -122,6 +115,18 @@ class Folder : LauncherItem {
             return BitmapDrawable(Tools.appContext!!.resources, bitmap)
         } catch (e: Exception) { e.printStackTrace() }
         return null
+    }
+
+    fun updateIcon() {
+        val customIcon = Customizer.getCustomIcon("folder:$uid:icon")
+        icon = (customIcon?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Icons.generateAdaptiveIcon(it)
+            } else it
+        } ?: icon(Tools.appContext!!))?.let {
+            Icons.animateIfShould(Tools.appContext!!, it)
+            Icons.badgeMaybe(it, false)
+        }
     }
 
     fun clear() {
@@ -245,6 +250,9 @@ class Folder : LauncherItem {
                                 val dockI = event.clipData.getItemAt(0).text.toString().toInt(16)
                                 val item = LauncherItem(event.clipData.description.label.toString())!!
                                 items.add(i, item)
+                                if (i < 4) {
+                                    updateIcon()
+                                }
                                 Dock[dockI] = this
                                 break
                             }
@@ -286,6 +294,9 @@ class Folder : LauncherItem {
             ItemLongPress.onItemLongPress(context, v, this, onRemove = {
                 popupWindow.dismiss()
                 items.removeAt(folderI)
+                if (folderI < 4) {
+                    updateIcon()
+                }
                 Dock[dockI] = if (items.size == 1) items[0] else this
                 Home.instance.dock.loadApps()
             }, onEdit = null, dockI = dockI, folderI = folderI, parentView = view)
@@ -308,12 +319,12 @@ class Folder : LauncherItem {
             val intent = Intent(context, CustomAppIcon::class.java)
             intent.putExtra("key", "folder:${uid}:icon")
             context.startActivity(intent)
-            editWindow.dismiss()
         }
         editLabel.setText(label)
         editWindow.setOnDismissListener {
             label = editLabel.text.toString()
             Settings["folder:${uid}:label"] = label
+            updateIcon()
             Dock[dockI] = this@Folder
             Home.instance.dock.loadApps()
         }

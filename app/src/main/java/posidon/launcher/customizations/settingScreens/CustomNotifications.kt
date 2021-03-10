@@ -1,4 +1,4 @@
-package posidon.launcher.customizations
+package posidon.launcher.customizations.settingScreens
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,8 +21,12 @@ class CustomNotifications : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
 
-        findViewById<Spinner>(R.id.notificationGrouping).data = resources.getStringArray(R.array.notificationGrouping)
-        findViewById<Spinner>(R.id.notificationGrouping).selectionI = when (Settings["notifications:groupingType", "os"]) { "os" -> 0; "byApp" -> 1; else -> 2 }
+        findViewById<Spinner>(R.id.notificationGrouping).run {
+            data = resources.getStringArray(R.array.notificationGrouping)
+            selectionI = when (Settings["notifications:groupingType", "os"]) {
+                "os" -> 0; "byApp" -> 1; else -> 2
+            }
+        }
 
         Global.customized = true
     }
