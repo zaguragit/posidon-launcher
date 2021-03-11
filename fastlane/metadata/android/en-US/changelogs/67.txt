@@ -1,0 +1,16 @@
+- Added folder item rearrangement
+- Added feed spacers
+- Added new options for news card customization
+- Added a lot of customizations for drawer scrollbar
+- Added some settings for app labels in app drawer
+- Improved built-in calculator
+- Made hidden apps long-pressable
+- Moved app icon editing to the app properties menu
+- Tweaked launcher settings appearance
+- Added an option for the feed items to be reversed
+- Added setting for max text lines in notifications
+- Added an option to open the first search result by pressing enter
+- Replaced the depressed fish when there are no search results with an option to search in DuckDuckGo
+- Added custom widget picker
+- Added progress notifications
+- Bug fixes
