@@ -150,7 +150,7 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity
-            android:name=".feed.news.RemovedArticles"
+            android:name=".customizations.RemovedArticles"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
         <activity

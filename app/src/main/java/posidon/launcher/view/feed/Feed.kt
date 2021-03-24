@@ -16,23 +16,29 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.android.conveniencelib.onEnd
+import posidon.android.loader.rss.FeedItem
+import posidon.android.loader.rss.FeedLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
 import posidon.launcher.external.widgets.Widget
-import posidon.launcher.feed.news.FeedLoader
+import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
-import posidon.launcher.tools.onEnd
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.news.NewsCards
 import posidon.launcher.view.feed.notifications.NotificationCards
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.math.abs
 
 class Feed : FrameLayout {
 
@@ -214,7 +220,7 @@ class Feed : FrameLayout {
         if (Settings["feed:show_spinner", true]) {
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
-            FeedLoader.loadFeed { success, items -> post {
+            loadFeed { success, items -> post {
                 if (success) {
                     var firstScroll = 0
                     var firstMaxScroll = 0
@@ -231,7 +237,7 @@ class Feed : FrameLayout {
                     spinner.visibility = GONE
                 }
             }}
-        } else FeedLoader.loadFeed { success, items ->
+        } else loadFeed { success, items ->
             if (success) post {
                 var firstScroll = 0
                 var firstMaxScroll = 0
@@ -245,6 +251,39 @@ class Feed : FrameLayout {
                 }
             }
         }
+    }
+
+    private inline fun loadFeed(
+        noinline onFinished: (success: Boolean, items: List<FeedItem>) -> Unit
+    ): Thread {
+        val maxAge = Settings["news:max_days_age", 5]
+        val deleted = Settings.getStringsOrSetEmpty("feed:deleted_articles")
+        val today = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+        val deletedIter = deleted.iterator()
+        for (article in deletedIter) {
+            val day = article.substringBefore(':').toDouble()
+            if (abs(day - today) >= if (maxAge == 0) 60 else maxAge) {
+                deletedIter.remove()
+            }
+        }
+        Settings["feed:deleted_articles"] = deleted
+        return FeedLoader.loadFeed(Settings["feedUrls", FeedChooser.defaultSources].split("|"), onFinished, maxItems = Settings["feed:max_news", 48], isIncluded = { title, link, time ->
+            val isNewEnough = if (maxAge == 0) true else {
+                val day = Calendar.getInstance().apply { this.time = time }[Calendar.DAY_OF_YEAR]
+                abs(day - today) < maxAge
+            }
+            if (isNewEnough) {
+                if (Settings["feed:delete_articles", false]) {
+                    var show = true
+                    for (string in deleted) {
+                        if (string.substringAfter(':') == "$link:$title") {
+                            show = false; break
+                        }
+                    }
+                    show
+                } else true
+            } else false
+        })
     }
 
     inline fun scrollUpdate(firstScroll: Int, firstMaxScroll: Int) {

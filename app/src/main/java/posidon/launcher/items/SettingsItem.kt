@@ -12,7 +12,7 @@ import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.tools.theme.toBitmapDrawable
+import posidon.launcher.tools.toBitmapDrawable
 
 class SettingsItem private constructor(
     override var label: String?,

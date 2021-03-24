@@ -1,13 +1,15 @@
 package posidon.launcher.tools.theme
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.WallpaperManager
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.widget.Toast
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import kotlin.concurrent.thread
 
@@ -35,8 +37,8 @@ object Wallpaper {
     fun blurredWall(radius: Float): Bitmap? {
         try {
             @SuppressLint("MissingPermission") var bitmap: Bitmap = WallpaperManager.getInstance(Tools.appContext).peekFastDrawable().toBitmap()
-            val displayWidth = Device.displayWidth
-            val displayHeight = Device.displayHeight + Tools.navbarHeight
+            val displayWidth = Device.screenWidth(Tools.appContext!!)
+            val displayHeight = Device.screenHeight(Tools.appContext!!) + Tools.navbarHeight
             when {
                 bitmap.height / bitmap.width.toFloat() < displayHeight / displayWidth.toFloat() -> {
                     bitmap = Bitmap.createScaledBitmap(
@@ -74,26 +76,19 @@ object Wallpaper {
         return null
     }
 
-    fun centerCropWallpaper(wallpaper: Bitmap): Bitmap {
-        val scaledWidth = Device.displayHeight * wallpaper.width / wallpaper.height
+    fun centerCropWallpaper(context: Context, wallpaper: Bitmap): Bitmap {
+        val scaledWidth = Device.screenHeight(context) * wallpaper.width / wallpaper.height
         var scaledWallpaper = Bitmap.createScaledBitmap(
             wallpaper,
             scaledWidth,
-            Device.displayHeight,
+            Device.screenHeight(context),
             false)
         scaledWallpaper = Bitmap.createBitmap(
             scaledWallpaper,
-            scaledWidth - Device.displayWidth shr 1,
+            scaledWidth - Device.screenWidth(context) shr 1,
             0,
-            Device.displayWidth,
-            Device.displayHeight)
+            Device.screenWidth(context),
+            Device.screenHeight(context))
         return scaledWallpaper
     }
-}
-
-inline fun Activity.setWallpaperOffset(x: Float, y: Float) {
-    val wallManager = WallpaperManager.getInstance(this)
-    //wallManager.setWallpaperOffsets(window.attributes.token, x, y)
-    wallManager.setWallpaperOffsetSteps(0f, 0f)
-    wallManager.suggestDesiredDimensions(Device.displayWidth, Device.displayHeight)
 }

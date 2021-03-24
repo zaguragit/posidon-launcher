@@ -1,130 +1,30 @@
 package posidon.launcher.tools.theme
 
 import android.content.Context
-import android.content.res.Resources
-import android.content.res.XmlResourceParser
 import android.graphics.*
 import android.graphics.drawable.*
 import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserFactory
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.drawable.MaskedDrawable
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.drawable.MaskedDrawable
 import posidon.launcher.tools.mainFont
 import posidon.launcher.tools.sp
-import java.util.*
-import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
 object Icons {
-
-    class IconPackInfo {
-        var scaleFactor = 1f
-        val iconResourceNames = HashMap<String, String>()
-        var iconBack: String? = null
-        var iconMask: String? = null
-        var iconFront: String? = null
-    }
-
-    fun getIconPackInfo(res: Resources, iconPackName: String): IconPackInfo {
-        val info = IconPackInfo()
-        try {
-            val n = res.getIdentifier("appfilter", "xml", iconPackName)
-            if (n != 0) {
-                val xrp = res.getXml(n)
-                while (xrp.eventType != XmlResourceParser.END_DOCUMENT) {
-                    if (xrp.eventType == 2) {
-                        try {
-                            when (xrp.name) {
-                                "scale" -> {
-                                    info.scaleFactor = xrp.getAttributeValue(0).toFloat()
-                                }
-                                "item" -> {
-                                    info.iconResourceNames[xrp.getAttributeValue(0)] = xrp.getAttributeValue(1)
-                                }
-                                "iconback" -> info.iconBack = xrp.getAttributeValue(0)
-                                "iconmask" -> info.iconMask = xrp.getAttributeValue(0)
-                                "iconupon" -> info.iconFront = xrp.getAttributeValue(0)
-                            }
-                        } catch (e: Exception) {}
-                    }
-                    xrp.next()
-                }
-            } else {
-                val factory = XmlPullParserFactory.newInstance()
-                factory.isValidating = false
-                val xpp = factory.newPullParser()
-                val raw = res.assets.open("appfilter.xml")
-                xpp.setInput(raw, null)
-                while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
-                    if (xpp.eventType == 2) {
-                        try {
-                            when (xpp.name) {
-                                "scale" -> {
-                                    info.scaleFactor = xpp.getAttributeValue(0).toFloat()
-                                }
-                                "item" -> {
-                                    info.iconResourceNames[xpp.getAttributeValue(0)] = xpp.getAttributeValue(1)
-                                }
-                                "iconback" -> info.iconBack = xpp.getAttributeValue(0)
-                                "iconmask" -> info.iconMask = xpp.getAttributeValue(0)
-                                "iconupon" -> info.iconFront = xpp.getAttributeValue(0)
-                            }
-                        } catch (e: Exception) {}
-                    }
-                    xpp.next()
-                }
-            }
-        } catch (ignore: Exception) {}
-        return info
-    }
-
-    fun getResourceNames(res: Resources, iconPack: String?): ArrayList<String> {
-        val strings = ArrayList<String>()
-        try {
-            val n = res.getIdentifier("drawable", "xml", iconPack)
-            if (n != 0) {
-                val xrp = res.getXml(n)
-                while (xrp.eventType != XmlResourceParser.END_DOCUMENT) {
-                    try {
-                        if (xrp.eventType == 2 && !strings.contains(xrp.getAttributeValue(0))) {
-                            if (xrp.name == "item") {
-                                strings.add(xrp.getAttributeValue(0))
-                            }
-                        }
-                    } catch (ignore: Exception) {}
-                    xrp.next()
-                }
-            } else {
-                val factory = XmlPullParserFactory.newInstance()
-                factory.isValidating = false
-                val xpp = factory.newPullParser()
-                val raw = res.assets.open("drawable.xml")
-                xpp.setInput(raw, null)
-                while (xpp!!.eventType != XmlPullParser.END_DOCUMENT) {
-                    try {
-                        if (xpp.eventType == 2 && !strings.contains(xpp.getAttributeValue(0))) {
-                            if (xpp.name == "item") {
-                                strings.add(xpp.getAttributeValue(0))
-                            }
-                        }
-                    } catch (ignore: Exception) {}
-                    xpp.next()
-                }
-            }
-        } catch (ignore: Exception) {}
-        return strings
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun generateAdaptiveIcon(drawable: Drawable): Drawable {
@@ -144,9 +44,9 @@ object Icons {
                                 bg.draw(Canvas(this))
                                 bg.bounds = tmp
                             }.getPixel(0, 0) and 0xffffff).let {
-                                ColorTools.red(it) > 0xdd &&
-                                        ColorTools.green(it) > 0xdd &&
-                                        ColorTools.blue(it) > 0xdd
+                                Colors.red(it) > 0xdd &&
+                                Colors.green(it) > 0xdd &&
+                                Colors.blue(it) > 0xdd
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
                         drr[0] = when (Settings["icon:background_type", "custom"]) {
@@ -303,21 +203,21 @@ object Icons {
         val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
         if (icon == null || bgType == 1) {
             val bg = Global.accentColor
-            onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(bg), if (Colors.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
         } else if (bgType == 0) {
             Palette.from(icon.toBitmap()).generate {
                 val bg = it?.getDominantColor(customBG) ?: customBG
-                onGenerated(ColorTools.iconBadge(bg), if (ColorTools.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+                onGenerated(ColorTools.iconBadge(bg), if (Colors.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
             }
         } else {
-            onGenerated(ColorTools.iconBadge(customBG), if (ColorTools.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(customBG), if (Colors.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
         }
     }
 
     inline fun animateIfShould(context: Context, drawable: Drawable) {
         if (!(context.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
             try {
-                Graphics.tryAnimate(drawable)
+                Graphics.tryAnimate(Home.instance, drawable)
             } catch (e: Exception) {}
         }
     }

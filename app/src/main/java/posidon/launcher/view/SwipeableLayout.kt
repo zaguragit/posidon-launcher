@@ -12,12 +12,11 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
+import posidon.android.conveniencelib.SpringInterpolator
+import posidon.android.conveniencelib.onEnd
 import posidon.launcher.R
-import posidon.launcher.tools.SpringInterpolator
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.onEnd
 import kotlin.math.abs
-
 
 class SwipeableLayout(
     val frontView: View,

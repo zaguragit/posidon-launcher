@@ -20,12 +20,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.Device
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.theme.ColorTools
 
 class MusicCard : CardView, FeedSection {
 
@@ -42,7 +42,7 @@ class MusicCard : CardView, FeedSection {
     val musicCardTrackTitle = TextView(context).apply {
         textSize = 18f
         setPadding(0, 0, 0, 8.dp.toInt())
-        setTypeface(typeface, Typeface.BOLD_ITALIC)
+        setTypeface(typeface, Typeface.BOLD)
     }
 
     val musicCardTrackArtist = TextView(context).apply {
@@ -147,11 +147,11 @@ class MusicCard : CardView, FeedSection {
         }
         musicCardImage.setImageDrawable(icon)
         musicCardTrackTitle.apply {
-            setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+            setTextColor(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
             text = title
         }
         musicCardTrackArtist.apply {
-            setTextColor(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+            setTextColor(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
             text = subtitle
         }
         val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
@@ -162,7 +162,7 @@ class MusicCard : CardView, FeedSection {
                         GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
                     setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
-                    setLayerInset(1, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0, 0, 0)
+                    setLayerInset(1, Device.screenWidth(context) - 136.dp.toInt() - marginX * 2, 0, 0, 0)
                 }
             } else {
                 LayerDrawable(arrayOf(
@@ -170,12 +170,12 @@ class MusicCard : CardView, FeedSection {
                         GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
                     setLayerInset(0, 136.dp.toInt(), 0, 0, 0)
-                    setLayerInset(1, 0, 0, Device.displayWidth - 136.dp.toInt() - marginX * 2, 0)
+                    setLayerInset(1, 0, 0, Device.screenWidth(context) - 136.dp.toInt() - marginX * 2, 0)
                 }
             }
-        musicPrev.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-        musicPlay.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
-        musicNext.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(color)) -0xeeeded else -0x1)
+        musicPrev.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
+        musicPlay.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
+        musicNext.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

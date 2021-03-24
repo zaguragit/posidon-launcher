@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.onEnd
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.onEnd
 import kotlin.math.max
 
 class Customizations : AppCompatActivity() {
@@ -52,14 +52,14 @@ class Customizations : AppCompatActivity() {
     fun hideCard(v: View? = null) {
         Settings["rated"] = true
         findViewById<View>(R.id.card).animate()
-                .alpha(0f)
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .translationY(findViewById<View>(R.id.card).measuredHeight.toFloat())
-                .setDuration(200L)
-                .onEnd {
-                    findViewById<View>(R.id.card).visibility = View.GONE
-                }
+            .alpha(0f)
+            .scaleX(0.95f)
+            .scaleY(0.95f)
+            .translationY(findViewById<View>(R.id.card).measuredHeight.toFloat())
+            .setDuration(200L)
+            .onEnd {
+                findViewById<View>(R.id.card).visibility = View.GONE
+            }
     }
 
     private fun cardThing() {

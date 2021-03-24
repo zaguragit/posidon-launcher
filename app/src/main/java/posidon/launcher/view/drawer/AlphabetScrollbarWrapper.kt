@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import posidon.android.conveniencelib.Device
 import posidon.launcher.Home
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
@@ -65,7 +65,7 @@ class AlphabetScrollbarWrapper(
                 setPadding(h, 0, h, Tools.navbarHeight)
                 ret = if (reserveSpace) scrollbarWidth else 0
             } else {
-                Home.instance.homeView.addView(this, CoordinatorLayout.LayoutParams(scrollbarWidth, Device.displayHeight + Tools.navbarHeight).apply {
+                Home.instance.homeView.addView(this, CoordinatorLayout.LayoutParams(scrollbarWidth, Device.screenHeight(context) + Tools.navbarHeight).apply {
                     gravity = (if (position == 0) Gravity.LEFT else Gravity.RIGHT) or Gravity.BOTTOM
                 })
                 feed.layoutParams = (feed.layoutParams as ViewGroup.MarginLayoutParams).apply {

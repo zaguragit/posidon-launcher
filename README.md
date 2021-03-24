@@ -26,8 +26,9 @@ Feel free to fork, contribute or use parts of the code in your own projects.
 
 #### Code
 Please read the [contribution guidlines](CONTRIBUTIONS.md)
-
-The best thing you can do is to make quickstep work, feel free to delete my implementation, cause it doesn't work at all. All the quickstep-related code is in the [external/quickstep](app/src/main/java/posidon/launcher/external/quickstep) folder
+You can either contribute to this repo, or to one of it's libraries:
+ - [android.loader](https://github.com/lposidon/android.loader)
+ - [android.convenienceLib](https://github.com/lposidon/android.convenienceLib)
 
 #### Donations
 

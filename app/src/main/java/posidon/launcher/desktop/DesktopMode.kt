@@ -6,11 +6,11 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
+import posidon.android.conveniencelib.Graphics
 import posidon.launcher.R
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.theme.Graphics
 import java.lang.ref.WeakReference
 
 class DesktopMode : FragmentActivity() {
@@ -23,7 +23,7 @@ class DesktopMode : FragmentActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         val menuBtn = findViewById<ImageView>(R.id.menuBtn)
-        Graphics.tryAnimate(menuBtn.drawable)
+        Graphics.tryAnimate(this, menuBtn.drawable)
         AppLoader(this) {}.execute()
     }
 

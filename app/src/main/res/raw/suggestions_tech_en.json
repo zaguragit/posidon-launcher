@@ -1,11 +1,11 @@
 [
   {
     "name": "It's FOSS",
-    "url": "https://itsfoss.com/feed"
+    "url": "https://itsfoss.com/atom"
   },
   {
     "name": "OMG! Ubuntu!",
-    "url": "https://www.omgubuntu.co.uk/rss"
+    "url": "https://www.omgubuntu.co.uk/feed/atom"
   },
   {
     "name": "GameFromScratch",

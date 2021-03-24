@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.Graphics
+import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tools.theme.Icons
 
 internal class IconsAdapter(
@@ -66,7 +67,7 @@ internal class IconsAdapter(
             holder.icon.setImageDrawable(null)
             holder.icon.setOnClickListener(null)
         } else {
-            holder.icon.setImageDrawable(Graphics.tryAnimate(Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes))
             } else {
                 themeRes.getDrawable(intRes)

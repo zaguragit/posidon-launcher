@@ -16,11 +16,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.hideKeyboard
+import posidon.android.loader.TextLoader
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Loader
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.hideKeyboard
 import posidon.launcher.view.NestedScrollView
 
 class ConsoleActivity : AppCompatActivity() {
@@ -85,7 +85,7 @@ class ConsoleActivity : AppCompatActivity() {
                         }
                         "hidden" -> startActivity(Intent(this, HiddenAppsActivity::class.java))
                         "ip" -> {
-                            Loader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
+                            TextLoader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
                                 printEquation(getText(R.string.ip_address_external), it.trimEnd())
                             }}
                         }

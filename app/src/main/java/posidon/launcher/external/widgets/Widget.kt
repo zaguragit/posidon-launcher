@@ -20,10 +20,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.android.conveniencelib.Device
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.view.GridLayoutManager
@@ -137,7 +137,7 @@ class Widget(
                                     addView(LinearLayout(context).apply {
                                         orientation = LinearLayout.VERTICAL
                                         val h = 48.dp.toInt()
-                                        addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.displayWidth / 2 - h))
+                                        addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenWidth(context) / 2 - h))
                                         addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2.dp.toInt()))
                                         addView(LinearLayout(context).apply {
                                             orientation = LinearLayout.HORIZONTAL
@@ -245,7 +245,7 @@ class Widget(
 
     fun resize(newHeight: Int) {
         val density = Tools.appContext!!.resources.displayMetrics.density
-        val width = (Device.displayWidth / density).toInt()
+        val width = (Device.screenWidth(Tools.appContext!!) / density).toInt()
         val height = (newHeight / density).toInt()
         try {
             hostView!!.updateAppWidgetSize(null, width, height, width, height)

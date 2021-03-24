@@ -19,13 +19,14 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.Device
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.*
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import kotlin.math.abs
@@ -108,7 +109,7 @@ class DockView : LinearLayout {
             battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
             battery.progressBackgroundTintList = ColorStateList.valueOf(color)
             battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (ColorTools.useDarkText(color)) -0x23000000 else -0x11000001)
+            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (Colors.useDarkText(color)) -0x23000000 else -0x11000001)
         }
         searchBar.background = ShapeDrawable().apply {
             val r = Settings["dock:search:radius", 30].dp
@@ -193,7 +194,7 @@ class DockView : LinearLayout {
             0 -> 64
             2 -> 84
             else -> 74
-        }.dp.toInt(), (Device.displayWidth - marginX * 2) / columnCount)
+        }.dp.toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
@@ -231,6 +232,7 @@ class DockView : LinearLayout {
                             continue@loop
                         }
                     }
+                    is Folder -> item.updateIcon()
                 }
                 val img = view.findViewById<ImageView>(R.id.iconimg)
                 img.setImageDrawable(item.icon)
@@ -264,10 +266,10 @@ class DockView : LinearLayout {
             0 -> 64
             2 -> 84
             else -> 74
-        }.dp.toInt(), (Device.displayWidth - marginX * 2) / columnCount)
+        }.dp.toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp.toInt() else 0) * rowCount
-        dockHeight = if (Settings["docksearchbarenabled", false] && !context.isTablet) {
+        dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
             containerHeight + 84.dp.toInt()
         } else {
             containerHeight + 14.dp.toInt()
@@ -299,7 +301,7 @@ class DockView : LinearLayout {
         run {
             val bg = drawer.background
             if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
-                bg.setLayerInset(0, 0, 0, 0, Device.displayHeight - Settings["dockbottompadding", 10].dp.toInt())
+                bg.setLayerInset(0, 0, 0, 0, Device.screenHeight(context) - Settings["dockbottompadding", 10].dp.toInt())
                 bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
             }
         }
@@ -307,7 +309,7 @@ class DockView : LinearLayout {
     }
 
     inline fun onItemDrop(event: DragEvent): Boolean {
-        if (event.y > Device.displayHeight - dockHeight) {
+        if (event.y > Device.screenHeight(context) - dockHeight) {
             val item = LauncherItem(event.clipData.description.label.toString())!!
             val location = IntArray(2)
             var i = 0
@@ -332,7 +334,7 @@ class DockView : LinearLayout {
         val location = intArrayOf(0, 0)
         v.getLocationOnScreen(location)
         val left = location[0].toFloat() + iconWidth * (i % columns)
-        val bottom = Device.displayHeight - location[0].toFloat() + iconWidth * (i / columns)
+        val bottom = Device.screenHeight(context) - location[0].toFloat() + iconWidth * (i / columns)
         val right = left + iconWidth
         val top = bottom - v.measuredHeight.toFloat()
         rectF.set(left, top, right, bottom)

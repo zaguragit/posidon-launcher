@@ -20,36 +20,14 @@ import androidx.core.app.ActivityCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.view.LinearLayoutManager
 
 object ColorTools {
-
-    @ColorInt
-    inline fun blendColors(@ColorInt color1: Int, @ColorInt color2: Int, ratio: Float): Int {
-        val ratio = when {
-            ratio > 1f -> 1f
-            ratio < 0f -> 0f
-            else -> ratio
-        }
-        val inverseRatio = 1f - ratio
-        val a = alpha(color1) * ratio + alpha(color2) * inverseRatio
-        val r = red(color1) * ratio + red(color2) * inverseRatio
-        val g = green(color1) * ratio + green(color2) * inverseRatio
-        val b = blue(color1) * ratio + blue(color2) * inverseRatio
-        return fromARGB(a.toInt(), r.toInt(), g.toInt(), b.toInt())
-    }
-
-    inline fun alpha(@ColorInt color: Int) = color ushr 24
-    inline fun red(@ColorInt color: Int) = color shr 16 and 0xFF
-    inline fun green(@ColorInt color: Int) = color shr 8 and 0xFF
-    inline fun blue(@ColorInt color: Int) = color and 0xFF
-    @ColorInt
-    inline fun fromARGB(alpha: Int, red: Int, green: Int, blue: Int) = alpha shl 24 or (red shl 16) or (green shl 8) or blue
-
-    inline fun useDarkText(@ColorInt bg: Int) = bg shr 8 and 0xFF > 240 || (bg shr 8 and 0xFF /*green*/ > 200 && bg shr 16 and 0xFF /*red*/ > 120)
 
     inline fun colorCircle(@ColorInt color: Int): Drawable {
         val d = GradientDrawable()
@@ -79,7 +57,7 @@ object ColorTools {
         val okBtn = d.findViewById<TextView>(R.id.ok)!!
         d.findViewById<RecyclerView>(R.id.recycler)!!.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = ColorAdapter(getWallpaperColors().apply {
+            adapter = ColorAdapter(getWallpaperColors(context).apply {
                 add(0xffee6170.toInt())
                 add(0xff32afce.toInt())
                 add(0xff37a051.toInt())
@@ -105,14 +83,14 @@ object ColorTools {
                     blue.progress = color and 0xff
                     updatingAllowed = true
                 }
-                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                 txt.setTextColor(txtColor)
                 okBtn.setTextColor(txtColor)
                 okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             } catch (ignore: NumberFormatException) {}
         })
         txt.setText(Integer.toHexString(initColor))
-        val txtColor = if (useDarkText(initColor)) -0xdad9d9 else -0x1
+        val txtColor = if (Colors.useDarkText(initColor)) -0xdad9d9 else -0x1
         txt.setTextColor(txtColor)
         okBtn.setTextColor(txtColor)
         okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -137,7 +115,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -153,7 +131,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + progress * 256 * 256 + green.progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -169,7 +147,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -185,7 +163,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -207,7 +185,7 @@ object ColorTools {
         val okBtn = d.findViewById<TextView>(R.id.ok)!!
         d.findViewById<RecyclerView>(R.id.recycler)!!.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = ColorAdapter(getWallpaperColors().apply {
+            adapter = ColorAdapter(getWallpaperColors(context).apply {
                 add(0xffee6170.toInt())
                 add(0xff32afce.toInt())
                 add(0xff37a051.toInt())
@@ -234,14 +212,14 @@ object ColorTools {
                     blue.progress = color and 0xff
                     updatingAllowed = true
                 }
-                val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                 txt.setTextColor(txtColor)
                 okBtn.setTextColor(txtColor)
                 okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             } catch (ignore: NumberFormatException) {}
         })
         txt.setText(initColor.toString(16).padStart(6, '0'))
-        val txtColor = if (useDarkText(initColor)) -0xdad9d9 else -0x1
+        val txtColor = if (Colors.useDarkText(initColor)) -0xdad9d9 else -0x1
         txt.setTextColor(txtColor)
         okBtn.setTextColor(txtColor)
         okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -267,7 +245,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -285,7 +263,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -303,7 +281,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -314,9 +292,9 @@ object ColorTools {
         d.show()
     }
 
-    fun getWallpaperColors() = ArrayList<Int>().apply {
-        if (ActivityCompat.checkSelfPermission(Tools.appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val palette = Palette.from(WallpaperManager.getInstance(Tools.appContext).fastDrawable.toBitmap()).generate()
+    fun getWallpaperColors(context: Context) = ArrayList<Int>().apply {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val palette = Palette.from(WallpaperManager.getInstance(context).fastDrawable.toBitmap()).generate()
             add(palette.getDominantColor(0xff1155ff.toInt()))
             add(palette.getDarkVibrantColor(0xff1155ff.toInt()))
             add(palette.getVibrantColor(0xff1155ff.toInt()))

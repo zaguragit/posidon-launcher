@@ -18,11 +18,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.tools.*
-import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tools.theme.Wallpaper
-import posidon.launcher.tools.theme.toBitmap
 import java.io.File
 import java.io.FileOutputStream
 
@@ -39,7 +40,7 @@ class WallActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         var image = img
         if (image != null && image.height / image.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) {
-            image = Wallpaper.centerCropWallpaper(image)
+            image = Wallpaper.centerCropWallpaper(this, image)
         }
         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
         val extras = intent.extras
@@ -47,7 +48,7 @@ class WallActivity : AppCompatActivity() {
             loading!!.visibility = View.GONE
             findViewById<View>(R.id.downloadbtn).visibility = View.GONE
         } else {
-            Graphics.tryAnimate(loading!!.drawable)
+            Graphics.tryAnimate(this, loading!!.drawable)
             index = extras.getInt("index")
 
             fun onImgLoaded() {
@@ -80,11 +81,11 @@ class WallActivity : AppCompatActivity() {
 
             if (Gallery.walls[index].type == Wall.Type.SVG) {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.svg"
-                Loader.loadNullableSvg(url) { runOnUiThread {
+                ImageLoader.loadNullableSvg(url) { runOnUiThread {
                     onImgLoaded()
                     if (it != null) {
-                        val displayWidth = Device.displayWidth
-                        val displayHeight = Device.displayHeight
+                        val displayWidth = Device.screenWidth(this)
+                        val displayHeight = Device.screenHeight(this)
                         val width: Int
                         val height: Int
                         if (it.intrinsicHeight / it.intrinsicWidth.toFloat() < displayHeight / displayWidth.toFloat()) {
@@ -97,18 +98,18 @@ class WallActivity : AppCompatActivity() {
                         it.toBitmap(width, height).let {
                             image = it
                             if (it.height / it.width < displayHeight / displayWidth)
-                                image = Wallpaper.centerCropWallpaper(it)
+                                image = Wallpaper.centerCropWallpaper(this, it)
                         }
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }}
             } else {
                 val url = Gallery.REPO + Gallery.IMG_PATH + Gallery.walls[index].url!! + "/img.png"
-                Loader.loadNullableBitmap(url) { runOnUiThread {
+                ImageLoader.loadNullableBitmap(url) { runOnUiThread {
                     onImgLoaded()
                     if (it != null) {
                         image = it
-                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = Wallpaper.centerCropWallpaper(it)
+                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = Wallpaper.centerCropWallpaper(this, it)
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }}

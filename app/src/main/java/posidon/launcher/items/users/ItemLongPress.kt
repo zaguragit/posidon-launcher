@@ -15,6 +15,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.Colors
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.App
@@ -24,7 +25,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.LinearLayoutManager
 
@@ -38,7 +38,7 @@ object ItemLongPress {
         }
 
         val color = item.getColor()
-        val txtColor = if (ColorTools.useDarkText(color)) -0xeeeded else -0x1
+        val txtColor = if (Colors.useDarkText(color)) -0xeeeded else -0x1
 
         val content = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && item is App && item.getShortcuts(context)!!.isNotEmpty()) {
             val shortcuts = item.getShortcuts(context)
