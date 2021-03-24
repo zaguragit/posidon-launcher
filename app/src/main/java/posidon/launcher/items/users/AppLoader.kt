@@ -10,15 +10,16 @@ import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
 import androidx.palette.graphics.Palette
+import launcherutils.LauncherIcons
+import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Customizer
-import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.tools.theme.toBitmap
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -41,7 +42,7 @@ class AppLoader (
         lock.lock()
         val packageManager = context.get()!!.packageManager
         val iconSize = 65.dp.toInt()
-        val iconPackName = Settings["iconpack", "system"]
+        val iconPackPackageName = Settings["iconpack", "system"]
         val p = Paint(Paint.FILTER_BITMAP_FLAG).apply {
             isAntiAlias = true
         }
@@ -49,7 +50,7 @@ class AppLoader (
             isAntiAlias = true
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
         }
-        var iconPackInfo = Icons.IconPackInfo()
+        var iconPackInfo = LauncherIcons.IconPackInfo()
         var themeRes: Resources? = null
         val uniformOptions = BitmapFactory.Options().apply {
             inScaled = false
@@ -59,24 +60,24 @@ class AppLoader (
         var front: Bitmap? = null
         var areUnthemedIconsChanged = false
         try {
-            themeRes = packageManager.getResourcesForApplication(iconPackName)
-            iconPackInfo = Icons.getIconPackInfo(themeRes, iconPackName)
+            themeRes = packageManager.getResourcesForApplication(iconPackPackageName)
+            iconPackInfo = LauncherIcons.getIconPackInfo(themeRes, iconPackPackageName)
             if (iconPackInfo.iconBack != null) {
-                val intresiconback = themeRes.getIdentifier(iconPackInfo.iconBack, "drawable", iconPackName)
+                val intresiconback = themeRes.getIdentifier(iconPackInfo.iconBack, "drawable", iconPackPackageName)
                 if (intresiconback != 0) {
                     back = BitmapFactory.decodeResource(themeRes, intresiconback, uniformOptions)
                     areUnthemedIconsChanged = true
                 }
             }
             if (iconPackInfo.iconMask != null) {
-                val intresiconmask = themeRes.getIdentifier(iconPackInfo.iconMask, "drawable", iconPackName)
+                val intresiconmask = themeRes.getIdentifier(iconPackInfo.iconMask, "drawable", iconPackPackageName)
                 if (intresiconmask != 0) {
                     mask = BitmapFactory.decodeResource(themeRes, intresiconmask, uniformOptions)
                     areUnthemedIconsChanged = true
                 }
             }
             if (iconPackInfo.iconFront != null) {
-                val intresiconfront = themeRes.getIdentifier(iconPackInfo.iconFront, "drawable", iconPackName)
+                val intresiconfront = themeRes.getIdentifier(iconPackInfo.iconFront, "drawable", iconPackPackageName)
                 if (intresiconfront != 0) {
                     front = BitmapFactory.decodeResource(themeRes, intresiconfront, uniformOptions)
                     areUnthemedIconsChanged = true
@@ -116,7 +117,7 @@ class AppLoader (
                         var intres = 0
                         val iconResource = iconPackInfo.iconResourceNames["ComponentInfo{" + app.packageName + "/" + app.name + "}"]
                         if (iconResource != null) {
-                            intres = themeRes!!.getIdentifier(iconResource, "drawable", iconPackName)
+                            intres = themeRes!!.getIdentifier(iconResource, "drawable", iconPackPackageName)
                         }
                         if (intres != 0) {
                             try {

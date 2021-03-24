@@ -27,6 +27,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import posidon.android.conveniencelib.hideKeyboard
+import posidon.android.loader.DuckInstantAnswer
+import posidon.android.loader.TextLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -96,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
                     if (a != null && a.count != 0) {
                         a.getItem(0).let { it as LauncherItem }.open(this, v, -1)
                     } else {
-                        DuckInstantAnswer.search(this, searchTxt.text.toString())
+                        searchOnDuckDuckGo(this, searchTxt.text.toString())
                     }
                 }
             }
@@ -288,7 +291,7 @@ class SearchActivity : AppCompatActivity() {
         try {
             if (results.isEmpty()) {
                 results.add(LauncherItem.make(getString(R.string.x_on_duckduckgo, string), daxResultIcon) { context, _, _ ->
-                    DuckInstantAnswer.search(context, string)
+                    searchOnDuckDuckGo(context, string)
                 })
             } else Sort.labelSort(results)
             grid.adapter = SearchAdapter(this, results)
@@ -321,7 +324,7 @@ class SearchActivity : AppCompatActivity() {
                 isShowingSmartCard = true
                 smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 smartBox.findViewById<TextView>(R.id.result).text = ""
-                Loader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
+                TextLoader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }}
             } else if (
@@ -361,6 +364,14 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun searchOnDuckDuckGo(context: Context, string: String) {
+        val encoded = Uri.encode(string)
+        val url = "https://duckduckgo.com/?q=$encoded&t=posidon.launcher"
+        val uri = Uri.parse(url)
+        val i = Intent(Intent.ACTION_VIEW, uri)
+        context.startActivity(i, ActivityOptions.makeCustomAnimation(context, R.anim.slideup, R.anim.slidedown).toBundle())
     }
 
     override fun onPause() {

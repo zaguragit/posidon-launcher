@@ -1,4 +1,4 @@
-package posidon.launcher.feed.news
+package posidon.launcher.customizations
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -13,11 +13,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.Colors
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.LinearLayoutManager
 
 class RemovedArticles : AppCompatActivity() {
@@ -54,7 +54,7 @@ class RemovedArticles : AppCompatActivity() {
             val button = TextView(context).apply {
                 text = context.getString(R.string.restore)
                 textSize = 15f
-                setTextColor(if (ColorTools.useDarkText(Global.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
+                setTextColor(if (Colors.useDarkText(Global.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
                 background = context.getDrawable(R.drawable.button_bg_round)
                 backgroundTintList = ColorStateList.valueOf(Global.accentColor)
                 val h = 20.dp.toInt()

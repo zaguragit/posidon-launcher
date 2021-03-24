@@ -23,6 +23,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -30,7 +31,6 @@ import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
-import posidon.launcher.tools.theme.toBitmap
 import posidon.launcher.tools.vibrate
 import java.util.*
 import kotlin.collections.ArrayList

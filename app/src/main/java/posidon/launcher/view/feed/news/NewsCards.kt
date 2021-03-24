@@ -4,11 +4,11 @@ import android.app.Activity
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import posidon.launcher.feed.news.FeedItem
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.onEnd
+import posidon.android.loader.rss.FeedItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.onEnd
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.FeedSection
 import kotlin.math.pow
@@ -25,7 +25,7 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
     fun hide() {
         if (!wasHiddenLastTime) {
             animate().alpha(0f).setInterpolator { it.pow((it + 8) / 3) }.onEnd {
-                translationX = Device.displayWidth.toFloat()
+                translationX = Device.screenWidth(context).toFloat()
                 wasHiddenLastTime = true
             }.duration = 180L
         }

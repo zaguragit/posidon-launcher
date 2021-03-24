@@ -8,10 +8,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.annotation.IntDef
+import posidon.android.conveniencelib.Colors
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.HighlightAdapter
 import kotlin.math.roundToInt
 
@@ -74,7 +74,7 @@ open class AlphabetScrollbar(
         if (sectionIndexer != null && sectionIndexer!!.sections.isNotEmpty()) {
             if (floatingFactor != 0f) {
                 paint.setShadowLayer(floatingFactor * 8f, 0f, floatingFactor * 3f, 0x33000000)
-                paint.color = ColorTools.blendColors(floatingColor, textColor, floatingFactor)
+                paint.color = Colors.blend(floatingColor, textColor, floatingFactor)
             } else {
                 paint.clearShadowLayer()
                 paint.color = textColor

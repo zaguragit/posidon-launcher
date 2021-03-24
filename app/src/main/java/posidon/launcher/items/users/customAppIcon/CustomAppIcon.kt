@@ -13,12 +13,13 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import launcherutils.LauncherIcons
+import posidon.android.conveniencelib.Graphics
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.GridLayoutManager
 import posidon.launcher.view.LinearLayoutManager
@@ -87,11 +88,11 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name, label = pacslist[i].loadLabel(packageManager).toString()))
-            iconPacks[i].icon = Graphics.tryAnimate(Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
-            } else {
-                pacslist[i].loadIcon(packageManager)
-            }, false))
+            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
+                    } else {
+                        pacslist[i].loadIcon(packageManager)
+                    }, false))
         }
 
         recycler.layoutManager = linearLayoutManager
@@ -118,7 +119,7 @@ class CustomAppIcon : AppCompatActivity() {
             println("223234234234234")
             try {
                 val res = packageManager.getResourcesForApplication(packageName)
-                val rn = Icons.getResourceNames(res, packageName)
+                val rn = LauncherIcons.getResourceNames(res, packageName)
                 runOnUiThread {
                     println("8999789890890890890")
                     try {

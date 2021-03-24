@@ -11,6 +11,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
@@ -20,7 +22,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.tools.theme.toBitmap
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import kotlin.math.abs
 import kotlin.math.min
@@ -175,7 +176,7 @@ class Folder : LauncherItem {
                 0 -> 64.dp.toInt()
                 2 -> 84.dp.toInt()
                 else -> 74.dp.toInt()
-            }, ((Device.displayWidth - 32.dp) / columnCount).toInt())
+            }, ((Device.screenWidth(context) - 32.dp) / columnCount).toInt())
             val notifBadgesEnabled = Settings["notif:badges", true]
             val notifBadgesShowNum = Settings["notif:badges:show_num", true]
             val labelsEnabled = Settings["folderLabelsEnabled", false]

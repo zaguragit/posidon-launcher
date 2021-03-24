@@ -1,8 +1,6 @@
 package posidon.launcher.tools
 
 import android.Manifest
-import android.animation.Animator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -10,30 +8,35 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.DisplayMetrics
-import android.view.*
-import android.view.inputmethod.InputMethodManager
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import launcherutils.Launcher
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.theme.toBitmap
 import posidon.launcher.view.GridLayoutManager
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.lang.ref.WeakReference
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.min
 
 object Tools {
 
@@ -69,12 +72,8 @@ object Tools {
     }
 
     inline val isDefaultLauncher: Boolean get() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        return appContext!!.packageManager.resolveActivity(intent, 0)?.resolvePackageName == "posidon.launcher"
+        return Launcher.getDefaultLauncher(appContext!!.packageManager) == "posidon.launcher"
     }
-
-    inline fun springInterpolate(x: Float) = 1 + (2f.pow(-10f * x) * sin(2 * PI * (x - 0.065f)) / 0.4).toFloat()
 
     fun searchOptimize(s: String) = s.toLowerCase()
         .replace('ñ', 'n')
@@ -141,7 +140,7 @@ object Tools {
                 out(it)
                 dismiss()
             }
-        }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.displayHeight - 300.dp.toInt()))
+        }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenHeight(context) - 300.dp.toInt()))
         window!!.setBackgroundDrawableResource(R.drawable.card)
         show()
     }
@@ -162,20 +161,23 @@ object Tools {
 
         var gravity: Int
 
-        val x = if (location[0] > Device.displayWidth / 2) {
+        val screenWidth = Device.screenWidth(view.context)
+        val screenHeight = Device.screenHeight(view.context)
+
+        val x = if (location[0] > screenWidth / 2) {
             gravity = Gravity.END
-            Device.displayWidth - location[0] - view.measuredWidth
+            screenWidth - location[0] - view.measuredWidth
         } else {
             gravity = Gravity.START
             location[0]
         }
 
-        val y = if (location[1] < Device.displayHeight / 2) {
+        val y = if (location[1] < screenHeight / 2) {
             gravity = gravity or Gravity.TOP
             location[1] + view.measuredHeight + 4.dp.toInt()
         } else {
             gravity = gravity or Gravity.BOTTOM
-            Device.displayHeight - location[1] + 4.dp.toInt() + navbarHeight
+            screenHeight - location[1] + 4.dp.toInt() + navbarHeight
         }
 
         return Triple(x, y, gravity)
@@ -210,18 +212,6 @@ inline val Context.mainFont: Typeface
         }
     }
 
-inline val Context.isAirplaneModeOn get() =
-    android.provider.Settings.System.getInt(contentResolver, android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0
-
-inline fun Context.pullStatusbar() {
-    try {
-        @SuppressLint("WrongConstant")
-        val sbs = getSystemService("statusbar")
-        Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel")(sbs)
-    } catch (e: Exception) { e.printStackTrace() }
-}
-
-
 
 inline fun Context.getStatusBarHeight(): Int {
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -238,29 +228,6 @@ inline fun Context.vibrate() {
     }
 }
 
-inline fun Activity.hideKeyboard() {
-    val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    var view = currentFocus
-    if (view == null) {
-        view = View(this)
-    }
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
-}
-
-inline fun ViewPropertyAnimator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit): ViewPropertyAnimator = setListener(object : Animator.AnimatorListener {
-    override fun onAnimationRepeat(animation: Animator?) {}
-    override fun onAnimationCancel(animation: Animator?) {}
-    override fun onAnimationStart(animation: Animator?) {}
-    override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
-})
-
-inline fun Animator.onEnd(crossinline onEnd: (animation: Animator?) -> Unit) = addListener(object : Animator.AnimatorListener {
-    override fun onAnimationRepeat(animation: Animator?) {}
-    override fun onAnimationCancel(animation: Animator?) {}
-    override fun onAnimationStart(animation: Animator?) {}
-    override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
-})
-
 inline fun Context.open(action: String, b: Bundle? = null, block: Intent.() -> Unit) = startActivity(Intent(action)
     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK).also(block), b)
 inline fun Context.open(c: Class<*>, b: Bundle? = null, block: Intent.() -> Unit) = startActivity(Intent(this, c)
@@ -270,8 +237,9 @@ inline fun Context.open(action: String, b: Bundle? = null) = startActivity(Inten
 inline fun Context.open(c: Class<*>, b: Bundle? = null) = startActivity(Intent(this, c)
     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK), b)
 
-fun <T> Context.loadRaw(id: Int, fn: (BufferedReader) -> T) =
-    resources.openRawResource(id).use { stream ->
-        val reader = BufferedReader(InputStreamReader(stream, "UTF-8"))
-        fn(reader)
-    }
+
+inline fun Drawable.clone() = constantState?.newDrawable()?.mutate()
+
+inline fun Drawable.toBitmapDrawable(duplicateIfBitmapDrawable: Boolean = false) = if (this is BitmapDrawable && !duplicateIfBitmapDrawable) this else {
+    BitmapDrawable(Tools.appContext!!.resources, toBitmap())
+}

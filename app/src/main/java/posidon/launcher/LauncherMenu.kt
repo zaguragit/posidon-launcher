@@ -11,12 +11,16 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
+import posidon.android.conveniencelib.Device
 import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.external.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.open
 import posidon.launcher.tools.theme.Wallpaper
+import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.wall.Gallery
@@ -91,7 +95,7 @@ object LauncherMenu {
         page.setBackgroundColor(0x0)
         window.setBackgroundDrawableResource(android.R.color.transparent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
-            homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+            homescreen.systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(homescreen.context), Device.screenHeight(homescreen.context)))
         }
         isActive = false
         dialog = null

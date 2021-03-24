@@ -17,14 +17,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
+import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.ColorTools.pickColorNoAlpha
-import posidon.launcher.tools.theme.Graphics
-import posidon.launcher.tools.theme.toBitmap
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -69,7 +69,7 @@ class Gallery : AppCompatActivity() {
             }
         }
         val loading = findViewById<ImageView>(R.id.loading)
-        Graphics.tryAnimate(loading.drawable)
+        Graphics.tryAnimate(this, loading.drawable)
         val gallery = findViewById<GridView>(R.id.gallery)
 
 

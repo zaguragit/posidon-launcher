@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.Colors
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
@@ -20,7 +21,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
 import posidon.launcher.view.feed.FeedSection
@@ -167,7 +167,7 @@ class NotificationCards : LinearLayout, FeedSection {
         parentNotification.background = notificationBackground
         parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
         parentNotificationTitle.typeface = context.mainFont
-        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (ColorTools.useDarkText(Global.accentColor)) -0x1000000 else -0x1)
+        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(Global.accentColor)) -0x1000000 else -0x1)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)

@@ -8,15 +8,15 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.Device
 import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.feed.news.RemovedArticles
+import posidon.launcher.customizations.RemovedArticles
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.news.opml.OPML
 import posidon.launcher.feed.news.opml.OpmlElement
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.view.Spinner
@@ -36,8 +36,8 @@ class CustomNews : AppCompatActivity() {
 
         run {
             val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
-            val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
-            newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.displayWidth.toFloat() * 6).toInt() - 1
+            val maxWidth = Settings["feed:max_img_width", Device.screenWidth(this)]
+            newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.screenWidth(this).toFloat() * 6).toInt() - 1
             newsCardMaxImageWidthSlider.max = 5
             val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
             newsCardMaxImageWidthNum.text = maxWidth.toString()
@@ -45,7 +45,7 @@ class CustomNews : AppCompatActivity() {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar) = Settings.apply()
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    val newVal: Int = Device.displayWidth / 6 * (progress + 1)
+                    val newVal: Int = Device.screenWidth(this@CustomNews) / 6 * (progress + 1)
                     newsCardMaxImageWidthNum.text = newVal.toString()
                     Settings["feed:max_img_width"] = newVal
                 }

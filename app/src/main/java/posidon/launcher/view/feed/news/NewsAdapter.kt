@@ -2,12 +2,14 @@ package posidon.launcher.view.feed.news
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.net.Uri
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -18,16 +20,20 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.Device
+import posidon.android.loader.rss.FeedItem
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.feed.news.FeedItem
+import posidon.launcher.feed.news.readers.ArticleActivity
+import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.SwipeableLayout
 import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*
@@ -46,7 +52,7 @@ class NewsAdapter(
         val swipeableLayout: SwipeableLayout?
     ) : RecyclerView.ViewHolder(card)
 
-    private val maxWidth = Settings["feed:max_img_width", Device.displayWidth]
+    private val maxWidth = Settings["feed:max_img_width", Device.screenWidth(Tools.appContext!!)]
 
     @SuppressLint("RtlHardcoded")
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
@@ -141,7 +147,7 @@ class NewsAdapter(
 
         return ViewHolder((if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
             val bg = Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             cornerRadiusCompensation = r
             radius = r
@@ -175,15 +181,41 @@ class NewsAdapter(
             else -> {
                 holder.image.visibility = View.VISIBLE
                 holder.image.setImageDrawable(null)
-                feedItem.tryLoadImage(maxWidth, Loader.AUTO) { Home.instance.runOnUiThread {
-                    images[feedItem.img] = it
-                    onImageLoadEnd(holder, it)
-                }}
+                val onLoad = { it: Bitmap ->
+                    Home.instance.runOnUiThread {
+                        images[feedItem.img] = it
+                        onImageLoadEnd(holder, it)
+                    }
+                }
+                ImageLoader.loadNullableBitmap(feedItem.img!!, maxWidth, ImageLoader.AUTO, false) {
+                    if (it == null) {
+                        ImageLoader.loadNullableBitmap(feedItem.source.domain + '/' + feedItem.img, maxWidth, ImageLoader.AUTO, false) {
+                            if (it != null) onLoad(it)
+                        }
+                    } else onLoad(it)
+                }
             }
         }
 
         holder.card.setOnClickListener {
-            feedItem.open(holder.itemView.context)
+            try {
+                val activityOptions = ActivityOptionsCompat.makeCustomAnimation(
+                    holder.itemView.context,
+                    R.anim.slideup,
+                    R.anim.home_exit
+                ).toBundle()
+
+                when (Settings["feed:openLinks", "browse"]) {
+                    "webView" -> holder.itemView.context.open(WebViewActivity::class.java, activityOptions) {
+                        putExtra("url", feedItem.link)
+                    }
+                    "app" -> holder.itemView.context.open(ArticleActivity::class.java, activityOptions) {
+                        putExtra("url", feedItem.link)
+                        putExtra("sourceName", feedItem.source.name)
+                    }
+                    else -> holder.itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), activityOptions)
+                }
+            } catch (e: Exception) { e.printStackTrace() }
         }
     }
 

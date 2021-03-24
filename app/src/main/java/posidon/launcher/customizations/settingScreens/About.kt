@@ -17,13 +17,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
+import posidon.android.loader.TextLoader
 import posidon.launcher.BuildConfig
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Loader
-import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.*
 import posidon.launcher.view.LinearLayoutManager
 import java.net.URL
 
@@ -37,7 +35,7 @@ class About : Activity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
-        Loader.loadText("https://posidon.io/launcher/contributors/pictureUrls") {
+        TextLoader.loadText("https://posidon.io/launcher/contributors/pictureUrls") {
             var leoLink: String? = null
             var sajidShaikLink: String? = null
             for (line in it.split('\n')) {
@@ -47,12 +45,12 @@ class About : Activity() {
                     sajidShaikLink = line.substring(12)
             }
             leoLink?.let { link ->
-                Loader.loadBitmap(link) {
+                ImageLoader.loadBitmap(link) {
                     img -> runOnUiThread { findViewById<ImageView>(R.id.leoProfile).setImageBitmap(img) }
                 }
             }
             sajidShaikLink?.let { link ->
-                Loader.loadBitmap(link) {
+                ImageLoader.loadBitmap(link) {
                     img -> runOnUiThread { findViewById<ImageView>(R.id.sajidShaikProfile).setImageBitmap(img) }
                 }
             }
@@ -76,7 +74,7 @@ class About : Activity() {
             isNestedScrollingEnabled = false
         }
 
-        Loader.loadText("https://api.github.com/repos/lposidon/posidonLauncher/contributors") {
+        TextLoader.loadText("https://api.github.com/repos/lposidon/posidonLauncher/contributors") {
             val array = JSONArray(it)
             val contributors = ArrayList<Contributor>()
             for (i in 0 until array.length()) {

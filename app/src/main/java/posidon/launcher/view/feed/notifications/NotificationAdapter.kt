@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.Colors
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -22,7 +23,6 @@ import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.dp
-import posidon.launcher.tools.theme.ColorTools
 import posidon.launcher.view.SwipeableLayout
 
 class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
@@ -51,7 +51,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
 
         val card = SwipeableLayout(ll).apply {
             val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             preventCornerOverlap = true
             elevation = 0f
@@ -135,7 +135,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                     NotificationService.update()
                 }.apply {
                     val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-                    setIconColor(if (ColorTools.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+                    setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
                     setSwipeColor(bg)
                 }
                 if (notification.actions != null && Settings["notificationActionsEnabled", false]) {

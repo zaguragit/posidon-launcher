@@ -15,6 +15,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.feed_chooser_option_edit_dialog.view.*
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.Graphics
 import posidon.launcher.external.Kustom
 import posidon.launcher.external.sysGestures.GestureNavContract
 import posidon.launcher.feed.notifications.NotificationService
@@ -28,7 +30,6 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.updateNavbarHeight
-import posidon.launcher.tools.theme.Graphics
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.BottomDrawerBehavior.*
@@ -185,7 +186,7 @@ class Home : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (Settings["gesture:back", ""] == "") {
-                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+                window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(this), Device.screenHeight(this)))
             } else {
                 window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()
             }
@@ -238,10 +239,10 @@ class Home : AppCompatActivity() {
     private fun animateAllIconsIfShould() {
         if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in Global.apps) {
-                Graphics.tryAnimate(app.icon!!)
+                Graphics.tryAnimate(this, app.icon!!)
             }
             for (item in Dock) {
-                item?.let { Graphics.tryAnimate(it.icon!!) }
+                item?.let { Graphics.tryAnimate(this, it.icon!!) }
             }
         }
     }

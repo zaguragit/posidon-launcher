@@ -15,6 +15,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
+import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.drawable.FastBitmapDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -26,9 +29,10 @@ import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.SectionedDrawerAdapter
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
-import posidon.launcher.tools.drawable.FastBitmapDrawable
-import posidon.launcher.tools.theme.ColorTools
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.dp
+import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.GridView
 import kotlin.concurrent.thread
@@ -166,7 +170,7 @@ class DrawerView : LinearLayout {
                         colors[1] = Settings["dock:background_color", -0x78000000]
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
-                            home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.displayWidth, Device.displayHeight))
+                            home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(context), Device.screenHeight(context)))
                         }
                         val tr = Settings["dockradius", 30].dp
                         radii[0] = tr
@@ -184,7 +188,7 @@ class DrawerView : LinearLayout {
                     }
                 }
                 ItemLongPress.currentPopup?.dismiss()
-                floats[0] = dock.dockHeight.toFloat() / (Device.displayHeight + dock.dockHeight)
+                floats[0] = dock.dockHeight.toFloat() / (Device.screenHeight(context) + dock.dockHeight)
                 things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
                 things[1] = Settings["dock:background_color", -0x78000000]
                 things[2] = Settings["dock:background_type", 0]
@@ -203,12 +207,12 @@ class DrawerView : LinearLayout {
                         when (things[2]) {
                             0 -> {
                                 bg as ShapeDrawable
-                                bg.paint.color = ColorTools.blendColors(colors[2], things[1], slideOffset)
+                                bg.paint.color = Colors.blend(colors[2], things[1], slideOffset)
                                 bg.shape = RoundRectShape(radii, null, null)
                             }
                             1 -> {
                                 bg as LayerDrawable
-                                colors[1] = ColorTools.blendColors(colors[2], things[1], slideOffset)
+                                colors[1] = Colors.blend(colors[2], things[1], slideOffset)
                                 (bg.getDrawable(0) as GradientDrawable).colors = intArrayOf(colors[0], colors[1])
                                 (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(colors[1], colors[2])
                             }

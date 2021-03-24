@@ -4,33 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import com.pixplicity.sharp.Sharp
-import posidon.launcher.tools.theme.toBitmap
-import java.io.BufferedReader
+import posidon.android.conveniencelib.toBitmap
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.URL
 import kotlin.concurrent.thread
 
-object Loader {
-
-    fun loadText(
-        url: String,
-        onFinished: (string: String) -> Unit
-    ) = thread {
-        try {
-            val builder = StringBuilder()
-            var buffer: String?
-            val bufferReader = BufferedReader(InputStreamReader(URL(url).openStream()))
-            while (bufferReader.readLine().also { buffer = it } != null) {
-                builder.append(buffer).append('\n')
-            }
-            bufferReader.close()
-            onFinished(builder.toString())
-        }
-        catch (e: IOException) {}
-        catch (e: Exception) { e.printStackTrace() }
-    }
-
+object ImageLoader {
     const val AUTO = -1
 
     fun loadNullableBitmap(

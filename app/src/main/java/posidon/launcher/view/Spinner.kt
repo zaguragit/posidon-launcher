@@ -10,8 +10,8 @@ import android.widget.ListPopupWindow
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import posidon.android.conveniencelib.Device
 import posidon.launcher.R
-import posidon.launcher.tools.Device
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
 import posidon.launcher.tools.sp
@@ -61,7 +61,7 @@ class Spinner : AppCompatTextView {
             }
             val location = IntArray(2)
             getLocationInWindow(location)
-            popup.showAtLocation(this, Gravity.TOP, location[0], min(location[1], Device.displayHeight - Tools.navbarHeight - height.toInt()))
+            popup.showAtLocation(this, Gravity.TOP, location[0], min(location[1], Device.screenHeight(context) - Tools.navbarHeight - height.toInt()))
         }
     }
 

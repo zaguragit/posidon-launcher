@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.widget.GridView
-import posidon.launcher.tools.Tools
+import posidon.android.conveniencelib.SpringInterpolator
 import posidon.launcher.tools.dp
 
 class GridView : GridView {
@@ -30,7 +30,7 @@ class GridView : GridView {
                 startTime = System.currentTimeMillis()
             } else {
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
-                val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 800f)
+                val interpolation: Float = SpringInterpolator.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
             }
         } else if (futureScroll < 0) {
@@ -39,7 +39,7 @@ class GridView : GridView {
                 startTime = System.currentTimeMillis()
             } else {
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
-                val interpolation: Float = Tools.springInterpolate(elapsedTime.toFloat() / 800f)
+                val interpolation: Float = SpringInterpolator.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
             }
         } else {
