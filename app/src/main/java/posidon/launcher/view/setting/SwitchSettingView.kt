@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.Switch
 
 class SwitchSettingView : SettingView {
@@ -26,7 +26,7 @@ class SwitchSettingView : SettingView {
         val default = a.getBoolean(R.styleable.SettingView_def, false)
 
         switch = Switch(context).apply {
-            val p = 12.dp.toInt()
+            val p = dp(12).toInt()
             setPadding(p, p, p, p)
             layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT)
             isChecked = Settings[key, default]

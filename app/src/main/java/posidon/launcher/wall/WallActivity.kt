@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.tools.*
@@ -122,7 +123,7 @@ class WallActivity : AppCompatActivity() {
             } catch (ignore: Exception) {}
         }
         var bottompadding = Tools.navbarHeight
-        if (bottompadding == 0) bottompadding = 20.dp.toInt()
+        if (bottompadding == 0) bottompadding = dp(20).toInt()
         findViewById<View>(R.id.bottomstuff).setPadding(0, 0, 0, bottompadding)
         findViewById<View>(R.id.applybtn).background = btnBG()
         System.gc()
@@ -134,14 +135,14 @@ class WallActivity : AppCompatActivity() {
     }
 
     private fun btnBG(): ShapeDrawable {
-        val r = 24.dp
+        val r = dp(24)
         val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
         out.paint.color = Palette.from(img!!).generate().getVibrantColor(-0xdad9d9)
         return out
     }
 
     private fun dialogBtnBG(): ShapeDrawable {
-        val r = 24.dp
+        val r = dp(24)
         val out = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
         out.paint.color = Palette.from(img!!).generate().getDarkMutedColor(Palette.from(img!!).generate().getDominantColor(-0xeeeded))
         return out

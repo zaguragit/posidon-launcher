@@ -1,8 +1,8 @@
 package posidon.launcher.view.feed
 
 import android.app.Activity
+import posidon.android.conveniencelib.dp
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.ResizableLayout
 
 class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
@@ -11,7 +11,7 @@ class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
 
     override fun onAdd(feed: Feed, index: Int) {
         this.i = index
-        layoutParams.height = Feed.getSectionsFromSettings()[i].substringAfter(':').toInt().dp.toInt()
+        layoutParams.height = context.dp(Feed.getSectionsFromSettings()[i].substringAfter(':').toInt()).toInt()
         onResizeListener = object : OnResizeListener {
             override fun onCrossPress() = feed.remove(this@SpacerSection, i)
             override fun onMajorUpdate(newHeight: Int) {}
@@ -29,5 +29,5 @@ class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
 
     override fun updateTheme(activity: Activity) {}
 
-    override fun toString() = "spacer:" + (layoutParams.height / 1f.dp).toInt()
+    override fun toString() = "spacer:" + (layoutParams.height / context.dp(1f)).toInt()
 }

@@ -15,11 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import launcherutils.LauncherIcons
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.GridLayoutManager
 import posidon.launcher.view.LinearLayoutManager
@@ -71,8 +71,8 @@ class CustomAppIcon : AppCompatActivity() {
                         (recycler.adapter as IconsAdapter).search(s.toString())
                     }
                 })
-                setPadding(18.dp.toInt(), 0, 18.dp.toInt(), 0)
-                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 64.dp.toInt())
+                setPadding(dp(18).toInt(), 0, dp(18).toInt(), 0)
+                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, dp(64).toInt())
                 setBackgroundColor(0xdd111213.toInt())
                 visibility = View.GONE
                 searchBar = this

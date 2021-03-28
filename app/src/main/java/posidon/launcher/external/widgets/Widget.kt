@@ -21,11 +21,11 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.view.GridLayoutManager
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.feed.WidgetSection
@@ -92,12 +92,12 @@ class Widget(
                         setTextColor(context.resources.getColor(R.color.cardtitle))
                         textSize = 24f
                         gravity = Gravity.CENTER_HORIZONTAL
-                        val p = 8.dp.toInt()
+                        val p = activity.dp(8).toInt()
                         setPadding(p, p, p, p)
                     })
                     addView(RecyclerView(context).apply {
                         isVerticalFadingEdgeEnabled = true
-                        setFadingEdgeLength(28.dp.toInt())
+                        setFadingEdgeLength(context.dp(28).toInt())
                         layoutManager = GridLayoutManager(context, 2)
 
                         class VH(
@@ -121,24 +121,24 @@ class Widget(
                                 }
                                 val preview = ImageView(context)
                                 val icon = ImageView(context).apply {
-                                    val p = 8.dp.toInt()
+                                    val p = context.dp(8).toInt()
                                     setPadding(p, p, p, p)
                                 }
                                 val v = CardView(context).apply {
                                     layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
-                                        val m = 8.dp.toInt()
+                                        val m = context.dp(8).toInt()
                                         setMargins(m, m, m, m)
                                     }
                                     setCardBackgroundColor(resources.getColor(R.color.cardbg))
                                     cardElevation = 10f
-                                    radius = 16.dp
+                                    radius = context.dp(16)
                                     preventCornerOverlap = true
                                     clipToPadding = true
                                     addView(LinearLayout(context).apply {
                                         orientation = LinearLayout.VERTICAL
-                                        val h = 48.dp.toInt()
+                                        val h = context.dp(48).toInt()
                                         addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenWidth(context) / 2 - h))
-                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2.dp.toInt()))
+                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.dp(2).toInt()))
                                         addView(LinearLayout(context).apply {
                                             orientation = LinearLayout.HORIZONTAL
                                             addView(icon, LinearLayout.LayoutParams(h, h))
@@ -179,7 +179,7 @@ class Widget(
                     })
                 })
                 window!!.findViewById<View>(R.id.design_bottom_sheet).background = ShapeDrawable().apply {
-                    val r = 18.dp
+                    val r = context.dp(18)
                     shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
                     paint.color = 0xff0d0e0f.toInt()
                 }
@@ -220,7 +220,7 @@ class Widget(
                 }
             }
             widgetLayout.removeView(hostView)
-            hostView = host.createView(Tools.appContext!!, id, providerInfo).apply {
+            hostView = host.createView(widgetLayout.context, id, providerInfo).apply {
                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 }

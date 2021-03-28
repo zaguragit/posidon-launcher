@@ -14,12 +14,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
@@ -55,7 +55,7 @@ class NotificationCards : LinearLayout, FeedSection {
         setImageResource(R.drawable.ic_notification)
         setBackgroundResource(R.drawable.button_bg_round)
         run {
-            val p = 8.dp.toInt()
+            val p = dp(8).toInt()
             setPadding(p, p, p, p)
         }
     }
@@ -64,14 +64,14 @@ class NotificationCards : LinearLayout, FeedSection {
 
         orientation = HORIZONTAL
         run {
-            val h = 20.dp.toInt()
-            val v = 12.dp.toInt()
+            val h = dp(20).toInt()
+            val v = dp(12).toInt()
             setPadding(h, v, h, v)
         }
 
-        addView(arrowUp, LayoutParams(MATCH_PARENT, 48.dp.toInt()))
-        addView(parentNotificationTitle, LayoutParams(0, 48.dp.toInt(), 1f))
-        addView(parentNotificationBtn, LayoutParams(48.dp.toInt(), 48.dp.toInt()))
+        addView(arrowUp, LayoutParams(MATCH_PARENT, dp(48).toInt()))
+        addView(parentNotificationTitle, LayoutParams(0, dp(48).toInt(), 1f))
+        addView(parentNotificationBtn, LayoutParams(dp(48).toInt(), dp(48).toInt()))
 
         setOnLongClickListener(Gestures::onLongPress)
         setOnClickListener {
@@ -82,7 +82,7 @@ class NotificationCards : LinearLayout, FeedSection {
 
     init {
         orientation = VERTICAL
-        addView(parentNotification, LayoutParams(MATCH_PARENT, 72.dp.toInt()))
+        addView(parentNotification, LayoutParams(MATCH_PARENT, dp(72).toInt()))
         addView(notifications, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
@@ -151,8 +151,8 @@ class NotificationCards : LinearLayout, FeedSection {
     }
 
     override fun updateTheme(activity: Activity) {
-        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-        val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+        val marginX = dp(Settings["feed:card_margin_x", 16]).toInt()
+        val marginY = dp(Settings["feed:card_margin_y", 9]).toInt()
         (parentNotification.layoutParams as LayoutParams).apply {
             leftMargin = marginX
             rightMargin = marginX
@@ -161,7 +161,7 @@ class NotificationCards : LinearLayout, FeedSection {
         }
         parentNotification.layoutParams = parentNotification.layoutParams
         val notificationBackground = ShapeDrawable()
-        val r = Settings["feed:card_radius", 15].dp
+        val r = dp(Settings["feed:card_radius", 15])
         notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
         notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
         parentNotification.background = notificationBackground

@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
 import kotlin.concurrent.thread
 
 abstract class AppTickingActivity : AppCompatActivity() {
@@ -48,9 +48,9 @@ abstract class AppTickingActivity : AppCompatActivity() {
         private val originalApps = apps
 
         private val appSize = when (Settings["icsize", 1]) {
-            0 -> 64.dp.toInt()
-            2 -> 84.dp.toInt()
-            else -> 74.dp.toInt()
+            0 -> activity.dp(64).toInt()
+            2 -> activity.dp(84).toInt()
+            else -> activity.dp(74).toInt()
         }
 
         override fun getCount() = apps.size

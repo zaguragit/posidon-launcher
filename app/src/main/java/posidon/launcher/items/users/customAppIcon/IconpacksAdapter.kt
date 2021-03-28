@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 
 class IconpacksAdapter(val iconPacks: List<App>, val onSelectIconPack: (String) -> Unit) : RecyclerView.Adapter<IconpacksAdapter.ViewHolder>() {
@@ -30,11 +31,11 @@ class IconpacksAdapter(val iconPacks: List<App>, val onSelectIconPack: (String) 
         holder.text.visibility = View.VISIBLE
         Customizer.styleLabel("drawer:labels", holder.text, -0x11111112, 12f)
         convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
-            val appSize = when (Settings["icsize", 1]) {
+            val appSize = Tools.appContext!!.dp(when (Settings["icsize", 1]) {
                 0 -> 64
                 2 -> 84
                 else -> 74
-            }.dp.toInt()
+            }).toInt()
             width = appSize
             height = appSize
         }

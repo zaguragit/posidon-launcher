@@ -21,10 +21,10 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.view.LinearLayoutManager
 
 object ColorTools {
@@ -317,11 +317,11 @@ object ColorTools {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ColorViewHolder(ImageView(Tools.appContext).apply {
-                maxWidth = 72.dp.toInt()
-                maxHeight = 72.dp.toInt()
-                minimumWidth = 72.dp.toInt()
-                minimumHeight = 72.dp.toInt()
-                val p = 8.dp.toInt()
+                maxWidth = Tools.appContext!!.dp(72).toInt()
+                maxHeight = Tools.appContext!!.dp(72).toInt()
+                minimumWidth = Tools.appContext!!.dp(72).toInt()
+                minimumHeight = Tools.appContext!!.dp(72).toInt()
+                val p = Tools.appContext!!.dp(8).toInt()
                 setPadding(p, p, p, p)
             })
 

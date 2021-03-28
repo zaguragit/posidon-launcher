@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.pixplicity.sharp.Sharp
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -39,12 +40,12 @@ class Gallery : AppCompatActivity() {
         applyFontSetting()
         setContentView(R.layout.wall_gallery)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        val sidepadding = 28.dp.toInt()
-        val gridsidepadding = 15.dp.toInt()
-        val toolbarHeight = Tools.navbarHeight + 64.dp.toInt()
+        val sidepadding = dp(28).toInt()
+        val gridsidepadding = dp(15).toInt()
+        val toolbarHeight = Tools.navbarHeight + dp(64).toInt()
         findViewById<View>(R.id.toolbar).setPadding(sidepadding, 0, sidepadding, Tools.navbarHeight)
         findViewById<View>(R.id.toolbar).layoutParams.height = toolbarHeight
-        findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight() + 4.dp.toInt(), gridsidepadding, toolbarHeight + 20.dp.toInt())
+        findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight() + dp(4).toInt(), gridsidepadding, toolbarHeight + dp(20).toInt())
         findViewById<View>(R.id.pickwallbtn).setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) pickFile()

@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.android.loader.rss.FeedItem
 import posidon.android.loader.rss.FeedLoader
@@ -28,7 +29,6 @@ import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.BottomDrawerBehavior
@@ -101,8 +101,8 @@ class Feed : FrameLayout {
 
     init {
         addView(scroll, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        addView(spinner, LayoutParams(48.dp.toInt(), 48.dp.toInt()).apply {
-            topMargin = 72.dp.toInt()
+        addView(spinner, LayoutParams(context.dp(48).toInt(), context.dp(48).toInt()).apply {
+            topMargin = context.dp(72).toInt()
             gravity = Gravity.CENTER_HORIZONTAL
         })
     }
@@ -155,7 +155,7 @@ class Feed : FrameLayout {
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
             scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                val a = 6.dp
+                val a = context.dp(6)
                 val distance = oldY - y
                 if (y > a) {
                     newsCards?.show()
@@ -178,7 +178,7 @@ class Feed : FrameLayout {
         } else {
             newsCards?.show()
             scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                val a = 6.dp
+                val a = context.dp(6)
                 val distance = oldY - y
                 if (distance > a || y < a || y + height >= desktopContent.height - drawer.dock.dockHeight) {
                     if (!LauncherMenu.isActive) {
@@ -191,7 +191,7 @@ class Feed : FrameLayout {
         }
         val fadingEdge = Settings["feed:fading_edge", true]
         if (fadingEdge && !Settings["hidestatus", false]) {
-            scroll.setPadding(0, context.getStatusBarHeight() - 12.dp.toInt(), 0, 0)
+            scroll.setPadding(0, context.getStatusBarHeight() - context.dp(12).toInt(), 0, 0)
         }
         scroll.isVerticalFadingEdgeEnabled = fadingEdge
 
@@ -233,7 +233,7 @@ class Feed : FrameLayout {
                         scrollUpdate(firstScroll, firstMaxScroll)
                     }
                 }
-                spinner.animate().translationY((-72).dp).alpha(0f).onEnd {
+                spinner.animate().translationY(context.dp((-72))).alpha(0f).onEnd {
                     spinner.visibility = GONE
                 }
             }}

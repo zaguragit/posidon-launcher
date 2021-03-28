@@ -22,10 +22,11 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.Tools
 
 class MusicCard : CardView, FeedSection {
 
@@ -41,7 +42,7 @@ class MusicCard : CardView, FeedSection {
 
     val musicCardTrackTitle = TextView(context).apply {
         textSize = 18f
-        setPadding(0, 0, 0, 8.dp.toInt())
+        setPadding(0, 0, 0, Tools.appContext!!.dp(8).toInt())
         setTypeface(typeface, Typeface.BOLD)
     }
 
@@ -51,7 +52,7 @@ class MusicCard : CardView, FeedSection {
 
     val musicPrev = ImageView(context).apply {
         run {
-            val p = 4.dp.toInt()
+            val p = context.dp(4).toInt()
             setPadding(p, p, p, p)
         }
         setImageResource(R.drawable.ic_arrow_left)
@@ -80,7 +81,7 @@ class MusicCard : CardView, FeedSection {
 
     val musicNext = ImageView(context).apply {
         run {
-            val p = 4.dp.toInt()
+            val p = context.dp(4).toInt()
             setPadding(p, p, p, p)
         }
         setImageResource(R.drawable.ic_arrow_right)
@@ -93,52 +94,52 @@ class MusicCard : CardView, FeedSection {
 
     val musicCardOverImg = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        setPaddingRelative(16.dp.toInt(), 18.dp.toInt(), 128.dp.toInt(), 0)
+        setPaddingRelative(context.dp(16).toInt(), context.dp(18).toInt(), context.dp(128).toInt(), 0)
 
         val linearLayout = LinearLayout(context).apply {
             this.orientation = LinearLayout.HORIZONTAL
             this.gravity = Gravity.BOTTOM
-            setPadding(0, 10.dp.toInt(), 0, 14.dp.toInt())
+            setPadding(0, context.dp(10).toInt(), 0, context.dp(14).toInt())
             layoutDirection = LAYOUT_DIRECTION_LTR
 
-            addView(musicPrev, LinearLayout.LayoutParams(36.dp.toInt(), 32.dp.toInt()))
-            addView(musicPlay, LinearLayout.LayoutParams(36.dp.toInt(), 32.dp.toInt()).apply {
-                setMargins(6.dp.toInt(), 0, 6.dp.toInt(), 0)
+            addView(musicPrev, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()))
+            addView(musicPlay, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()).apply {
+                setMargins(context.dp(6).toInt(), 0, context.dp(6).toInt(), 0)
             })
-            addView(musicNext, LinearLayout.LayoutParams(36.dp.toInt(), 32.dp.toInt()))
+            addView(musicNext, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()))
         }
 
         addView(musicCardTrackTitle, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            marginStart = 6.dp.toInt()
+            marginStart = context.dp(6).toInt()
         })
         addView(musicCardTrackArtist, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            marginStart = 6.dp.toInt()
+            marginStart = context.dp(6).toInt()
         })
         addView(linearLayout, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
     init {
-        radius = 16.dp
+        radius = context.dp(16)
         cardElevation = 0f
         setCardBackgroundColor(context.resources.getColor(R.color.cardbg))
 
-        addView(musicCardImage, LayoutParams(136.dp.toInt(), MATCH_PARENT).apply {
-            minimumHeight = 136.dp.toInt()
+        addView(musicCardImage, LayoutParams(context.dp(136).toInt(), MATCH_PARENT).apply {
+            minimumHeight = context.dp(136).toInt()
             gravity = Gravity.END
         })
         addView(musicCardOverImg, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
     override fun updateTheme(activity: Activity) {
-        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-        val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
+        val marginY = context.dp(Settings["feed:card_margin_y", 9]).toInt()
         (layoutParams as MarginLayoutParams).apply {
             leftMargin = marginX
             rightMargin = marginX
             bottomMargin = marginY
             topMargin = marginY
         }
-        radius = Settings["feed:card_radius", 15].dp
+        radius = context.dp(Settings["feed:card_radius", 15])
     }
 
     fun updateTrack(color: Int, title: CharSequence?, subtitle: CharSequence?, icon: Drawable, contentIntent: PendingIntent?) {
@@ -154,23 +155,23 @@ class MusicCard : CardView, FeedSection {
             setTextColor(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
             text = subtitle
         }
-        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
+        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
         musicCardOverImg.background =
             if (NotificationService.instance.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
                 LayerDrawable(arrayOf(
                         ColorDrawable(color),
                         GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    setLayerInset(0, 0, 0, 136.dp.toInt(), 0)
-                    setLayerInset(1, Device.screenWidth(context) - 136.dp.toInt() - marginX * 2, 0, 0, 0)
+                    setLayerInset(0, 0, 0, context.dp(136).toInt(), 0)
+                    setLayerInset(1, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0, 0, 0)
                 }
             } else {
                 LayerDrawable(arrayOf(
                         ColorDrawable(color),
                         GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    setLayerInset(0, 136.dp.toInt(), 0, 0, 0)
-                    setLayerInset(1, 0, 0, Device.screenWidth(context) - 136.dp.toInt() - marginX * 2, 0)
+                    setLayerInset(0, context.dp(136).toInt(), 0, 0, 0)
+                    setLayerInset(1, 0, 0, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0)
                 }
             }
         musicPrev.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)

@@ -7,10 +7,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.Seekbar
 
 class NumberBarSettingView : IntSettingView {
@@ -26,7 +26,7 @@ class NumberBarSettingView : IntSettingView {
     override val doSpecialIcon get() = true
     override fun populateIcon(a: TypedArray) {
         textIcon = TextView(context).apply {
-            layoutParams = LayoutParams(48.dp.toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
+            layoutParams = LayoutParams(dp(48).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
             gravity = Gravity.CENTER
             textSize = 28f
             setTextColor(context.resources.getColor(R.color.cardtxticon))
@@ -41,7 +41,7 @@ class NumberBarSettingView : IntSettingView {
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.NumberBarSettingView, defStyle, defStyleRes)
 
-        labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 60.dp.toInt())
+        labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(60).toInt())
 
         val startsWith1 = a.getBoolean(R.styleable.NumberBarSettingView_startsWith1, false)
         val isFloat = a.getBoolean(R.styleable.NumberBarSettingView_isFloat, false)

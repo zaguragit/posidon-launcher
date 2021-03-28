@@ -1,14 +1,15 @@
 package posidon.launcher.tools.theme
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.RECTANGLE
 import android.text.TextUtils
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.sp
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
-import posidon.launcher.tools.sp
 
 object Customizer {
 
@@ -21,7 +22,7 @@ object Customizer {
         val textSize = Settings["$namespace:text_size", defaultTextSize]
         view.textSize = textSize
         view.layoutParams = view.layoutParams.also {
-            it.height = textSize.sp.toInt()
+            it.height = view.context.sp(textSize).toInt()
         }
     }
 
@@ -40,13 +41,13 @@ object Customizer {
         return null
     }
 
-    fun genBG(namespace: String, onlyCurveTop: Boolean, defRadius: Int, defColor: Int): Drawable {
+    fun genBG(context: Context, namespace: String, onlyCurveTop: Boolean, defRadius: Int, defColor: Int): Drawable {
         return GradientDrawable().apply {
-            val r = Settings["$namespace:radius", defRadius].dp
+            val r = context.dp(Settings["$namespace:radius", defRadius])
             shape = RECTANGLE
             cornerRadii = if (onlyCurveTop) floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f) else floatArrayOf(r, r, r, r, r, r, r, r)
             setColor(Settings["$namespace:color", defColor])
-            setStroke(Settings["$namespace:stroke:width", 0].dp.toInt(), Settings["$namespace:stroke:color", 0])
+            setStroke(context.dp(Settings["$namespace:stroke:width", 0]).toInt(), Settings["$namespace:stroke:color", 0])
         }
     }
 }

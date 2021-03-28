@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
 import kotlin.math.max
 
 class Customizations : AppCompatActivity() {
@@ -32,7 +32,7 @@ class Customizations : AppCompatActivity() {
         if (Settings["dev:enabled", false]) {
             findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
         }
-        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, 24.dp.toInt()))
+        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, dp(24).toInt()))
         cardThing()
     }
 

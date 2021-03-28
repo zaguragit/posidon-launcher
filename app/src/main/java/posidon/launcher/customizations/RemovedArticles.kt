@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -57,8 +58,8 @@ class RemovedArticles : AppCompatActivity() {
                 setTextColor(if (Colors.useDarkText(Global.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
                 background = context.getDrawable(R.drawable.button_bg_round)
                 backgroundTintList = ColorStateList.valueOf(Global.accentColor)
-                val h = 20.dp.toInt()
-                val v = 8.dp.toInt()
+                val h = context.dp(20).toInt()
+                val v = context.dp(8).toInt()
                 setPadding(h, v, h, v)
                 includeFontPadding = false
             }
@@ -66,14 +67,14 @@ class RemovedArticles : AppCompatActivity() {
                 addView(label)
                 addView(button)
                 gravity = Gravity.CENTER_VERTICAL
-                val h = 12.dp.toInt()
-                val v = 6.dp.toInt()
+                val h = context.dp(12).toInt()
+                val v = context.dp(6).toInt()
                 setPadding(h, v, h, v)
             }
             (label.layoutParams as LinearLayout.LayoutParams).apply {
                 width = MATCH_PARENT
                 weight = 1f
-                marginEnd = 12.dp.toInt()
+                marginEnd = context.dp(12).toInt()
             }
             (button.layoutParams as LinearLayout.LayoutParams).apply {
                 width = WRAP_CONTENT

@@ -17,6 +17,7 @@ import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.drawable.FastBitmapDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
@@ -31,7 +32,6 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.GridView
@@ -62,17 +62,17 @@ class DrawerView : LinearLayout {
             drawerGrid.verticalSpacing = 0
         } else {
             drawerGrid.numColumns = Settings["drawer:columns", 4]
-            drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toInt()
+            drawerGrid.verticalSpacing = context.dp(Settings["verticalspacing", 12]).toInt()
         }
         val searchBarEnabled = Settings["drawersearchbarenabled", true]
         run {
-            val searchBarHeight = if (searchBarEnabled) 56.dp.toInt() else 0
+            val searchBarHeight = if (searchBarEnabled) context.dp(56).toInt() else 0
             val scrollbarWidth = if (
                 Settings["drawer:scrollbar:enabled", false] && // isEnabled
                 Settings["drawer:scrollbar:position", 1] == 2 // isHorizontal
-            ) Settings["drawer:scrollbar:width", 24].dp.toInt() else 0
+            ) context.dp(Settings["drawer:scrollbar:width", 24]).toInt() else 0
             searchBarVBox.setPadding(0, 0, 0, Tools.navbarHeight + if (Settings["drawer:scrollbar:show_outside", false]) scrollbarWidth else 0)
-            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + searchBarHeight + scrollbarWidth + 12.dp.toInt())
+            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + searchBarHeight + scrollbarWidth + context.dp(12).toInt())
         }
         if (!searchBarEnabled) {
             searchBar.visibility = GONE
@@ -82,7 +82,7 @@ class DrawerView : LinearLayout {
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
         searchBarVBox.background = ShapeDrawable().apply {
-            val tr = Settings["searchradius", 0].dp
+            val tr = context.dp(Settings["searchradius", 0])
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }
@@ -172,7 +172,7 @@ class DrawerView : LinearLayout {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
                             home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(context), Device.screenHeight(context)))
                         }
-                        val tr = Settings["dockradius", 30].dp
+                        val tr = context.dp(Settings["dockradius", 30])
                         radii[0] = tr
                         radii[1] = tr
                         radii[2] = tr
@@ -234,7 +234,7 @@ class DrawerView : LinearLayout {
                     val scrollbarPosition = Settings["drawer:scrollbar:position", 1]
                     if (scrollbarPosition == 2) scrollBar.translationY = scrollBar.height.toFloat() * -slideOffset
                     if (!Settings["feed:show_behind_dock", false]) {
-                        (home.feed.layoutParams as MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp)).toInt()
+                        (home.feed.layoutParams as MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + context.dp((Settings["dockbottompadding", 10] - 18)))).toInt()
                         home.feed.requestLayout()
                     }
                 }
@@ -268,7 +268,7 @@ class DrawerView : LinearLayout {
         selector = ColorDrawable(0)
         isVerticalScrollBarEnabled = false
         isVerticalFadingEdgeEnabled = true
-        setFadingEdgeLength(72.dp.toInt())
+        setFadingEdgeLength(context.dp(72).toInt())
         clipToPadding = false
         alpha = 0f
         setOnTouchListener { _, event ->
@@ -280,7 +280,7 @@ class DrawerView : LinearLayout {
 
     val searchIcon = ImageView(context).apply {
         run {
-            val p = 12.dp.toInt()
+            val p = context.dp(12).toInt()
             setPadding(p, p, p, p)
         }
         setImageResource(R.drawable.ic_search)
@@ -289,7 +289,7 @@ class DrawerView : LinearLayout {
 
     val searchTxt = TextView(context).apply {
         run {
-            val p = 12.dp.toInt()
+            val p = context.dp(12).toInt()
             setPadding(p, p, p, p)
         }
         gravity = Gravity.CENTER_VERTICAL
@@ -302,12 +302,12 @@ class DrawerView : LinearLayout {
         setOnClickListener {
             SearchActivity.open(context)
         }
-        val height = 56.dp.toInt()
+        val height = context.dp(56).toInt()
         addView(searchIcon, LayoutParams(height, height).apply {
-            marginStart = 8.dp.toInt()
+            marginStart = context.dp(8).toInt()
         })
         addView(searchTxt, LayoutParams(MATCH_PARENT, height).apply {
-            marginStart = -16.dp.toInt()
+            marginStart = -context.dp(16).toInt()
         })
     }
 

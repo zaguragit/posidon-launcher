@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -173,10 +174,10 @@ class Folder : LauncherItem {
 
             val columnCount = Settings["dock:columns", 5]
             val appSize = min(when (Settings["dockicsize", 1]) {
-                0 -> 64.dp.toInt()
-                2 -> 84.dp.toInt()
-                else -> 74.dp.toInt()
-            }, ((Device.screenWidth(context) - 32.dp) / columnCount).toInt())
+                0 -> context.dp(64).toInt()
+                2 -> context.dp(84).toInt()
+                else -> context.dp(74).toInt()
+            }, ((Device.screenWidth(context) - context.dp(32)) / columnCount).toInt())
             val notifBadgesEnabled = Settings["notif:badges", true]
             val notifBadgesShowNum = Settings["notif:badges:show_num", true]
             val labelsEnabled = Settings["folderLabelsEnabled", false]
@@ -191,7 +192,7 @@ class Folder : LauncherItem {
             }
             content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
                 val bgColor = Settings["folder:window:bg_color", -0x22eeeded]
-                val r = Settings["folderCornerRadius", 18].dp
+                val r = context.dp(Settings["folderCornerRadius", 18])
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
             }
@@ -219,7 +220,7 @@ class Folder : LauncherItem {
                         while (i < container.childCount) {
                             val child = container.getChildAt(i)
                             child.getLocationInWindow(location)
-                            val threshHold = min(child.height / 2.toFloat(), 100.dp)
+                            val threshHold = min(child.height / 2.toFloat(), context.dp(100))
                             val x = abs(location[0] - (event.x - child.height / 2f))
                             val y = abs(location[1] - (event.y - child.height / 2f))
                             if (x < threshHold && y < threshHold) {
@@ -244,7 +245,7 @@ class Folder : LauncherItem {
                         while (i < container.childCount) {
                             val child = container.getChildAt(i)
                             child.getLocationInWindow(location)
-                            val threshHold = min(child.height / 2.toFloat(), 100.dp)
+                            val threshHold = min(child.height / 2.toFloat(), context.dp(100))
                             val x = abs(location[0] - (event.x - child.height / 2f))
                             val y = abs(location[1] - (event.y - child.height / 2f))
                             if (x < threshHold && y < threshHold) {
