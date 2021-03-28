@@ -138,7 +138,7 @@ class Feed : FrameLayout {
         sections.removeAt(i)
         desktopContent.removeViewAt(i)
         section.onDelete(this)
-        updateIndices(i + 1)
+        updateIndices(i)
     }
 
     fun internalAdd(section: FeedSection): FeedSection {
@@ -378,7 +378,7 @@ class Feed : FrameLayout {
                     dismiss()
                 }
                 findViewById<View>(R.id.spacer_section)!!.setOnClickListener {
-                    onSelect("spacer:128")
+                    onSelect("spacer:96")
                     dismiss()
                 }
                 show()

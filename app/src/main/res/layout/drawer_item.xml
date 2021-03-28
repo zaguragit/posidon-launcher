@@ -28,7 +28,7 @@
     <TextView
         android:id="@+id/icontxt"
         android:layout_width="match_parent"
-        android:layout_height="14sp"
+        android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:textSize="12sp"
         android:gravity="center_horizontal"

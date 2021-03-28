@@ -215,6 +215,8 @@
     <string name="x_on_duckduckgo">\"%1$s\" en DuckDuckGo</string>
     <string name="widgets">Widgets</string>
     <string name="_default">Por defecto</string>
+    <string name="window">Window</string>
+    <string name="text_size">Text size</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notificacion</item>
