@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Icons
 
 internal class SearchAdapter(
@@ -67,9 +67,9 @@ internal class SearchAdapter(
         }
         var appSize = 0
         when (Settings["search:ic_size", 0]) {
-            0 -> appSize = 64.dp.toInt()
-            1 -> appSize = 74.dp.toInt()
-            2 -> appSize = 84.dp.toInt()
+            0 -> appSize = context.dp(64).toInt()
+            1 -> appSize = context.dp(74).toInt()
+            2 -> appSize = context.dp(84).toInt()
         }
         iconFrame.layoutParams.height = appSize
         iconFrame.layoutParams.width = appSize

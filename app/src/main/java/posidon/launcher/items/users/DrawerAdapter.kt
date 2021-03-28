@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.HighlightAdapter
@@ -21,9 +21,9 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
     override fun getItemId(i: Int): Long = 0
 
     private val appSize = when (Settings["icsize", 1]) {
-        0 -> 64.dp.toInt()
-        2 -> 84.dp.toInt()
-        else -> 74.dp.toInt()
+        0 -> Tools.appContext!!.dp(64).toInt()
+        2 -> Tools.appContext!!.dp(84).toInt()
+        else -> Tools.appContext!!.dp(74).toInt()
     }
 
     internal class ViewHolder(

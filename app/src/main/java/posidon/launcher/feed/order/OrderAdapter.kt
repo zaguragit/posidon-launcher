@@ -9,11 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.SwipeableLayout
 
 class OrderAdapter(
@@ -32,8 +32,8 @@ class OrderAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val icon = ImageView(context).apply {
             run {
-                val p = 30.dp.toInt()
-                setPaddingRelative(p, p, 10.dp.toInt(), p)
+                val p = context.dp(30).toInt()
+                setPaddingRelative(p, p, context.dp(10).toInt(), p)
             }
         }
         val text = TextView(context).apply {
@@ -44,7 +44,7 @@ class OrderAdapter(
             gravity = Gravity.CENTER_VERTICAL
 
             addView(icon, let {
-                val s = 108.dp.toInt()
+                val s = context.dp(108).toInt()
                 ViewGroup.LayoutParams(s, s)
             })
             addView(text)
@@ -57,7 +57,7 @@ class OrderAdapter(
             setSwipeColor(Global.accentColor and 0x11ffffff)
             useCompatPadding = true
             cardElevation = 10f
-            radius = 12.dp
+            radius = context.dp(12)
         }
         return ViewHolder(swipeView, icon, text)
     }

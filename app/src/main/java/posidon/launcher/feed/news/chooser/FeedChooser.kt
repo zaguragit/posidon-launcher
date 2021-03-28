@@ -14,13 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.news.chooser.suggestions.Suggestions
 import posidon.launcher.feed.news.chooser.suggestions.SuggestionsAdapter
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.GridLayoutManager
@@ -35,7 +35,7 @@ class FeedChooser : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         grid = findViewById(R.id.grid)
         grid.layoutManager = GridLayoutManager(this, 2)
-        val padding = 4.dp.toInt()
+        val padding = dp(4).toInt()
         grid.setPadding(padding, getStatusBarHeight(), padding, Tools.navbarHeight + padding)
 
         val feedUrls = ArrayList(Settings["feedUrls", defaultSources].split("|"))
@@ -50,7 +50,7 @@ class FeedChooser : AppCompatActivity() {
         fab.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
         fab.imageTintList = ColorStateList.valueOf(Global.accentColor)
         fab.setOnClickListener { addSource(this, feedUrls, grid.adapter!!) }
-        (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
+        (fab.layoutParams as FrameLayout.LayoutParams).bottomMargin = dp(20).toInt() + Tools.navbarHeight
     }
 
     companion object {

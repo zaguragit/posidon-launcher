@@ -16,11 +16,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
 import posidon.android.loader.TextLoader
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.NestedScrollView
 
 class ConsoleActivity : AppCompatActivity() {
@@ -29,7 +29,7 @@ class ConsoleActivity : AppCompatActivity() {
         TextView(this).apply {
             textSize = 12f
             setTextColor(0xffffffff.toInt())
-            setPadding(20.dp.toInt(), 0, 20.dp.toInt(), 0)
+            setPadding(dp(20).toInt(), 0, dp(20).toInt(), 0)
         }
     }
     private val input by lazy {
@@ -40,7 +40,7 @@ class ConsoleActivity : AppCompatActivity() {
             maxLines = 1
             background = null
             setTextColor(0xffffffff.toInt())
-            setPadding(20.dp.toInt(), 0, 20.dp.toInt(), 12.dp.toInt())
+            setPadding(dp(20).toInt(), 0, dp(20).toInt(), dp(12).toInt())
         }
     }
     private val linearLayout by lazy {
@@ -54,7 +54,7 @@ class ConsoleActivity : AppCompatActivity() {
         NestedScrollView(this).apply {
             addView(linearLayout)
             isVerticalFadingEdgeEnabled = true
-            setFadingEdgeLength(64.dp.toInt())
+            setFadingEdgeLength(dp(64).toInt())
             descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
         }
     }
@@ -85,7 +85,7 @@ class ConsoleActivity : AppCompatActivity() {
                         }
                         "hidden" -> startActivity(Intent(this, HiddenAppsActivity::class.java))
                         "ip" -> {
-                            TextLoader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
+                            TextLoader.load("https://checkip.amazonaws.com") { runOnUiThread {
                                 printEquation(getText(R.string.ip_address_external), it.trimEnd())
                             }}
                         }

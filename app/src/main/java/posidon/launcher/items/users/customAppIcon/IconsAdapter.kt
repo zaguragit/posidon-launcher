@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Icons
 
 internal class IconsAdapter(
@@ -50,9 +50,9 @@ internal class IconsAdapter(
         convertView.findViewById<View>(R.id.icontxt).visibility = View.GONE
         convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
             val appSize = when (Settings["icsize", 1]) {
-                0 -> 64.dp.toInt()
-                2 -> 84.dp.toInt()
-                else -> 74.dp.toInt()
+                0 -> parent.context.dp(64).toInt()
+                2 -> parent.context.dp(84).toInt()
+                else -> parent.context.dp(74).toInt()
             }
             width = appSize
             height = appSize

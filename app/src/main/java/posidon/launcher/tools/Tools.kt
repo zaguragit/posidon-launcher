@@ -28,6 +28,7 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import launcherutils.Launcher
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.R
@@ -140,13 +141,13 @@ object Tools {
                 out(it)
                 dismiss()
             }
-        }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenHeight(context) - 300.dp.toInt()))
+        }, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenHeight(context) - appContext!!.dp(300).toInt()))
         window!!.setBackgroundDrawableResource(R.drawable.card)
         show()
     }
 
     inline fun isAClick(startX: Float, endX: Float, startY: Float, endY: Float): Boolean {
-        val threshold = 16.dp
+        val threshold = appContext!!.dp(16)
         return abs(startX - endX) < threshold && abs(startY - endY) < threshold
     }
 
@@ -174,10 +175,10 @@ object Tools {
 
         val y = if (location[1] < screenHeight / 2) {
             gravity = gravity or Gravity.TOP
-            location[1] + view.measuredHeight + 4.dp.toInt()
+            location[1] + view.measuredHeight + appContext!!.dp(4).toInt()
         } else {
             gravity = gravity or Gravity.BOTTOM
-            screenHeight - location[1] + 4.dp.toInt() + navbarHeight
+            screenHeight - location[1] + appContext!!.dp(4).toInt() + navbarHeight
         }
 
         return Triple(x, y, gravity)
@@ -196,9 +197,6 @@ inline fun Activity.applyFontSetting() {
     }
 }
 
-inline val Number.dp get() = Tools.appContext!!.resources.displayMetrics.density * toFloat()
-inline val Number.sp get() = Tools.appContext!!.resources.displayMetrics.density * toFloat()
-
 inline val Context.mainFont: Typeface
     get() = if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
     else {
@@ -211,7 +209,6 @@ inline val Context.mainFont: Typeface
             else -> resources.getFont(R.font.lexend_deca)
         }
     }
-
 
 inline fun Context.getStatusBarHeight(): Int {
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")

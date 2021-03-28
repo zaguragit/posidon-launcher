@@ -14,11 +14,11 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.groupView.ItemGroupView
 import kotlin.concurrent.thread
 
@@ -33,10 +33,10 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
     init {
         title = context.getString(R.string.starred_contacts)
         textView.run {
-            val p = 10.dp.toInt()
-            setPaddingRelative(p, 16.dp.toInt(), 0, p)
+            val p = context.dp(10).toInt()
+            setPaddingRelative(p, context.dp(16).toInt(), 0, p)
         }
-        setPadding(8.dp.toInt(), 0, 8.dp.toInt(), 0)
+        setPadding(context.dp(8).toInt(), 0, context.dp(8).toInt(), 0)
     }
 
     override fun getItemView(item: LauncherItem, parent: ViewParent): View {
@@ -45,22 +45,22 @@ class ContactCardView(context: Context, attrs: AttributeSet? = null) : ItemGroup
             layoutParams.width = (gridLayout.measuredWidth) / columns
             findViewById<ImageView>(R.id.iconimg).setImageDrawable(item.icon)
             findViewById<View>(R.id.iconFrame).run {
-                layoutParams.height = 74.dp.toInt()
-                layoutParams.width = 74.dp.toInt()
+                layoutParams.height = context.dp(74).toInt()
+                layoutParams.width = context.dp(74).toInt()
             }
             findViewById<TextView>(R.id.icontxt).text = item.label
             findViewById<TextView>(R.id.icontxt).setTextColor(Settings["contacts_card:text_color", 0xff252627.toInt()])
             findViewById<TextView>(R.id.notificationBadge).visibility = View.GONE
             setOnClickListener { v -> item.open(context, v, -1) }
-            (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
+            (layoutParams as GridLayout.LayoutParams).bottomMargin = context.dp(Settings["verticalspacing", 12]).toInt()
         }
     }
 
     override fun updateTheme(activity: Activity) {
-        val marginX = Settings["feed:card_margin_x", 16].dp.toInt()
-        val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
+        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
+        val marginY = context.dp(Settings["feed:card_margin_y", 9]).toInt()
         background = ShapeDrawable().apply {
-            val r = Settings["feed:card_radius", 15].dp
+            val r = context.dp(Settings["feed:card_radius", 15])
             shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             paint.color = Settings["contacts_card:bg_color", -0x1]
         }

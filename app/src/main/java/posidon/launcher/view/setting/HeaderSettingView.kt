@@ -6,9 +6,9 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 
 open class HeaderSettingView : FrameLayout {
 
@@ -36,14 +36,14 @@ open class HeaderSettingView : FrameLayout {
             textSize = 20f
             gravity = Gravity.CENTER_HORIZONTAL
             includeFontPadding = false
-            val p = 20.dp.toInt()
+            val p = dp(20).toInt()
             setPadding(p, p, p, p)
             setTextColor(context.resources.getColor(R.color.cardtitle))
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL)
         }
         addView(labelView)
         val separator = View(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 2.dp.toInt(), Gravity.BOTTOM)
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(2).toInt(), Gravity.BOTTOM)
             setBackgroundResource(R.drawable.card_separator)
         }
         addView(separator)

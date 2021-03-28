@@ -8,10 +8,10 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Customizer
 
 class AppsAdapter(
@@ -23,11 +23,11 @@ class AppsAdapter(
     override fun getItem(position: Int) = null
     override fun getItemId(position: Int): Long = 0
 
-    private val appSize = when (Settings["icsize", 1]) {
+    private val appSize = context.dp(when (Settings["icsize", 1]) {
         0 -> 64
         2 -> 84
         else -> 74
-    }.dp.toInt()
+    }).toInt()
 
     class ViewHolder(
         var icon: ImageView,

@@ -8,24 +8,25 @@ import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.sp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
-import posidon.launcher.tools.sp
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import kotlin.math.min
 
 class AppSectionView(context: Context) : ItemGroupView(context) {
 
-    private val appSize = when (Settings["icsize", 1]) {
-        0 -> 64
-        2 -> 84
-        else -> 74
-    }.dp.toInt()
+    private val appSize = Tools.appContext!!.dp(when (Settings["icsize", 1]) {
+            0 -> 64
+            2 -> 84
+            else -> 74
+        }).toInt()
 
     init {
         when (Settings["drawer:sec_name_pos", 0]) {
@@ -34,7 +35,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             1 -> {
                 orientation = HORIZONTAL
-                textView.layoutParams.width = 28.sp.toInt()
+                textView.layoutParams.width = context.sp(28).toInt()
                 textView.run {
                     setPadding(0, 0, 0, 0)
                     gravity = Gravity.END
@@ -45,7 +46,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
         gridLayout.run {
             columnCount = Settings["drawer:columns", 4]
             if (Settings["drawer:columns", 4] > 2) {
-                setPaddingRelative(12.dp.toInt(), 0, 0, 0)
+                setPaddingRelative(Tools.appContext!!.dp(12).toInt(), 0, 0, 0)
             }
         }
         textView.run {
@@ -60,14 +61,14 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
         return (if (columns > 2) {
             LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false).apply {
                 layoutParams.width = min(if (Settings["drawer:scrollbar:enabled", false]) {
-                    parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
-                } else { parentWidth - 24.dp.toInt() } / columns, appSize)
+                    parentWidth - dp(24).toInt() - /* Scrollbar width -> */ dp(24).toInt()
+                } else { parentWidth - dp(24).toInt() } / columns, appSize)
             }
         } else LayoutInflater.from(context).inflate(R.layout.list_item, gridLayout, false).apply {
             if (columns == 2) {
                 layoutParams.width = if (Settings["drawer:scrollbar:enabled", false]) {
-                    parentWidth - 24.dp.toInt() - /* Scrollbar width -> */ 24.dp.toInt()
-                } else { parentWidth - 24.dp.toInt() } / 2
+                    parentWidth - dp(24).toInt() - /* Scrollbar width -> */ dp(24).toInt()
+                } else { parentWidth - dp(24).toInt() } / 2
             }
         }).apply {
             findViewById<ImageView>(R.id.iconimg).setImageDrawable(item.icon)
@@ -97,7 +98,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 ItemLongPress.onItemLongPress(context, it, item, null, null)
                 true
             }
-            (layoutParams as GridLayout.LayoutParams).bottomMargin = Settings["verticalspacing", 12].dp.toInt()
+            (layoutParams as GridLayout.LayoutParams).bottomMargin = dp(Settings["verticalspacing", 12]).toInt()
         }
     }
 }

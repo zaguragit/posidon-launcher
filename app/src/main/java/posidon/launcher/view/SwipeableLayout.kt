@@ -13,9 +13,9 @@ import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import posidon.android.conveniencelib.SpringInterpolator
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.launcher.R
-import posidon.launcher.tools.dp
 import kotlin.math.abs
 
 class SwipeableLayout(
@@ -46,8 +46,8 @@ class SwipeableLayout(
         addView(backView)
         addView(frontView)
         closeIcon.run {
-            layoutParams.width = 32.dp.toInt()
-            layoutParams.height = 32.dp.toInt()
+            layoutParams.width = dp(32).toInt()
+            layoutParams.height = dp(32).toInt()
         }
     }
 
@@ -72,13 +72,13 @@ class SwipeableLayout(
                 frontView.translationX = xOffset
                 backView.clipBounds =
                     if (xOffset > 0) {
-                        closeIcon.translationX = 18.dp
-                        closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                        closeIcon.translationX = dp(18)
+                        closeIcon.translationY = (measuredHeight - dp(32)) / 2
                         Rect(0, 0, xOffset.toInt() + cornerRadiusCompensation.toInt(), measuredHeight)
                     }
                     else {
-                        closeIcon.translationX = measuredWidth - 50.dp
-                        closeIcon.translationY = (measuredHeight - 32.dp) / 2
+                        closeIcon.translationX = measuredWidth - dp(50)
+                        closeIcon.translationY = (measuredHeight - dp(32)) / 2
                         Rect(measuredWidth + xOffset.toInt() - cornerRadiusCompensation.toInt(), 0, measuredWidth, measuredHeight)
                     }
                 return true
@@ -99,14 +99,14 @@ class SwipeableLayout(
                             duration = 210L
                         }.start()
                         frontView.animate().translationX(-measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset > 64.dp && ev.eventTime - ev.downTime < 160 -> {
+                    } xOffset > dp(64) && ev.eventTime - ev.downTime < 160 -> {
                         ValueAnimator.ofInt(xOffset.toInt(), measuredWidth).apply {
                             addUpdateListener { backView.clipBounds = Rect(0, 0, it.animatedValue as Int, measuredHeight) }
                             interpolator = SpringInterpolator()
                             duration = 210L
                         }.start()
                         frontView.animate().translationX(measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset < -(64).dp && ev.eventTime - ev.downTime < 160 -> {
+                    } xOffset < -dp((64)) && ev.eventTime - ev.downTime < 160 -> {
                         ValueAnimator.ofInt(xOffset.toInt(), -measuredWidth).apply {
                             addUpdateListener { backView.clipBounds = Rect(measuredWidth + it.animatedValue as Int, 0, measuredWidth, measuredHeight) }
                             interpolator = SpringInterpolator()
@@ -144,7 +144,7 @@ class SwipeableLayout(
             xOffset = ev.x - initX
             val absYOffset = abs(ev.y - initY)
             val absXOffset = abs(xOffset)
-            if (abs(absXOffset - absYOffset) > 2.dp && absXOffset > absYOffset && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) {
+            if (abs(absXOffset - absYOffset) > context.dp(2) && absXOffset > absYOffset && !(frontView is ViewGroup && checkForHorizontalScroll(ev, frontView))) {
                 true
             } else {
                 initX = ev.x
@@ -152,7 +152,7 @@ class SwipeableLayout(
                 super.onInterceptTouchEvent(ev)
             }
         }
-        MotionEvent.ACTION_UP -> if (abs(xOffset) < 12.dp || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) {
+        MotionEvent.ACTION_UP -> if (abs(xOffset) < context.dp(12) || frontView is ViewGroup && checkForHorizontalScroll(ev, frontView)) {
             super.onInterceptTouchEvent(ev)
         } else true
         else -> {

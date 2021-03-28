@@ -12,12 +12,12 @@ import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.external.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.open
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.tools.vibrate
@@ -39,9 +39,9 @@ object LauncherMenu {
             val scrollbarPosition = Settings["drawer:scrollbar:position", 1]
             val scrollbarWidth = if (Settings["drawer:scrollbar:enabled", false] && Settings["drawer:scrollbar:show_outside", false]) {
                 if (scrollbarPosition == 0) {
-                    -Settings["drawer:scrollbar:width", 24].dp
+                    -home.dp(Settings["drawer:scrollbar:width", 24])
                 }
-                else Settings["drawer:scrollbar:width", 24].dp
+                else home.dp(Settings["drawer:scrollbar:width", 24])
             } else 0f
             val page = homescreen.findViewById<View>(R.id.feed)
             val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)

@@ -9,8 +9,8 @@ import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.items.LauncherItem
-import posidon.launcher.tools.dp
 
 abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
 
@@ -20,7 +20,7 @@ abstract class ItemGroupView(context: Context, attrs: AttributeSet? = null) : Li
 
     val textView = TextView(context).apply {
         textSize = 18f
-        setPaddingRelative(28.dp.toInt(), 0, 0, 0)
+        setPaddingRelative(dp(28).toInt(), 0, 0, 0)
     }
 
     fun setItems(list: Iterable<LauncherItem>, parent: ViewParent) {

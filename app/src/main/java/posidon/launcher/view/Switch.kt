@@ -8,8 +8,9 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.util.StateSet
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 
 
@@ -53,7 +54,7 @@ class Switch(
     companion object {
 
         fun generateCircle(color: Int): Drawable {
-            val r = 24.dp.toInt()
+            val r = Tools.appContext!!.dp(24).toInt()
             return LayerDrawable(arrayOf(
                     GradientDrawable().apply {
                         shape = GradientDrawable.OVAL
@@ -74,34 +75,34 @@ class Switch(
                             this[2] *= 1.6f
                         }) and 0x00ffffff)
                         setSize(r, r)
-                        setStroke(1.dp.toInt(), highlight or 0x12000000)
+                        setStroke(Tools.appContext!!.dp(1).toInt(), highlight or 0x12000000)
                     }
             ))
         }
 
         fun generateBG(color: Int): Drawable {
-            val inset = 3.dp.toInt()
+            val inset = Tools.appContext!!.dp(3).toInt()
             return LayerDrawable(arrayOf(
                     GradientDrawable().apply {
-                        cornerRadius = 11.dp
+                        cornerRadius = Tools.appContext!!.dp(11)
                         val shadow = Color.HSVToColor(floatArrayOf(0f, 0f, 0f).apply {
                             Color.colorToHSV(color, this)
                             this[2] *= 0.8f
                             this[1] *= 1.08f
                         }) and 0x00ffffff
                         colors = intArrayOf(shadow or (color and 0xff000000.toInt()), color)
-                        setStroke(1.dp.toInt(), Color.HSVToColor(floatArrayOf(0f, 0f, 0f).apply {
+                        setStroke(Tools.appContext!!.dp(1).toInt(), Color.HSVToColor(floatArrayOf(0f, 0f, 0f).apply {
                             Color.colorToHSV(shadow, this)
                             this[2] *= 0.4f
                             this[1] *= 2f
                         }) and 0x00ffffff or 0x33000000)
                     },
                     GradientDrawable().apply {
-                        cornerRadius = 12.dp
-                        setStroke(1.dp.toInt(), 0x06ffffff)
+                        cornerRadius = Tools.appContext!!.dp(12)
+                        setStroke(Tools.appContext!!.dp(1).toInt(), 0x06ffffff)
                     }
             )).apply {
-                val ii = inset + 1.dp.toInt()
+                val ii = inset + Tools.appContext!!.dp(1).toInt()
                 setLayerInset(0, ii, ii, ii, ii)
                 setLayerInset(1, inset, inset, inset, inset)
             }

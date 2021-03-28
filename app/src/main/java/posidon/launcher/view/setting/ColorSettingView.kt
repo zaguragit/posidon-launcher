@@ -5,9 +5,9 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.ColorTools
 import kotlin.math.max
 import kotlin.math.min
@@ -29,9 +29,9 @@ class ColorSettingView : IntSettingView {
 
         val hasAlpha = a.getBoolean(R.styleable.ColorSettingView_hasAlpha, true)
         colorPreview = View(context).apply {
-            val size = 40.dp.toInt()
+            val size = dp(40).toInt()
             layoutParams = LayoutParams(size, size, 0f).apply {
-                val m = 10.dp.toInt()
+                val m = dp(10).toInt()
                 setMargins(m, m, m, m)
             }
         }

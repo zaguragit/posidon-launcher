@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import posidon.android.loader.rss.FeedItem
 import posidon.launcher.Global
 import posidon.launcher.Home
@@ -33,7 +34,10 @@ import posidon.launcher.R
 import posidon.launcher.feed.news.readers.ArticleActivity
 import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Gestures
+import posidon.launcher.tools.ImageLoader
+import posidon.launcher.tools.Tools
+import posidon.launcher.tools.open
 import posidon.launcher.view.SwipeableLayout
 import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*
@@ -67,7 +71,7 @@ class NewsAdapter(
         val title = if (Settings["news:cards:title", true]) TextView(context).apply {
             this.gravity = Gravity.BOTTOM
             run {
-                val p = 16.dp.toInt()
+                val p = context.dp(16).toInt()
                 setPadding(p, p, p, p)
             }
             textSize = 18f
@@ -76,14 +80,14 @@ class NewsAdapter(
 
         val source = if (Settings["news:cards:source", true]) TextView(context).apply {
             run {
-                val h = 12.dp.toInt()
-                val v = 8.dp.toInt()
+                val h = context.dp(12).toInt()
+                val v = context.dp(8).toInt()
                 setPadding(h, v, h, v)
             }
             textSize = 12f
             run {
                 val bg = ShapeDrawable()
-                val r = Settings["news:cards:source:radius", 30].dp
+                val r = dp(Settings["news:cards:source:radius", 30])
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 bg.paint.color = Settings["news:cards:source:bg_color", 0xff111213.toInt()]
                 background = bg
@@ -92,7 +96,7 @@ class NewsAdapter(
             setTextColor(Settings["news:cards:source:fg_color", -0x1])
         } else null
 
-        val r = Settings["feed:card_radius", 15].dp
+        val r = context.dp(Settings["feed:card_radius", 15])
 
         val v = CardView(context).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -105,7 +109,7 @@ class NewsAdapter(
 
         v.run {
             val separateImg = Settings["news:cards:sep_txt", false]
-            val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else Settings["news:cards:height", 240].dp.toInt()
+            val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else dp(Settings["news:cards:height", 240]).toInt()
 
             if (!separateImg && image != null) {
                 addView(image, ViewGroup.LayoutParams(MATCH_PARENT, height))
@@ -131,7 +135,7 @@ class NewsAdapter(
 
                 if (source != null) {
                     addView(source, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                        val m = 6.dp.toInt()
+                        val m = dp(6).toInt()
                         setMargins(m, m, m, m)
                         gravity = selectAlignment(Settings["news:cards:source:align", 0])
                     })
@@ -154,8 +158,8 @@ class NewsAdapter(
             swipeableLayout = this
         } else v).apply {
             layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                val marginY = Settings["feed:card_margin_y", 9].dp.toInt()
-                val marginX = Settings["feed:card_margin_x", 16].dp.toInt() / 2
+                val marginY = dp(Settings["feed:card_margin_y", 9]).toInt()
+                val marginX = dp(Settings["feed:card_margin_x", 16]).toInt() / 2
                 setMargins(marginX, marginY, marginX, marginY)
             }
         }, title, source, image, gradient, swipeableLayout)

@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
-import posidon.launcher.tools.dp
 
 abstract class SettingView(
     context: Context,
@@ -43,15 +43,15 @@ abstract class SettingView(
             textSize = 17f
             includeFontPadding = false
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            compoundDrawablePadding = 15.dp.toInt()
-            val h = 8.dp.toInt()
+            compoundDrawablePadding = dp(15).toInt()
+            val h = dp(8).toInt()
             setPadding(h, 0, h, 0)
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 setTextColor(context.getColor(R.color.cardtxt))
             } else {
                 setTextColor(context.resources.getColor(R.color.cardtxt))
             }
-            layoutParams = LayoutParams(0, 60.dp.toInt(), 1f)
+            layoutParams = LayoutParams(0, dp(60).toInt(), 1f)
         }
         addView(labelView)
         populate(attrs, defStyle, defStyleRes)

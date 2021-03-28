@@ -7,18 +7,14 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.*
 import posidon.android.conveniencelib.drawable.MaskedDrawable
-import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.mainFont
-import posidon.launcher.tools.sp
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -161,7 +157,7 @@ object Icons {
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val p = 8 * diameter / icSizeDP
         drawable.setLayerInset(0, p, p, p, p)
-        val o = diameter - (20.sp * diameter / icSizeDP.dp).toInt()
+        val o = diameter - (Tools.appContext!!.sp(20) * diameter / Tools.appContext!!.dp(icSizeDP)).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
         return if (icon is BitmapDrawable) {
             BitmapDrawable(Tools.appContext!!.resources, drawable.toBitmap())

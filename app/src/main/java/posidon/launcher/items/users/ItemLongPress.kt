@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.external.Kustom
 import posidon.launcher.items.App
@@ -24,7 +25,6 @@ import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.LinearLayoutManager
 
@@ -48,7 +48,7 @@ object ItemLongPress {
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = ShortcutAdapter(context, shortcuts!!, txtColor)
             recyclerView.background = ShapeDrawable().apply {
-                val r = 18.dp
+                val r = context.dp(18)
                 shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
                 paint.color = 0x33000000
             }
@@ -69,7 +69,7 @@ object ItemLongPress {
 
         content.findViewById<View>(R.id.bg).background = run {
             val bg = ShapeDrawable()
-            val r = 18.dp
+            val r = context.dp(18)
             bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             bg.paint.color = color
             bg

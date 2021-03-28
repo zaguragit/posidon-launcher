@@ -15,11 +15,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.view.setting.NumberBarSettingView
 
@@ -38,7 +38,7 @@ class CustomBackground : AppCompatActivity() {
             fitsSystemWindows = true
             setPadding(0, 0, 0, Tools.navbarHeight)
             addView(NestedScrollView(context).apply {
-                setFadingEdgeLength(64.dp.toInt())
+                setFadingEdgeLength(dp(64).toInt())
                 isVerticalFadingEdgeEnabled = true
                 addView(LinearLayout(context).apply {
                     orientation = VERTICAL
@@ -47,12 +47,12 @@ class CustomBackground : AppCompatActivity() {
                         setText(R.string.background)
                         setTextColor(0xffffffff.toInt())
                         textSize = 32f
-                    }, ViewGroup.LayoutParams(MATCH_PARENT, 96.dp.toInt()))
+                    }, ViewGroup.LayoutParams(MATCH_PARENT, dp(96).toInt()))
                     addView(View(context).apply {
-                        background = Customizer.genBG(namespace, onlyCurveTop, defColor, defRadius)
+                        background = Customizer.genBG(context, namespace, onlyCurveTop, defColor, defRadius)
                         bgPreview = this
-                    }, ViewGroup.MarginLayoutParams(MATCH_PARENT, 160.dp.toInt()).apply {
-                        val m = 8.dp.toInt()
+                    }, ViewGroup.MarginLayoutParams(MATCH_PARENT, dp(160).toInt()).apply {
+                        val m = dp(8).toInt()
                         setMargins(m, m, m, m)
                     })
                     addView(createSettings(bgPreview, namespace, onlyCurveTop, defColor, defRadius), ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT))

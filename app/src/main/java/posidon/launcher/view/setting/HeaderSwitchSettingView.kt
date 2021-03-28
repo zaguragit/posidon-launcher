@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.view.Switch
 
 class HeaderSwitchSettingView : HeaderSettingView {
@@ -30,10 +30,10 @@ class HeaderSwitchSettingView : HeaderSettingView {
         val default = a.getBoolean(R.styleable.SettingView_def, false)
 
         switch = Switch(context).apply {
-            val p = 12.dp.toInt()
+            val p = dp(12).toInt()
             setPadding(p, p, p, p)
             layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT, Gravity.CENTER_VERTICAL or Gravity.END).apply {
-                marginEnd = 12.dp.toInt()
+                marginEnd = dp(12).toInt()
             }
             isChecked = Settings[key, default]
             setOnCheckedChangeListener { _, checked ->

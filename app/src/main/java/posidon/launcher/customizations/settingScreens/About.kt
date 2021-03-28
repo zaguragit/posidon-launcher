@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
+import posidon.android.conveniencelib.dp
 import posidon.android.loader.TextLoader
 import posidon.launcher.BuildConfig
 import posidon.launcher.R
@@ -35,7 +36,7 @@ class About : Activity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
-        TextLoader.loadText("https://posidon.io/launcher/contributors/pictureUrls") {
+        TextLoader.load("https://posidon.io/launcher/contributors/pictureUrls") {
             var leoLink: String? = null
             var sajidShaikLink: String? = null
             for (line in it.split('\n')) {
@@ -74,7 +75,7 @@ class About : Activity() {
             isNestedScrollingEnabled = false
         }
 
-        TextLoader.loadText("https://api.github.com/repos/lposidon/posidonLauncher/contributors") {
+        TextLoader.load("https://api.github.com/repos/lposidon/posidonLauncher/contributors") {
             val array = JSONArray(it)
             val contributors = ArrayList<Contributor>()
             for (i in 0 until array.length()) {
@@ -141,7 +142,7 @@ class About : Activity() {
             val v = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
             return ViewHolder(v,
                 v.findViewById<ImageView>(R.id.iconimg).apply {
-                    val p = 8.dp.toInt()
+                    val p = context.dp(8).toInt()
                     setPadding(p, p, p, p)
                 },
                 v.findViewById(R.id.icontxt)

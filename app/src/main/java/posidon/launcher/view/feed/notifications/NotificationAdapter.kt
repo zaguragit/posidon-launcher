@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -22,7 +23,7 @@ import posidon.launcher.feed.notifications.Notification
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.dp
+import posidon.launcher.tools.Tools
 import posidon.launcher.view.SwipeableLayout
 
 class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
@@ -40,8 +41,8 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val context = parent.context
         val view = RelativeLayout(context)
-        val hMargin = Settings["feed:card_margin_x", 16].dp.toInt()
-        val vMargin = Settings["feed:card_margin_y", 9].dp.toInt()
+        val hMargin = Tools.appContext!!.dp(Settings["feed:card_margin_x", 16]).toInt()
+        val vMargin = Tools.appContext!!.dp(Settings["feed:card_margin_y", 9]).toInt()
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
         val ll = LinearLayout(context).apply {
@@ -56,7 +57,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
             preventCornerOverlap = true
             elevation = 0f
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            radius = Settings["feed:card_radius", 15].dp
+            radius = dp(Settings["feed:card_radius", 15])
         }
         view.addView(card)
 
@@ -109,7 +110,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                 }.apply {
                     setBackgroundColor(Settings["notificationbgcolor", -0x1])
                     findViewById<TextView>(R.id.txt).maxLines = Settings["notif:text:max_lines", 3]
-                    val padding = 8.dp.toInt()
+                    val padding = dp(8).toInt()
                     when {
                         notificationI == 0 || (notificationI == 1 && group[0].isSummary) -> {
                             if (notificationI == group.lastIndex) {
@@ -145,16 +146,16 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                         a.text = action.title
                         a.textSize = 14f
                         a.setTextColor(Settings["notificationActionTextColor", -0xdad9d9])
-                        val r = Settings["notif:actions:radius", 24].dp
+                        val r = context.dp(Settings["notif:actions:radius", 24])
                         val bg = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
                         bg.paint.color = Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]
                         a.background = bg
-                        val vPadding = 10.dp.toInt()
-                        val hPadding = 15.dp.toInt()
+                        val vPadding = context.dp(10).toInt()
+                        val hPadding = context.dp(15).toInt()
                         a.setPadding(hPadding, vPadding, hPadding, vPadding)
                         v1.findViewById<LinearLayout>(R.id.action_list).addView(a)
-                        (a.layoutParams as LinearLayout.LayoutParams).leftMargin = 6.dp.toInt()
-                        (a.layoutParams as LinearLayout.LayoutParams).rightMargin = 6.dp.toInt()
+                        (a.layoutParams as LinearLayout.LayoutParams).leftMargin = context.dp(6).toInt()
+                        (a.layoutParams as LinearLayout.LayoutParams).rightMargin = context.dp(6).toInt()
                         a.setOnClickListener {
                             try {
                                 val oldInputs = action.remoteInputs

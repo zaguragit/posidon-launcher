@@ -5,7 +5,7 @@ import android.content.res.Configuration
 import android.util.AttributeSet
 import android.widget.GridView
 import posidon.android.conveniencelib.SpringInterpolator
-import posidon.launcher.tools.dp
+import posidon.android.conveniencelib.dp
 
 class GridView : GridView {
 
@@ -13,12 +13,12 @@ class GridView : GridView {
     constructor(context: Context, attr: AttributeSet) : super(context, attr)
     constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
-    private var maxOverScroll = 48.dp
+    private var maxOverScroll = context.dp(48)
     private var startTime = System.currentTimeMillis()
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        maxOverScroll = 48.dp
+        maxOverScroll = context.dp(48)
     }
 
     override fun overScrollBy(deltaX: Int, deltaY: Int, scrollX: Int, scrollY: Int, scrollRangeX: Int, scrollRangeY: Int, mx: Int, my: Int, isTouchEvent: Boolean): Boolean {

@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.external.widgets.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
@@ -33,7 +33,7 @@ class FeedOrderActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         recycler = findViewById<RecyclerView>(R.id.recycler).apply {
-            val p = 4.dp.toInt()
+            val p = dp(4).toInt()
             setPadding(p, getStatusBarHeight(), p, Tools.navbarHeight + p)
 
             layoutManager = LinearLayoutManager(this@FeedOrderActivity, RecyclerView.VERTICAL, false)
@@ -68,7 +68,7 @@ class FeedOrderActivity : AppCompatActivity() {
         findViewById<FloatingActionButton>(R.id.fab).apply {
             backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)
             imageTintList = ColorStateList.valueOf(Global.accentColor)
-            (layoutParams as FrameLayout.LayoutParams).bottomMargin = 20.dp.toInt() + Tools.navbarHeight
+            (layoutParams as FrameLayout.LayoutParams).bottomMargin = dp(20).toInt() + Tools.navbarHeight
             setOnClickListener {
                 Feed.selectFeedSectionToAdd(this@FeedOrderActivity, ::onItemSelect)
             }

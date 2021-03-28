@@ -12,36 +12,34 @@ import android.os.UserManager
 import androidx.palette.graphics.Palette
 import launcherutils.LauncherIcons
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.dp
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
-import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class AppLoader (
-    context: Context,
+    private val context: Context,
     private val onEnd: () -> Unit
 ) {
 
     private var tmpApps = ArrayList<App>()
     private val tmpAppSections = ArrayList<ArrayList<App>>()
     private var tmpHidden = ArrayList<App>()
-    private val context: WeakReference<Context> = WeakReference(context)
     private var lock = ReentrantLock()
 
     fun execute() { thread(isDaemon = true, block = ::run) }
     fun run() {
         lock.lock()
-        val packageManager = context.get()!!.packageManager
-        val iconSize = 65.dp.toInt()
+        val packageManager = context.packageManager
+        val iconSize = context.dp(65).toInt()
         val iconPackPackageName = Settings["iconpack", "system"]
         val p = Paint(Paint.FILTER_BITMAP_FLAG).apply {
             isAntiAlias = true
@@ -91,7 +89,7 @@ class AppLoader (
 
         for (profile in userManager.userProfiles) {
 
-            val appList = (context.get()!!.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getActivityList(null, profile)
+            val appList = (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getActivityList(null, profile)
 
             for (i in appList.indices) {
 
@@ -151,7 +149,7 @@ class AppLoader (
                                         }
                                         scaledOrig.recycle()
                                     }
-                                    app.icon = BitmapDrawable(context.get()!!.resources, scaledBitmap)
+                                    app.icon = BitmapDrawable(context.resources, scaledBitmap)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
@@ -162,7 +160,7 @@ class AppLoader (
                         app.icon = Icons.generateAdaptiveIcon(app.icon!!)
                     }
                     app.icon = Icons.badgeMaybe(app.icon!!, appList[i].user != Process.myUserHandle())
-                    Icons.animateIfShould(context.get()!!, app.icon!!)
+                    Icons.animateIfShould(context, app.icon!!)
                 })
 
                 putInSecondMap(app)

@@ -27,7 +27,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
+import posidon.android.conveniencelib.sp
 import posidon.android.loader.DuckInstantAnswer
 import posidon.android.loader.TextLoader
 import posidon.launcher.Global
@@ -75,7 +77,7 @@ class SearchActivity : AppCompatActivity() {
         applyFontSetting()
         smartBox = findViewById(R.id.smartbox)
         answerBox = findViewById(R.id.instantAnswer)
-        topPaddingWhenSmartBoxIsShown = (82.dp + 46.sp).toInt()
+        topPaddingWhenSmartBoxIsShown = (dp(82) + sp(46)).toInt()
         searchTxt = findViewById(R.id.searchTxt)
         searchTxt.requestFocus()
         grid = findViewById(R.id.searchgrid)
@@ -107,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
         }
         searchTxt.imeOptions = if (Settings["search:enter_is_go", false]) EditorInfo.IME_ACTION_GO else EditorInfo.IME_ACTION_DONE
         findViewById<View>(R.id.searchbar).background = ShapeDrawable().apply {
-            val tr = Settings["searchradius", 0].dp
+            val tr = Tools.appContext!!.dp(Settings["searchradius", 0])
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }
@@ -324,7 +326,7 @@ class SearchActivity : AppCompatActivity() {
                 isShowingSmartCard = true
                 smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 smartBox.findViewById<TextView>(R.id.result).text = ""
-                TextLoader.loadText("https://checkip.amazonaws.com") { runOnUiThread {
+                TextLoader.load("https://checkip.amazonaws.com") { runOnUiThread {
                     if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
                 }}
             } else if (

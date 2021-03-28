@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
-import posidon.launcher.tools.dp
+import posidon.android.conveniencelib.dp
 
 class SuggestionsAdapter(
     val context: Context
@@ -22,9 +22,9 @@ class SuggestionsAdapter(
 
     override fun getGroupView(topicI: Int, p1: Boolean, cv: View?, parent: ViewGroup?): View {
         val convertView = (cv ?: TextView(context).apply {
-            val h = 16.dp.toInt()
-            val v = 8.dp.toInt()
-            setPadding(h, v + 8.dp.toInt(), h, v)
+            val h = context.dp(16).toInt()
+            val v = context.dp(8).toInt()
+            setPadding(h, v + context.dp(8).toInt(), h, v)
             textSize = 20f
         }) as TextView
 
@@ -36,8 +36,8 @@ class SuggestionsAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun getChildView(topicI: Int, sourceI: Int, isLast: Boolean, cv: View?, parent: ViewGroup): View {
         val convertView = (cv ?: TextView(context).apply {
-            val h = 16.dp.toInt()
-            setPadding(h + 16.dp.toInt(), 2.dp.toInt(), h, 8.dp.toInt())
+            val h = context.dp(16).toInt()
+            setPadding(h + context.dp(16).toInt(), context.dp(2).toInt(), h, context.dp(8).toInt())
             textSize = 16f
         }) as TextView
 

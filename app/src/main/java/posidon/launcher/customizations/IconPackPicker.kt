@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.applyFontSetting
-import posidon.launcher.tools.dp
 
 class IconPackPicker : AppCompatActivity() {
 
@@ -84,9 +84,9 @@ class IconPackPicker : AppCompatActivity() {
                 convertView = li.inflate(R.layout.list_item, parent, false)!!
                 viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg), convertView.findViewById(R.id.icontxt))
                 val appSize = when (Settings["dockicsize", 1]) {
-                    0 -> 64.dp.toInt()
-                    2 -> 84.dp.toInt()
-                    else -> 74.dp.toInt()
+                    0 -> context.dp(64).toInt()
+                    2 -> context.dp(84).toInt()
+                    else -> context.dp(74).toInt()
                 }
                 viewHolder.icon.layoutParams = FrameLayout.LayoutParams(appSize, appSize)
                 convertView.tag = viewHolder

@@ -11,10 +11,10 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.sp
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.dp
-import posidon.launcher.tools.sp
 import kotlin.math.min
 
 class Spinner : AppCompatTextView {
@@ -36,7 +36,7 @@ class Spinner : AppCompatTextView {
             var height = 0f
             popup = PopupWindow(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt(), 8.dp.toInt())
+                setPadding(dp(8).toInt(), dp(8).toInt(), dp(8).toInt(), dp(8).toInt())
                 for (i in data.indices) {
                     addView(TextView(context).apply {
                         text = data[i]
@@ -47,14 +47,14 @@ class Spinner : AppCompatTextView {
                         }
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())
-                        setPadding(18.dp.toInt(), 9.dp.toInt(), 18.dp.toInt(), 9.dp.toInt())
+                        setPadding(dp(18).toInt(), dp(9).toInt(), dp(18).toInt(), dp(9).toInt())
                         includeFontPadding = false
-                        height += 18f.sp + 18f.dp
+                        height += context.sp(18f) + dp(18f)
                     })
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {
                 val bg = ShapeDrawable()
-                val r = 18.dp
+                val r = dp(18)
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 bg.paint.color = context.resources.getColor(R.color.cardbg)
                 setBackgroundDrawable(bg)
