@@ -52,7 +52,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             if (Settings["labelsenabled", false]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
-                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112)
+                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112, 12f)
             } else holder.text.visibility = View.INVISIBLE
 
         } else {

@@ -8,25 +8,21 @@ import android.widget.TextView
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.dp
+import posidon.launcher.tools.sp
 
 object Customizer {
 
-    fun styleLabel(namespace: String, view: TextView, defaultColor: Int) {
+    fun styleLabel(namespace: String, view: TextView, defaultColor: Int, defaultTextSize: Float) {
         view.setTextColor(Settings["$namespace:color", defaultColor])
         val maxLines = Settings["$namespace:max_lines", 1]
         view.isSingleLine = maxLines == 1
         view.maxLines = maxLines
-        view.ellipsize = if (Settings["$namespace:marquee", true] && maxLines == 1) TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.END
-        view.isSelected = true
-        view.isHorizontalFadingEdgeEnabled = true
-        view.setFadingEdgeLength(5.dp.toInt())
-
-        view.freezesText = true
-        view.setHorizontallyScrolling(true)
-        view.isSelected = true
-        view.isFocusable = true
-        view.isFocusableInTouchMode = true
-        view.isEnabled = true
+        view.ellipsize = TextUtils.TruncateAt.END
+        val textSize = Settings["$namespace:text_size", defaultTextSize]
+        view.textSize = textSize
+        view.layoutParams = view.layoutParams.also {
+            it.height = textSize.sp.toInt()
+        }
     }
 
     fun getCustomIcon(key: String): Drawable? {

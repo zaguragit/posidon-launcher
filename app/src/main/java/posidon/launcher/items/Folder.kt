@@ -190,7 +190,7 @@ class Folder : LauncherItem {
                 currentlyOpen = null
             }
             content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
-                val bgColor = Settings["folderBG", -0x22eeeded]
+                val bgColor = Settings["folder:window:bg_color", -0x22eeeded]
                 val r = Settings["folderCornerRadius", 18].dp
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
@@ -280,7 +280,7 @@ class Folder : LauncherItem {
         val iconTxt = appIcon.findViewById<TextView>(R.id.icontxt)
         if (labelsEnabled) {
             iconTxt.text = item.label
-            Customizer.styleLabel("folder:labels", iconTxt, -0x22000001)
+            Customizer.styleLabel("folder:labels", iconTxt, -0x22000001, 12f)
         } else iconTxt.visibility = View.GONE
         if (notifBadgesEnabled && item.notificationCount != 0) {
             val badge = appIcon.findViewById<TextView>(R.id.notificationBadge)

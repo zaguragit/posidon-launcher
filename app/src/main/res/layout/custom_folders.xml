@@ -44,22 +44,26 @@
                     app:def="3"
                     app:max="7"
                     app:startsWith1="true"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSettingView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_label"
-                    app:label="@string/appLabels"
-                    app:key="folderLabelsEnabled"
-                    app:def="false"/>
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/window"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_color"
-                    app:label="@string/labelColor"
-                    app:key="folder:label_color"
-                    app:def="#DDFFFFFF"/>
+                    app:label="@string/background"
+                    app:key="folder:window:bg_color"
+                    app:def="#DD111213"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -84,6 +88,38 @@
                     app:key="folderCornerRadius"
                     app:def="18"
                     app:max="30"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/settingscard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <posidon.launcher.view.setting.HeaderSwitchSettingView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginBottom="12dp"
+                    app:label="@string/appLabels"
+                    app:key="folderLabelsEnabled"
+                    app:def="false"/>
+                <posidon.launcher.view.setting.ColorSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_color"
+                    app:label="@string/labelColor"
+                    app:key="folder:labels:color"
+                    app:def="#DDFFFFFF"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/text_size"
+                    app:key="folder:labels:text_size"
+                    app:isFloat="true"
+                    app:startsWith1="true"
+                    app:def="12"
+                    app:max="32"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

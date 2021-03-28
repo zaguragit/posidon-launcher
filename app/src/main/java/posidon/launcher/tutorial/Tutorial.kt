@@ -151,7 +151,7 @@ class Tutorial : AppCompatActivity() {
                     putNotSave("dock:background_color", 0x0)
                     putNotSave("dock:columns", 4)
                     putNotSave("folderBG", 0xefefefef.toInt())
-                    putNotSave("folder:label_color", 0xdd000000.toInt())
+                    putNotSave("folder:labels:color", 0xdd000000.toInt())
                     putNotSave("folder:title_color", 0xff000000.toInt())
                     putNotSave("blurLayers", 2)
                     putNotSave("drawer:blur", true)

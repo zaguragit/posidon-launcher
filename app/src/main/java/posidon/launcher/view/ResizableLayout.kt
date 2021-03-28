@@ -56,7 +56,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
     }
 
     companion object {
-        private const val MIN_HEIGHT = 96
+        private const val MIN_HEIGHT = 64
         var currentlyResizing: ResizableLayout? = null
             private set
     }

@@ -126,22 +126,24 @@
                     app:label="@string/appLabels"
                     app:key="dockLabelsEnabled"
                     app:def="false"/>
-                <posidon.launcher.view.setting.SwitchSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_arrow_right"
-                    app:label="@string/marquee"
-                    app:key="dock:labels:marquee"
-                    app:def="true"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_color"
                     app:label="@string/labelColor"
-                    app:key="dockLabelColor"
+                    app:key="dock:labels:color"
                     app:def="#EEEEEEEE"/>
+                <posidon.launcher.view.setting.NumberBarSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:label="@string/text_size"
+                    app:key="dock:labels:text_size"
+                    app:isFloat="true"
+                    app:startsWith1="true"
+                    app:def="12"
+                    app:max="32"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

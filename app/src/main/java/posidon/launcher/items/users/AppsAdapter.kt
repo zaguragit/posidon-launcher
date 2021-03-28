@@ -24,10 +24,10 @@ class AppsAdapter(
     override fun getItemId(position: Int): Long = 0
 
     private val appSize = when (Settings["icsize", 1]) {
-        0 -> 64.dp.toInt()
-        2 -> 84.dp.toInt()
-        else -> 74.dp.toInt()
-    }
+        0 -> 64
+        2 -> 84
+        else -> 74
+    }.dp.toInt()
 
     class ViewHolder(
         var icon: ImageView,
@@ -40,9 +40,8 @@ class AppsAdapter(
         val app = apps[position]
         if (convertView == null) {
             val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            if (Settings["drawer:columns", 4] > 2) convertView = li.inflate(R.layout.drawer_item, parent, false) else {
-                convertView = li.inflate(R.layout.list_item, parent, false)
-                if (Settings["drawer:columns", 4] == 2) convertView.findViewById<TextView>(R.id.icontxt).textSize = 18f
+            convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false) else {
+                li.inflate(R.layout.list_item, parent, false)
             }
             holder = ViewHolder(
                 convertView.findViewById(R.id.iconimg),
@@ -52,7 +51,7 @@ class AppsAdapter(
             if (Settings["labelsenabled", false]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
-                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112)
+                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112, 12f)
             } else holder.text.visibility = View.INVISIBLE
 
             holder.iconFrame.layoutParams.height = appSize

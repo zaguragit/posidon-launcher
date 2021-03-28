@@ -79,7 +79,7 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
                 if (Settings["labelsenabled", false]) {
                     text = item.label
                     visibility = View.VISIBLE
-                    Customizer.styleLabel("drawer:labels", this, -0x11111112)
+                    Customizer.styleLabel("drawer:labels", this, -0x11111112, 12f)
                 } else visibility = View.GONE
             }
             findViewById<TextView>(R.id.notificationBadge).run {

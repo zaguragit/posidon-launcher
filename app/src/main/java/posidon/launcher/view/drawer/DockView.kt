@@ -212,12 +212,13 @@ class DockView : LinearLayout {
             }
             val item = Dock[i]
             if (item != null) {
-                val label = view.findViewById<TextView>(R.id.icontxt)
-                if (showLabels) {
-                    label.text = item.label
-                    Customizer.styleLabel("dock:labels", label, -0x11111112)
-                } else {
-                    label.visibility = GONE
+                view.findViewById<TextView>(R.id.icontxt).let { label ->
+                    if (showLabels) {
+                        label.text = item.label
+                        Customizer.styleLabel("dock:labels", label, -0x11111112, 12f)
+                    } else {
+                        label.visibility = GONE
+                    }
                 }
                 when (item) {
                     is PinnedShortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -234,8 +235,9 @@ class DockView : LinearLayout {
                     }
                     is Folder -> item.updateIcon()
                 }
-                val img = view.findViewById<ImageView>(R.id.iconimg)
-                img.setImageDrawable(item.icon)
+                view.findViewById<ImageView>(R.id.iconimg).also { img ->
+                    img.setImageDrawable(item.icon)
+                }
                 val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
                     val c = item.notificationCount
@@ -268,7 +270,7 @@ class DockView : LinearLayout {
             else -> 74
         }.dp.toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
-        val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) 18.sp.toInt() else 0) * rowCount
+        val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) (Settings["dock:labels:text_size", 12f].sp + 4.dp).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
             containerHeight + 84.dp.toInt()
         } else {

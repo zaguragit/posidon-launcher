@@ -31,6 +31,7 @@
         android:id="@+id/icontxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:textSize="18sp"
         android:textColor="@color/cardtxt"
         android:layout_marginStart="12dp"
