@@ -88,17 +88,21 @@ class DrawerView : LinearLayout {
         }
     }
 
-    fun loadAppsIfShould() {
+    inline fun loadAppsIfShould() {
         if (Global.shouldSetApps) {
-            AppLoader(context, ::onAppLoaderEnd).execute()
+            loadApps()
         }
+    }
+
+    inline fun loadApps() {
+        AppLoader(context, ::onAppLoaderEnd).execute()
     }
 
     fun onAppLoaderEnd() {
         val home = Home.instance
         val s = drawerGrid.scrollY
         if (Settings["drawer:sections_enabled", false]) {
-            drawerGrid.adapter = SectionedDrawerAdapter(context)
+            drawerGrid.adapter = SectionedDrawerAdapter(this)
             drawerGrid.onItemClickListener = null
             drawerGrid.onItemLongClickListener = null
         } else {
@@ -106,7 +110,10 @@ class DrawerView : LinearLayout {
             drawerGrid.onItemClickListener = AdapterView.OnItemClickListener { _, v, i, _ -> Global.apps[i].open(context, v) }
             drawerGrid.setOnItemLongClickListener { _, view, position, _ ->
                 val app = Global.apps[position]
-                ItemLongPress.onItemLongPress(context, view, app, null, null)
+                ItemLongPress.onItemLongPress(context, view, app, null, {
+                    app.setHidden()
+                    loadApps()
+                }, isRemoveFnActuallyHide = true)
                 true
             }
         }

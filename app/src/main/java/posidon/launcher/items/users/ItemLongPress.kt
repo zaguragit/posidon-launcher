@@ -31,7 +31,7 @@ import posidon.launcher.view.LinearLayoutManager
 object ItemLongPress {
 
     var currentPopup: PopupWindow? = null
-    fun makePopupWindow(context: Context, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, item: LauncherItem): PopupWindow {
+    fun makePopupWindow(context: Context, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, canHide: Boolean): PopupWindow {
 
         if (Settings["kustom:variables:enable", false]) {
             Kustom["screen"] = "popup"
@@ -60,9 +60,9 @@ object ItemLongPress {
         window.setBackgroundDrawable(ColorDrawable(0x0))
 
         val title = content.findViewById<TextView>(R.id.title)
-        val removeBtn = content.findViewById<View>(R.id.removeBtn)
-        val editBtn = content.findViewById<View>(R.id.editbtn)
-        val appinfobtn = content.findViewById<View>(R.id.appinfobtn)
+        val removeButton = content.findViewById<View>(R.id.removeBtn)
+        val editButton = content.findViewById<View>(R.id.editbtn)
+        val propertiesButton = content.findViewById<View>(R.id.appinfobtn)
 
         title.text = item.label
         title.setTextColor(txtColor)
@@ -75,37 +75,44 @@ object ItemLongPress {
             bg
         }
 
-        if (removeBtn is TextView) {
-            removeBtn.setTextColor(txtColor)
-            (appinfobtn as TextView).setTextColor(txtColor)
-            (editBtn as TextView).setTextColor(txtColor)
+        if (removeButton is TextView) {
+            removeButton.setTextColor(txtColor)
+            (propertiesButton as TextView).setTextColor(txtColor)
+            (editButton as TextView).setTextColor(txtColor)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                removeBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-                appinfobtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-                editBtn.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                removeButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                propertiesButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+                editButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+            }
+            if (canHide) {
+                removeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_hide, 0, 0, 0)
+                removeButton.setText(R.string.hide)
             }
         } else {
-            (removeBtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
-            (appinfobtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
-            (editBtn as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
+            (removeButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
+            (propertiesButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
+            (editButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
+            if (canHide) {
+                removeButton.setImageResource(R.drawable.ic_hide)
+            }
         }
 
-        if (onEdit == null) editBtn.visibility = View.GONE else {
-            editBtn.setOnClickListener {
+        if (onEdit == null) editButton.visibility = View.GONE else {
+            editButton.setOnClickListener {
                 window.dismiss()
                 onEdit(it)
             }
         }
 
-        if (onRemove == null) removeBtn.visibility = View.GONE else {
-            removeBtn.setOnClickListener {
+        if (onRemove == null) removeButton.visibility = View.GONE else {
+            removeButton.setOnClickListener {
                 window.dismiss()
                 onRemove(it)
             }
         }
 
-        if (onInfo == null) appinfobtn.visibility = View.GONE else {
-            appinfobtn.setOnClickListener {
+        if (onInfo == null) propertiesButton.visibility = View.GONE else {
+            propertiesButton.setOnClickListener {
                 window.dismiss()
                 onInfo(it)
             }
@@ -114,7 +121,7 @@ object ItemLongPress {
         return window
     }
 
-    inline fun onItemLongPress(context: Context, view: View, item: LauncherItem, noinline onEdit: ((View) -> Unit)?, noinline onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view) {
+    inline fun onItemLongPress(context: Context, view: View, item: LauncherItem, noinline onEdit: ((View) -> Unit)?, noinline onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view, isRemoveFnActuallyHide: Boolean = false) {
         if (currentPopup == null) {
             context.vibrate()
 
@@ -124,7 +131,7 @@ object ItemLongPress {
 
             val realItem = if (folderI != -1 && item is Folder) item.items[folderI] else item
 
-            val popupWindow = makePopupWindow(context, onEdit, onRemove, if (realItem is App) ({
+            val popupWindow = makePopupWindow(context, realItem, onEdit, onRemove, if (realItem is App) ({
                 val color = item.getColor()
                 val hsv = FloatArray(3)
                 Color.colorToHSV(color, hsv)
@@ -132,7 +139,7 @@ object ItemLongPress {
                     hsv[2] = 0.5f
                 }
                 realItem.showProperties(context, Color.HSVToColor(hsv))
-            }) else null, realItem)
+            }) else null, isRemoveFnActuallyHide)
 
             if (!Settings["locked", false]) {
                 popupWindow.isFocusable = false // !

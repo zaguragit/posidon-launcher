@@ -218,6 +218,7 @@
     <string name="_default">Default</string>
     <string name="window">Window</string>
     <string name="text_size">Text size</string>
+    <string name="hide">Hide</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notifiche</item>

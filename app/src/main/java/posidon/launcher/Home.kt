@@ -1,7 +1,6 @@
 package posidon.launcher
 
 import android.annotation.SuppressLint
-import android.app.WallpaperManager
 import android.content.*
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
@@ -15,6 +14,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.feed_chooser_option_edit_dialog.view.*
+import launcherutils.LiveWall
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
 import posidon.launcher.external.Kustom
@@ -102,12 +102,7 @@ class Home : AppCompatActivity() {
 
         homeView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == STATE_COLLAPSED)
-                WallpaperManager.getInstance(this@Home).sendWallpaperCommand(
-                        v.windowToken,
-                        WallpaperManager.COMMAND_TAP,
-                        event.x.toInt(),
-                        event.y.toInt(),
-                        0, null)
+                LiveWall.tap(v, event.rawX.toInt(), event.rawY.toInt())
             false
         }
         if (Settings["mnmlstatus", false]) {

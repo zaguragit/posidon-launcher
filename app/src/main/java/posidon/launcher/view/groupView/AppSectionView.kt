@@ -1,6 +1,6 @@
 package posidon.launcher.view.groupView
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.main.view.*
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.sp
 import posidon.launcher.R
@@ -18,9 +19,11 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
+import posidon.launcher.view.drawer.DrawerView
 import kotlin.math.min
 
-class AppSectionView(context: Context) : ItemGroupView(context) {
+@SuppressLint("ViewConstructor")
+class AppSectionView(drawer: DrawerView) : ItemGroupView(drawer.context) {
 
     private val appSize = Tools.appContext!!.dp(when (Settings["icsize", 1]) {
             0 -> 64
@@ -95,7 +98,10 @@ class AppSectionView(context: Context) : ItemGroupView(context) {
             }
             setOnClickListener { item.open(context, it) }
             setOnLongClickListener {
-                ItemLongPress.onItemLongPress(context, it, item, null, null)
+                ItemLongPress.onItemLongPress(context, it, item, null, {
+                    item.setHidden()
+                    drawer.loadApps()
+                }, isRemoveFnActuallyHide = true)
                 true
             }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = dp(Settings["verticalspacing", 12]).toInt()

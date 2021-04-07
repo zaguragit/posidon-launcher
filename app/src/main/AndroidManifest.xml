@@ -27,6 +27,13 @@
         android:supportsRtl="true"
         android:theme="@style/hometheme">
 
+        <provider
+            android:authorities="posidon.launcher.fivesecdelaycp"
+            android:grantUriPermissions="true"
+            android:exported="true"
+            android:enabled="true"
+            android:name=".external.Kustom5SecsProvider"/>
+
         <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/clock_widget_info" />
