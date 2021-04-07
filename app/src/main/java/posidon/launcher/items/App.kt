@@ -142,6 +142,14 @@ class App(
 
     inline fun isInstalled(packageManager: PackageManager) = Tools.isInstalled(packageName, packageManager)
 
+    inline fun setHidden() {
+        Settings["app:$this:hidden"] = true
+    }
+
+    inline fun setUnhidden() {
+        Settings["app:$this:hidden"] = false
+    }
+
     companion object {
         private var appsByName = HashMap<String, ArrayList<App>>()
         var hidden = ArrayList<App>()

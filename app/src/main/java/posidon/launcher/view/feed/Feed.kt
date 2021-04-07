@@ -309,7 +309,8 @@ class Feed : FrameLayout {
         }
         clearSections()
         val s = getSectionsFromSettings()
-        for (i in s.indices) {
+        var i = 0
+        while (i < s.size) {
             (map[s[i]] ?: FeedSection(activity, s, i))?.let { section ->
                 internalAdd(section)
                 when (section) {
@@ -319,6 +320,7 @@ class Feed : FrameLayout {
                 }
                 section.updateTheme(activity)
             }
+            i++
         }
         updateTheme(activity, drawer)
     }
