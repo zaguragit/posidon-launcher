@@ -17,10 +17,9 @@ import kotlinx.android.synthetic.main.feed_chooser_option_edit_dialog.view.*
 import launcherutils.LiveWall
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
-import posidon.launcher.external.Kustom
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.external.sysGestures.GestureNavContract
 import posidon.launcher.feed.notifications.NotificationService
-import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.PinnedShortcut
@@ -79,6 +78,10 @@ class Home : AppCompatActivity() {
             exitProcess(0)
         }
         Global.accentColor = Settings["accent", 0x1155ff] or -0x1000000
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
 
         updateNavbarHeight(this@Home)
 
@@ -278,14 +281,14 @@ class Home : AppCompatActivity() {
                     try { startService(Intent(this, NotificationService::class.java)) }
                     catch (e: Exception) {}
                 }
-                if (Settings["mnmlstatus", false]) window.decorView.systemUiVisibility =
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R && Settings["mnmlstatus", false]) window.decorView.systemUiVisibility =
                     SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     SYSTEM_UI_FLAG_LOW_PROFILE
                 drawer.loadAppsIfShould()
                 drawer.setKustomVars()
             } else {
-                window.decorView.systemUiVisibility =
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)  window.decorView.systemUiVisibility =
                     SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             }
@@ -359,7 +362,7 @@ class Home : AppCompatActivity() {
             val gnc = GestureNavContract.fromIntent(intent)
             if (gnc != null) {
                 val r = RectF(0f, 0f, 0f, 0f)
-                val i = getLocationForApp(gnc.componentName, gnc.user, r)
+                val i = dock.getLocationForApp(gnc.componentName, gnc.user, r)
                 //val app = App[gnc.componentName.packageName, gnc.componentName.className, gnc.user.hashCode()] ?: Dock[i]
                 //val icon = app!!.icon!!
                 /*picture.run {
@@ -373,42 +376,5 @@ class Home : AppCompatActivity() {
                 gnc.sendEndPosition(r, surfaceView.surfaceControl)
             }
         }
-    }
-
-    /**
-     * Sets [outLocation] to the location of the icon
-     * @return index in dock
-     * If icon isn't in the dock, outLocation will be zeroed out and -1 will be returned
-     */
-    fun getLocationForApp(c: ComponentName, user: UserHandle, outLocation: RectF): Int {
-        val packageName = c.packageName
-        val list = LinkedList<Pair<String, Int>>()
-        for ((item, i) in Dock.indexed()) {
-            when (item) {
-                is App -> if (
-                    item.packageName == packageName &&
-                    item.userHandle == user
-                ) list.add(item.name to i)
-                is Folder -> for (folderItem in item.items) {
-                    if (folderItem is App &&
-                        folderItem.packageName == packageName &&
-                        folderItem.userHandle == user) {
-                        list.add(folderItem.name to i)
-                        break
-                    }
-                }
-            }
-        }
-        val className = c.className
-        for ((name, i) in list) if (name == className) {
-            dock.getPositionOnScreen(i, outLocation)
-            return i
-        }
-        var retI = -1
-        list.firstOrNull()?.let {
-            retI = it.second
-            dock.getPositionOnScreen(it.second, outLocation)
-        }
-        return retI
     }
 }

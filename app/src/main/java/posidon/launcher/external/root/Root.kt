@@ -1,9 +1,8 @@
-package posidon.launcher.external
+package posidon.launcher.external.root
 
 import posidon.launcher.items.App
 import java.nio.charset.Charset
 
-// Stole this from KISS Launcher
 object Root {
 
     /**

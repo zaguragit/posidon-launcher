@@ -17,6 +17,7 @@ import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
+import java.lang.ref.WeakReference
 import kotlin.math.abs
 
 open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
@@ -57,8 +58,8 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
 
     companion object {
         private const val MIN_HEIGHT = 64
-        var currentlyResizing: ResizableLayout? = null
-            private set
+        private var currentlyResizingRef = WeakReference<ResizableLayout>(null)
+        val currentlyResizing: ResizableLayout? get() = currentlyResizingRef.get()
     }
 
     init {
@@ -120,7 +121,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
             context.vibrate()
             currentlyResizing?.resizing = false
             resizing = true
-            currentlyResizing = this
+            currentlyResizingRef = WeakReference(this)
         }
     }
 

@@ -32,7 +32,7 @@
             android:grantUriPermissions="true"
             android:exported="true"
             android:enabled="true"
-            android:name=".external.Kustom5SecsProvider"/>
+            android:name=".external.kustom.Kustom5SecsProvider"/>
 
         <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>

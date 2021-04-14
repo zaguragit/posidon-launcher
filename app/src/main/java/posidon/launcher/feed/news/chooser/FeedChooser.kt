@@ -3,6 +3,7 @@ package posidon.launcher.feed.news.chooser
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -32,7 +33,8 @@ class FeedChooser : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.feed_chooser)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         grid = findViewById(R.id.grid)
         grid.layoutManager = GridLayoutManager(this, 2)
         val padding = dp(4).toInt()

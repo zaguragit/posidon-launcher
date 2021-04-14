@@ -2,6 +2,7 @@ package posidon.launcher.customizations
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -31,7 +32,8 @@ class RemovedArticles : AppCompatActivity() {
             adapter = Adapter(this@RemovedArticles)
             setPadding(0, getStatusBarHeight(), 0, Tools.navbarHeight)
         })
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
 
     class Adapter(

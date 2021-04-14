@@ -203,7 +203,7 @@ class Feed : FrameLayout {
                     }
                     if (Settings["notif:badges", true]) activity.runOnUiThread {
                         drawer.drawerGrid.invalidateViews()
-                        drawer.dock.loadAppsAndUpdateHome(drawer, this, desktopContent, activity)
+                        drawer.dock.loadApps()
                     }
                 } catch (e: Exception) { e.printStackTrace() }
             }

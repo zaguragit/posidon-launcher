@@ -2,8 +2,8 @@ package posidon.launcher.customizations.settingScreens
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -24,10 +24,12 @@ class Customizations : AppCompatActivity() {
         Settings.init(applicationContext)
         applyFontSetting()
         setContentView(R.layout.customizations)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0) {
-            findViewById<View>(R.id.quickStepOptions).visibility = View.VISIBLE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+            else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         if (Settings["dev:enabled", false]) {
             findViewById<View>(R.id.devoptions).visibility = View.VISIBLE

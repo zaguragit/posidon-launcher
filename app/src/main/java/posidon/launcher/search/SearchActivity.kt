@@ -35,7 +35,7 @@ import posidon.android.loader.TextLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.external.Kustom
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.*
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.ItemLongPress

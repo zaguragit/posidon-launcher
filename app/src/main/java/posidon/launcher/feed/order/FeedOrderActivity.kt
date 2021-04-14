@@ -2,6 +2,7 @@ package posidon.launcher.feed.order
 
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -30,7 +31,8 @@ class FeedOrderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.custom_feed_order)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         recycler = findViewById<RecyclerView>(R.id.recycler).apply {
             val p = dp(4).toInt()

@@ -215,15 +215,18 @@ class NotificationService : NotificationListenerService() {
 
         private fun handleMusicNotification(context: Context, notification: StatusBarNotification) {
             val icon = getIcon(context, notification)
+            val extras = notification.notification.extras
 
-            var title = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
+            //println(extras.keySet().joinToString("\n") { "$it -> " + extras[it].toString() })
+
+            var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
                 try { title = context.packageManager.getApplicationLabel(context.packageManager.getApplicationInfo(notification.packageName, 0)) }
                 catch (e: Exception) { e.printStackTrace() }
             }
 
-            var subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
-            if (subtitle == null) subtitle = notification.notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
+            var subtitle = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
+            if (subtitle == null) subtitle = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
             Palette.from(icon!!.toBitmap()).generate {
                 val def = Settings["notificationbgcolor", -0x1]

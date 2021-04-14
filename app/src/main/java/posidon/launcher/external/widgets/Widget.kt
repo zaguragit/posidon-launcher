@@ -50,7 +50,7 @@ class Widget(
                     activity.startActivityForResult(intent, REQUEST_BIND_WIDGET)
                 }
                 Settings["widget:$id"] = provider.packageName + "/" + provider.className + "/" + id
-                WidgetSection(Tools.appContext!!, Widget(id))
+                WidgetSection(activity.applicationContext, Widget(id))
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -82,7 +82,7 @@ class Widget(
 
         fun selectWidget(activity: Activity, onSelect: (WidgetSection) -> Unit) {
 
-            val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
+            val widgetManager = AppWidgetManager.getInstance(activity.applicationContext)
 
             BottomSheetDialog(activity, R.style.bottomsheet).apply {
                 setContentView(LinearLayout(context).apply {
@@ -92,12 +92,12 @@ class Widget(
                         setTextColor(context.resources.getColor(R.color.cardtitle))
                         textSize = 24f
                         gravity = Gravity.CENTER_HORIZONTAL
-                        val p = activity.dp(8).toInt()
+                        val p = dp(8).toInt()
                         setPadding(p, p, p, p)
                     })
                     addView(RecyclerView(context).apply {
                         isVerticalFadingEdgeEnabled = true
-                        setFadingEdgeLength(context.dp(28).toInt())
+                        setFadingEdgeLength(dp(28).toInt())
                         layoutManager = GridLayoutManager(context, 2)
 
                         class VH(
@@ -121,24 +121,24 @@ class Widget(
                                 }
                                 val preview = ImageView(context)
                                 val icon = ImageView(context).apply {
-                                    val p = context.dp(8).toInt()
+                                    val p = dp(8).toInt()
                                     setPadding(p, p, p, p)
                                 }
                                 val v = CardView(context).apply {
                                     layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
-                                        val m = context.dp(8).toInt()
+                                        val m = dp(8).toInt()
                                         setMargins(m, m, m, m)
                                     }
                                     setCardBackgroundColor(resources.getColor(R.color.cardbg))
                                     cardElevation = 10f
-                                    radius = context.dp(16)
+                                    radius = dp(16)
                                     preventCornerOverlap = true
                                     clipToPadding = true
                                     addView(LinearLayout(context).apply {
                                         orientation = LinearLayout.VERTICAL
-                                        val h = context.dp(48).toInt()
+                                        val h = dp(48).toInt()
                                         addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenWidth(context) / 2 - h))
-                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.dp(2).toInt()))
+                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(2).toInt()))
                                         addView(LinearLayout(context).apply {
                                             orientation = LinearLayout.HORIZONTAL
                                             addView(icon, LinearLayout.LayoutParams(h, h))
@@ -155,12 +155,12 @@ class Widget(
                             override fun onBindViewHolder(holder: VH, i: Int) {
                                 val p = providers[i]
                                 holder.label.text = p.loadLabel(pm)
-                                holder.preview.setImageDrawable(previewCache[i]
-                                    ?: p.loadPreviewImage(context, resources.displayMetrics.densityDpi).also { previewCache[i] = it })
                                 holder.icon.setImageDrawable(iconCache[i]
                                     ?: p.loadIcon(context, resources.displayMetrics.densityDpi).also { iconCache[i] = it })
+                                holder.preview.setImageDrawable(previewCache[i]
+                                    ?: (p.loadPreviewImage(context, resources.displayMetrics.densityDpi) ?: iconCache[i]).also { previewCache[i] = it })
                                 holder.itemView.setOnClickListener {
-                                    val widgetId = AppWidgetHost(Tools.appContext, HOST_ID)
+                                    val widgetId = AppWidgetHost(activity.applicationContext, HOST_ID)
                                         .also { tmpHost = it }
                                         .allocateAppWidgetId()
                                     if (p.configure != null) {
@@ -193,7 +193,7 @@ class Widget(
 
     fun fromSettings(widgetLayout: ResizableLayout): Boolean {
         return try {
-            val widgetManager = AppWidgetManager.getInstance(Tools.appContext)
+            val widgetManager = AppWidgetManager.getInstance(widgetLayout.context.applicationContext)
             val str = Settings["widget:$widgetId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
@@ -220,7 +220,7 @@ class Widget(
                 }
             }
             widgetLayout.removeView(hostView)
-            hostView = host.createView(widgetLayout.context, id, providerInfo).apply {
+            hostView = host.createView(widgetLayout.context.applicationContext, id, providerInfo).apply {
                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 }
@@ -240,7 +240,7 @@ class Widget(
         widgetLayout.removeView(hostView)
         hostView = null
         //widgetLayout.visibility = View.GONE
-        Settings["widget:$widgetId"] = ""
+        Settings["widget:$widgetId"] = null
     }
 
     fun resize(newHeight: Int) {
@@ -249,7 +249,6 @@ class Widget(
         val height = (newHeight / density).toInt()
         try {
             hostView!!.updateAppWidgetSize(null, width, height, width, height)
-            println("resized")
         } catch (e: Exception) { e.printStackTrace() }
     }
 
