@@ -1,6 +1,6 @@
 package posidon.launcher
 
-import posidon.launcher.external.Kustom
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.App
 
 object Global {

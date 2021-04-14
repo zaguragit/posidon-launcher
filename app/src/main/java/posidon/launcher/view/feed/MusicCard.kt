@@ -94,26 +94,26 @@ class MusicCard : CardView, FeedSection {
 
     val musicCardOverImg = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        setPaddingRelative(context.dp(16).toInt(), context.dp(18).toInt(), context.dp(128).toInt(), 0)
+        setPaddingRelative(dp(16).toInt(), dp(18).toInt(), dp(128).toInt(), 0)
 
         val linearLayout = LinearLayout(context).apply {
             this.orientation = LinearLayout.HORIZONTAL
             this.gravity = Gravity.BOTTOM
-            setPadding(0, context.dp(10).toInt(), 0, context.dp(14).toInt())
+            setPadding(0, dp(10).toInt(), 0, dp(14).toInt())
             layoutDirection = LAYOUT_DIRECTION_LTR
 
-            addView(musicPrev, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()))
-            addView(musicPlay, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()).apply {
-                setMargins(context.dp(6).toInt(), 0, context.dp(6).toInt(), 0)
+            addView(musicPrev, LinearLayout.LayoutParams(dp(36).toInt(), dp(32).toInt()))
+            addView(musicPlay, LinearLayout.LayoutParams(dp(36).toInt(), dp(32).toInt()).apply {
+                setMargins(dp(12).toInt(), 0, dp(12).toInt(), 0)
             })
-            addView(musicNext, LinearLayout.LayoutParams(context.dp(36).toInt(), context.dp(32).toInt()))
+            addView(musicNext, LinearLayout.LayoutParams(dp(36).toInt(), dp(32).toInt()))
         }
 
         addView(musicCardTrackTitle, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            marginStart = context.dp(6).toInt()
+            marginStart = dp(6).toInt()
         })
         addView(musicCardTrackArtist, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-            marginStart = context.dp(6).toInt()
+            marginStart = dp(6).toInt()
         })
         addView(linearLayout, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }

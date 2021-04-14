@@ -28,7 +28,8 @@ class CustomTheme : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.custom_theme)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         val pm = packageManager
 

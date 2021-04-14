@@ -38,7 +38,8 @@ class WallActivity : AppCompatActivity() {
         applyFontSetting()
         setContentView(R.layout.wall_preview)
         loading = findViewById(R.id.loading)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         var image = img
         if (image != null && image.height / image.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) {
             image = Wallpaper.centerCropWallpaper(this, image)

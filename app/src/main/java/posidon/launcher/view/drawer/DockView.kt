@@ -1,5 +1,6 @@
 package posidon.launcher.view.drawer
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -8,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.UserHandle
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
@@ -31,6 +33,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -342,5 +345,42 @@ class DockView : LinearLayout {
         val right = left + iconWidth
         val top = bottom - v.measuredHeight.toFloat()
         rectF.set(left, top, right, bottom)
+    }
+
+    /**
+     * Sets [outLocation] to the location of the icon
+     * @return index in dock
+     * If icon isn't in the dock, outLocation will be zeroed out and -1 will be returned
+     */
+    fun getLocationForApp(c: ComponentName, user: UserHandle, outLocation: RectF): Int {
+        val packageName = c.packageName
+        val list = LinkedList<Pair<String, Int>>()
+        for ((item, i) in Dock.indexed()) {
+            when (item) {
+                is App -> if (
+                        item.packageName == packageName &&
+                        item.userHandle == user
+                ) list.add(item.name to i)
+                is Folder -> for (folderItem in item.items) {
+                    if (folderItem is App &&
+                            folderItem.packageName == packageName &&
+                            folderItem.userHandle == user) {
+                        list.add(folderItem.name to i)
+                        break
+                    }
+                }
+            }
+        }
+        val className = c.className
+        for ((name, i) in list) if (name == className) {
+            getPositionOnScreen(i, outLocation)
+            return i
+        }
+        var retI = -1
+        list.firstOrNull()?.let {
+            retI = it.second
+            getPositionOnScreen(it.second, outLocation)
+        }
+        return retI
     }
 }

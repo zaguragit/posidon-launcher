@@ -2,6 +2,7 @@ package posidon.launcher.customizations.settingScreens.general
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -59,7 +60,8 @@ class CustomBackground : AppCompatActivity() {
                 }, ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
             }, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
         })
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         Global.customized = true
     }
 

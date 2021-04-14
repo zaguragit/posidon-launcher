@@ -16,7 +16,7 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.external.Kustom
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings

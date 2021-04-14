@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
-import posidon.launcher.external.Kustom
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem

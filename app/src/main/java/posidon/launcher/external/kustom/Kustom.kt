@@ -1,4 +1,4 @@
-package posidon.launcher.external
+package posidon.launcher.external.kustom
 
 import android.content.Intent
 import posidon.launcher.tools.Tools
