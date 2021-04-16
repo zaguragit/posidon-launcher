@@ -22,7 +22,7 @@ object Customizer {
         val textSize = Settings["$namespace:text_size", defaultTextSize]
         view.textSize = textSize
         view.layoutParams = view.layoutParams.also {
-            it.height = view.context.sp(textSize).toInt()
+            it.height = (view.sp(textSize) + view.dp(4)).toInt()
         }
     }
 

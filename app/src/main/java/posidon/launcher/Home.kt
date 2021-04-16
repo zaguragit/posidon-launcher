@@ -13,7 +13,6 @@ import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.feed_chooser_option_edit_dialog.view.*
 import launcherutils.LiveWall
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
