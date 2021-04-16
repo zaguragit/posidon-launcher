@@ -152,7 +152,7 @@ object Settings {
 
     fun saveBackup() = ExternalStorage.writeDataOutsideScope(
             SettingsFile(ints, floats, bools, strings, lists), context.get()!!,
-            "${SimpleDateFormat("home_MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
+            "${SimpleDateFormat("'home_'MMMd-HHmmss", Locale.getDefault()).format(Date())}.plb", true)
 
     fun restoreFromBackup(uri: Uri) = ExternalStorage.readAny(context.get()!!, uri)?.let {
         if (it is SettingsFile) {

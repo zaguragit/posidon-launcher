@@ -99,20 +99,10 @@
         <item name="android:textColor">@color/cardtitle</item>
     </style>
 
-    <style name="customcardtitle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:padding">18dp</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/cardtitle</item>
-    </style>
-
     <style name="settingscard">
-        <item name="android:background">@drawable/settings_card</item>
         <item name="android:layout_margin">8dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
         <item name="android:clipToPadding">false</item>
     </style>
 

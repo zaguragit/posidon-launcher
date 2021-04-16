@@ -49,14 +49,17 @@ class NotificationCards : LinearLayout, FeedSection {
     private val parentNotificationTitle = TextView(context).apply {
         textSize = 17f
         gravity = Gravity.CENTER_VERTICAL
+        run {
+            val h = dp(8).toInt()
+            setPadding(h, 0, h, 0)
+        }
     }
 
     private val parentNotificationBtn = ImageView(context).apply {
         setImageResource(R.drawable.ic_notification)
-        setBackgroundResource(R.drawable.button_bg_round)
         run {
-            val p = dp(8).toInt()
-            setPadding(p, p, p, p)
+            val p = dp(4).toInt()
+            setPaddingRelative(p, p, p, p)
         }
     }
 
@@ -64,9 +67,8 @@ class NotificationCards : LinearLayout, FeedSection {
 
         orientation = HORIZONTAL
         run {
-            val h = dp(20).toInt()
             val v = dp(12).toInt()
-            setPadding(h, v, h, v)
+            setPadding(v, v, v, v)
         }
 
         addView(arrowUp, LayoutParams(MATCH_PARENT, dp(48).toInt()))

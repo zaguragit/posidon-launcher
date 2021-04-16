@@ -8,7 +8,6 @@ import android.view.ViewParent
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.main.view.*
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.sp
 import posidon.launcher.R
@@ -16,26 +15,23 @@ import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.drawer.DrawerView
 import kotlin.math.min
 
 @SuppressLint("ViewConstructor")
-class AppSectionView(drawer: DrawerView) : ItemGroupView(drawer.context) {
+class AppSectionView(val drawer: DrawerView) : ItemGroupView(drawer.context) {
 
-    private val appSize = Tools.appContext!!.dp(when (Settings["icsize", 1]) {
-            0 -> 64
-            2 -> 84
-            else -> 74
-        }).toInt()
+    private val appSize = dp(when (Settings["icsize", 1]) {
+        0 -> 64
+        2 -> 84
+        else -> 74
+    }).toInt()
 
     init {
         when (Settings["drawer:sec_name_pos", 0]) {
-            0 -> {
-                orientation = VERTICAL
-            }
+            0 -> orientation = VERTICAL
             1 -> {
                 orientation = HORIZONTAL
                 textView.layoutParams.width = context.sp(28).toInt()
@@ -49,7 +45,7 @@ class AppSectionView(drawer: DrawerView) : ItemGroupView(drawer.context) {
         gridLayout.run {
             columnCount = Settings["drawer:columns", 4]
             if (Settings["drawer:columns", 4] > 2) {
-                setPaddingRelative(Tools.appContext!!.dp(12).toInt(), 0, 0, 0)
+                setPaddingRelative(dp(12).toInt(), 0, 0, 0)
             }
         }
         textView.run {

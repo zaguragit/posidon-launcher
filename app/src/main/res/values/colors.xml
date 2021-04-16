@@ -7,7 +7,7 @@
     <color name="settingscardbg">#111213</color>
     <color name="cardbg">#111213</color>
     <color name="cardtxt">#d0d1d2</color>
-    <color name="cardtxticon">#808182</color>
+    <color name="cardtxticon">#545F6A</color>
     <color name="cardSeparator">#33dddddd</color>
     <color name="cardtitle">#E1E2E3</color>
     <color name="hint">#252627</color>
