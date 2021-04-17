@@ -14,7 +14,7 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.applyFontSetting
 import kotlin.concurrent.thread
 
 abstract class AppTickingActivity : AppCompatActivity() {

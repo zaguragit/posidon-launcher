@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
@@ -184,31 +183,6 @@ object Tools {
         return Triple(x, y, gravity)
     }
 }
-
-inline fun Activity.applyFontSetting() {
-    when (Settings["font", "lexendDeca"]) {
-        "sansserif" -> theme.applyStyle(R.style.font_sans_serif, true)
-        "posidonsans" -> theme.applyStyle(R.style.font_posidon_sans, true)
-        "monospace" -> theme.applyStyle(R.style.font_monospace, true)
-        "ubuntu" -> theme.applyStyle(R.style.font_ubuntu, true)
-        "lexendDeca" -> theme.applyStyle(R.style.font_lexend_deca, true)
-        "inter" -> theme.applyStyle(R.style.font_inter, true)
-        "openDyslexic" -> theme.applyStyle(R.style.font_open_dyslexic, true)
-    }
-}
-
-inline val Context.mainFont: Typeface
-    get() = if (Settings["font", "lexendDeca"] == "sansserif" || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
-    else {
-        when (Settings["font", "lexendDeca"]) {
-            "posidonsans" -> resources.getFont(R.font.posidon_sans)
-            "monospace" -> resources.getFont(R.font.ubuntu_mono)
-            "ubuntu" -> resources.getFont(R.font.ubuntu_medium)
-            "openDyslexic" -> resources.getFont(R.font.open_dyslexic3)
-            "inter" -> resources.getFont(R.font.inter)
-            else -> resources.getFont(R.font.lexend_deca)
-        }
-    }
 
 inline fun Context.getStatusBarHeight(): Int {
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")

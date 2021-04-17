@@ -8,6 +8,7 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.util.StateSet
+import androidx.appcompat.widget.SwitchCompat
 import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.tools.Tools
@@ -17,7 +18,7 @@ import posidon.launcher.tools.vibrate
 class Switch(
     context: Context,
     attrs: AttributeSet? = null
-) : android.widget.Switch(context, attrs) {
+) : SwitchCompat(context, attrs) {
 
     var accentColor = Global.accentColor
         set(value) {

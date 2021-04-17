@@ -138,7 +138,7 @@
                         android:singleLine="true"/>
                     <TextClock
                         android:id="@+id/datefprev"
-                        style="@style/settingsbtn"
+                        style="@style/settingsTextPreview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"

@@ -28,6 +28,7 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.updateNavbarHeight
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.BottomDrawerBehavior.*

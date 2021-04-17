@@ -40,7 +40,7 @@ abstract class SettingView(
                 setCompoundDrawablesRelativeWithIntrinsicBounds(a.getResourceId(R.styleable.SettingView_drawable, 0), 0, 0, 0)
             }
             text = a.getString(R.styleable.SettingView_label)
-            textSize = 17f
+            textSize = 16f
             includeFontPadding = false
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
             compoundDrawablePadding = dp(15).toInt()
@@ -51,9 +51,8 @@ abstract class SettingView(
             } else {
                 setTextColor(context.resources.getColor(R.color.cardtxt))
             }
-            layoutParams = LayoutParams(0, dp(60).toInt(), 1f)
         }
-        addView(labelView)
+        addView(labelView, LayoutParams(0, dp(60).toInt(), 1f))
         populate(attrs, defStyle, defStyleRes)
     }
 

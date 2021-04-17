@@ -122,7 +122,7 @@
                         android:layout_weight="1"
                         android:text="@string/app_open_animation"/>
                     <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
+                        style="@style/settingsTextPreview"
                         android:id="@+id/animationOptions"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>

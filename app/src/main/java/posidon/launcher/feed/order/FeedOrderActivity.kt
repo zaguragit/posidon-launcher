@@ -16,8 +16,8 @@ import posidon.launcher.R
 import posidon.launcher.external.widgets.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.getStatusBarHeight
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
 

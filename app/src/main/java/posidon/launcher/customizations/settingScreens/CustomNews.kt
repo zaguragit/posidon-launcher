@@ -19,7 +19,7 @@ import posidon.launcher.feed.news.opml.OpmlElement
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.Spinner
 import java.io.InputStream
 import java.text.SimpleDateFormat

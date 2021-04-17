@@ -44,7 +44,7 @@
                         android:text="@string/font"/>
                     <TextView
                         android:id="@+id/fontname"
-                        style="@style/settingsbtn"
+                        style="@style/settingsTextPreview"
                         android:layout_width="wrap_content"
                         android:text="@string/sans_serif"/>
                 </LinearLayout>
@@ -84,7 +84,7 @@
                         android:text="@string/icon_pack" />
                     <TextView
                         android:id="@+id/iconpackselector"
-                        style="@style/settingsbtn"
+                        style="@style/settingsTextPreview"
                         android:layout_width="0dp"
                         android:gravity="end|center_vertical"
                         android:layout_weight="1"/>
@@ -117,7 +117,7 @@
                         android:drawableStart="@drawable/ic_color_dropper"
                         android:text="@string/background_type"/>
                     <posidon.launcher.view.Spinner
-                        style="@style/settingsbtn"
+                        style="@style/settingsTextPreview"
                         android:id="@+id/iconBackgrounds"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
@@ -166,10 +166,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="8dp">
-                            <ImageView
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:src="@mipmap/ic"/>
                             <TextView
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
@@ -184,17 +180,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:padding="8dp">
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                app:cardCornerRadius="32dp"
-                                app:cardPreventCornerOverlap="true"
-                                app:cardBackgroundColor="@color/accent">
-                                <ImageView
-                                    android:layout_width="64dp"
-                                    android:layout_height="64dp"
-                                    android:src="@mipmap/ic"/>
-                            </androidx.cardview.widget.CardView>
                             <TextView
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
@@ -209,17 +194,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:padding="8dp">
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                app:cardCornerRadius="16dp"
-                                app:cardPreventCornerOverlap="true"
-                                app:cardBackgroundColor="@color/accent">
-                                <ImageView
-                                    android:layout_width="64dp"
-                                    android:layout_height="64dp"
-                                    android:src="@mipmap/ic"/>
-                            </androidx.cardview.widget.CardView>
                             <TextView
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
@@ -234,11 +208,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:padding="8dp">
-                            <ImageView
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:src="@mipmap/ic"
-                                android:background="@color/accent"/>
                             <TextView
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"
@@ -253,26 +222,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:padding="8dp">
-                            <FrameLayout
-                                android:layout_width="64dp"
-                                android:layout_height="64dp">
-                                <View
-                                    android:layout_width="64dp"
-                                    android:layout_height="64dp"
-                                    android:background="@drawable/squircle"
-                                    android:backgroundTint="@color/accent"/>
-                                <androidx.cardview.widget.CardView
-                                    android:layout_width="64dp"
-                                    android:layout_height="64dp"
-                                    app:cardCornerRadius="32dp"
-                                    app:cardPreventCornerOverlap="true"
-                                    app:cardElevation="0dp">
-                                    <ImageView
-                                        android:layout_width="64dp"
-                                        android:layout_height="64dp"
-                                        android:src="@mipmap/ic"/>
-                                </androidx.cardview.widget.CardView>
-                            </FrameLayout>
                             <TextView
                                 style="@style/settingsbtn"
                                 android:layout_width="wrap_content"

@@ -14,7 +14,6 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.mainFont
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -23,7 +22,7 @@ import kotlin.random.Random
 object Icons {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    fun generateAdaptiveIcon(drawable: Drawable): Drawable {
+    fun generateAdaptiveIcon(drawable: Drawable, iconShape: IconShape = IconShape(Settings["icshape", 4])): Drawable {
         var containsAnimatable = drawable is Animatable
         val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val layerDrawable = if (drawable is AdaptiveIconDrawable) {
@@ -80,54 +79,14 @@ object Icons {
             val height = layerDrawable.intrinsicHeight
             layerDrawable.setBounds(0, 0, width, height)
 
-            val icShape = Settings["icshape", 4]
-            if (icShape == 3) {
+            if (iconShape.isSquare) {
                 layerDrawable
             } else {
-                MaskedDrawable(layerDrawable, getAdaptiveIconPath(icShape, width, height))
+                MaskedDrawable(layerDrawable, iconShape.getPath(width, height))
             }
         } else drawable
         return if (containsAnimatable) d else {
             BitmapDrawable(Tools.appContext!!.resources, d.toBitmap())
-        }
-    }
-
-    fun getAdaptiveIconPath(icShape: Int, width: Int, height: Int): Path {
-        val minSize = min(width, height)
-        if (icShape == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val path = AdaptiveIconDrawable(null, null).iconMask
-            val rect = RectF()
-            path.computeBounds(rect, true)
-            val matrix = Matrix()
-            matrix.setScale(minSize / rect.right, minSize / rect.bottom)
-            path.transform(matrix)
-            path.fillType = Path.FillType.INVERSE_EVEN_ODD
-            return path
-        } else {
-            val path = Path()
-            when (icShape) {
-                1 -> path.addCircle(width / 2f, height / 2f, minSize / 2f - 2, Path.Direction.CCW)
-                2 -> path.addRoundRect(2f, 2f, width - 2f, height - 2f, minSize / 4f, minSize / 4f, Path.Direction.CCW)
-                4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
-                    val xx = 2
-                    val yy = 2
-                    val radius = minSize / 2 - 2
-                    val radiusToPow = radius * radius * radius.toDouble()
-                    path.moveTo(-radius.toFloat(), 0f)
-                    for (x in -radius..radius) {
-                        path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
-                    }
-                    for (x in radius downTo -radius) {
-                        path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
-                    }
-                    path.close()
-                    val matrix = Matrix()
-                    matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
-                    path.transform(matrix)
-                }
-            }
-            path.fillType = Path.FillType.INVERSE_EVEN_ODD
-            return path
         }
     }
 
@@ -165,7 +124,7 @@ object Icons {
     }
 
     private val pics = HashMap<Int, Drawable>()
-    fun generateContactPicture(name: String): Drawable = pics.getOrPut((name[0].toInt() shl 16) + name[1].toInt()) {
+    fun generateContactPicture(name: String, iconShape: IconShape): Drawable = pics.getOrPut((name[0].toInt() shl 16) + name[1].toInt()) {
         val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val random = Random((name[0].toInt() shl 16) + name[1].toInt())
@@ -184,9 +143,8 @@ object Icons {
         val x = canvas.width / 2f
         val y = (canvas.height / 2f - (textP.descent() + textP.ascent()) / 2f)
         canvas.drawText(name[0].toString(), x, y, textP)
-        val icShape = Settings["icshape", 4]
-        if (icShape != 3) {
-            canvas.drawPath(getAdaptiveIconPath(icShape, 108, 108), Paint().apply {
+        if (!iconShape.isSquare) {
+            canvas.drawPath(iconShape.getPath(108, 108), Paint().apply {
                 isAntiAlias = true
                 xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
             })
@@ -215,6 +173,50 @@ object Icons {
             try {
                 Graphics.tryAnimate(Home.instance, drawable)
             } catch (e: Exception) {}
+        }
+    }
+
+    inline class IconShape(val int: Int) {
+        inline val isSquare get() = int == 3
+        inline val isSystem get() = int == 0
+
+        fun getPath(width: Int, height: Int): Path {
+            val minSize = min(width, height)
+            if (isSystem && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val path = AdaptiveIconDrawable(null, null).iconMask
+                val rect = RectF()
+                path.computeBounds(rect, true)
+                val matrix = Matrix()
+                matrix.setScale(minSize / rect.right, minSize / rect.bottom)
+                path.transform(matrix)
+                path.fillType = Path.FillType.INVERSE_EVEN_ODD
+                return path
+            } else {
+                val path = Path()
+                when (int) {
+                    1 -> path.addCircle(width / 2f, height / 2f, minSize / 2f - 2, Path.Direction.CCW)
+                    2 -> path.addRoundRect(2f, 2f, width - 2f, height - 2f, minSize / 4f, minSize / 4f, Path.Direction.CCW)
+                    4 -> { //Formula: (|x|)^3 + (|y|)^3 = radius^3
+                        val xx = 2
+                        val yy = 2
+                        val radius = minSize / 2 - 2
+                        val radiusToPow = radius * radius * radius.toDouble()
+                        path.moveTo(-radius.toFloat(), 0f)
+                        for (x in -radius..radius) {
+                            path.lineTo(x.toFloat(), Math.cbrt(radiusToPow - abs(x * x * x)).toFloat())
+                        }
+                        for (x in radius downTo -radius) {
+                            path.lineTo(x.toFloat(), (-Math.cbrt(radiusToPow - abs(x * x * x))).toFloat())
+                        }
+                        path.close()
+                        val matrix = Matrix()
+                        matrix.postTranslate(xx + radius.toFloat(), yy + radius.toFloat())
+                        path.transform(matrix)
+                    }
+                }
+                path.fillType = Path.FillType.INVERSE_EVEN_ODD
+                return path
+            }
         }
     }
 }

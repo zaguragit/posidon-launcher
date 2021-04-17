@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.widget.TextViewCompat
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -63,10 +64,10 @@ class ColorSettingView : IntSettingView {
         val hsv = FloatArray(3)
         Color.colorToHSV(it, hsv)
         hsv[1] = min(hsv[1],0.5f)
-        hsv[2] = min(max(0.6f, hsv[2]), 0.9f)
+        hsv[2] = min(max(0.4f, hsv[2]), 0.75f)
         val pastel = Color.HSVToColor(hsv)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            labelView.compoundDrawableTintList = ColorStateList.valueOf(pastel)
+            TextViewCompat.setCompoundDrawableTintList(labelView, ColorStateList.valueOf(pastel))
         }
     }
 }

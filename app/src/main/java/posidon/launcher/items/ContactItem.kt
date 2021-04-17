@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
+import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Icons
 
@@ -20,7 +21,7 @@ class ContactItem private constructor(
 ) : LauncherItem() {
 
     override val icon: Drawable? = if (iconUri == null)
-        Icons.generateContactPicture(label)
+        Icons.generateContactPicture(label, Icons.IconShape(Settings["icshape", 4]))
     else null
 
     override fun open(context: Context, view: View, dockI: Int) {

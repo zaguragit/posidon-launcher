@@ -12,7 +12,7 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.PinnedShortcut
 import posidon.launcher.tools.Dock
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.drawer.DockView
 
 @RequiresApi(Build.VERSION_CODES.O)
