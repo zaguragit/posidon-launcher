@@ -20,6 +20,7 @@
             android:id="@+id/catlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/custom_catbg"
             android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/card"

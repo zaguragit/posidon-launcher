@@ -45,6 +45,7 @@ import posidon.launcher.tools.*
 import posidon.launcher.tools.Tools.searchOptimize
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.tools.theme.Wallpaper
+import posidon.launcher.tools.theme.applyFontSetting
 import kotlin.concurrent.thread
 import kotlin.math.abs
 

@@ -33,7 +33,7 @@ object ColorTools {
         val d = GradientDrawable()
         d.shape = GradientDrawable.OVAL
         d.setColor(color)
-        d.setStroke(1, -0x1000000)
+        d.setStroke(2, -0x1000000)
         return d
     }
 

@@ -26,6 +26,7 @@ import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.ColorTools.pickColorNoAlpha
+import posidon.launcher.tools.theme.applyFontSetting
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader

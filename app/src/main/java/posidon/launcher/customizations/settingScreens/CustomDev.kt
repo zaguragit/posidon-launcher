@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.applyFontSetting
 
 
 class CustomDev : AppCompatActivity() {

@@ -29,20 +29,18 @@ class SpinnerSettingView : IntSettingView {
             selectionI = Settings[key, default]
 
             includeFontPadding = false
-            textSize = 17f
-            setTextColor(context.resources.getColor(R.color.cardtxt))
+            textSize = 15f
+            setTextColor(context.resources.getColor(R.color.cardspinnertxt))
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
 
             val h = dp(8).toInt()
             setPadding(h, 0, h, 0)
 
-            layoutParams = LayoutParams(WRAP_CONTENT, dp(60).toInt())
-
             setSelectionChangedListener {
                 Settings[key] = it.selectionI
             }
         }
-        addView(spinner)
+        addView(spinner, LayoutParams(WRAP_CONTENT, dp(60).toInt()))
         a.recycle()
     }
 }

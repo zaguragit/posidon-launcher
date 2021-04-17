@@ -106,9 +106,9 @@ class Folder : LauncherItem {
             layerDrawable.setBounds(0, 0, width, height)
             layerDrawable.draw(canvas)
 
-            val icShape = Settings["icshape", 4]
-            if (icShape != 3) {
-                canvas.drawPath(Icons.getAdaptiveIconPath(icShape, width, height), Paint().apply {
+            val iconShape = Icons.IconShape(Settings["icshape", 4])
+            if (!iconShape.isSquare) {
+                canvas.drawPath(iconShape.getPath(width, height), Paint().apply {
                     isAntiAlias = true
                     xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
                 })

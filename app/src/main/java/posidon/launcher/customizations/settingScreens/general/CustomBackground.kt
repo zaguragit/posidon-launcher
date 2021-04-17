@@ -20,8 +20,8 @@ import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
 import posidon.launcher.tools.theme.Customizer
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.setting.NumberBarSettingView
 
 class CustomBackground : AppCompatActivity() {

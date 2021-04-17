@@ -3,19 +3,28 @@ package posidon.launcher.customizations.settingScreens
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.drawable.MaskedDrawable
+import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.Fonts
+import posidon.launcher.tools.theme.Icons
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.Spinner
 import posidon.launcher.view.setting.ColorSettingView
 
@@ -34,68 +43,61 @@ class CustomTheme : AppCompatActivity() {
         val pm = packageManager
 
         findViewById<TextView>(R.id.icShapeTxt).setTextColor(Global.accentColor)
-        val i = findViewById<TextView>(R.id.iconpackselector)
-        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
-        catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
+        findViewById<TextView>(R.id.iconpackselector).run {
+            try { text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
+            catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
+        }
 
         val fontName = findViewById<TextView>(R.id.fontname)
-        when (Settings["font", "lexendDeca"]) {
-            "sansserif" -> fontName.text = getString(R.string.sans_serif)
-            "posidonsans" -> fontName.text = getString(R.string.posidon_sans)
-            "monospace" -> fontName.text = getString(R.string.monospace)
-            "ubuntu" -> fontName.text = getString(R.string.ubuntu)
-            "lexendDeca" -> fontName.text = getString(R.string.lexend_deca)
-            "inter" -> fontName.text = getString(R.string.inter)
-            "openDyslexic" -> fontName.text = getString(R.string.open_dyslexic)
-        }
+        fontName.text = Fonts.getFontName(this)
         findViewById<View>(R.id.fontbox).setOnClickListener {
             Dialog(this@CustomTheme).apply {
                 setContentView(R.layout.font_list)
                 findViewById<View>(R.id.sansserif).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "sansserif"
+                    Settings["font"] = Fonts.SANS_SERIF
                     fontName.text = getString(R.string.sans_serif)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.posidonsans).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "posidonsans"
+                    Settings["font"] = Fonts.POSIDON_SANS
                     fontName.text = getString(R.string.posidon_sans)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.monospace).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "monospace"
+                    Settings["font"] = Fonts.MONOSPACE
                     fontName.text = getString(R.string.monospace)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.ubuntu).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "ubuntu"
+                    Settings["font"] = Fonts.UBUNTU
                     fontName.text = getString(R.string.ubuntu)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.lexendDeca).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "lexendDeca"
+                    Settings["font"] = Fonts.LEXEND_DECA
                     fontName.text = getString(R.string.lexend_deca)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.inter).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "inter"
+                    Settings["font"] = Fonts.INTER
                     fontName.text = getString(R.string.inter)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
                 }
                 findViewById<View>(R.id.open_dyslexic).setOnClickListener {
                     dismiss()
-                    Settings["font"] = "openDyslexic"
+                    Settings["font"] = Fonts.OPEN_DYSLEXIC
                     fontName.text = getString(R.string.open_dyslexic)
                     applyFontSetting()
                     Home.instance.applyFontSetting()
@@ -136,6 +138,15 @@ class CustomTheme : AppCompatActivity() {
             findViewById<View>(R.id.icshapesettings).visibility = View.GONE
             findViewById<View>(R.id.recolorWhiteBGSetting).visibility = View.GONE
         } else {
+            val size = dp(64).toInt()
+            val bg = BitmapDrawable(resources, ColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
+            bg.setBounds(0, 0, size, size)
+            icShapeViews.onEachIndexed { i, v ->
+                (v as ViewGroup).addView(ImageView(this).apply {
+                    val s = Icons.IconShape(i)
+                    setImageDrawable(if (s.isSquare) bg else MaskedDrawable(bg, s.getPath(size, size)))
+                }, 0, ViewGroup.LayoutParams(size, size))
+            }
             icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         }
         Global.shouldSetApps = true

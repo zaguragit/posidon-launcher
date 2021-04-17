@@ -16,7 +16,7 @@ import posidon.launcher.R
 import posidon.launcher.customizations.FakeLauncherActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.applyFontSetting
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.Spinner
 import java.io.FileNotFoundException

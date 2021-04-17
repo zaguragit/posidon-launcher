@@ -25,6 +25,7 @@ import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.Wallpaper
+import posidon.launcher.tools.theme.applyFontSetting
 import java.io.File
 import java.io.FileOutputStream
 

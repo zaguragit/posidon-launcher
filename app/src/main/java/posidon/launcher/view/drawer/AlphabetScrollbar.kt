@@ -11,7 +11,7 @@ import androidx.annotation.IntDef
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.launcher.items.users.ItemLongPress
-import posidon.launcher.tools.mainFont
+import posidon.launcher.tools.theme.mainFont
 import posidon.launcher.view.HighlightAdapter
 import kotlin.math.roundToInt
 

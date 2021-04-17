@@ -24,6 +24,7 @@ import posidon.launcher.BuildConfig
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
+import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.LinearLayoutManager
 import java.net.URL
 
