@@ -17,6 +17,10 @@ interface FeedSection {
     fun updateIndex(i: Int) {}
     fun onDelete(feed: Feed) {}
 
+    fun onAppsLoaded(iterator: MutableIterator<FeedSection>) {}
+
+    override fun toString(): String
+
     companion object {
         operator fun invoke(
             context: Activity,

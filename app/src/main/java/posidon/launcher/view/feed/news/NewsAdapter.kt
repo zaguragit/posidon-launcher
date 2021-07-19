@@ -21,13 +21,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
-import posidon.android.loader.rss.FeedItem
+import posidon.android.loader.rss.RssItem
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -43,7 +44,7 @@ import posidon.launcher.view.feed.news.NewsAdapter.ViewHolder
 import java.util.*
 
 class NewsAdapter(
-    private val items: ArrayList<FeedItem>,
+    private val items: ArrayList<RssItem>,
     private val activity: Activity
 ) : RecyclerView.Adapter<ViewHolder>() {
 
@@ -223,7 +224,7 @@ class NewsAdapter(
         }
     }
 
-    private fun deleteArticle(feedItem: FeedItem, i: Int) {
+    private fun deleteArticle(feedItem: RssItem, i: Int) {
         items.remove(feedItem)
         notifyItemRemoved(i)
         notifyItemRangeChanged(i, items.size - i)
@@ -243,14 +244,14 @@ class NewsAdapter(
                 view.setPadding(0, 0, 0, Tools.navbarHeight)
                 view.layoutParams = view.layoutParams
                 setActionTextColor(Global.accentColor)
-                view.background = context.resources.getDrawable(R.drawable.card, null)
+                view.background = ContextCompat.getDrawable(context, R.drawable.card)
             }.show()
         }
     }
 
     override fun getItemCount() = items.size
 
-    fun updateFeed(feedModels: List<FeedItem>) {
+    fun updateFeed(feedModels: List<RssItem>) {
         this.items.clear()
         this.items.addAll(feedModels)
         this.notifyDataSetChanged()

@@ -46,11 +46,7 @@ abstract class SettingView(
             compoundDrawablePadding = dp(15).toInt()
             val h = dp(8).toInt()
             setPadding(h, 0, h, 0)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                setTextColor(context.getColor(R.color.cardtxt))
-            } else {
-                setTextColor(context.resources.getColor(R.color.cardtxt))
-            }
+            setTextColor(context.getColor(R.color.cardtxt))
         }
         addView(labelView, LayoutParams(0, dp(60).toInt(), 1f))
         populate(attrs, defStyle, defStyleRes)

@@ -23,17 +23,22 @@ abstract class AppTickingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applyFontSetting()
         setContentView(R.layout.custom_hidden_apps)
-        val adapter = Adapter(this, getApps())
-        findViewById<ListView>(R.id.list).adapter = adapter
-        window.navigationBarColor = resources.getColor(R.color.settingscardbg)
+        thread {
+            val apps = getApps()
+            runOnUiThread {
+                val adapter = Adapter(this, apps)
+                findViewById<ListView>(R.id.list).adapter = adapter
+                window.navigationBarColor = resources.getColor(R.color.settingscardbg)
 
-        findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                adapter.search(s.toString())
+                findViewById<EditText>(R.id.search).addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        adapter.search(s.toString())
+                    }
+                })
             }
-        })
+        }
     }
 
     abstract fun getApps(): List<App>

@@ -14,7 +14,7 @@ class CustomHiddenAppNotifications : AppTickingActivity() {
 
         val pacslist = packageManager.getInstalledPackages(0)
         for (i in pacslist.indices) {
-            apps.add(App(pacslist[i].packageName, pacslist[i].activities.firstOrNull()?.name ?: "", label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()).apply {
+            apps.add(App(pacslist[i].packageName, pacslist[i].activities?.firstOrNull()?.name ?: "", label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()).apply {
                 icon = pacslist[i].applicationInfo.loadIcon(packageManager)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     icon = Icons.generateAdaptiveIcon(icon!!)

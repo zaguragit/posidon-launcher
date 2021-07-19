@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
-import posidon.android.loader.rss.FeedItem
+import posidon.android.loader.rss.RssItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.FeedSection
@@ -40,7 +40,7 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
         }
     }
 
-    inline fun updateFeed(items: List<FeedItem>) {
+    inline fun updateFeed(items: List<RssItem>) {
         (adapter as NewsAdapter).updateFeed(items)
     }
 

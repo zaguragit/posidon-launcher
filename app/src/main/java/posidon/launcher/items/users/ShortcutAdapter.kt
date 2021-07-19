@@ -4,18 +4,15 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import posidon.launcher.R
 import posidon.launcher.items.users.ShortcutAdapter.ShortcutViewHolder
 
-@RequiresApi(api = Build.VERSION_CODES.N_MR1)
 class ShortcutAdapter(
     private val context: Context,
     private val shortcuts: List<ShortcutInfo>,

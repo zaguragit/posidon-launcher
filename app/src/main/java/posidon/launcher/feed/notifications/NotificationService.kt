@@ -8,7 +8,6 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.os.UserHandle
 import android.service.notification.NotificationListenerService
@@ -84,7 +83,7 @@ class NotificationService : NotificationListenerService() {
                 app.notificationCount = 0
             }
             if (notifications != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Settings["notifications:groupingType", "os"] == "os") {
+                if (Settings["notifications:groupingType", "os"] == "os") {
                     while (i < notifications.size) {
                         val notification = notifications[i]
 
@@ -238,7 +237,7 @@ class NotificationService : NotificationListenerService() {
 
         private fun formatNotification(context: Context, notification: StatusBarNotification): Notification {
             val extras = notification.notification.extras
-            val isSummary = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
+            val isSummary = notification.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
             var title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)
             if (title == null || title.toString().replace(" ", "").isEmpty()) {
                 try { title = context.packageManager.getApplicationLabel(context.packageManager.getApplicationInfo(notification.packageName, 0)) }
@@ -248,15 +247,13 @@ class NotificationService : NotificationListenerService() {
             var text = extras.getCharSequence(android.app.Notification.EXTRA_BIG_TEXT)
             if (text == null || isSummary) text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
-                if (messages != null) text = StringBuilder().apply {
-                    messages.forEach {
-                        val bundle = it as Bundle
-                        appendLine(bundle.getCharSequence("text"))
-                    }
-                    delete(lastIndex, length)
+            val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
+            if (messages != null) text = StringBuilder().apply {
+                messages.forEach {
+                    val bundle = it as Bundle
+                    appendLine(bundle.getCharSequence("text"))
                 }
+                delete(lastIndex, length)
             }
 
             //println(extras.keySet().joinToString("\n") { "$it -> " + extras[it].toString() })
@@ -283,7 +280,7 @@ class NotificationService : NotificationListenerService() {
         }
 
         private inline fun getIcon(context: Context, n: StatusBarNotification): Drawable? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) try {
+            try {
                 return n.notification.getLargeIcon().loadDrawable(context)
             } catch (ignore: Exception) {}
             try {

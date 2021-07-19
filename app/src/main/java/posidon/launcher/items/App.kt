@@ -13,14 +13,12 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Process
 import android.os.UserHandle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.toBitmap
@@ -54,17 +52,12 @@ class App(
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startMainActivity(ComponentName(packageName, name), userHandle, null, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
-                "clip_reveal" -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        ActivityOptions.makeClipRevealAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
-                    else ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()
-                }
+                "clip_reveal" -> ActivityOptions.makeClipRevealAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle()
                 else -> ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit).toBundle()
             })
         } catch (e: Exception) { e.printStackTrace() }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     fun getShortcuts(context: Context): List<ShortcutInfo>? {
         val shortcutQuery = ShortcutQuery()
         shortcutQuery.setQueryFlags(ShortcutQuery.FLAG_MATCH_DYNAMIC or ShortcutQuery.FLAG_MATCH_MANIFEST or ShortcutQuery.FLAG_MATCH_PINNED)
@@ -202,5 +195,7 @@ class App(
             hidden = tmpHidden
             setMapAndClearLast(appsByName)
         }
+
+        operator fun iterator() = appsByName.iterator()
     }
 }

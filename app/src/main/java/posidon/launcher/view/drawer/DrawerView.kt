@@ -15,6 +15,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
+import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
@@ -22,7 +23,6 @@ import posidon.android.conveniencelib.drawable.FastBitmapDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.Folder
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.DrawerAdapter
@@ -120,14 +120,15 @@ class DrawerView : LinearLayout {
         drawerGrid.scrollY = s
         scrollBar.updateAdapter()
         dock.loadAppsAndUpdateHome(this, home.feed, home.feed.desktopContent, home)
+        home.feed.onAppsLoaded()
     }
 
     fun setKustomVars() {
         if (Settings["kustom:variables:enable", false]) {
             if (behavior.state == BottomDrawerBehavior.STATE_EXPANDED) {
-                Kustom["screen"] = "drawer"
+                Kustom[context, "posidon", "screen"] = "drawer"
             } else {
-                Kustom["screen"] = "home"
+                Kustom[context, "posidon", "screen"] = "home"
             }
         }
     }
@@ -142,11 +143,7 @@ class DrawerView : LinearLayout {
                     val bmp = Wallpaper.blurredWall(radius / blurLayers * (i + 1))
                     val bd = FastBitmapDrawable(bmp)
                     if (shouldHide) bd.alpha = 0
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) blurBg.setDrawable(i, bd)
-                    else {
-                        blurBg.setId(i, i)
-                        blurBg.setDrawableByLayerId(i, bd)
-                    }
+                    blurBg.setDrawable(i, bd)
                 }
             }
         }
@@ -170,7 +167,7 @@ class DrawerView : LinearLayout {
                 when (newState) {
                     BottomDrawerBehavior.STATE_COLLAPSED -> {
                         if (home.hasWindowFocus() && Settings["kustom:variables:enable", false]) {
-                            Kustom["screen"] = "home"
+                            Kustom[context, "posidon", "screen"] = "home"
                         }
                         drawerGrid.smoothScrollToPositionFromTop(0, 0, 0)
                         colors[0] = Settings["dock:background_color", -0x78000000] and 0x00ffffff
@@ -187,7 +184,7 @@ class DrawerView : LinearLayout {
                     }
                     BottomDrawerBehavior.STATE_EXPANDED -> {
                         if (Settings["kustom:variables:enable", false]) {
-                            Kustom["screen"] = "drawer"
+                            Kustom[context, "posidon", "screen"] = "drawer"
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf()

@@ -66,8 +66,6 @@ class ColorSettingView : IntSettingView {
         hsv[1] = min(hsv[1],0.5f)
         hsv[2] = min(max(0.4f, hsv[2]), 0.75f)
         val pastel = Color.HSVToColor(hsv)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            TextViewCompat.setCompoundDrawableTintList(labelView, ColorStateList.valueOf(pastel))
-        }
+        TextViewCompat.setCompoundDrawableTintList(labelView, ColorStateList.valueOf(pastel))
     }
 }

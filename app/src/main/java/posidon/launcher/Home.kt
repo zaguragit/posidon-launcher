@@ -13,11 +13,11 @@ import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import launcherutils.LiveWall
+import io.posidon.android.launcherutils.GestureNavContract
+import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.LiveWallpaper
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
-import posidon.launcher.external.kustom.Kustom
-import posidon.launcher.external.sysGestures.GestureNavContract
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -105,7 +105,7 @@ class Home : AppCompatActivity() {
 
         homeView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && drawer.state == STATE_COLLAPSED)
-                LiveWall.tap(v, event.rawX.toInt(), event.rawY.toInt())
+                LiveWallpaper.tap(v, event.rawX.toInt(), event.rawY.toInt())
             false
         }
         if (Settings["mnmlstatus", false]) {
@@ -208,7 +208,7 @@ class Home : AppCompatActivity() {
             return
         }
         if (Settings["kustom:variables:enable", false]) {
-            Kustom["screen"] = "home"
+            Kustom[this, "posidon", "screen"] = "home"
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             overridePendingTransition(R.anim.home_enter, R.anim.appexit)
@@ -226,7 +226,7 @@ class Home : AppCompatActivity() {
                 setCustomizations()
             } else animateAllIconsIfShould()
             if (Settings["news:load_on_resume", true]) {
-                feed.loadNews(this)
+                feed.loadNews()
             }
             if (feed.notifications != null || Settings["notif:badges", true]) {
                 NotificationService.onUpdate()
@@ -255,7 +255,7 @@ class Home : AppCompatActivity() {
             feed.scroll.scrollTo(0, if (Settings["feed:rest_at_bottom", false]) feed.desktopContent.height else 0)
         }
         if (Settings["kustom:variables:enable", false]) {
-            Kustom["screen"] = "?"
+            Kustom[this, "posidon", "screen"] = "?"
         }
         feed.onPause()
     }
@@ -263,7 +263,7 @@ class Home : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         drawer.onAppLoaderEnd()
-        feed.loadNews(this)
+        feed.loadNews()
     }
 
     override fun onDestroy() {

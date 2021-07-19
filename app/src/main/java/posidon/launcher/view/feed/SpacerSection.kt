@@ -2,7 +2,7 @@ package posidon.launcher.view.feed
 
 import android.app.Activity
 import android.view.MotionEvent
-import launcherutils.LiveWall
+import io.posidon.android.launcherutils.LiveWallpaper
 import posidon.android.conveniencelib.dp
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.ResizableLayout
@@ -34,7 +34,7 @@ class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
     override fun toString() = "spacer:" + (layoutParams.height / context.dp(1f)).toInt()
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        LiveWall.tap(this, event.rawX.toInt(), event.rawY.toInt())
+        LiveWallpaper.tap(this, event.rawX.toInt(), event.rawY.toInt())
         return super.onTouchEvent(event)
     }
 }

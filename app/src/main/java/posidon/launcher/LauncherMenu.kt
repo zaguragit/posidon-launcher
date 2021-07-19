@@ -11,10 +11,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
+import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.customizations.settingScreens.Customizations
-import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -82,7 +82,7 @@ object LauncherMenu {
                 homescreen.systemGestureExclusionRects = listOf()
             }
             if (Settings["kustom:variables:enable", false]) {
-                Kustom["screen"] = "overview"
+                Kustom[home, "posidon", "screen"] = "overview"
             }
         }
     }
@@ -100,7 +100,7 @@ object LauncherMenu {
         isActive = false
         dialog = null
         if (Settings["kustom:variables:enable", false]) {
-            Kustom["screen"] = "home"
+            Kustom[homescreen.context, "posidon", "screen"] = "home"
         }
     }
 }

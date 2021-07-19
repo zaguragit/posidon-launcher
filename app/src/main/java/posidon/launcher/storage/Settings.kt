@@ -145,9 +145,21 @@ object Settings {
                     lists = HashMap()
                 }
             }
+            updateKeys()
             isInitialized = true
         }
         lock.unlock()
+    }
+
+    private fun updateKeys() {
+        getInt("folderColumns")?.let {
+            set("folder:columns", it)
+            ints.remove("folderColumns")
+        }
+        getInt("folderCornerRadius")?.let {
+            set("folder:radius", it)
+            ints.remove("folderCornerRadius")
+        }
     }
 
     fun saveBackup() = ExternalStorage.writeDataOutsideScope(

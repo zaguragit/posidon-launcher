@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -45,7 +44,7 @@ class Tutorial : AppCompatActivity() {
                     }
                 }
                 val d = getDrawable(R.drawable.button_bg_round)!!.mutate() as GradientDrawable
-                d.setColor(resources.getColor(R.color.accent))
+                d.setColor(getColor(R.color.accent))
                 it as TextView
                 it.background = d
                 it.setTextColor(0xffddeeff.toInt())
@@ -61,7 +60,7 @@ class Tutorial : AppCompatActivity() {
                 }
             }
             val d = getDrawable(R.drawable.button_bg_round)!!.mutate() as GradientDrawable
-            d.setColor(resources.getColor(R.color.accent))
+            d.setColor(getColor(R.color.accent))
             it as TextView
             it.background = d
             it.setTextColor(0xffddeeff.toInt())
@@ -75,8 +74,8 @@ class Tutorial : AppCompatActivity() {
             done = true
             val t = findViewById<TextView>(R.id.next)
             t.setTextColor(-0x1)
-            t.setBackgroundColor(resources.getColor(R.color.accent))
-            window.navigationBarColor = resources.getColor(R.color.accent)
+            t.setBackgroundColor(getColor(R.color.accent))
+            window.navigationBarColor = getColor(R.color.accent)
         }
     }
 
@@ -89,9 +88,7 @@ class Tutorial : AppCompatActivity() {
 
     fun grantStorageAccess(v: View) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
-            }
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
             checkDone()
         } else
             Toast.makeText(this, "Storage access already granted", Toast.LENGTH_LONG).show()
@@ -99,9 +96,7 @@ class Tutorial : AppCompatActivity() {
 
     fun grantContactsAccess(v: View) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 0)
-            }
+            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 0)
             checkDone()
         } else
             Toast.makeText(this, "Storage access already granted", Toast.LENGTH_LONG).show()
@@ -224,9 +219,6 @@ class Tutorial : AppCompatActivity() {
                 }
             }
             setContentView(R.layout.tutorial2)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                findViewById<View>(R.id.storagecard).visibility = View.GONE
-            }
         }
     }
 

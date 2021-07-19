@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -15,10 +14,10 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
-import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -34,13 +33,13 @@ object ItemLongPress {
     fun makePopupWindow(context: Context, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, canHide: Boolean): PopupWindow {
 
         if (Settings["kustom:variables:enable", false]) {
-            Kustom["screen"] = "popup"
+            Kustom[context, "posidon", "screen"] = "popup"
         }
 
         val color = item.getColor()
         val txtColor = if (Colors.useDarkText(color)) -0xeeeded else -0x1
 
-        val content = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && item is App && item.getShortcuts(context)!!.isNotEmpty()) {
+        val content = if (item is App && item.getShortcuts(context)!!.isNotEmpty()) {
             val shortcuts = item.getShortcuts(context)
             val c = LayoutInflater.from(context).inflate(R.layout.app_long_press_menu_w_shortcuts, null)
             val recyclerView: RecyclerView = c.findViewById(R.id.shortcuts)
@@ -79,11 +78,9 @@ object ItemLongPress {
             removeButton.setTextColor(txtColor)
             (propertiesButton as TextView).setTextColor(txtColor)
             (editButton as TextView).setTextColor(txtColor)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                removeButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-                propertiesButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-                editButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-            }
+            removeButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+            propertiesButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
+            editButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
             if (canHide) {
                 removeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_hide, 0, 0, 0)
                 removeButton.setText(R.string.hide)
@@ -148,11 +145,7 @@ object ItemLongPress {
                     ClipData.newPlainText(realItem.toString(), "")
                 } else ClipData.newPlainText(realItem.toString(), dockI.toString(16))
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    icon.startDragAndDrop(clipData, shadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
-                } else {
-                    icon.startDrag(clipData, shadow, view, 0)
-                }
+                icon.startDragAndDrop(clipData, shadow, view, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
 
                 if (dockI != -1) {
                     if (folderI != -1 && item is Folder) {

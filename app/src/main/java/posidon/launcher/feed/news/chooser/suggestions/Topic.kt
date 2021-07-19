@@ -3,7 +3,7 @@ package posidon.launcher.feed.news.chooser.suggestions
 import android.content.Context
 import org.json.JSONArray
 import posidon.android.conveniencelib.loadRaw
-import posidon.android.loader.rss.FeedSource
+import posidon.android.loader.rss.RssSource
 
 class Topic (
     val context: Context,
@@ -16,7 +16,7 @@ class Topic (
         try {
             Array(array.length()) {
                 val obj = array.getJSONObject(it)
-                FeedSource(
+                RssSource(
                     obj.getString("name"),
                     obj.getString("url"), "")
             }
