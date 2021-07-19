@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
 import android.widget.Toast
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
@@ -20,18 +19,13 @@ object Wallpaper {
         flag: Int
     ) = thread {
         val wallpaperManager = WallpaperManager.getInstance(Tools.appContext)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            try {
-                wallpaperManager.setBitmap(img, null, true, when (flag) {
-                    0 -> WallpaperManager.FLAG_SYSTEM
-                    1 -> WallpaperManager.FLAG_LOCK
-                    else -> WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK
-                })
-            } catch (e: Exception) {}
-        } else {
-            try { wallpaperManager.setBitmap(img) }
-            catch (e: Exception) {}
-        }
+        try {
+            wallpaperManager.setBitmap(img, null, true, when (flag) {
+                0 -> WallpaperManager.FLAG_SYSTEM
+                1 -> WallpaperManager.FLAG_LOCK
+                else -> WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK
+            })
+        } catch (e: Exception) {}
     }
 
     fun blurredWall(radius: Float): Bitmap? {

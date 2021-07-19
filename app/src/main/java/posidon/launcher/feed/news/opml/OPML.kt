@@ -19,7 +19,7 @@ object OPML {
      * @throws XmlPullParserException
      */
     @Throws(XmlPullParserException::class, IOException::class)
-    fun readDocument(reader: Reader?): ArrayList<OpmlElement> {
+    fun readDocument(reader: Reader): ArrayList<OpmlElement> {
         var isInOpml = false
         val elementList =  ArrayList<OpmlElement>()
         val factory = XmlPullParserFactory.newInstance()

@@ -119,27 +119,27 @@ class MusicCard : CardView, FeedSection {
     }
 
     init {
-        radius = context.dp(16)
+        radius = dp(16)
         cardElevation = 0f
         setCardBackgroundColor(context.resources.getColor(R.color.cardbg))
 
-        addView(musicCardImage, LayoutParams(context.dp(136).toInt(), MATCH_PARENT).apply {
-            minimumHeight = context.dp(136).toInt()
+        addView(musicCardImage, LayoutParams(dp(136).toInt(), MATCH_PARENT).apply {
+            minimumHeight = dp(136).toInt()
             gravity = Gravity.END
         })
         addView(musicCardOverImg, LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
     override fun updateTheme(activity: Activity) {
-        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
-        val marginY = context.dp(Settings["feed:card_margin_y", 9]).toInt()
+        val marginX = dp(Settings["feed:card_margin_x", 16]).toInt()
+        val marginY = dp(Settings["feed:card_margin_y", 9]).toInt()
         (layoutParams as MarginLayoutParams).apply {
             leftMargin = marginX
             rightMargin = marginX
             bottomMargin = marginY
             topMargin = marginY
         }
-        radius = context.dp(Settings["feed:card_radius", 15])
+        radius = dp(Settings["feed:card_radius", 15])
     }
 
     fun updateTrack(color: Int, title: CharSequence?, subtitle: CharSequence?, icon: Drawable, contentIntent: PendingIntent?) {

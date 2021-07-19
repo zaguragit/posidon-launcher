@@ -30,6 +30,7 @@ class SwipeableLayout(
     val backView = FrameLayout(context).apply {
         addView(closeIcon)
         clipBounds = Rect(0, 0, 0, 0)
+        visibility = GONE
     }
 
     fun setSwipeColor(color: Int) = backView.setBackgroundColor(color)
@@ -62,7 +63,11 @@ class SwipeableLayout(
     private var initY = 0f
     private var xOffset = 0f
 
-    fun reset() { frontView.translationX = 0f }
+    fun reset() {
+        frontView.translationX = 0f
+        backView.clipBounds = Rect(0, 0, 0, 0)
+        backView.visibility = GONE
+    }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (ev.action) {
@@ -159,6 +164,7 @@ class SwipeableLayout(
             if (ev.action == MotionEvent.ACTION_DOWN) {
                 initX = ev.x
                 initY = ev.y
+                backView.visibility = VISIBLE
             }
             super.onInterceptTouchEvent(ev)
         }

@@ -13,7 +13,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import launcherutils.LauncherIcons
+import io.posidon.android.launcherutils.LauncherIcons
 import posidon.android.conveniencelib.Graphics
 import posidon.android.conveniencelib.dp
 import posidon.launcher.Global

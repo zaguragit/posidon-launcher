@@ -15,11 +15,12 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
-import posidon.android.loader.rss.FeedItem
-import posidon.android.loader.rss.FeedLoader
+import posidon.android.loader.rss.RssItem
+import posidon.android.loader.rss.RssLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
@@ -42,7 +43,10 @@ import kotlin.math.abs
 
 class Feed : FrameLayout {
 
+    lateinit var drawer: DrawerView
+
     inline fun init(drawer: DrawerView) {
+        this.drawer = drawer
         onTopOverScroll = {
             if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
                 Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
@@ -53,6 +57,24 @@ class Feed : FrameLayout {
                 Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
             }
         }
+    }
+
+    private fun yToI(y: Float): Int {
+        val c = desktopContent.childCount
+        var py = 0f
+        val scrollY = scroll.scrollY
+        for (i in 0 until c) {
+            val v = desktopContent.getChildAt(i)
+            val vy = v.y + v.measuredHeight / 2f - scrollY
+            if (vy > y) {
+                if (py == 0f) {
+                    return i
+                }
+                return if (abs(py - y) > abs(vy - y)) i else i - 1
+            }
+            py = vy
+        }
+        return c - 1
     }
 
     constructor(c: Context) : super(c)
@@ -72,19 +94,19 @@ class Feed : FrameLayout {
         isSmoothScrollingEnabled = false
 
         setOnLongClickListener(Gestures::onLongPress)
-        val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener)
-        setOnTouchListener { _, event ->
-            if (hasWindowFocus()) {
-                scaleGestureDetector.onTouchEvent(event)
-                false
-            } else true
-        }
+        setOnTouchListener(::onScrollTouch)
 
         addView(desktopContent, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
+    private val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener)
+    private fun onScrollTouch(v: View?, event: MotionEvent?) = if (hasWindowFocus()) {
+        scaleGestureDetector.onTouchEvent(event)
+        false
+    } else true
+
     val spinner = ProgressBar(context, null, R.style.Widget_AppCompat_ProgressBar).apply {
-        indeterminateDrawable = resources.getDrawable(R.drawable.progress, null)
+        indeterminateDrawable = ContextCompat.getDrawable(context, R.drawable.progress)
         indeterminateTintMode = PorterDuff.Mode.MULTIPLY
         isIndeterminate = true
         visibility = GONE
@@ -101,8 +123,8 @@ class Feed : FrameLayout {
 
     init {
         addView(scroll, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        addView(spinner, LayoutParams(context.dp(48).toInt(), context.dp(48).toInt()).apply {
-            topMargin = context.dp(72).toInt()
+        addView(spinner, LayoutParams(dp(48).toInt(), dp(48).toInt()).apply {
+            topMargin = dp(72).toInt()
             gravity = Gravity.CENTER_HORIZONTAL
         })
     }
@@ -124,6 +146,13 @@ class Feed : FrameLayout {
         internalAdd(section)
     }
 
+    inline fun add(section: FeedSection, i: Int) {
+        getSectionsFromSettings().add(i, section.toString())
+        Settings.apply()
+        internalAdd(section, i)
+        updateIndices(i + 1)
+    }
+
     fun remove(section: FeedSection) {
         getSectionsFromSettings().remove(section.toString()).let { if (!it) println("Couldn't remove feed section: $section") }
         Settings.apply()
@@ -143,6 +172,10 @@ class Feed : FrameLayout {
 
     fun internalAdd(section: FeedSection): FeedSection {
         val i = sections.size
+        return internalAdd(section, i)
+    }
+
+    fun internalAdd(section: FeedSection, i: Int): FeedSection {
         sections.add(section)
         desktopContent.addView(section as View)
         section.onAdd(this, i)
@@ -155,17 +188,11 @@ class Feed : FrameLayout {
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
             scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                val a = context.dp(6)
-                val distance = oldY - y
+                val a = dp(6)
                 if (y > a) {
+                    val distance = oldY - y
                     newsCards?.show()
-                    if (distance > a || y >= desktopContent.height - drawer.dock.dockHeight - height) {
-                        if (!LauncherMenu.isActive) {
-                            drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                        }
-                    } else if (distance < -a) {
-                        drawer.state = BottomDrawerBehavior.STATE_HIDDEN
-                    }
+                    handleDockOnScroll(distance, a, y, drawer)
                 } else {
                     if (!LauncherMenu.isActive) {
                         drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
@@ -178,20 +205,14 @@ class Feed : FrameLayout {
         } else {
             newsCards?.show()
             scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
-                val a = context.dp(6)
+                val a = dp(6)
                 val distance = oldY - y
-                if (distance > a || y < a || y + height >= desktopContent.height - drawer.dock.dockHeight) {
-                    if (!LauncherMenu.isActive) {
-                        drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
-                    }
-                } else if (distance < -a) {
-                    drawer.state = BottomDrawerBehavior.STATE_HIDDEN
-                }
+                handleDockOnScroll(distance, a, y, drawer)
             }
         }
         val fadingEdge = Settings["feed:fading_edge", true]
         if (fadingEdge && !Settings["hidestatus", false]) {
-            scroll.setPadding(0, context.getStatusBarHeight() - context.dp(12).toInt(), 0, 0)
+            scroll.setPadding(0, context.getStatusBarHeight() - dp(12).toInt(), 0, 0)
         }
         scroll.isVerticalFadingEdgeEnabled = fadingEdge
 
@@ -212,7 +233,17 @@ class Feed : FrameLayout {
         }
     }
 
-    fun loadNews(activity: Activity) {
+    private fun handleDockOnScroll(distance: Int, threshold: Float, y: Int, drawer: DrawerView) {
+        if (distance > threshold || y < threshold || y >= desktopContent.height - drawer.dock.dockHeight - height) {
+            if (!LauncherMenu.isActive) {
+                drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
+            }
+        } else if (distance < -threshold) {
+            drawer.state = BottomDrawerBehavior.STATE_HIDDEN
+        }
+    }
+
+    fun loadNews() {
         val newsCards = newsCards
         if (newsCards == null || spinner.visibility == VISIBLE) {
             return
@@ -220,41 +251,36 @@ class Feed : FrameLayout {
         if (Settings["feed:show_spinner", true]) {
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
-            loadFeed { success, items -> post {
-                if (success) {
-                    var firstScroll = 0
-                    var firstMaxScroll = 0
-                    scroll.post {
-                        firstScroll = scroll.scrollY
-                        firstMaxScroll = desktopContent.height
-                    }
-                    newsCards.updateFeed(items)
-                    scroll.post {
-                        scrollUpdate(firstScroll, firstMaxScroll)
+            loadFeed { success, items ->
+                onNewsLoaded(success, newsCards, items)
+                post {
+                    spinner.animate().translationY(dp(-72)).alpha(0f).onEnd {
+                        spinner.visibility = GONE
                     }
                 }
-                spinner.animate().translationY(context.dp((-72))).alpha(0f).onEnd {
-                    spinner.visibility = GONE
-                }
-            }}
+            }
         } else loadFeed { success, items ->
-            if (success) post {
-                var firstScroll = 0
-                var firstMaxScroll = 0
-                scroll.post {
-                    firstScroll = scroll.scrollY
-                    firstMaxScroll = desktopContent.height
-                }
-                newsCards.updateFeed(items)
-                scroll.post {
-                    scrollUpdate(firstScroll, firstMaxScroll)
-                }
+            onNewsLoaded(success, newsCards, items)
+        }
+    }
+
+    private fun onNewsLoaded(success: Boolean, newsCards: NewsCards, items: List<RssItem>) {
+        if (success) post {
+            var firstScroll = 0
+            var firstMaxScroll = 0
+            scroll.post {
+                firstScroll = scroll.scrollY
+                firstMaxScroll = desktopContent.height
+            }
+            newsCards.updateFeed(items)
+            scroll.post {
+                scrollUpdate(firstScroll, firstMaxScroll)
             }
         }
     }
 
     private inline fun loadFeed(
-        noinline onFinished: (success: Boolean, items: List<FeedItem>) -> Unit
+        noinline onFinished: (success: Boolean, items: List<RssItem>) -> Unit
     ): Thread {
         val maxAge = Settings["news:max_days_age", 5]
         val deleted = Settings.getStringsOrSetEmpty("feed:deleted_articles")
@@ -267,7 +293,7 @@ class Feed : FrameLayout {
             }
         }
         Settings["feed:deleted_articles"] = deleted
-        return FeedLoader.loadFeed(Settings["feedUrls", FeedChooser.defaultSources].split("|"), onFinished, maxItems = Settings["feed:max_news", 48], isIncluded = { title, link, time ->
+        return RssLoader.load(Settings["feedUrls", FeedChooser.defaultSources].split("|"), maxItems = Settings["feed:max_news", 48], filter = { title, link, time ->
             val isNewEnough = if (maxAge == 0) true else {
                 val day = Calendar.getInstance().apply { this.time = time }[Calendar.DAY_OF_YEAR]
                 abs(day - today) < maxAge
@@ -283,7 +309,7 @@ class Feed : FrameLayout {
                     show
                 } else true
             } else false
-        })
+        }, doSorting = true, onFinished = onFinished)
     }
 
     inline fun scrollUpdate(firstScroll: Int, firstMaxScroll: Int) {
@@ -310,15 +336,21 @@ class Feed : FrameLayout {
         clearSections()
         val s = getSectionsFromSettings()
         var i = 0
+        var removeCount = 0
         while (i < s.size) {
             (map[s[i]] ?: FeedSection(activity, s, i))?.let { section ->
-                internalAdd(section)
-                when (section) {
-                    is MusicCard -> musicCard = section
-                    is NotificationCards -> notifications = section
-                    is NewsCards -> newsCards = section
+                section as View
+                if (section.parent == desktopContent) {
+                    remove(section, i - removeCount++)
+                } else {
+                    internalAdd(section)
+                    when (section) {
+                        is MusicCard -> musicCard = section
+                        is NotificationCards -> notifications = section
+                        is NewsCards -> newsCards = section
+                    }
+                    section.updateTheme(activity)
                 }
-                section.updateTheme(activity)
             }
             i++
         }
@@ -328,6 +360,44 @@ class Feed : FrameLayout {
     fun updateIndices(fromI: Int) {
         for (i in fromI until sections.size)
             sections[i].updateIndex(i)
+    }
+
+    fun onAppsLoaded() {
+        val iterator = iterator()
+        for (s in iterator) {
+            s.onAppsLoaded(iterator)
+        }
+    }
+
+    operator fun iterator() = object : MutableIterator<FeedSection> {
+
+        private var limit: Int = sections.size
+
+        private var cursor = 0
+        private var lastRet = -1 // index of last element returned; -1 if no such
+
+        override fun hasNext(): Boolean {
+            return cursor < limit
+        }
+
+        override fun next(): FeedSection {
+            val i = cursor
+            if (i >= limit) throw NoSuchElementException()
+            cursor = i + 1
+            return sections[i.also { lastRet = it }]
+        }
+
+        override fun remove() {
+            check(lastRet >= 0)
+            try {
+                remove(sections[lastRet])
+                cursor = lastRet
+                lastRet = -1
+                limit--
+            } catch (ex: IndexOutOfBoundsException) {
+                throw ConcurrentModificationException()
+            }
+        }
     }
 
     companion object {

@@ -25,7 +25,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import launcherutils.Launcher
+import io.posidon.android.launcherutils.Launcher
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
@@ -35,6 +35,8 @@ import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.GridLayoutManager
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -75,7 +77,7 @@ object Tools {
         return Launcher.getDefaultLauncher(appContext!!.packageManager) == "posidon.launcher"
     }
 
-    fun searchOptimize(s: String) = s.toLowerCase()
+    fun searchOptimize(s: String) = s.lowercase(Locale.getDefault())
         .replace('ñ', 'n')
         .replace('e', '3')
         .replace('a', '4')

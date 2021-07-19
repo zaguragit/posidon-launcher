@@ -10,7 +10,7 @@ import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
 import androidx.palette.graphics.Palette
-import launcherutils.LauncherIcons
+import io.posidon.android.launcherutils.LauncherIcons
 import posidon.android.conveniencelib.Graphics
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap

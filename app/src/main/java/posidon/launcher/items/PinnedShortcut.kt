@@ -6,15 +6,12 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Process
 import android.view.View
-import androidx.annotation.RequiresApi
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
-@RequiresApi(Build.VERSION_CODES.O)
 class PinnedShortcut : LauncherItem {
 
     val packageName: String
@@ -72,9 +69,7 @@ class PinnedShortcut : LauncherItem {
             }
             (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
                 "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
-                "clip_reveal" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
-                else ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit)
+                "clip_reveal" -> ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 else -> ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit)
             }.toBundle(), Process.myUserHandle())
         } catch (e: Exception) {

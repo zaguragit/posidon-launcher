@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:label="@string/columns"
-                    app:key="folderColumns"
+                    app:key="folder:columns"
                     app:def="3"
                     app:max="7"
                     app:startsWith1="true"/>
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:label="@string/radius"
-                    app:key="folderCornerRadius"
+                    app:key="folder:radius"
                     app:def="18"
                     app:max="30"/>
             </LinearLayout>

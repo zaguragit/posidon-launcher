@@ -3,7 +3,6 @@ package posidon.launcher.customizations.settingScreens
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.UserManager
-import posidon.launcher.Home
 import posidon.launcher.customizations.settingScreens.general.AppTickingActivity
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -14,9 +13,10 @@ class CustomHiddenApps : AppTickingActivity() {
     override fun getApps(): List<App> {
         val apps = ArrayList<App>()
 
-        val userManager = Home.instance.getSystemService(Context.USER_SERVICE) as UserManager
+        val userManager = getSystemService(Context.USER_SERVICE) as UserManager
+        val launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         for (profile in userManager.userProfiles) {
-            val appList = (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).getActivityList(null, profile)
+            val appList = launcherApps.getActivityList(null, profile)
             for (i in appList.indices) {
                 App[appList[i].applicationInfo.packageName, appList[i].name, profile.hashCode()]?.let { apps.add(it) }
             }

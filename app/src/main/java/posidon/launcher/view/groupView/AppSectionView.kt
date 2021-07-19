@@ -21,7 +21,7 @@ import posidon.launcher.view.drawer.DrawerView
 import kotlin.math.min
 
 @SuppressLint("ViewConstructor")
-class AppSectionView(val drawer: DrawerView) : ItemGroupView(drawer.context) {
+class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupView(drawer.context) {
 
     private val appSize = dp(when (Settings["icsize", 1]) {
         0 -> 64
@@ -29,8 +29,11 @@ class AppSectionView(val drawer: DrawerView) : ItemGroupView(drawer.context) {
         else -> 74
     }).toInt()
 
+    var columns = Settings["$themeKey:columns", 4]
+    val labelsEnabled = Settings["labelsenabled", false]
+
     init {
-        when (Settings["drawer:sec_name_pos", 0]) {
+        when (Settings["$themeKey:sec_name_pos", 0]) {
             0 -> orientation = VERTICAL
             1 -> {
                 orientation = HORIZONTAL
@@ -43,19 +46,18 @@ class AppSectionView(val drawer: DrawerView) : ItemGroupView(drawer.context) {
         }
 
         gridLayout.run {
-            columnCount = Settings["drawer:columns", 4]
-            if (Settings["drawer:columns", 4] > 2) {
+            columnCount = columns
+            if (columns > 2) {
                 setPaddingRelative(dp(12).toInt(), 0, 0, 0)
             }
         }
         textView.run {
-            setTextColor(Settings["drawer:labels:color", -0x11111112])
+            setTextColor(Settings["$themeKey:labels:color", -0x11111112])
         }
     }
 
     override fun getItemView (item: LauncherItem, parent: ViewParent): View {
         item as App
-        val columns = Settings["drawer:columns", 4]
         val parentWidth = (parent as View).measuredWidth
         return (if (columns > 2) {
             LayoutInflater.from(context).inflate(R.layout.drawer_item, gridLayout, false).apply {
@@ -76,10 +78,10 @@ class AppSectionView(val drawer: DrawerView) : ItemGroupView(drawer.context) {
                 layoutParams.width = appSize
             }
             findViewById<TextView>(R.id.icontxt).run {
-                if (Settings["labelsenabled", false]) {
+                if (labelsEnabled) {
                     text = item.label
                     visibility = View.VISIBLE
-                    Customizer.styleLabel("drawer:labels", this, -0x11111112, 12f)
+                    Customizer.styleLabel("$themeKey:labels", this, -0x11111112, 12f)
                 } else visibility = View.GONE
             }
             findViewById<TextView>(R.id.notificationBadge).run {

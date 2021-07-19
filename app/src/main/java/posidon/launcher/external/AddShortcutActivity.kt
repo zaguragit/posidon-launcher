@@ -2,11 +2,9 @@ package posidon.launcher.external
 
 import android.content.Context
 import android.content.pm.LauncherApps
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -15,7 +13,6 @@ import posidon.launcher.tools.Dock
 import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.drawer.DockView
 
-@RequiresApi(Build.VERSION_CODES.O)
 class AddShortcutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

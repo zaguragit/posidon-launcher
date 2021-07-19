@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -159,7 +158,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                         a.setOnClickListener {
                             try {
                                 val oldInputs = action.remoteInputs
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && oldInputs != null) {
+                                if (oldInputs != null) {
                                     v1.findViewById<View>(R.id.bottomSeparator).visibility = View.VISIBLE
                                     v1.findViewById<View>(R.id.reply).apply lin@ {
                                         visibility = View.VISIBLE

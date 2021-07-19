@@ -27,6 +27,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
 import posidon.android.conveniencelib.sp
@@ -35,7 +36,6 @@ import posidon.android.loader.TextLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.items.*
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.ItemLongPress
@@ -46,6 +46,8 @@ import posidon.launcher.tools.Tools.searchOptimize
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.tools.theme.applyFontSetting
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -320,16 +322,20 @@ class SearchActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.result).text = "$operation = $result"
         } catch (e: Exception) {
             e.printStackTrace()
-            val words = string.toLowerCase().split(' ', ',', '.', '-', '+', '&', '_')
+            val words =
+                string.lowercase(Locale.getDefault()).split(' ', ',', '.', '-', '+', '&', '_')
             if (words.contains("ip")) {
                 stillWantIP = true
                 smartBox.visibility = View.VISIBLE
                 isShowingSmartCard = true
                 smartBox.findViewById<TextView>(R.id.type).setText(R.string.ip_address_external)
                 smartBox.findViewById<TextView>(R.id.result).text = ""
-                TextLoader.load("https://checkip.amazonaws.com") { runOnUiThread {
-                    if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text = it.trimEnd()
-                }}
+                TextLoader.load("https://checkip.amazonaws.com") {
+                    runOnUiThread {
+                        if (stillWantIP) smartBox.findViewById<TextView>(R.id.result).text =
+                            it.trimEnd()
+                    }
+                }
             } else if (
                 words.contains("pi") ||
                 words.contains("π")
@@ -383,7 +389,7 @@ class SearchActivity : AppCompatActivity() {
         hideKeyboard()
 
         if (Settings["kustom:variables:enable", false]) {
-            Kustom["screen"] = "?"
+            Kustom[this, "posidon", "screen"] = "?"
         }
 
         finish()
@@ -392,7 +398,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             if (Settings["kustom:variables:enable", false]) {
-                Kustom["screen"] = "search"
+                Kustom[this, "posidon", "screen"] = "search"
             }
         }
     }

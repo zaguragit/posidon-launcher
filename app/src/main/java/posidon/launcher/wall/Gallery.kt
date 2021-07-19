@@ -49,25 +49,18 @@ class Gallery : AppCompatActivity() {
         findViewById<View>(R.id.toolbar).layoutParams.height = toolbarHeight
         findViewById<View>(R.id.gallery).setPadding(gridsidepadding, getStatusBarHeight() + dp(4).toInt(), gridsidepadding, toolbarHeight + dp(20).toInt())
         findViewById<View>(R.id.pickwallbtn).setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) pickFile()
-                else requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
-            } else Toast.makeText(this, "Please, grant the 'read external files' permission in settings", Toast.LENGTH_LONG).show()
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) pickFile()
+            else requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
         }
         findViewById<View>(R.id.colorwallbtn).setOnClickListener {
             pickColorNoAlpha(this, 0) {
                 val wallManager = WallpaperManager.getInstance(this)
                 val c = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
                 c.eraseColor(0xff000000.toInt() or it)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (wallManager.isWallpaperSupported) {
-                        try { wallManager.setBitmap(c) }
-                        catch (e: Exception) {}
-                    } else Toast.makeText(this, "For some reason wallpapers are not supported.", Toast.LENGTH_LONG).show()
-                } else {
+                if (wallManager.isWallpaperSupported) {
                     try { wallManager.setBitmap(c) }
                     catch (e: Exception) {}
-                }
+                } else Toast.makeText(this, "For some reason wallpapers are not supported.", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, Home::class.java))
             }
         }
