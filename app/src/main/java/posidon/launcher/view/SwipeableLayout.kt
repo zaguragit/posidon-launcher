@@ -7,7 +7,7 @@ import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
@@ -69,6 +69,42 @@ class SwipeableLayout(
         backView.visibility = GONE
     }
 
+    private fun bounceBack() {
+        ValueAnimator.ofInt(xOffset.toInt(), 0).apply {
+            addUpdateListener {
+                val n = it.animatedValue as Int
+                backView.clipBounds = when {
+                    n > 0 -> Rect(0, 0, n, measuredHeight)
+                    n < 0 -> Rect(measuredWidth + n, 0, measuredWidth, measuredHeight)
+                    else -> Rect(0, 0, 0, 0)
+                }
+            }
+            interpolator = SpringInterpolator()
+            duration = 350L
+            onEnd {
+                backView.clipBounds = Rect(0, 0, 0, 0)
+                backView.visibility = GONE
+            }
+        }.start()
+        frontView.animate().translationX(0f).setInterpolator(SpringInterpolator()).setListener(null).duration = 350L
+    }
+
+    private fun sashayAway(direction: Int) {
+        ValueAnimator.ofFloat(frontView.translationX, measuredWidth * direction.toFloat()).apply {
+            addUpdateListener {
+                val f = it.animatedValue as Float
+                if (direction == 1)
+                    backView.clipBounds = Rect(0, 0, f.toInt(), measuredHeight)
+                else
+                    backView.clipBounds = Rect(f.toInt() + measuredWidth, 0, measuredWidth, measuredHeight)
+                frontView.translationX = f
+            }
+            interpolator = DecelerateInterpolator()
+            duration = 110L
+            addListener(onAnimEndListener)
+        }.start()
+    }
+
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         when (ev.action) {
             MotionEvent.ACTION_MOVE -> {
@@ -90,52 +126,15 @@ class SwipeableLayout(
             }
             MotionEvent.ACTION_UP -> {
                 when {
-                    xOffset > measuredWidth/7*3 -> {
-                        ValueAnimator.ofInt(xOffset.toInt(), measuredWidth).apply {
-                            addUpdateListener { backView.clipBounds = Rect(0, 0, it.animatedValue as Int, measuredHeight) }
-                            interpolator = SpringInterpolator()
-                            duration = 210L
-                        }.start()
-                        frontView.animate().translationX(measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset < -measuredWidth/7*3 -> {
-                        ValueAnimator.ofInt(xOffset.toInt(), -measuredWidth).apply {
-                            addUpdateListener { backView.clipBounds = Rect(measuredWidth + it.animatedValue as Int, 0, measuredWidth, measuredHeight) }
-                            interpolator = SpringInterpolator()
-                            duration = 210L
-                        }.start()
-                        frontView.animate().translationX(-measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset > dp(64) && ev.eventTime - ev.downTime < 160 -> {
-                        ValueAnimator.ofInt(xOffset.toInt(), measuredWidth).apply {
-                            addUpdateListener { backView.clipBounds = Rect(0, 0, it.animatedValue as Int, measuredHeight) }
-                            interpolator = SpringInterpolator()
-                            duration = 210L
-                        }.start()
-                        frontView.animate().translationX(measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } xOffset < -dp((64)) && ev.eventTime - ev.downTime < 160 -> {
-                        ValueAnimator.ofInt(xOffset.toInt(), -measuredWidth).apply {
-                            addUpdateListener { backView.clipBounds = Rect(measuredWidth + it.animatedValue as Int, 0, measuredWidth, measuredHeight) }
-                            interpolator = SpringInterpolator()
-                            duration = 210L
-                        }.start()
-                        frontView.animate().translationX(-measuredWidth.toFloat()).setInterpolator(LinearInterpolator()).setListener(onAnimEndListener).duration = 100L
-                    } else -> {
-                        ValueAnimator.ofInt(xOffset.toInt(), 0).apply {
-                            addUpdateListener {
-                                val n = it.animatedValue as Int
-                                backView.clipBounds = when {
-                                    n > 0 -> Rect(0, 0, n, measuredHeight)
-                                    n < 0 -> Rect(measuredWidth + n, 0, measuredWidth, measuredHeight)
-                                    else -> Rect(0, 0, 0, 0)
-                                }
-                            }
-                            interpolator = SpringInterpolator()
-                            duration = 350L
-                            onEnd {
-                                backView.clipBounds = Rect(0, 0, 0, 0)
-                            }
-                        }.start()
-                        frontView.animate().translationX(0f).setInterpolator(SpringInterpolator()).duration = 350L
+                    xOffset > measuredWidth/7*3 ||
+                            xOffset > dp(64) && ev.eventTime - ev.downTime < 160 -> {
+                        sashayAway(1)
                     }
+                    xOffset < -measuredWidth/7*3 ||
+                            xOffset < -dp((64)) && ev.eventTime - ev.downTime < 160 -> {
+                        sashayAway(-1)
+                    }
+                    else -> bounceBack()
                 }
                 xOffset = 0f
                 return true
