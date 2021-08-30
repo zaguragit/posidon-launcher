@@ -1,0 +1,5 @@
+- Improvements to the russian translation
+- Added a folder window background setting
+- Tweaked ui
+- Added a hide option to apps in the app drawer
+- Bug fixes
