@@ -18,7 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
-import posidon.android.loader.TextLoader
+import posidon.android.loader.text.TextLoader
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.NestedScrollView
