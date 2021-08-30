@@ -19,7 +19,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
 import posidon.android.conveniencelib.dp
-import posidon.android.loader.TextLoader
+import posidon.android.loader.text.TextLoader
 import posidon.launcher.BuildConfig
 import posidon.launcher.R
 import posidon.launcher.storage.Settings

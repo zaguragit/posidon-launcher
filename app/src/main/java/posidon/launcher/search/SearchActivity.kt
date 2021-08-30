@@ -31,8 +31,8 @@ import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
 import posidon.android.conveniencelib.sp
-import posidon.android.loader.DuckInstantAnswer
-import posidon.android.loader.TextLoader
+import posidon.android.loader.duckduckgo.DuckInstantAnswer
+import posidon.android.loader.text.TextLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
