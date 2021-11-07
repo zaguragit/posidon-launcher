@@ -124,10 +124,10 @@ object Icons {
     }
 
     private val pics = HashMap<Int, Drawable>()
-    fun generateContactPicture(name: String, iconShape: IconShape): Drawable = pics.getOrPut((name[0].toInt() shl 16) + name[1].toInt()) {
+    fun generateContactPicture(name: String, iconShape: IconShape): Drawable = pics.getOrPut((name[0].code shl 16) + name[1].code) {
         val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        val random = Random((name[0].toInt() shl 16) + name[1].toInt())
+        val random = Random((name[0].code shl 16) + name[1].code)
         canvas.drawColor(Color.HSVToColor(180, floatArrayOf(
                 random.nextFloat() * 360,
                 (random.nextInt(4000) + 5000) / 10000f,
@@ -157,14 +157,14 @@ object Icons {
         val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
         if (icon == null || bgType == 1) {
             val bg = Global.accentColor
-            onGenerated(ColorTools.iconBadge(bg), if (Colors.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         } else if (bgType == 0) {
             Palette.from(icon.toBitmap()).generate {
                 val bg = it?.getDominantColor(customBG) ?: customBG
-                onGenerated(ColorTools.iconBadge(bg), if (Colors.useDarkText(bg)) 0xff111213.toInt() else 0xffffffff.toInt())
+                onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
             }
         } else {
-            onGenerated(ColorTools.iconBadge(customBG), if (Colors.useDarkText(customBG)) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(customBG), if (Colors.getLuminance(customBG) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         }
     }
 
@@ -182,7 +182,7 @@ object Icons {
 
         fun getPath(width: Int, height: Int): Path {
             val minSize = min(width, height)
-            if (isSystem && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (isSystem) {
                 val path = AdaptiveIconDrawable(null, null).iconMask
                 val rect = RectF()
                 path.computeBounds(rect, true)

@@ -3,7 +3,6 @@ package posidon.launcher.tools.theme
 import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 
@@ -42,7 +41,7 @@ inline fun Activity.applyFontSetting() {
 }
 
 inline val Context.mainFont: Typeface
-    get() = if (Settings["font", Fonts.LEXEND_DECA] == Fonts.SANS_SERIF || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) Typeface.SANS_SERIF
+    get() = if (Settings["font", Fonts.LEXEND_DECA] == Fonts.SANS_SERIF) Typeface.SANS_SERIF
     else {
         when (Settings["font", Fonts.LEXEND_DECA]) {
             Fonts.POSIDON_SANS -> resources.getFont(R.font.posidon_sans)

@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "posidon.launcher"
         minSdkVersion 26
-        targetSdkVersion 30
-        versionCode 68
-        versionName "2021.1.0"
+        targetSdkVersion 31
+        versionCode 69
+        versionName "2021.1.1"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -28,5 +28,5 @@ dependencies {
     implementation 'com.pixplicity.sharp:library:1.1.0'
     implementation 'io.posidon:android.loader:master-SNAPSHOT'
     implementation 'io.posidon:android.convenienceLib:master-SNAPSHOT'
-    implementation 'io.posidon:android.launcherUtils:1080b845bc'
+    implementation 'io.posidon:android.launcherUtils:f800396bad'
 }

@@ -5,6 +5,9 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_color.xml" value="0.21319444444444444" />
         <entry key="app/src/main/res/drawable/ic_color_dropper.xml" value="0.21319444444444444" />
+        <entry key="app/src/main/res/drawable/progress.xml" value="0.12222222222222222" />
+        <entry key="app/src/main/res/drawable/progress_horizontal.xml" value="0.12222222222222222" />
+        <entry key="app/src/main/res/layout/notification_progress.xml" value="0.15868055555555555" />
       </map>
     </option>
   </component>

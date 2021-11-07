@@ -1,7 +1,6 @@
 package posidon.launcher.items.users.customAppIcon
 
 import android.content.res.Resources
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,11 +66,7 @@ internal class IconsAdapter(
             holder.icon.setImageDrawable(null)
             holder.icon.setOnClickListener(null)
         } else {
-            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes))
-            } else {
-                themeRes.getDrawable(intRes)
-            }, false)))
+            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.badgeMaybe(Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes)), false)))
             holder.icon.setOnClickListener {
                 onSelectIcon("ref:$iconPack|${searchResults[i]}")
             }

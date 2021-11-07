@@ -51,7 +51,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
 
         val card = SwipeableLayout(ll).apply {
             val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             preventCornerOverlap = true
             elevation = 0f
@@ -135,7 +135,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                     NotificationService.update()
                 }.apply {
                     val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-                    setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+                    setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
                     setSwipeColor(bg)
                 }
                 if (notification.actions != null && Settings["notificationActionsEnabled", false]) {

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
-import android.os.Build
 import android.view.*
 import android.widget.*
 import io.posidon.android.launcherutils.Kustom
@@ -119,9 +118,7 @@ class Folder : LauncherItem {
     fun updateIcon() {
         val customIcon = Customizer.getCustomIcon("folder:$uid:icon")
         icon = (customIcon?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Icons.generateAdaptiveIcon(it)
-            } else it
+            Icons.generateAdaptiveIcon(it)
         } ?: icon(Tools.appContext!!))?.let {
             Icons.animateIfShould(Tools.appContext!!, it)
             Icons.badgeMaybe(it, false)

@@ -30,16 +30,12 @@
     <string name="feed_sources">Bronnen</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
     <string name="slogan">Minimaal, boordevol functies, anders.</string>
-    <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Statusbalk verbergen</string>
     <string name="spacing">Uitlijning</string>
     <string name="permission_storage_description">Verleen toegang tot je opslag om de achtergrond te kunnen wijzigen en de vervaging in de app-lijst aan te passen</string>
     <string name="storage_access">Toegang tot opslag</string>
     <string name="notification_access">Toegang tot meldingen</string>
     <string name="permission_notifications_description">Verleen toegang tot je meldingen om je meldingen te tonen op het startscherm</string>
-    <string name="pixel_stock_android">Pixel</string>
-    <string name="one_ui">One UI</string>
-    <string name="ios">iOS</string>
     <string name="surprise_me">Verras me…</string>
     <string name="preset_chooser_title">Choose where to start</string>
     <string name="done">Klaar</string>
@@ -47,7 +43,6 @@
     <string name="twitter">Twitter</string>
     <string name="website">Website</string>
     <string name="leoxshn_description">Maker van dit startscherm</string>
-    <string name="sajid_shaik">Sajid Shaik</string>
     <string name="sajid_shaik_description">Ontwerper van het startschermpictogram</string>
     <string name="app_name_hint">naam</string>
     <string name="version">Versie</string>
@@ -183,7 +178,6 @@
     <string name="undo_popup">Undo popup</string>
     <string name="undo">Undo</string>
     <string name="fading_edge">Fading edge</string>
-    <string name="opml">OPML</string>
     <string name="export">Export</string>
     <string name="_import">Import</string>
     <string name="max_cards">Max cards</string>

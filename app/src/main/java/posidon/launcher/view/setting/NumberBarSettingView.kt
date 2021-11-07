@@ -30,9 +30,7 @@ class NumberBarSettingView : IntSettingView {
             gravity = Gravity.CENTER
             textSize = 28f
             setTextColor(context.resources.getColor(R.color.cardtxticon))
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                typeface = resources.getFont(R.font.posidon_sans)
-            }
+            typeface = resources.getFont(R.font.posidon_sans)
         }
         addView(textIcon)
     }

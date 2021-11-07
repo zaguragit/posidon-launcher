@@ -37,7 +37,7 @@ object ItemLongPress {
         }
 
         val color = item.getColor()
-        val txtColor = if (Colors.useDarkText(color)) -0xeeeded else -0x1
+        val txtColor = if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1
 
         val content = if (item is App && item.getShortcuts(context)!!.isNotEmpty()) {
             val shortcuts = item.getShortcuts(context)

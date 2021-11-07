@@ -83,14 +83,14 @@ object ColorTools {
                     blue.progress = color and 0xff
                     updatingAllowed = true
                 }
-                val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                 txt.setTextColor(txtColor)
                 okBtn.setTextColor(txtColor)
                 okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             } catch (ignore: NumberFormatException) {}
         })
         txt.setText(Integer.toHexString(initColor))
-        val txtColor = if (Colors.useDarkText(initColor)) -0xdad9d9 else -0x1
+        val txtColor = if (Colors.getLuminance(initColor) > .6f) -0xdad9d9 else -0x1
         txt.setTextColor(txtColor)
         okBtn.setTextColor(txtColor)
         okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -115,7 +115,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -131,7 +131,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + progress * 256 * 256 + green.progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -147,7 +147,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + progress * 256 + blue.progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -163,7 +163,7 @@ object ColorTools {
                     updatingAllowed = false
                     val color = alpha.progress * 256 * 256 * 256 + red.progress * 256 * 256 + green.progress * 256 + progress
                     txt.setText(Integer.toHexString(color))
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -212,14 +212,14 @@ object ColorTools {
                     blue.progress = color and 0xff
                     updatingAllowed = true
                 }
-                val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                 txt.setTextColor(txtColor)
                 okBtn.setTextColor(txtColor)
                 okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
             } catch (ignore: NumberFormatException) {}
         })
         txt.setText(initColor.toString(16).padStart(6, '0'))
-        val txtColor = if (Colors.useDarkText(initColor)) -0xdad9d9 else -0x1
+        val txtColor = if (Colors.getLuminance(initColor) > .6f) -0xdad9d9 else -0x1
         txt.setTextColor(txtColor)
         okBtn.setTextColor(txtColor)
         okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -245,7 +245,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -263,7 +263,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)
@@ -281,7 +281,7 @@ object ColorTools {
                     val hex = StringBuilder(Integer.toHexString(color))
                     while (hex.length != 6) hex.insert(0, 0)
                     txt.setText(hex.toString())
-                    val txtColor = if (Colors.useDarkText(color)) -0xdad9d9 else -0x1
+                    val txtColor = if (Colors.getLuminance(color) > .6f) -0xdad9d9 else -0x1
                     txt.setTextColor(txtColor)
                     okBtn.setTextColor(txtColor)
                     okBtn.backgroundTintList = ColorStateList.valueOf(0x00ffffff and txtColor or 0x33000000)

@@ -67,11 +67,7 @@ class SearchActivity : AppCompatActivity() {
     private val onAppLoaderEnd = { search(currentString) }
 
     private val daxResultIcon by lazy {
-        Icons.badgeMaybe(if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!)
-        } else {
-            getDrawable(R.drawable.dax)!!
-        }, false)
+        Icons.badgeMaybe(Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!), false)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {

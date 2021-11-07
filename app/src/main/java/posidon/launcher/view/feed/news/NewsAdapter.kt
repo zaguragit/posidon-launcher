@@ -152,7 +152,7 @@ class NewsAdapter(
 
         return ViewHolder((if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
             val bg = Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (Colors.useDarkText(bg)) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             cornerRadiusCompensation = r
             radius = r

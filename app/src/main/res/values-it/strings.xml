@@ -30,16 +30,12 @@
     <string name="feed_sources">Sorgenti</string>
     <string name="example_feed_url">androidpolice.com/feed</string>
     <string name="slogan">Minimale, ricco di funzionalità, diverso.</string>
-    <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Nascondi barra di stato</string>
     <string name="spacing">Spaziatura</string>
     <string name="permission_storage_description">Concedi l\'accesso allo spazio di archiviazione per cose come l\'accesso allo sfondo per la sfocatura nel cassetto delle app</string>
     <string name="storage_access">Accesso allo spazio di archiviazione</string>
     <string name="notification_access">Accesso alle notifiche</string>
     <string name="permission_notifications_description">Concedi l\'accesso alle notifiche per visualizzare le tue notifiche sulla schermata Home</string>
-    <string name="pixel_stock_android">Pixel</string>
-    <string name="one_ui">Un\'interfaccia utente</string>
-    <string name="ios">iOS</string>
     <string name="surprise_me">Sorprendimi…</string>
     <string name="preset_chooser_title">Scegli da dove iniziare</string>
     <string name="done">Fine</string>
@@ -47,7 +43,6 @@
     <string name="twitter">Twitter</string>
     <string name="website">Sito web</string>
     <string name="leoxshn_description">Creato il programma di avvio</string>
-    <string name="sajid_shaik">Sajid Shaik</string>
     <string name="sajid_shaik_description">Progettato l\'icona di avvio</string>
     <string name="app_name_hint">nome</string>
     <string name="version">Versione</string>
@@ -184,7 +179,6 @@
     <string name="undo_popup">Annulla popup</string>
     <string name="undo">Annulla</string>
     <string name="fading_edge">Fading edge</string>
-    <string name="opml">OPML</string>
     <string name="export">Esporta</string>
     <string name="_import">Importa</string>
     <string name="max_cards">Numero massimo di carte</string>
