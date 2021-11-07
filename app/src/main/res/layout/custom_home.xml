@@ -28,17 +28,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="openFeedOrder"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_sections"
-                        android:text="@string/sections" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_sections"
+                    app:label="@string/sections"
+                    android:onClick="openFeedOrder"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

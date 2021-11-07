@@ -1,12 +1,15 @@
 package posidon.launcher.view.setting
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import posidon.android.conveniencelib.dp
+import posidon.launcher.Global
 import posidon.launcher.R
 
 abstract class SettingView(
@@ -38,6 +41,7 @@ abstract class SettingView(
         labelView = TextView(context).apply {
             if (!doSpecialIcon) {
                 setCompoundDrawablesRelativeWithIntrinsicBounds(a.getResourceId(R.styleable.SettingView_drawable, 0), 0, 0, 0)
+                TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(Global.getPastelAccent()))
             }
             text = a.getString(R.styleable.SettingView_label)
             textSize = 16f

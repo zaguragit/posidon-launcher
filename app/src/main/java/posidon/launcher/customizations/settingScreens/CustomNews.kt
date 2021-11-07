@@ -5,14 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import posidon.android.conveniencelib.Device
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.customizations.RemovedArticles
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.news.opml.OPML
 import posidon.launcher.feed.news.opml.OpmlElement
@@ -35,24 +33,7 @@ class CustomNews : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-
-        run {
-            val newsCardMaxImageWidthSlider = findViewById<SeekBar>(R.id.newsCardMaxImageWidthSlider)
-            val maxWidth = Settings["feed:max_img_width", Device.screenWidth(this)]
-            newsCardMaxImageWidthSlider.progress = (maxWidth.toFloat() / Device.screenWidth(this).toFloat() * 6).toInt() - 1
-            newsCardMaxImageWidthSlider.max = 5
-            val newsCardMaxImageWidthNum = findViewById<TextView>(R.id.newsCardMaxImageWidthNum)
-            newsCardMaxImageWidthNum.text = maxWidth.toString()
-            newsCardMaxImageWidthSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) = Settings.apply()
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    val newVal: Int = Device.screenWidth(this@CustomNews) / 6 * (progress + 1)
-                    newsCardMaxImageWidthNum.text = newVal.toString()
-                    Settings["feed:max_img_width"] = newVal
-                }
-            })
-        }
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
 
         findViewById<Spinner>(R.id.readMethods).apply {
             data = resources.getStringArray(R.array.articleReadingMethods)

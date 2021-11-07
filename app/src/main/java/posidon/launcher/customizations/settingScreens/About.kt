@@ -21,7 +21,9 @@ import org.json.JSONArray
 import posidon.android.conveniencelib.dp
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.BuildConfig
+import posidon.launcher.Global
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.applyFontSetting
@@ -37,6 +39,7 @@ class About : Activity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
         TextLoader.load("https://posidon.io/launcher/contributors/pictureUrls") {

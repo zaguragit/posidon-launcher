@@ -68,17 +68,13 @@
                         android:id="@+id/notificationGrouping"
                         android:layout_width="wrap_content"/>
                 </LinearLayout>
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="openHideApps"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/hidden_apps"/>
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/hidden_apps"
+                    android:onClick="openHideApps"/>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

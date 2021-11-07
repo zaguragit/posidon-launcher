@@ -26,7 +26,6 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.loader.rss.RssItem
 import posidon.launcher.Global
@@ -57,7 +56,7 @@ class NewsAdapter(
         val swipeableLayout: SwipeableLayout?
     ) : RecyclerView.ViewHolder(card)
 
-    private val maxWidth = Settings["feed:max_img_width", Device.screenWidth(Tools.appContext!!)]
+    private val maxWidth = Settings["feed:max_img_width", 720]
 
     @SuppressLint("RtlHardcoded")
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {

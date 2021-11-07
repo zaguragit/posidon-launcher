@@ -43,7 +43,7 @@ open class HeaderSettingView : FrameLayout {
         addView(labelView)
         val separator = View(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(2).toInt(), Gravity.BOTTOM)
-            setBackgroundResource(R.drawable.card_separator)
+            setBackgroundResource(R.drawable.settings_card_header_separator)
         }
         addView(separator)
 

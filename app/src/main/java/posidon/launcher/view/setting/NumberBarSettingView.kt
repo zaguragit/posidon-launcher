@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.sp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.view.FontFitTextView
 import posidon.launcher.view.Seekbar
 
 class NumberBarSettingView : IntSettingView {
@@ -24,13 +26,16 @@ class NumberBarSettingView : IntSettingView {
     constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
 
     override val doSpecialIcon get() = true
+
     override fun populateIcon(a: TypedArray) {
-        textIcon = TextView(context).apply {
+        textIcon = FontFitTextView(context).apply {
             layoutParams = LayoutParams(dp(48).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
             gravity = Gravity.CENTER
-            textSize = 28f
-            setTextColor(context.resources.getColor(R.color.cardtxticon))
-            typeface = resources.getFont(R.font.posidon_sans)
+            defaultTextSize = sp(28f)
+            val p = dp(8).toInt()
+            setPadding(p, 0, p, 0)
+            setTextColor(Global.getPastelAccent())
+            typeface = resources.getFont(R.font.rubik_medium_caps)
         }
         addView(textIcon)
     }

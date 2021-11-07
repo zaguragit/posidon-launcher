@@ -12,6 +12,7 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.launcher.Global
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.applyFontSetting
@@ -35,6 +36,7 @@ class Customizations : AppCompatActivity() {
             findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
         }
         findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, dp(24).toInt()))
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         cardThing()
     }
 
