@@ -88,11 +88,7 @@ class IconPackPicker : AppCompatActivity() {
                 val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 convertView = li.inflate(R.layout.list_item, parent, false)!!
                 viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg), convertView.findViewById(R.id.icontxt))
-                val appSize = when (Settings["dockicsize", 1]) {
-                    0 -> context.dp(64).toInt()
-                    2 -> context.dp(84).toInt()
-                    else -> context.dp(74).toInt()
-                }
+                val appSize = context.dp(Settings["dock:icons:size", 74]).toInt()
                 viewHolder.icon.layoutParams = FrameLayout.LayoutParams(appSize, appSize)
                 convertView.tag = viewHolder
             } else viewHolder = convertView.tag as ViewHolder

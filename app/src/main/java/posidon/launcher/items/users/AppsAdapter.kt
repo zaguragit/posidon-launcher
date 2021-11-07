@@ -23,11 +23,7 @@ class AppsAdapter(
     override fun getItem(position: Int) = null
     override fun getItemId(position: Int): Long = 0
 
-    private val appSize = context.dp(when (Settings["icsize", 1]) {
-        0 -> 64
-        2 -> 84
-        else -> 74
-    }).toInt()
+    private val appSize = context.dp(Settings["drawer:icons:size", 74]).toInt()
 
     class ViewHolder(
         var icon: ImageView,

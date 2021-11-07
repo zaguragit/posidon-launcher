@@ -96,9 +96,7 @@ object Icons {
     fun applyInsets(icon: Drawable): Drawable {
         return LayerDrawable(arrayOf(icon)).apply {
             val diameter = max(intrinsicWidth, intrinsicHeight)
-            val p = 8 * diameter / when (Settings["icsize", 1]) {
-                0 -> 64; 2 -> 84; else -> 74
-            }
+            val p = 8 * diameter / Settings["drawer:icons:size", 74]
             setLayerInset(0, p, p, p, p)
         }.let {
             if (icon is BitmapDrawable) {

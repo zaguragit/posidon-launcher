@@ -54,11 +54,7 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
         private val originalApps = apps
 
-        private val appSize = when (Settings["icsize", 1]) {
-            0 -> activity.dp(64).toInt()
-            2 -> activity.dp(84).toInt()
-            else -> activity.dp(74).toInt()
-        }
+        private val appSize = activity.dp(Settings["drawer:icons:size", 74]).toInt()
 
         override fun getCount() = apps.size
         override fun getItem(position: Int) = null
