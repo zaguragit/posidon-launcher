@@ -55,12 +55,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:fadingEdge="horizontal"
-        android:requiresFadingEdge="horizontal"
-        android:fadingEdgeLength="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="6dp"/>
     <LinearLayout
         android:id="@+id/seekbarContainer"
         android:layout_width="match_parent"

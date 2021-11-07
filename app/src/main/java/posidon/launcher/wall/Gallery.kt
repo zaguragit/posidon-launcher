@@ -20,8 +20,10 @@ import com.pixplicity.sharp.Sharp
 import posidon.android.conveniencelib.Graphics
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
+import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
@@ -42,6 +44,7 @@ class Gallery : AppCompatActivity() {
         setContentView(R.layout.wall_gallery)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         val sidepadding = dp(28).toInt()
         val gridsidepadding = dp(15).toInt()
         val toolbarHeight = Tools.navbarHeight + dp(64).toInt()

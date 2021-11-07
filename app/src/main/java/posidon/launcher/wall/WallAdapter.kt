@@ -25,8 +25,7 @@ internal class WallAdapter(private val context: Context) : BaseAdapter() {
         val viewHolder: ViewHolder
         val btnbg: ShapeDrawable
         if (convertView == null) {
-            val li = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = li.inflate(R.layout.wall_item, parent, false)
+            convertView = LayoutInflater.from(context).inflate(R.layout.wall_item, parent, false)
             viewHolder = ViewHolder(convertView.findViewById(R.id.pic), convertView.findViewById(R.id.label))
             convertView.tag = viewHolder
             btnbg = ShapeDrawable(RectShape())

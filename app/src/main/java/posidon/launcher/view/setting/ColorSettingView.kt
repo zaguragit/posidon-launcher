@@ -30,9 +30,9 @@ class ColorSettingView : IntSettingView {
 
         val hasAlpha = a.getBoolean(R.styleable.ColorSettingView_hasAlpha, true)
         colorPreview = View(context).apply {
-            val size = dp(40).toInt()
+            val size = dp(36).toInt()
             layoutParams = LayoutParams(size, size, 0f).apply {
-                val m = dp(10).toInt()
+                val m = dp(12).toInt()
                 setMargins(m, m, m, m)
             }
         }
@@ -60,7 +60,7 @@ class ColorSettingView : IntSettingView {
     }
 
     private fun setPreviewColor(it: Int) {
-        colorPreview.background = ColorTools.colorCircle(it)
+        colorPreview.background = ColorTools.colorPreview(it)
         val hsv = FloatArray(3)
         Color.colorToHSV(it, hsv)
         hsv[1] = min(hsv[1],0.5f)
