@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -24,6 +23,7 @@ import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -159,16 +159,16 @@ class MusicCard : CardView, FeedSection {
         musicCardOverImg.background =
             if (NotificationService.instance.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
                 LayerDrawable(arrayOf(
-                        ColorDrawable(color),
-                        GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
+                    FastColorDrawable(color),
+                    GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
                     setLayerInset(0, 0, 0, context.dp(136).toInt(), 0)
                     setLayerInset(1, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0, 0, 0)
                 }
             } else {
                 LayerDrawable(arrayOf(
-                        ColorDrawable(color),
-                        GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
+                    FastColorDrawable(color),
+                    GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
                     setLayerInset(0, context.dp(136).toInt(), 0, 0, 0)
                     setLayerInset(1, 0, 0, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0)

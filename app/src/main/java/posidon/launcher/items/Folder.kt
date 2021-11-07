@@ -13,6 +13,8 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
+import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
@@ -68,7 +70,7 @@ class Folder : LauncherItem {
         try {
             val previewApps = min(items.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
-            drr[0] = ColorDrawable(Settings["folderBG", -0x22eeeded])
+            drr[0] = FastColorDrawable(Settings["folderBG", -0x22eeeded])
             for (i in 1..previewApps) {
                 drr[i] = BitmapDrawable(context.resources, items[i - 1].icon!!.toBitmap())
             }
@@ -153,7 +155,7 @@ class Folder : LauncherItem {
                 currentlyOpen = null
             }
             currentlyOpen = popupWindow
-            popupWindow.setBackgroundDrawable(ColorDrawable(0x0))
+            popupWindow.setBackgroundDrawable(NonDrawable())
 
             populateWindowView(content, context, { folderI, v: View, folder: Folder ->
                 ItemLongPress.onItemLongPress(context, v, folder, onRemove = {

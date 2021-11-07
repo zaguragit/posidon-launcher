@@ -3,7 +3,10 @@ package posidon.launcher.view.drawer
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Rect
-import android.graphics.drawable.*
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Build
 import android.util.AttributeSet
@@ -23,6 +26,7 @@ import posidon.android.conveniencelib.drawable.FastBitmapDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.Folder
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.DrawerAdapter
@@ -46,10 +50,10 @@ class DrawerView : LinearLayout {
     val scrollBar by lazy { AlphabetScrollbarWrapper(drawerGrid, AlphabetScrollbar.VERTICAL) }
 
     val blurBg = LayerDrawable(arrayOf<Drawable>(
-        ColorDrawable(0),
-        ColorDrawable(0),
-        ColorDrawable(0),
-        ColorDrawable(0)
+        NonDrawable(),
+        NonDrawable(),
+        NonDrawable(),
+        NonDrawable(),
     ))
 
     fun updateTheme() {
@@ -269,7 +273,7 @@ class DrawerView : LinearLayout {
     val drawerGrid = GridView(context).apply {
         gravity = Gravity.CENTER_HORIZONTAL
         stretchMode = STRETCH_COLUMN_WIDTH
-        selector = ColorDrawable(0)
+        selector = NonDrawable()
         isVerticalScrollBarEnabled = false
         isVerticalFadingEdgeEnabled = true
         setFadingEdgeLength(context.dp(72).toInt())

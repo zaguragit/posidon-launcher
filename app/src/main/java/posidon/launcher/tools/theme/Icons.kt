@@ -6,12 +6,16 @@ import android.graphics.drawable.*
 import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
 import posidon.android.conveniencelib.*
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.drawable.ContactDrawable
+import posidon.launcher.drawable.FastColorDrawable
+import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import kotlin.math.abs
@@ -26,7 +30,7 @@ object Icons {
         var containsAnimatable = drawable is Animatable
         val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
             val layerDrawable = if (drawable is AdaptiveIconDrawable) {
-                val drr = arrayOf(drawable.background ?: ColorDrawable(0), drawable.foreground ?: ColorDrawable(0))
+                val drr = arrayOf(drawable.background ?: NonDrawable(), drawable.foreground ?: NonDrawable())
                 if (drr[0] is Animatable || drr[1] is Animatable) {
                     containsAnimatable = true
                 }
@@ -45,12 +49,12 @@ object Icons {
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
                         drr[0] = when (Settings["icon:background_type", "custom"]) {
-                            "dominant" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDominantColor(bgColor))
-                            "lv" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightVibrantColor(bgColor))
-                            "dv" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkVibrantColor(bgColor))
-                            "lm" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightMutedColor(bgColor))
-                            "dm" -> ColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkMutedColor(bgColor))
-                            else -> ColorDrawable(bgColor)
+                            "dominant" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDominantColor(bgColor))
+                            "lv" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightVibrantColor(bgColor))
+                            "dv" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkVibrantColor(bgColor))
+                            "lm" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightMutedColor(bgColor))
+                            "dm" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkMutedColor(bgColor))
+                            else -> FastColorDrawable(bgColor)
                         }
                     }
                 }
@@ -65,12 +69,12 @@ object Icons {
                 val h = drawable.intrinsicHeight
                 val bgColor = Settings["icon:background", 0xff252627.toInt()]
                 val tmp = LayerDrawable(arrayOf(when (Settings["icon:background_type", "custom"]) {
-                    "dominant" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDominantColor(bgColor))
-                    "lv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightVibrantColor(bgColor))
-                    "dv" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkVibrantColor(bgColor))
-                    "lm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightMutedColor(bgColor))
-                    "dm" -> ColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkMutedColor(bgColor))
-                    else -> ColorDrawable(bgColor)
+                    "dominant" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDominantColor(bgColor))
+                    "lv" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightVibrantColor(bgColor))
+                    "dv" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkVibrantColor(bgColor))
+                    "lm" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightMutedColor(bgColor))
+                    "dm" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkMutedColor(bgColor))
+                    else -> FastColorDrawable(bgColor)
                 }, drawable))
                 tmp.setLayerInset(1, w / 4, h / 4, w / 4, h / 4)
                 tmp
@@ -123,33 +127,26 @@ object Icons {
         } else drawable
     }
 
-    private val pics = HashMap<Int, Drawable>()
-    fun generateContactPicture(name: String, iconShape: IconShape): Drawable = pics.getOrPut((name[0].code shl 16) + name[1].code) {
-        val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        val random = Random((name[0].code shl 16) + name[1].code)
-        canvas.drawColor(Color.HSVToColor(180, floatArrayOf(
-                random.nextFloat() * 360,
-                (random.nextInt(4000) + 5000) / 10000f,
-                (random.nextInt(3000) + 5000) / 10000f
-        )))
-        val textP = Paint().apply {
-            color = 0xffffffff.toInt()
-            textAlign = Paint.Align.CENTER
-            typeface = Tools.appContext!!.mainFont
-            textSize = 64f
-            isAntiAlias = true
+    private val pics = HashMap<Int, ContactDrawable>()
+    fun generateContactPicture(name: String, tmpLab: DoubleArray, paint: Paint): Drawable? {
+        if (name.isEmpty()) return null
+        val realName = name.trim { !it.isLetterOrDigit() }.uppercase()
+        if (realName.isEmpty()) return null
+        val key = (realName[0].code shl 16) + realName[realName.length / 2].code
+        return pics.getOrPut(key) {
+            val random = Random(key)
+            val base = Color.HSVToColor(floatArrayOf(random.nextFloat() * 360f, 1f, 1f))
+            ColorUtils.colorToLAB(base, tmpLab)
+            ContactDrawable(
+                ColorUtils.LABToColor(
+                    50.0,
+                    tmpLab[1] / 2.0,
+                    tmpLab[2] / 2.0
+                ),
+                realName[0],
+                paint
+            )
         }
-        val x = canvas.width / 2f
-        val y = (canvas.height / 2f - (textP.descent() + textP.ascent()) / 2f)
-        canvas.drawText(name[0].toString(), x, y, textP)
-        if (!iconShape.isSquare) {
-            canvas.drawPath(iconShape.getPath(108, 108), Paint().apply {
-                isAntiAlias = true
-                xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-            })
-        }
-        badgeMaybe(BitmapDrawable(Tools.appContext!!.resources, bitmap), false)
     }
 
     fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {

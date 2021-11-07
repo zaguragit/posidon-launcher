@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/dax.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/ic_color.xml" value="0.21319444444444444" />
         <entry key="app/src/main/res/drawable/ic_color_dropper.xml" value="0.21319444444444444" />
         <entry key="app/src/main/res/drawable/progress.xml" value="0.12222222222222222" />

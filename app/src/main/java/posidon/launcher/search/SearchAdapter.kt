@@ -10,7 +10,6 @@ import android.widget.TextView
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
-import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.Icons
@@ -47,11 +46,7 @@ internal class SearchAdapter(
         val iconFrame = holder.iconFrame
         val text = holder.text
         val item = results[position]
-        if (item is ContactItem && item.icon == null) {
-            icon.setImageURI(item.iconUri)
-        } else {
-            icon.setImageDrawable(item.icon)
-        }
+        icon.setImageDrawable(item.icon)
         text.text = item.label
         text.setTextColor(Settings["searchtxtcolor", -0x1])
         if (item is App && Settings["notif:badges", true] && item.notificationCount != 0) {
