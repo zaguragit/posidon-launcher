@@ -72,7 +72,9 @@ class Home : AppCompatActivity() {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             Log.e("posidonLauncher", "uncaught exception", throwable)
             Settings.applyNow()
-            startActivity(Intent(this, StackTraceActivity::class.java).apply { putExtra("throwable", throwable) })
+            startActivity(Intent(this, StackTraceActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra("throwable", throwable))
             Process.killProcess(Process.myPid())
             exitProcess(0)
         }

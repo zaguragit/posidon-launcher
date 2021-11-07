@@ -99,17 +99,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="openHideApps"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/setting_title_hide_apps" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/setting_title_hide_apps"
+                    android:onClick="openHideApps"/>
                 <LinearLayout
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -132,17 +128,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="chooseLauncher"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/choose_a_launcher" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/choose_a_launcher"
+                    android:onClick="chooseLauncher"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -177,24 +169,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="mkBackup"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_save"
-                        android:text="@string/mk_backup" />
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:onClick="useBackup"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/use_backup" />
-                </LinearLayout>
+                    app:drawable="@drawable/ic_save"
+                    app:label="@string/mk_backup"
+                    android:onClick="mkBackup"/>
+                <posidon.launcher.view.setting.ClickableSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/use_backup"
+                    android:onClick="useBackup"/>
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"

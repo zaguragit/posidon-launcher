@@ -11,7 +11,9 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import posidon.android.conveniencelib.dp
+import posidon.launcher.Global
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -28,6 +30,7 @@ class IconPackPicker : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         val pm = packageManager
         lastclicked = findViewById(R.id.systemicons)
 

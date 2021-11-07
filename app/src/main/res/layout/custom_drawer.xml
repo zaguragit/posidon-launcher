@@ -88,6 +88,13 @@
                     app:label="@string/slide_up"
                     app:key="drawer:slide_up"
                     app:def="true"/>
+                <posidon.launcher.view.setting.ClickableSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/setting_title_hide_apps"
+                    android:onClick="openHideApps"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

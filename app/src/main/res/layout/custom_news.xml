@@ -28,17 +28,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_news"
-                        android:text="@string/feed_sources"
-                        android:onClick="chooseFeeds"/>
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_news"
+                    app:label="@string/feed_sources"
+                    android:onClick="chooseFeeds"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -195,30 +191,15 @@
                     app:label="@string/images"
                     app:key="news:cards:image"
                     app:def="true"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/newsCardMaxImageWidthNum"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/cardtxticon"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:text="@string/max_image_width" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/newsCardMaxImageWidthSlider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="50" />
-                </LinearLayout>
+                    app:label="@string/max_image_width"
+                    app:key="feed:max_img_width"
+                    app:def="720"
+                    app:max="1024"
+                    app:startsWith1="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -320,17 +301,13 @@
                     app:label="@string/undo_popup"
                     app:key="feed:undo_article_removal_opt"
                     app:def="false"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_visible"
-                        android:text="@string/removed"
-                        android:onClick="seeRemovedArticles"/>
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_visible"
+                    app:label="@string/removed"
+                    android:onClick="seeRemovedArticles"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
@@ -343,24 +320,20 @@
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
                     app:label="@string/opml"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.ClickableSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/export"
-                        android:onClick="exportOPML"/>
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="match_parent"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/_import"
-                        android:onClick="importOPML"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/export"
+                    android:onClick="exportOPML"/>
+                <posidon.launcher.view.setting.ClickableSettingView
+                    style="@style/settingsEntry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawable="@drawable/ic_apps"
+                    app:label="@string/_import"
+                    android:onClick="importOPML"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

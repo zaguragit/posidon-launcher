@@ -3,12 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/custom_catbg.xml" value="0.16111111111111112" />
+        <entry key="app/src/main/res/drawable/custom_feed.xml" value="0.24930555555555556" />
+        <entry key="app/src/main/res/drawable/customizations.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/dax.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/ic_color.xml" value="0.21319444444444444" />
         <entry key="app/src/main/res/drawable/ic_color_dropper.xml" value="0.21319444444444444" />
+        <entry key="app/src/main/res/drawable/input_bg.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/progress.xml" value="0.12222222222222222" />
         <entry key="app/src/main/res/drawable/progress_horizontal.xml" value="0.12222222222222222" />
+        <entry key="app/src/main/res/drawable/settings_card.xml" value="0.24930555555555556" />
+        <entry key="app/src/main/res/drawable/settings_card_header.xml" value="0.24930555555555556" />
+        <entry key="app/src/main/res/drawable/settings_card_separator.xml" value="0.22777777777777777" />
+        <entry key="app/src/main/res/drawable/settings_suggestion_card.xml" value="0.22777777777777777" />
+        <entry key="app/src/main/res/layout/app_edit_menu.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_drawer.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_hidden_apps.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_home.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_news.xml" value="0.23736338797814208" />
+        <entry key="app/src/main/res/layout/custom_notifications.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_other.xml" value="0.2189207650273224" />
+        <entry key="app/src/main/res/layout/custom_theme.xml" value="0.19023224043715847" />
+        <entry key="app/src/main/res/layout/customizations.xml" value="0.11707566462167689" />
         <entry key="app/src/main/res/layout/notification_progress.xml" value="0.15868055555555555" />
+        <entry key="app/src/main/res/layout/stack_trace_activity.xml" value="0.23854166666666668" />
       </map>
     </option>
   </component>
