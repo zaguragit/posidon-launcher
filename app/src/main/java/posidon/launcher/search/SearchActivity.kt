@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
@@ -36,6 +35,7 @@ import posidon.android.loader.text.TextLoader
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.*
 import posidon.launcher.items.users.AppLoader
 import posidon.launcher.items.users.ItemLongPress
@@ -113,10 +113,10 @@ class SearchActivity : AppCompatActivity() {
             paint.color = Settings["searchcolor", 0x33000000]
         }
         if (Tools.canBlurSearch) {
-            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:rad", 15f])), ColorDrawable(Settings["searchUiBg", -0x78000000]))
+            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:rad", 15f])), FastColorDrawable(Settings["searchUiBg", -0x78000000]))
             window.setBackgroundDrawable(LayerDrawable(arr))
         } else {
-            window.setBackgroundDrawable(ColorDrawable(Settings["searchUiBg", -0x78000000]))
+            window.setBackgroundDrawable(FastColorDrawable(Settings["searchUiBg", -0x78000000]))
         }
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])

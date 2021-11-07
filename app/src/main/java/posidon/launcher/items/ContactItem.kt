@@ -3,26 +3,27 @@ package posidon.launcher.items
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
+import posidon.android.conveniencelib.drawable.MaskedDrawable
+import posidon.launcher.R
+import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Icons
+import java.io.FileNotFoundException
 
 
 class ContactItem private constructor(
     override var label: String,
-    val iconUri: Uri?,
+    override val icon: Drawable,
     val lookupKey: String,
     val phone: String,
     val id: Int
 ) : LauncherItem() {
-
-    override val icon: Drawable? = if (iconUri == null)
-        Icons.generateContactPicture(label, Icons.IconShape(Settings["icshape", 4]))
-    else null
 
     override fun open(context: Context, view: View, dockI: Int) {
         val viewContact = Intent(Intent.ACTION_VIEW)
@@ -42,7 +43,6 @@ class ContactItem private constructor(
         if (lookupKey != other.lookupKey) return false
         if (phone != other.phone) return false
         if (label != other.label) return false
-        if (iconUri != other.iconUri) return false
 
         return true
     }
@@ -73,6 +73,17 @@ class ContactItem private constructor(
                 val contactIdIndex = cur.getColumnIndex(ContactsContract.Contacts._ID)
 
                 if (cur.count != 0) {
+
+                    val tmpLAB = DoubleArray(3)
+                    val textP = Paint().apply {
+                        color = 0xffffffff.toInt()
+                        typeface = Tools.appContext!!.resources.getFont(R.font.rubik_medium_caps)
+                        textAlign = Paint.Align.CENTER
+                        textSize = 64f
+                        isAntiAlias = true
+                        isSubpixelText = true
+                    }
+
                     while (cur.moveToNext()) {
                         val starred = cur.getInt(starredIndex) != 0
                         if (requiresStar && !starred) {
@@ -84,9 +95,20 @@ class ContactItem private constructor(
                         val contactId = cur.getInt(contactIdIndex)
                         val phone = cur.getString(numberIndex) ?: ""
                         val photoId = cur.getString(photoIdIndex)
-                        val icon: Uri? = if (photoId != null) {
+                        val iconUri: Uri? = if (photoId != null) {
                             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
                         } else null
+
+                        val pic = if (iconUri == null) Icons.generateContactPicture(name, tmpLAB, textP) ?: NonDrawable() else try {
+                            val inputStream = Tools.appContext!!.contentResolver.openInputStream(iconUri)
+                            Drawable.createFromStream(inputStream, iconUri.toString())
+                        } catch (e: FileNotFoundException) { Icons.generateContactPicture(name, tmpLAB, textP) ?: NonDrawable() }
+                        pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
+
+                        val icon = Icons.badgeMaybe(MaskedDrawable(
+                            pic,
+                            Icons.IconShape(Settings["icshape", 4]).getPath(pic.intrinsicWidth, pic.intrinsicHeight)
+                        ), false)
 
                         val contact = ContactItem(name, icon, lookupKey, phone, contactId)
 

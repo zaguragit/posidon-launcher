@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import io.posidon.android.launcherutils.Kustom
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
+import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -56,7 +56,7 @@ object ItemLongPress {
         val window = PopupWindow(content, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true)
         currentPopup = window
         window.setOnDismissListener { currentPopup = null }
-        window.setBackgroundDrawable(ColorDrawable(0x0))
+        window.setBackgroundDrawable(NonDrawable())
 
         val title = content.findViewById<TextView>(R.id.title)
         val removeButton = content.findViewById<View>(R.id.removeBtn)

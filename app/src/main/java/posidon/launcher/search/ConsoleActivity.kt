@@ -1,7 +1,6 @@
 package posidon.launcher.search
 
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -18,6 +17,7 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.NestedScrollView
 
@@ -145,7 +145,7 @@ class ConsoleActivity : AppCompatActivity() {
             }
             true
         }
-        window.setBackgroundDrawable(ColorDrawable(0xdd000000.toInt()))
+        window.setBackgroundDrawable(FastColorDrawable(0xdd000000.toInt()))
     }
 
     private inline fun print(any: Any?) = text.append(any.toString())

@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -20,6 +19,7 @@ import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.customizations.IconPackPicker
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Fonts
@@ -134,7 +134,7 @@ class CustomTheme : AppCompatActivity() {
         }
 
         val size = dp(64).toInt()
-        val bg = BitmapDrawable(resources, ColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
+        val bg = BitmapDrawable(resources, FastColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
         bg.setBounds(0, 0, size, size)
         icShapeViews.onEachIndexed { i, v ->
             (v as ViewGroup).addView(ImageView(this).apply {
