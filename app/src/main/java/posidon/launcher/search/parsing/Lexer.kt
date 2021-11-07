@@ -109,7 +109,7 @@ class Lexer(val text: String) {
         while (current.isLetterOrDigit() || current == '_') {
             position++
         }
-        when (text.substring(start, position).toLowerCase(Locale.US)) {
+        when (text.substring(start, position).lowercase(Locale.US)) {
             "pi" -> return Token(Token.Type.Number, Math.PI)
             "π" -> return Token(Token.Type.Number, Math.PI)
             "e" -> return Token(Token.Type.Number, Math.E)

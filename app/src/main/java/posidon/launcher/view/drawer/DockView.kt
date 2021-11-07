@@ -114,7 +114,7 @@ class DockView : LinearLayout {
             battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
             battery.progressBackgroundTintList = ColorStateList.valueOf(color)
             battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (Colors.useDarkText(color)) -0x23000000 else -0x11000001)
+            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (Colors.getLuminance(color) > .6f) -0x23000000 else -0x11000001)
         }
         searchBar.background = ShapeDrawable().apply {
             val r = Tools.appContext!!.dp(Settings["dock:search:radius", 30])
@@ -226,7 +226,7 @@ class DockView : LinearLayout {
                     }
                 }
                 when (item) {
-                    is PinnedShortcut -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    is PinnedShortcut -> {
                         if (!item.isInstalled(context.packageManager)) {
                             Dock[i] = null
                             continue@loop

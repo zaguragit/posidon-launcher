@@ -14,12 +14,6 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
 
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.MAIN"/>
-        </intent>
-    </queries>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic"
@@ -34,19 +28,26 @@
             android:enabled="true"
             android:name=".external.kustom.Kustom5SecsProvider"/>
 
-        <receiver android:name=".external.widgets.ClockWidget" android:label="Minimal date">
+        <receiver
+            android:name=".external.widgets.ClockWidget"
+            android:label="Minimal date"
+            android:exported="true">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/clock_widget_info" />
         </receiver>
 
-        <receiver android:name=".external.widgets.BigWidget" android:label="Big widget">
+        <receiver
+            android:name=".external.widgets.BigWidget"
+            android:label="Big widget"
+            android:exported="true">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/big_widget_info" />
         </receiver>
 
         <service
             android:name=".feed.notifications.NotificationService"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
@@ -59,7 +60,8 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
-            android:allowEmbedded="false">
+            android:allowEmbedded="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -78,13 +80,15 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize"
-            android:allowEmbedded="false">
+            android:allowEmbedded="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SECONDARY_HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".desktop.AppList"
             android:configChanges="keyboardHidden|screenSize|orientation"
@@ -101,7 +105,8 @@
             android:icon="@drawable/customizations"
             android:label="@string/settings_title"
             android:taskAffinity="posidon.launcher.Customizations"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
@@ -110,7 +115,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomDrawer"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.DRAWER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -119,7 +125,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomHome"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.FEED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -128,7 +135,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomNews"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.NEWS"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -137,7 +145,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomNotifications"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.NOTIFICATIONS"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -146,7 +155,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomDock"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.DOCK"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -163,7 +173,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomFolders"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.FOLDERS"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -172,7 +183,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomSearch"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.SEARCH"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -181,7 +193,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomTheme"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.THEME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -190,7 +203,8 @@
         <activity
             android:name=".customizations.settingScreens.CustomGestures"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings">
+            android:theme="@style/settings"
+            android:exported="true">
             <intent-filter>
                 <action android:name="posidon.launcher.settings.GESTURES"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -234,7 +248,8 @@
             android:label="@string/walls"
             android:taskAffinity="posidon.launcher.wall.Gallery"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/wallgallery">
+            android:theme="@style/wallgallery"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -243,7 +258,9 @@
             android:name=".wall.WallActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/wallprev" />
-        <activity android:name=".external.ApplyIcons">
+        <activity
+            android:name=".external.ApplyIcons"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="posidon.launcher.action.APPLY_ICONPACK" />
@@ -253,7 +270,8 @@
         <activity
             android:name=".search.SearchActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:label="@string/settings_title_search">
+            android:label="@string/settings_title_search"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -268,7 +286,8 @@
         <activity
             android:name=".search.ConsoleActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -280,7 +299,10 @@
             android:theme="@style/tutorial" />
         <activity android:name=".tutorial.WelcomeActivity" android:theme="@style/welcome" />
         <activity android:name=".search.HiddenAppsActivity" android:theme="@style/hiddenApps" />
-        <activity android:name=".customizations.FakeLauncherActivity" android:enabled="false">
+        <activity
+            android:name=".customizations.FakeLauncherActivity"
+            android:enabled="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -294,7 +316,8 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:theme="@style/floatingScreen">
+            android:theme="@style/floatingScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />

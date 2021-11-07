@@ -68,19 +68,19 @@ class AppsAdapter(
 
     private val savedSections = ArrayList<Char>().apply {
         for (i in apps.indices) {
-            val char = apps[i].label[0].toUpperCase()
-            if (i == 0 || apps[i - 1].label[0].toUpperCase() != char) add(char)
+            val char = apps[i].label[0].uppercaseChar()
+            if (i == 0 || apps[i - 1].label[0].uppercaseChar() != char) add(char)
         }
     }.toTypedArray()
 
     override fun getSections(): Array<Char> = savedSections
 
     override fun getSectionForPosition(i: Int): Int =
-            savedSections.indexOf(apps[i].label[0].toUpperCase())
+            savedSections.indexOf(apps[i].label[0].uppercaseChar())
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
-        for (j in apps.indices) if (apps[j].label[0].toUpperCase() == char) return j
+        for (j in apps.indices) if (apps[j].label[0].uppercaseChar() == char) return j
         return 0
     }
 

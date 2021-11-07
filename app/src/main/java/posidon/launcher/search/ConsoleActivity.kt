@@ -1,9 +1,7 @@
 package posidon.launcher.search
 
 import android.content.Intent
-import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -61,9 +59,7 @@ class ConsoleActivity : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val font = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            resources.getFont(R.font.roboto_mono)
-        } else Typeface.MONOSPACE
+        val font = resources.getFont(R.font.roboto_mono)
         text.typeface = font
         input.typeface = font
         setContentView(FrameLayout(this).apply { addView(scroll) })

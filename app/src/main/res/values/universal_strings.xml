@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">posidon launcher</string>
+
+    <string name="pixel_stock_android">Pixel</string>
+    <string name="one_ui">One UI</string>
+    <string name="ios">iOS</string>
+
+    <string name="developer">Leo Shneyderis</string>
+    <string name="sajid_shaik">Sajid Shaik</string>
+
+    <string name="opml">OPML</string>
+</resources>

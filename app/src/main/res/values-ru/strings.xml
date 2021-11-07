@@ -30,16 +30,12 @@
     <string name="feed_sources">Источники</string>
     <string name="example_feed_url">habr.com/rss</string>
     <string name="slogan">Минимальный, многофункциональный, разнообразный.</string>
-    <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Скрыть строку состояния</string>
     <string name="spacing">Интервал</string>
     <string name="permission_storage_description">Предоставьте доступ к хранилищу для доступа к обоям (для размытия в списке приложений)</string>
     <string name="storage_access">Доступ к хранилищу</string>
     <string name="notification_access">Доступ к уведомлениям</string>
     <string name="permission_notifications_description">Предоставьте доступ к уведомлениям, чтобы они отображались на вашем домашнем экране</string>
-    <string name="pixel_stock_android">Pixel</string>
-    <string name="one_ui">One UI</string>
-    <string name="ios">iOS</string>
     <string name="surprise_me">Удивите меня…</string>
     <string name="preset_chooser_title">Выберите с чего начать</string>
     <string name="done">Готово</string>
@@ -47,7 +43,6 @@
     <string name="twitter">Твиттер</string>
     <string name="website">Сайт</string>
     <string name="leoxshn_description">Создал лаунчер</string>
-    <string name="sajid_shaik">Sajid Shaik</string>
     <string name="sajid_shaik_description">Создал иконку для лаунчера</string>
     <string name="app_name_hint">Название</string>
     <string name="version">Версия</string>
@@ -183,7 +178,6 @@
     <string name="undo_popup">Отменить всплывающее окно</string>
     <string name="undo">Отменить</string>
     <string name="fading_edge">Исчезающий край</string>
-    <string name="opml">OPML</string>
     <string name="export">Экспорт</string>
     <string name="_import">Импорт</string>
     <string name="max_cards">Макс. карт</string>

@@ -1,6 +1,5 @@
 package posidon.launcher.customizations.settingScreens
 
-import android.os.Build
 import posidon.launcher.customizations.settingScreens.general.AppTickingActivity
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -16,9 +15,7 @@ class CustomHiddenAppNotifications : AppTickingActivity() {
         for (i in pacslist.indices) {
             apps.add(App(pacslist[i].packageName, pacslist[i].activities?.firstOrNull()?.name ?: "", label = pacslist[i].applicationInfo.loadLabel(packageManager).toString()).apply {
                 icon = pacslist[i].applicationInfo.loadIcon(packageManager)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    icon = Icons.generateAdaptiveIcon(icon!!)
-                }
+                icon = Icons.generateAdaptiveIcon(icon!!)
                 icon = Icons.badgeMaybe(icon!!, false)
             })
         }

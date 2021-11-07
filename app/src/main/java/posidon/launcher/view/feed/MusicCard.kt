@@ -148,11 +148,11 @@ class MusicCard : CardView, FeedSection {
         }
         musicCardImage.setImageDrawable(icon)
         musicCardTrackTitle.apply {
-            setTextColor(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
+            setTextColor(if (Colors.getLuminance(color) >.6f) -0xeeeded else -0x1)
             text = title
         }
         musicCardTrackArtist.apply {
-            setTextColor(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
+            setTextColor(if (Colors.getLuminance(color) >.6f) -0xeeeded else -0x1)
             text = subtitle
         }
         val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
@@ -174,9 +174,9 @@ class MusicCard : CardView, FeedSection {
                     setLayerInset(1, 0, 0, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0)
                 }
             }
-        musicPrev.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
-        musicPlay.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
-        musicNext.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(color)) -0xeeeded else -0x1)
+        musicPrev.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1)
+        musicPlay.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1)
+        musicNext.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

@@ -75,20 +75,20 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         return convertView
     }
 
-    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label[0].toUpperCase() }
+    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label[0].uppercaseChar() }
 
     override fun getSections(): Array<Char> = savedSections
 
     override fun getSectionForPosition(i: Int): Int {
         val label = Global.apps[i].label
-        return savedSections.indexOf(if (label.isEmpty()) ' ' else label[0].toUpperCase())
+        return savedSections.indexOf(if (label.isEmpty()) ' ' else label[0].uppercaseChar())
     }
 
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
         for (j in Global.apps.indices) {
             val label = Global.apps[j].label
-            if (char == if (label.isEmpty()) ' ' else label[0].toUpperCase()) {
+            if (char == if (label.isEmpty()) ' ' else label[0].uppercaseChar()) {
                 return j
             }
         }

@@ -133,22 +133,16 @@ class CustomTheme : AppCompatActivity() {
             }
         }
 
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            findViewById<View>(R.id.icshapesettings).visibility = View.GONE
-            findViewById<View>(R.id.recolorWhiteBGSetting).visibility = View.GONE
-        } else {
-            val size = dp(64).toInt()
-            val bg = BitmapDrawable(resources, ColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
-            bg.setBounds(0, 0, size, size)
-            icShapeViews.onEachIndexed { i, v ->
-                (v as ViewGroup).addView(ImageView(this).apply {
-                    val s = Icons.IconShape(i)
-                    setImageDrawable(if (s.isSquare) bg else MaskedDrawable(bg, s.getPath(size, size)))
-                }, 0, ViewGroup.LayoutParams(size, size))
-            }
-            icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
+        val size = dp(64).toInt()
+        val bg = BitmapDrawable(resources, ColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
+        bg.setBounds(0, 0, size, size)
+        icShapeViews.onEachIndexed { i, v ->
+            (v as ViewGroup).addView(ImageView(this).apply {
+                val s = Icons.IconShape(i)
+                setImageDrawable(if (s.isSquare) bg else MaskedDrawable(bg, s.getPath(size, size)))
+            }, 0, ViewGroup.LayoutParams(size, size))
         }
+        icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         Global.shouldSetApps = true
     }
 

@@ -21,6 +21,7 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.android.loader.rss.RssItem
 import posidon.android.loader.rss.RssLoader
+import posidon.android.loader.rss.RssSource
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
@@ -57,24 +58,6 @@ class Feed : FrameLayout {
                 Gestures.performTrigger(Settings["gesture:feed:bottom_overscroll", Gestures.OPEN_APP_DRAWER])
             }
         }
-    }
-
-    private fun yToI(y: Float): Int {
-        val c = desktopContent.childCount
-        var py = 0f
-        val scrollY = scroll.scrollY
-        for (i in 0 until c) {
-            val v = desktopContent.getChildAt(i)
-            val vy = v.y + v.measuredHeight / 2f - scrollY
-            if (vy > y) {
-                if (py == 0f) {
-                    return i
-                }
-                return if (abs(py - y) > abs(vy - y)) i else i - 1
-            }
-            py = vy
-        }
-        return c - 1
     }
 
     constructor(c: Context) : super(c)
@@ -251,7 +234,8 @@ class Feed : FrameLayout {
         if (Settings["feed:show_spinner", true]) {
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
-            loadFeed { success, items ->
+            loadFeed { erroredSources, items ->
+                val success = erroredSources.isEmpty()
                 onNewsLoaded(success, newsCards, items)
                 post {
                     spinner.animate().translationY(dp(-72)).alpha(0f).onEnd {
@@ -259,7 +243,8 @@ class Feed : FrameLayout {
                     }
                 }
             }
-        } else loadFeed { success, items ->
+        } else loadFeed { erroredSources, items ->
+            val success = erroredSources.isEmpty()
             onNewsLoaded(success, newsCards, items)
         }
     }
@@ -280,7 +265,7 @@ class Feed : FrameLayout {
     }
 
     private inline fun loadFeed(
-        noinline onFinished: (success: Boolean, items: List<RssItem>) -> Unit
+        noinline onFinished: (erroredSources: List<RssSource>, items: List<RssItem>) -> Unit
     ): Thread {
         val maxAge = Settings["news:max_days_age", 5]
         val deleted = Settings.getStringsOrSetEmpty("feed:deleted_articles")

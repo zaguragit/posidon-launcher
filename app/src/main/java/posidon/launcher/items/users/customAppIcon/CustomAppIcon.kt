@@ -2,7 +2,6 @@ package posidon.launcher.items.users.customAppIcon
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +12,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.launcherutils.LauncherIcons
+import io.posidon.android.launcherutils.IconTheming
 import posidon.android.conveniencelib.Graphics
 import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
@@ -48,11 +47,7 @@ class CustomAppIcon : AppCompatActivity() {
             addView(li.inflate(R.layout.list_item, this, false).apply {
                 runCatching {
                     findViewById<ImageView>(R.id.iconimg).setImageDrawable(Icons.badgeMaybe(
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            Icons.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
-                        } else {
-                            packageManager.getApplicationIcon("com.android.systemui")
-                        }, false
+                        Icons.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui")), false
                     ))
                 }
                 findViewById<TextView>(R.id.icontxt).text = context.getString(R.string._default)
@@ -88,11 +83,7 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name, label = pacslist[i].loadLabel(packageManager).toString()))
-            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.badgeMaybe(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))
-                    } else {
-                        pacslist[i].loadIcon(packageManager)
-                    }, false))
+            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.badgeMaybe(Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager)), false))
         }
 
         recycler.layoutManager = linearLayoutManager
@@ -114,14 +105,11 @@ class CustomAppIcon : AppCompatActivity() {
     }
 
     private fun onSelectIconPack(packageName: String) {
-        println("AAAA111111")
         thread(isDaemon = true) {
-            println("223234234234234")
             try {
                 val res = packageManager.getResourcesForApplication(packageName)
-                val rn = LauncherIcons.getResourceNames(res, packageName)
+                val rn = IconTheming.getResourceNames(res, packageName)
                 runOnUiThread {
-                    println("8999789890890890890")
                     try {
                         recycler.layoutManager = gridLayoutManager
                         recycler.adapter = IconsAdapter(packageName, rn, res, ::onSelectIcon)

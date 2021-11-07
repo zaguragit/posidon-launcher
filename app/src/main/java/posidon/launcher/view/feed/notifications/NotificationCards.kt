@@ -169,7 +169,7 @@ class NotificationCards : LinearLayout, FeedSection {
         parentNotification.background = notificationBackground
         parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
         parentNotificationTitle.typeface = context.mainFont
-        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Colors.useDarkText(Global.accentColor)) -0x1000000 else -0x1)
+        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(Global.accentColor) > .6f) -0x1000000 else -0x1)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)

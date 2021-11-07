@@ -30,16 +30,12 @@
     <string name="feed_sources">Fuentes</string>
     <string name="example_feed_url">andro4all.com/feed</string>
     <string name="slogan">Minimal, feature-rich, different.</string>
-    <string name="developer">Leo Shneyderis</string>
     <string name="settingshidestatus">Esconder statusbar</string>
     <string name="spacing">Espaciado</string>
     <string name="permission_storage_description">El acceso al almacenamiento es nesesario para funccionalides como el desenfoque en el fondo del cajon de aplicaciones</string>
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="notification_access">Acceso a notificaciones</string>
     <string name="permission_notifications_description">Para mostrar notificaciones en la pantalla de inicio</string>
-    <string name="pixel_stock_android">Pixel</string>
-    <string name="one_ui">One UI</string>
-    <string name="ios">iOS</string>
     <string name="surprise_me">Sorprende me…</string>
     <string name="preset_chooser_title">Escoge donde comenzar</string>
     <string name="done">Hecho</string>
@@ -47,7 +43,6 @@
     <string name="twitter">Twitter</string>
     <string name="website">Website</string>
     <string name="leoxshn_description">Creó el launcher</string>
-    <string name="sajid_shaik">Sajid Shaik</string>
     <string name="sajid_shaik_description">Diseñó el icono del launcher</string>
     <string name="app_name_hint">name</string>
     <string name="version">Versión</string>
@@ -183,7 +178,6 @@
     <string name="undo_popup">Undo popup</string>
     <string name="undo">Deshacer</string>
     <string name="fading_edge">Fading edge</string>
-    <string name="opml">OPML</string>
     <string name="export">Exportar</string>
     <string name="_import">Importar</string>
     <string name="max_cards">Max targetas</string>

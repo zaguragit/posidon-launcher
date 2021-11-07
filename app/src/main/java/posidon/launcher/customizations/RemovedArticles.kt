@@ -58,7 +58,7 @@ class RemovedArticles : AppCompatActivity() {
             val button = TextView(context).apply {
                 text = context.getString(R.string.restore)
                 textSize = 15f
-                setTextColor(if (Colors.useDarkText(Global.accentColor)) 0xff000000.toInt() else 0xffffffff.toInt())
+                setTextColor(if (Colors.getLuminance(Global.accentColor) > 6f) 0xff000000.toInt() else 0xffffffff.toInt())
                 background = context.getDrawable(R.drawable.button_bg_round)
                 backgroundTintList = ColorStateList.valueOf(Global.accentColor)
                 val h = context.dp(20).toInt()

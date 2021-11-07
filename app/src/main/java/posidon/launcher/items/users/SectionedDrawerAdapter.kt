@@ -20,17 +20,17 @@ class SectionedDrawerAdapter(val drawer: DrawerView) : BaseAdapter(), SectionInd
         val convertView = cv as AppSectionView? ?: AppSectionView(drawer, "drawer")
         convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
         convertView.setItems(section, parent)
-        convertView.title = section[0].label[0].toUpperCase().toString()
+        convertView.title = section[0].label[0].uppercaseChar().toString()
         return convertView
     }
 
-    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label[0].toUpperCase() }
+    private val savedSections = Array(Global.appSections.size) { Global.appSections[it][0].label[0].uppercaseChar() }
     override fun getSections(): Array<Char> = savedSections
-    override fun getSectionForPosition(i: Int): Int = savedSections.indexOf(Global.appSections[i][0].label[0].toUpperCase())
+    override fun getSectionForPosition(i: Int): Int = savedSections.indexOf(Global.appSections[i][0].label[0].uppercaseChar())
     override fun getPositionForSection(i: Int): Int {
         val char = savedSections[i]
         for (j in Global.appSections.indices) {
-            if (Global.appSections[j][0].label[0].toUpperCase() == char) {
+            if (Global.appSections[j][0].label[0].uppercaseChar() == char) {
                 return j
             }
         }
