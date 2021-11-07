@@ -26,7 +26,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.appLoading.AppLoader
+import io.posidon.android.launcherutils.appLoading.IconConfig
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.hideKeyboard
 import posidon.android.conveniencelib.sp
@@ -37,7 +39,8 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.*
-import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.AppCallback
+import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.parsing.Parser
 import posidon.launcher.storage.Settings
@@ -67,8 +70,10 @@ class SearchActivity : AppCompatActivity() {
     private val onAppLoaderEnd = { search(currentString) }
 
     private val daxResultIcon by lazy {
-        Icons.badgeMaybe(Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!), false)
+        Icons.applyInsets(Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!))
     }
+
+    val appLoader = AppLoader(::AppCollection)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,8 +172,22 @@ class SearchActivity : AppCompatActivity() {
         search("")
 
         if (Settings["search:asHome", false]) {
-            (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppLoader.Callback(this, onAppLoaderEnd))
-            AppLoader(applicationContext, onAppLoaderEnd).execute()
+            (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppCallback(this, ::loadApps))
+            loadApps()
+        }
+    }
+
+    fun loadApps() {
+        val iconConfig = IconConfig(
+            size = dp(65).toInt(),
+            density = resources.configuration.densityDpi,
+            packPackages = arrayOf(Settings["iconpack", "system"]),
+        )
+        appLoader.async(applicationContext, iconConfig) {
+            App.onFinishLoad(it.tmpApps, it.tmpAppSections, it.tmpHidden, it.appsByName)
+            Home.instance.runOnUiThread {
+                onAppLoaderEnd()
+            }
         }
     }
 

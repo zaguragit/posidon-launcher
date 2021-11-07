@@ -8,15 +8,21 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
+import io.posidon.android.launcherutils.appLoading.AppLoader
+import io.posidon.android.launcherutils.appLoading.IconConfig
 import posidon.android.conveniencelib.Graphics
+import posidon.android.conveniencelib.dp
 import posidon.launcher.R
-import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.App
+import posidon.launcher.items.users.AppCollection
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import java.lang.ref.WeakReference
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class DesktopMode : FragmentActivity() {
+
+    val appLoader = AppLoader(::AppCollection)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +37,18 @@ class DesktopMode : FragmentActivity() {
         }
         val menuBtn = findViewById<ImageView>(R.id.menuBtn)
         Graphics.tryAnimate(this, menuBtn.drawable)
-        AppLoader(this) {}.execute()
+        loadApps()
+    }
+
+    fun loadApps() {
+        val iconConfig = IconConfig(
+            size = dp(65).toInt(),
+            density = resources.configuration.densityDpi,
+            packPackages = arrayOf(Settings["iconpack", "system"]),
+        )
+        appLoader.async(applicationContext, iconConfig) {
+            App.onFinishLoad(it.tmpApps, it.tmpAppSections, it.tmpHidden, it.appsByName)
+        }
     }
 
     fun showMenu(v: View?) = startActivity(Intent(this, AppList::class.java))

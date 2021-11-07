@@ -46,8 +46,8 @@ class CustomAppIcon : AppCompatActivity() {
             val li = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             addView(li.inflate(R.layout.list_item, this, false).apply {
                 runCatching {
-                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(Icons.badgeMaybe(
-                        Icons.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui")), false
+                    findViewById<ImageView>(R.id.iconimg).setImageDrawable(Icons.applyInsets(
+                        Icons.generateAdaptiveIcon(packageManager.getApplicationIcon("com.android.systemui"))
                     ))
                 }
                 findViewById<TextView>(R.id.icontxt).text = context.getString(R.string._default)
@@ -83,7 +83,7 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name, label = pacslist[i].loadLabel(packageManager).toString()))
-            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.badgeMaybe(Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager)), false))
+            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.applyInsets(Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))))
         }
 
         recycler.layoutManager = linearLayoutManager

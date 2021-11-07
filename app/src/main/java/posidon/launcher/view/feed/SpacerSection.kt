@@ -2,7 +2,7 @@ package posidon.launcher.view.feed
 
 import android.app.Activity
 import android.view.MotionEvent
-import io.posidon.android.launcherutils.LiveWallpaper
+import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import posidon.android.conveniencelib.dp
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.ResizableLayout

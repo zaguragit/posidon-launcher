@@ -7,7 +7,7 @@ import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.*
 import android.widget.*
-import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
@@ -54,7 +54,7 @@ class Folder : LauncherItem {
         label = "folder"
         icon = icon(Tools.appContext!!)?.let {
             Icons.animateIfShould(Tools.appContext!!, it)
-            Icons.badgeMaybe(it, false)
+            Icons.applyInsets(it)
         }
     }
 
@@ -123,7 +123,7 @@ class Folder : LauncherItem {
             Icons.generateAdaptiveIcon(it)
         } ?: icon(Tools.appContext!!))?.let {
             Icons.animateIfShould(Tools.appContext!!, it)
-            Icons.badgeMaybe(it, false)
+            Icons.applyInsets(it)
         }
     }
 

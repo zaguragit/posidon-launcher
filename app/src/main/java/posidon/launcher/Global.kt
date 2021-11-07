@@ -1,6 +1,6 @@
 package posidon.launcher
 
-import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.items.App
 import posidon.launcher.tools.Tools
 
