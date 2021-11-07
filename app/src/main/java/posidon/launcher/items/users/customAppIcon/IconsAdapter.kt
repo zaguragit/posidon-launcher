@@ -48,11 +48,7 @@ internal class IconsAdapter(
         val viewHolder = ViewHolder(convertView, convertView.findViewById(R.id.iconimg))
         convertView.findViewById<View>(R.id.icontxt).visibility = View.GONE
         convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
-            val appSize = when (Settings["icsize", 1]) {
-                0 -> parent.context.dp(64).toInt()
-                2 -> parent.context.dp(84).toInt()
-                else -> parent.context.dp(74).toInt()
-            }
+            val appSize = parent.context.dp(Settings["drawer:icons:size", 74]).toInt()
             width = appSize
             height = appSize
         }

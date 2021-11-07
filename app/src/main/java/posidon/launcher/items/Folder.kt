@@ -198,11 +198,7 @@ class Folder : LauncherItem {
         }
         val appListSize = items.size
         val columnCount = Settings["dock:columns", 5]
-        val appSize = min(when (Settings["dockicsize", 1]) {
-            0 -> context.dp(64).toInt()
-            2 -> context.dp(84).toInt()
-            else -> context.dp(74).toInt()
-        }, ((Device.screenWidth(context) - context.dp(32)) / columnCount).toInt())
+        val appSize = min(context.dp(Settings["dock:icons:size", 74]).toInt(), ((Device.screenWidth(context) - context.dp(32)) / columnCount).toInt())
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
         val labelsEnabled = Settings["folderLabelsEnabled", false]

@@ -47,24 +47,15 @@
                     app:def="1"
                     app:max="5"
                     app:startsWith1="true"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/iconSize" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/dockiconsizeslider"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:max="2"/>
-                </LinearLayout>
+                    app:label="@string/iconSize"
+                    app:key="dock:icons:size"
+                    app:def="74"
+                    app:startsWith1="true"
+                    app:max="96"/>
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"

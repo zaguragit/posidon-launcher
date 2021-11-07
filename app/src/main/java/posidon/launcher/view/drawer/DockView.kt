@@ -195,11 +195,7 @@ class DockView : LinearLayout {
     fun loadApps() {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Tools.appContext!!.dp(Settings["dock:margin_x", 16]).toInt()
-        val appSize = min(Tools.appContext!!.dp(when (Settings["dockicsize", 1]) {
-                    0 -> 64
-                    2 -> 84
-                    else -> 74
-                }).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
+        val appSize = min(Tools.appContext!!.dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dockLabelsEnabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
@@ -269,11 +265,7 @@ class DockView : LinearLayout {
     fun updateDimensions(drawer: DrawerView, feed: View, desktopContent: View, home: Home) {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Tools.appContext!!.dp(Settings["dock:margin_x", 16]).toInt()
-        val appSize = min(Tools.appContext!!.dp(when (Settings["dockicsize", 1]) {
-                    0 -> 64
-                    2 -> 84
-                    else -> 74
-                }).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
+        val appSize = min(Tools.appContext!!.dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) (context.sp(Settings["dock:labels:text_size", 12f]) + context.dp(4)).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
