@@ -1,2 +1,3 @@
+- Redesigned launcher settings' UI
 - Improved picture-less contact icons
 - Improved icon badging

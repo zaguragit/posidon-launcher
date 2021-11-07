@@ -127,7 +127,7 @@
         <item name="colorPrimary">@color/wallgallerybg</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/wallgallerybg</item>
-        <item name="android:statusBarColor">@color/wallgallerybg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:fontFamily">@font/posidon_sans</item>
     </style>
 

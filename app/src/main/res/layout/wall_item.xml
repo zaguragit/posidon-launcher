@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/pic"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="256dp"
         android:scaleType="centerCrop"/>
     <TextView
         android:id="@+id/label"

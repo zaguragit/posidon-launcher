@@ -55,7 +55,7 @@ class MusicCard : CardView, FeedSection {
             val p = context.dp(4).toInt()
             setPadding(p, p, p, p)
         }
-        setImageResource(R.drawable.ic_arrow_left)
+        setImageResource(R.drawable.ic_track_previous)
         setOnClickListener {
             musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
             musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
@@ -84,7 +84,7 @@ class MusicCard : CardView, FeedSection {
             val p = context.dp(4).toInt()
             setPadding(p, p, p, p)
         }
-        setImageResource(R.drawable.ic_arrow_right)
+        setImageResource(R.drawable.ic_track_next)
         setOnClickListener {
             musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
             musicService.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))

@@ -24,17 +24,14 @@ import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
+import posidon.launcher.drawable.ColorPreviewDrawable
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.LinearLayoutManager
 
 object ColorTools {
 
-    inline fun colorCircle(@ColorInt color: Int): Drawable {
-        val d = GradientDrawable()
-        d.shape = GradientDrawable.OVAL
-        d.setColor(color)
-        d.setStroke(2, -0x1000000)
-        return d
+    inline fun colorPreview(@ColorInt color: Int): Drawable {
+        return ColorPreviewDrawable(color)
     }
 
     inline fun iconBadge(@ColorInt color: Int): Drawable {
@@ -317,17 +314,18 @@ object ColorTools {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ColorViewHolder(ImageView(Tools.appContext).apply {
-                maxWidth = Tools.appContext!!.dp(72).toInt()
-                maxHeight = Tools.appContext!!.dp(72).toInt()
-                minimumWidth = Tools.appContext!!.dp(72).toInt()
-                minimumHeight = Tools.appContext!!.dp(72).toInt()
                 val p = Tools.appContext!!.dp(8).toInt()
+                val size = Tools.appContext!!.dp(36).toInt() + p * 2
+                maxWidth = size
+                maxHeight = size
+                minimumWidth = size
+                minimumHeight = size
                 setPadding(p, p, p, p)
             })
 
         override fun onBindViewHolder(holder: ColorViewHolder, i: Int) {
             holder.imageView.apply {
-                setImageDrawable(colorCircle(colors[i]))
+                setImageDrawable(colorPreview(colors[i]))
                 setOnClickListener {
                     onItemClickListener?.invoke(colors[i])
                 }

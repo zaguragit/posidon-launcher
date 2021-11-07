@@ -36,7 +36,6 @@ class Customizations : AppCompatActivity() {
             findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
         }
         findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, dp(24).toInt()))
-        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         cardThing()
     }
 
@@ -83,5 +82,6 @@ class Customizations : AppCompatActivity() {
             if (Settings["dev:enabled", false]) View.VISIBLE
             else View.GONE
         cardThing()
+        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
     }
 }
