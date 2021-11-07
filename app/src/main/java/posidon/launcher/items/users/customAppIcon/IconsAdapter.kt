@@ -66,7 +66,7 @@ internal class IconsAdapter(
             holder.icon.setImageDrawable(null)
             holder.icon.setOnClickListener(null)
         } else {
-            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.badgeMaybe(Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes)), false)))
+            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.applyInsets(Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes)))))
             holder.icon.setOnClickListener {
                 onSelectIcon("ref:$iconPack|${searchResults[i]}")
             }

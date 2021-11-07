@@ -12,7 +12,6 @@ import posidon.android.conveniencelib.*
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.launcher.Global
 import posidon.launcher.Home
-import posidon.launcher.R
 import posidon.launcher.drawable.ContactDrawable
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.drawable.NonDrawable
@@ -94,15 +93,8 @@ object Icons {
         }
     }
 
-    fun badgeMaybe(icon: Drawable, isWork: Boolean): Drawable {
-        return if (isWork) {
-            val badge = Tools.appContext!!.resources.getDrawable(R.drawable.work_badge, Tools.appContext!!.theme)
-            badge.setTint(Global.accentColor)
-            badge.setTintMode(PorterDuff.Mode.MULTIPLY)
-            badge(icon, badge, when (Settings["icsize", 1]) {
-                0 -> 64; 2 -> 84; else -> 74
-            })
-        } else LayerDrawable(arrayOf(icon)).apply {
+    fun applyInsets(icon: Drawable): Drawable {
+        return LayerDrawable(arrayOf(icon)).apply {
             val diameter = max(intrinsicWidth, intrinsicHeight)
             val p = 8 * diameter / when (Settings["icsize", 1]) {
                 0 -> 64; 2 -> 84; else -> 74

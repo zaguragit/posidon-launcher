@@ -13,16 +13,16 @@ import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import io.posidon.android.launcherutils.GestureNavContract
-import io.posidon.android.launcherutils.Kustom
-import io.posidon.android.launcherutils.LiveWallpaper
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
+import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
+import io.posidon.android.launcherutils.system.GestureNavContract
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.PinnedShortcut
-import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.AppCallback
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
@@ -38,7 +38,6 @@ import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.math.abs
 import kotlin.system.exitProcess
-
 
 class Home : AppCompatActivity() {
 
@@ -95,7 +94,7 @@ class Home : AppCompatActivity() {
 
         setContentView(R.layout.main)
 
-        (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppLoader.Callback(this, drawer::onAppLoaderEnd))
+        (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppCallback(this, drawer::loadApps))
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
         drawer.init(this)

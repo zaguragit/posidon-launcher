@@ -11,7 +11,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
-import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.customizations.settingScreens.Customizations

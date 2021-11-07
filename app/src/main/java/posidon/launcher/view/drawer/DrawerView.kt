@@ -18,7 +18,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
-import io.posidon.android.launcherutils.Kustom
+import io.posidon.android.launcherutils.appLoading.AppLoader
+import io.posidon.android.launcherutils.appLoading.IconConfig
+import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
@@ -27,8 +29,9 @@ import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.NonDrawable
+import posidon.launcher.items.App
 import posidon.launcher.items.Folder
-import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.SectionedDrawerAdapter
@@ -56,10 +59,12 @@ class DrawerView : LinearLayout {
         NonDrawable(),
     ))
 
+    val appLoader = AppLoader(::AppCollection)
+
     fun updateTheme() {
         dock.updateTheme(this)
         if (Global.shouldSetApps) {
-            AppLoader(context, ::onAppLoaderEnd).execute()
+            loadApps()
         } else onAppLoaderEnd()
         if (Settings["drawer:sections_enabled", false]) {
             drawerGrid.numColumns = 1
@@ -98,8 +103,18 @@ class DrawerView : LinearLayout {
         }
     }
 
-    inline fun loadApps() {
-        AppLoader(context, ::onAppLoaderEnd).execute()
+    fun loadApps() {
+        val iconConfig = IconConfig(
+            size = dp(65).toInt(),
+            density = resources.configuration.densityDpi,
+            packPackages = arrayOf(Settings["iconpack", "system"]),
+        )
+        appLoader.async(context.applicationContext, iconConfig) {
+            App.onFinishLoad(it.tmpApps, it.tmpAppSections, it.tmpHidden, it.appsByName)
+            Home.instance.runOnUiThread {
+                onAppLoaderEnd()
+            }
+        }
     }
 
     fun onAppLoaderEnd() {
