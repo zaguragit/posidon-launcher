@@ -329,11 +329,6 @@
             android:name=".feed.news.readers.WebViewActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings"/>
-        <activity
-            android:name=".feed.news.readers.ArticleActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings"/>
-
 
         <activity android:name=".items.users.customAppIcon.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts" />
