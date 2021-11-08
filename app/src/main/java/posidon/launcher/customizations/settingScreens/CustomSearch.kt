@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
@@ -26,16 +25,11 @@ class CustomSearch : AppCompatActivity() {
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
 
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
-        findViewById<SeekBar>(R.id.iconSizeSlider).progress = Settings["search:ic_size", 0]
         Global.customized = true
     }
 
     override fun onPause() {
         Settings["searchhinttxt"] = findViewById<TextView>(R.id.hinttxt).text.toString()
-        Settings.apply {
-            putNotSave("search:ic_size", findViewById<SeekBar>(R.id.iconSizeSlider).progress)
-            apply()
-        }
         super.onPause()
     }
 }

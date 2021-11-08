@@ -31,7 +31,6 @@ import posidon.android.loader.rss.RssItem
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.feed.news.readers.ArticleActivity
 import posidon.launcher.feed.news.readers.WebViewActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
@@ -209,16 +208,12 @@ class NewsAdapter(
                     R.anim.home_exit
                 ).toBundle()
 
-                when (Settings["feed:openLinks", "browse"]) {
-                    "webView" -> holder.itemView.context.open(WebViewActivity::class.java, activityOptions) {
+                if (Settings["news:open_in_app", false]) {
+                    holder.itemView.context.open(WebViewActivity::class.java, activityOptions) {
                         putExtra("url", feedItem.link)
                     }
-                    "app" -> holder.itemView.context.open(ArticleActivity::class.java, activityOptions) {
-                        putExtra("url", feedItem.link)
-                        putExtra("sourceName", feedItem.source.name)
-                    }
-                    else -> holder.itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), activityOptions)
-                }
+                } else holder.itemView.context.startActivity(
+                    Intent(Intent.ACTION_VIEW, Uri.parse(feedItem.link.trim { it <= ' ' })), activityOptions)
             } catch (e: Exception) { e.printStackTrace() }
         }
     }

@@ -66,24 +66,15 @@
                     app:label="@string/background"
                     app:key="searchUiBg"
                     app:def="#88000000"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:text="@string/iconSize" />
-                    <posidon.launcher.view.Seekbar
-                        android:id="@+id/iconSizeSlider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:max="2"
-                        android:progress="1" />
-                </LinearLayout>
+                    app:label="@string/iconSize"
+                    app:key="search:icons:size"
+                    app:def="56"
+                    app:startsWith1="true"
+                    app:max="96"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

@@ -213,6 +213,7 @@
     <string name="hide">Hide</string>
     <string name="drop_folder_to_mk_card">Drop folder here to use it as a card</string>
     <string name="folder">Folder</string>
+    <string name="open_in_app">Open in app</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notification</item>

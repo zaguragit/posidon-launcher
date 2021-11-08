@@ -18,7 +18,6 @@ import posidon.launcher.storage.ExternalStorage
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.applyFontSetting
-import posidon.launcher.view.Spinner
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,18 +33,6 @@ class CustomNews : AppCompatActivity() {
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
-
-        findViewById<Spinner>(R.id.readMethods).apply {
-            data = resources.getStringArray(R.array.articleReadingMethods)
-            selectionI = when(Settings["feed:openLinks", "browse"]) {
-                "webView" -> 1; "app" -> 2; else -> 0
-            }
-            setSelectionChangedListener {
-                Settings["feed:openLinks"] = when(selectionI) {
-                    1 -> "webView"; 2 -> "app"; else -> "browse"
-                }
-            }
-        }
 
         Global.customized = true
     }
