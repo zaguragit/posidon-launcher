@@ -118,6 +118,7 @@ class DrawerView : LinearLayout {
     }
 
     fun onAppLoaderEnd() {
+        Dock.clearCache()
         val home = Home.instance
         val s = drawerGrid.scrollY
         if (Settings["drawer:sections_enabled", false]) {

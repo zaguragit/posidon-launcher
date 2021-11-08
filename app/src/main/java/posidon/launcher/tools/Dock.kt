@@ -8,6 +8,8 @@ object Dock {
 
     val items = HashMap<Int, LauncherItem>()
 
+    inline fun clearCache() = items.clear()
+
     inline fun add(item: LauncherItem, i: Int) {
         val currentItem = get(i) ?: return set(i, item)
         when {
