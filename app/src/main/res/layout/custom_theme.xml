@@ -78,12 +78,13 @@
                     android:orientation="horizontal"
                     android:onClick="iconPackSelector">
                     <TextView
+                        android:id="@+id/iconpack_title"
                         style="@style/settingsbtn"
                         android:layout_width="wrap_content"
                         android:drawableStart="@drawable/ic_image"
                         android:text="@string/icon_pack" />
                     <TextView
-                        android:id="@+id/iconpackselector"
+                        android:id="@+id/iconpack_selector"
                         style="@style/settingsTextPreview"
                         android:layout_width="0dp"
                         android:gravity="end|center_vertical"

@@ -44,7 +44,7 @@ class CustomTheme : AppCompatActivity() {
         val pm = packageManager
 
         findViewById<TextView>(R.id.icShapeTxt).setTextColor(Global.accentColor)
-        findViewById<TextView>(R.id.iconpackselector).run {
+        findViewById<TextView>(R.id.iconpack_selector).run {
             try { text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
             catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
         }
@@ -152,8 +152,16 @@ class CustomTheme : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val pm = packageManager
-        val i = findViewById<TextView>(R.id.iconpackselector)
-        try { i.text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
+        val i = findViewById<TextView>(R.id.iconpack_selector)
+        val t = findViewById<TextView>(R.id.iconpack_title)
+        try {
+            val a = pm.getApplicationInfo(Settings["iconpack", "system"], 0)
+            i.text = pm.getApplicationLabel(a)
+            val icon = a.loadIcon(pm)
+            val s = dp(32).toInt()
+            icon.setBounds(0, 0, s, s)
+            t.setCompoundDrawablesRelative(icon, null, null, null)
+        }
         catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
     }
 
