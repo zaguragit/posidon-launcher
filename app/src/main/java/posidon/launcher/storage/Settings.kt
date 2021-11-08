@@ -15,6 +15,7 @@ import kotlin.concurrent.thread
 
 object Settings {
 
+    val stringKeys get() = strings.keys
     private lateinit var ints: HashMap<String, Int>
     private lateinit var floats: HashMap<String, Float>
     private lateinit var bools: HashMap<String, Boolean>

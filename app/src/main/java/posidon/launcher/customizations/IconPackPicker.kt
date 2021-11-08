@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
@@ -99,6 +100,30 @@ class IconPackPicker : AppCompatActivity() {
                 lastclicked = convertView
             } else convertView.setBackgroundColor(0x0)
             return convertView
+        }
+    }
+
+    fun requestClearCustomIcons(v: View) {
+        val dialog = BottomSheetDialog(v.context, R.style.bottomsheet).apply {
+            setContentView(R.layout.confirmation_dialog)
+            window!!.findViewById<View>(R.id.design_bottom_sheet).setBackgroundResource(R.drawable.bottom_sheet)
+        }
+        dialog.findViewById<TextView>(R.id.button)!!.apply {
+            setText(R.string.clear_custom_icons)
+            setOnClickListener {
+                clearCustomIcons()
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    fun clearCustomIcons() {
+        Settings.apply {
+            stringKeys.removeIf {
+                it.startsWith("app:") && it.endsWith(":icon")
+            }
+            apply()
         }
     }
 }

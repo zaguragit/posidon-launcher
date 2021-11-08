@@ -9,13 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="256dp"
-            android:gravity="center"
-            android:text="@string/settings_title_icon_packs"
+            android:layout_height="256dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
+                android:gravity="center"
+                android:text="@string/settings_title_icon_packs"
                 android:textColor="#ffffff"
                 android:textSize="32sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="8dp"
+                android:textSize="14sp"
+                android:background="@drawable/button_bg_round"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
+                android:text="@string/clear_custom_icons"
+                android:onClick="requestClearCustomIcons"/>
+        </FrameLayout>
         <LinearLayout
             style="@style/settingscard"
             android:layout_width="match_parent"

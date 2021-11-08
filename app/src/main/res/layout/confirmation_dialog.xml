@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="20dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:textColor="@color/cardtxt"
+        android:textSize="18sp"
+        android:text="@string/are_you_sure"/>
+    <TextView
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="128dp"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_bg_round"
+        android:backgroundTint="#33ff5555"
+        android:textColor="@color/cardtitle"
+        android:textSize="18sp"
+        android:text="@string/yes"/>
+</LinearLayout>
