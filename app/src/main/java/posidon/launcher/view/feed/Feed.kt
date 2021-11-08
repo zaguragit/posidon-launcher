@@ -235,7 +235,7 @@ class Feed : FrameLayout {
             spinner.visibility = VISIBLE
             spinner.animate().translationY(0f).alpha(1f).setListener(null)
             loadFeed { erroredSources, items ->
-                val success = erroredSources.isEmpty()
+                val success = items.isNotEmpty()
                 onNewsLoaded(success, newsCards, items)
                 post {
                     spinner.animate().translationY(dp(-72)).alpha(0f).onEnd {
@@ -244,7 +244,7 @@ class Feed : FrameLayout {
                 }
             }
         } else loadFeed { erroredSources, items ->
-            val success = erroredSources.isEmpty()
+            val success = items.isNotEmpty()
             onNewsLoaded(success, newsCards, items)
         }
     }
@@ -278,7 +278,8 @@ class Feed : FrameLayout {
             }
         }
         Settings["feed:deleted_articles"] = deleted
-        return RssLoader.load(Settings["feedUrls", FeedChooser.defaultSources].split("|"), maxItems = Settings["feed:max_news", 48], filter = { title, link, time ->
+        val sources = Settings["feedUrls", FeedChooser.defaultSources].split("|")
+        return RssLoader.load(sources, maxItems = Settings["feed:max_news", 48], filter = { title, link, time ->
             val isNewEnough = if (maxAge == 0) true else {
                 val day = Calendar.getInstance().apply { this.time = time }[Calendar.DAY_OF_YEAR]
                 abs(day - today) < maxAge

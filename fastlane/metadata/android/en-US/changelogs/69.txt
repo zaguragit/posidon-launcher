@@ -1,3 +1,4 @@
 - Redesigned launcher settings' UI
+- Added setting for icon sizes in scaled pixels
 - Improved picture-less contact icons
 - Improved icon badging

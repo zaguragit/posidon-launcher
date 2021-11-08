@@ -60,12 +60,7 @@ internal class SearchAdapter(
         } else {
             holder.notificationBadge.visibility = View.GONE
         }
-        var appSize = 0
-        when (Settings["search:ic_size", 0]) {
-            0 -> appSize = context.dp(64).toInt()
-            1 -> appSize = context.dp(74).toInt()
-            2 -> appSize = context.dp(84).toInt()
-        }
+        val appSize = context.dp(Settings["search:icons:size", 56]).toInt()
         iconFrame.layoutParams.height = appSize
         iconFrame.layoutParams.width = appSize
         return convertView

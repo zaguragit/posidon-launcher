@@ -43,22 +43,14 @@
                     app:label="@string/show_feed_spinner"
                     app:key="feed:show_spinner"
                     app:def="true"/>
-                <LinearLayout
+                <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
-                        android:layout_weight="1"
-                        android:text="@string/read_method"/>
-                    <posidon.launcher.view.Spinner
-                        style="@style/settingsTextPreview"
-                        android:id="@+id/readMethods"
-                        android:layout_width="wrap_content"/>
-                </LinearLayout>
+                    app:drawable="@drawable/ic_news"
+                    app:label="@string/open_in_app"
+                    app:key="news:open_in_app"
+                    app:def="false"/>
                 <posidon.launcher.view.setting.SwitchSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
