@@ -32,7 +32,7 @@ class SettingsItem private constructor(
             if (list != null) {
                 return list as Array<SettingsItem>
             }
-            val posidonIcon = App.getJustPackage("posidon.launcher")!![0].icon!!.toBitmapDrawable(true)
+            val posidonIcon = App.getFromPackage("posidon.launcher")!![0].icon!!.toBitmapDrawable(true)
             val settingsIcon = ContextCompat.getDrawable(Tools.appContext!!, R.drawable.ic_settings)!!.apply { setTintList(ColorStateList.valueOf(Global.accentColor)) }
             val searchIconSize = posidon.launcher.storage.Settings["search:icons:size", 56]
             list = arrayOf(

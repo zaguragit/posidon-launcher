@@ -168,7 +168,7 @@ class App(
             return list.find { it.name == name && it.userHandle.hashCode() == userId }
         }
 
-        fun getJustPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
+        fun getFromPackage(packageName: String): ArrayList<App>? = appsByName[packageName]
 
         fun removePackage(packageName: String) {
             hidden.removeAll { it.packageName == packageName }
