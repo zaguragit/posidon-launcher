@@ -1,11 +1,13 @@
 package posidon.launcher.customizations.settingScreens
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.TextViewCompat
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -24,6 +26,8 @@ class CustomNotifications : AppCompatActivity() {
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
+
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.grouping_label), ColorStateList.valueOf(Global.accentColor))
 
         findViewById<Spinner>(R.id.notificationGrouping).run {
             data = resources.getStringArray(R.array.notificationGrouping)
