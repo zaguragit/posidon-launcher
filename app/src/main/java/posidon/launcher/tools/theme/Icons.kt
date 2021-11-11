@@ -142,14 +142,14 @@ object Icons {
     fun generateNotificationBadgeBGnFG(icon: Drawable? = null, onGenerated: (bg: Drawable, fg: Int) -> Unit) {
         val bgType = Settings["notif:badges:bg_type", 0]
         val customBG = Settings["notif:badges:bg_color", 0xffff5555.toInt()]
-        if (icon == null || bgType == 1) {
-            val bg = Global.accentColor
-            onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
-        } else if (bgType == 0) {
+        if (icon != null && bgType == 0) {
             Palette.from(icon.toBitmap()).generate {
                 val bg = it?.getDominantColor(customBG) ?: customBG
                 onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
             }
+        } else if (bgType == 1) {
+            val bg = Global.accentColor
+            onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         } else {
             onGenerated(ColorTools.iconBadge(customBG), if (Colors.getLuminance(customBG) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         }
