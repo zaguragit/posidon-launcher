@@ -3,6 +3,7 @@ package posidon.launcher.customizations.settingScreens
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.TextViewCompat
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.android.conveniencelib.toBitmap
@@ -48,6 +50,9 @@ class CustomTheme : AppCompatActivity() {
             try { text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
             catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
         }
+
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.font_label), ColorStateList.valueOf(Global.accentColor))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.background_type_label), ColorStateList.valueOf(Global.accentColor))
 
         val fontName = findViewById<TextView>(R.id.fontname)
         fontName.text = Fonts.getFontName(this)
@@ -134,7 +139,7 @@ class CustomTheme : AppCompatActivity() {
             }
         }
 
-        val size = dp(64).toInt()
+        val size = dp(48).toInt()
         val bg = BitmapDrawable(resources, FastColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
         bg.setBounds(0, 0, size, size)
         icShapeViews.onEachIndexed { i, v ->
