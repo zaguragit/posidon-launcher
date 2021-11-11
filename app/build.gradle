@@ -24,6 +24,8 @@ android {
 dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.pixplicity.sharp:library:1.1.0'
     implementation 'io.posidon:android.loader:master-SNAPSHOT'

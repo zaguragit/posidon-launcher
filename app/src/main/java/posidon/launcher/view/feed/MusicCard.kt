@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -23,8 +24,6 @@ import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
-import posidon.launcher.drawable.FastColorDrawable
-import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
@@ -34,7 +33,7 @@ class MusicCard : CardView, FeedSection {
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
 
-    val musicService = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    val musicService = context.getSystemService(AudioManager::class.java)
 
     val musicCardImage = ImageView(context).apply {
         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -155,23 +154,24 @@ class MusicCard : CardView, FeedSection {
             setTextColor(if (Colors.getLuminance(color) >.6f) -0xeeeded else -0x1)
             text = subtitle
         }
-        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt()
+        val marginX = dp(Settings["feed:card_margin_x", 16]).toInt()
+        val w = dp(136).toInt()
         musicCardOverImg.background =
-            if (NotificationService.instance.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+            if (resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
                 LayerDrawable(arrayOf(
-                    FastColorDrawable(color),
+                    ColorDrawable(color),
                     GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    setLayerInset(0, 0, 0, context.dp(136).toInt(), 0)
-                    setLayerInset(1, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0, 0, 0)
+                    setLayerInset(0, 0, 0, w, 0)
+                    setLayerInset(1, Device.screenWidth(context) - w - marginX * 2, 0, 0, 0)
                 }
             } else {
                 LayerDrawable(arrayOf(
-                    FastColorDrawable(color),
+                    ColorDrawable(color),
                     GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, intArrayOf(color, color and 0x00ffffff))
                 )).apply {
-                    setLayerInset(0, context.dp(136).toInt(), 0, 0, 0)
-                    setLayerInset(1, 0, 0, Device.screenWidth(context) - context.dp(136).toInt() - marginX * 2, 0)
+                    setLayerInset(0, w, 0, 0, 0)
+                    setLayerInset(1, 0, 0, Device.screenWidth(context) - w - marginX * 2, 0)
                 }
             }
         musicPrev.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1)
