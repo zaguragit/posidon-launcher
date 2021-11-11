@@ -74,7 +74,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_shapes"
                     app:label="@string/background_type"
                     app:key="dock:background_type"
                     app:def="0"

@@ -6,6 +6,6 @@
     android:width="32dp">
     <path
         android:pathData="m12.7,10.7758v8.4667h16.9333v38.1L38.1,57.3424v-38.1h16.9333v-8.4667z"
-        android:fillColor="@color/cardtxticon"
+        android:fillColor="#000000"
         android:fillAlpha="1"/>
 </vector>

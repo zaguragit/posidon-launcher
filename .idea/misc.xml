@@ -4,12 +4,18 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/custom_catbg.xml" value="0.16111111111111112" />
+        <entry key="app/src/main/res/drawable/custom_dock.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/custom_feed.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/customizations.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/dax.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/ic_arrow_right.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/ic_color.xml" value="0.21319444444444444" />
         <entry key="app/src/main/res/drawable/ic_color_dropper.xml" value="0.21319444444444444" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.13402777777777777" />
+        <entry key="app/src/main/res/drawable/ic_play.xml" value="0.24930555555555556" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_shapes.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_sorting.xml" value="0.13402777777777777" />
         <entry key="app/src/main/res/drawable/ic_track_previous.xml" value="0.14027777777777778" />
         <entry key="app/src/main/res/drawable/input_bg.xml" value="0.24930555555555556" />
         <entry key="app/src/main/res/drawable/progress.xml" value="0.12222222222222222" />

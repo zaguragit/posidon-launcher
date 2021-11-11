@@ -66,7 +66,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_sorting"
                     app:label="@string/sorting"
                     app:key="drawer:sorting"
                     app:def="0"
@@ -145,7 +145,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_home"
                     app:label="@string/show_outside"
                     app:key="drawer:scrollbar:show_outside"
                     app:def="false"/>

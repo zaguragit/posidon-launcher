@@ -1,11 +1,13 @@
 package posidon.launcher.customizations.settingScreens
 
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.TextViewCompat
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -23,6 +25,8 @@ class CustomSearch : AppCompatActivity() {
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
+
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.hint_label), ColorStateList.valueOf(Global.accentColor))
 
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
         Global.customized = true

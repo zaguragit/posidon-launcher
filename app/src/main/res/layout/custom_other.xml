@@ -112,9 +112,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
+                        android:id="@+id/app_open_anim_label"
                         style="@style/settingsbtn"
                         android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_apps"
+                        android:drawableStart="@drawable/ic_play"
                         android:layout_weight="1"
                         android:text="@string/app_open_animation"/>
                     <posidon.launcher.view.Spinner
@@ -132,7 +133,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_home"
                     app:label="@string/choose_a_launcher"
                     android:onClick="chooseLauncher"/>
             </LinearLayout>
