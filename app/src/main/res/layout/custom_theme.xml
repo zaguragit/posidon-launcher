@@ -94,7 +94,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_apps"
+                    app:drawable="@drawable/ic_play"
                     app:label="@string/animated"
                     app:key="animatedicons"
                     app:def="true"/>
@@ -102,7 +102,7 @@
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_image"
+                    app:drawable="@drawable/ic_shapes"
                     app:label="@string/generate_adaptive_icons"
                     app:key="reshapeicons"
                     app:def="false"/>

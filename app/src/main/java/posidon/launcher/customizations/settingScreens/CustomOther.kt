@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.TextViewCompat
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.customizations.FakeLauncherActivity
@@ -33,6 +35,8 @@ class CustomOther : AppCompatActivity() {
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
+
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.app_open_anim_label), ColorStateList.valueOf(Global.accentColor))
 
         val hapticbar = findViewById<SeekBar>(R.id.hapticbar)
         hapticbar.progress = Settings["hapticfeedback", 14]
