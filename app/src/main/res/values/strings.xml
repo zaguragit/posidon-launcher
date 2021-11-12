@@ -216,6 +216,7 @@
     <string name="open_in_app">Open in app</string>
     <string name="clear_custom_icons">Clear all custom icons</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="hide_persistent_notifications">Hide persistent notifications</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notification</item>

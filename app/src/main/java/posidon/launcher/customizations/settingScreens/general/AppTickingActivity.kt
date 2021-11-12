@@ -13,7 +13,6 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.App
-import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.applyFontSetting
 import kotlin.concurrent.thread
@@ -54,7 +53,7 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
         private val originalApps = apps
 
-        private val appSize = activity.dp(Settings["drawer:icons:size", 74]).toInt()
+        private val appSize = activity.dp(56).toInt()
 
         override fun getCount() = apps.size
         override fun getItem(position: Int) = null
@@ -116,18 +115,17 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
         fun search(string: String) = thread (isDaemon = false) {
             val searchOptimizedString = Tools.searchOptimize(string)
-            val packageSearch = Settings["search:use_package_names", false]
 
             val results = ArrayList<App>()
 
             var i = 0
             for (app in originalApps) {
-                if (Tools.searchOptimize(app.label).contains(searchOptimizedString) ||
+                if (
+                    Tools.searchOptimize(app.label).contains(searchOptimizedString) ||
                     app.label.contains(string) ||
-                    packageSearch && (
-                        Tools.searchOptimize(app.packageName).contains(searchOptimizedString) ||
-                        app.packageName.contains(string)
-                    )) {
+                    Tools.searchOptimize(app.packageName).contains(searchOptimizedString) ||
+                    app.packageName.contains(string)
+                ) {
                     results.add(app)
                     i++
                     continue
