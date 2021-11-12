@@ -85,6 +85,11 @@ class NotificationService : NotificationListenerService() {
                         while (i < notifications.size) {
                             val notification = notifications[i]
 
+                            if (!notification.isClearable && Settings["notif:hide_persistent", false]) {
+                                i++
+                                continue
+                            }
+
                             if (
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                                 && notification.notification.bubbleMetadata?.isNotificationSuppressed == true
@@ -148,6 +153,19 @@ class NotificationService : NotificationListenerService() {
                         while (i < notifications.size) {
                             val notification = notifications[i]
 
+                            if (!notification.isClearable && Settings["notif:hide_persistent", false]) {
+                                i++
+                                continue
+                            }
+
+                            if (
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                                && notification.notification.bubbleMetadata?.isNotificationSuppressed == true
+                            ) {
+                                i++
+                                continue
+                            }
+
                             if (Settings["notif:ex:${notification.packageName}", false]) {
                                 i++
                                 continue
@@ -194,6 +212,19 @@ class NotificationService : NotificationListenerService() {
                         }
                     } else while (i < notifications.size) {
                         val notification = notifications[i]
+
+                        if (!notification.isClearable && Settings["notif:hide_persistent", false]) {
+                            i++
+                            continue
+                        }
+
+                        if (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                            && notification.notification.bubbleMetadata?.isNotificationSuppressed == true
+                        ) {
+                            i++
+                            continue
+                        }
 
                         if (Settings["notif:ex:${notification.packageName}", false]) {
                             i++
