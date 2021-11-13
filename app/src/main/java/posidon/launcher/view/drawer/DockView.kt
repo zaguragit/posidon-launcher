@@ -18,6 +18,8 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
@@ -188,15 +190,19 @@ class DockView : LinearLayout {
                 layoutParams.height = appSize
                 layoutParams.width = appSize
             }
+            val label = view.findViewById<TextView>(R.id.icontxt)
+            val badge = view.findViewById<TextView>(R.id.notificationBadge)
             val item = Dock[i]
-            if (item != null) {
-                view.findViewById<TextView>(R.id.icontxt).let { label ->
-                    if (showLabels) {
-                        label.text = item.label
-                        Customizer.styleLabel("dock:labels", label, -0x11111112, 12f)
-                    } else {
-                        label.visibility = GONE
-                    }
+            if (item == null) {
+                label.isVisible = false
+                view.isInvisible = true
+                badge.isVisible = false
+            } else {
+                if (showLabels) {
+                    label.text = item.label
+                    Customizer.styleLabel("dock:labels", label, -0x11111112, 12f)
+                } else {
+                    label.isVisible = false
                 }
                 when (item) {
                     is PinnedShortcut -> {
@@ -216,7 +222,6 @@ class DockView : LinearLayout {
                 view.findViewById<ImageView>(R.id.iconimg).also { img ->
                     img.setImageDrawable(item.icon)
                 }
-                val badge = view.findViewById<TextView>(R.id.notificationBadge)
                 if (notifBadgesEnabled) {
                     val c = item.notificationCount
                     if (c != 0) {
@@ -226,8 +231,8 @@ class DockView : LinearLayout {
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
-                    } else { badge.visibility = View.GONE }
-                } else { badge.visibility = View.GONE }
+                    } else badge.isVisible = false
+                } else badge.isVisible = false
                 view.setOnClickListener {
                     onItemClick(context, view, i, item)
                 }
