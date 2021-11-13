@@ -25,7 +25,6 @@ import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 
 class MusicCard : CardView, FeedSection {
 
@@ -41,7 +40,7 @@ class MusicCard : CardView, FeedSection {
 
     val musicCardTrackTitle = TextView(context).apply {
         textSize = 18f
-        setPadding(0, 0, 0, Tools.appContext!!.dp(8).toInt())
+        setPadding(0, 0, 0, dp(8).toInt())
         setTypeface(typeface, Typeface.BOLD)
     }
 

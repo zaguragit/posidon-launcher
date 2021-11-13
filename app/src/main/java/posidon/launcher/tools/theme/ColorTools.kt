@@ -314,8 +314,8 @@ object ColorTools {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ColorViewHolder(ImageView(Tools.appContext).apply {
-                val p = Tools.appContext!!.dp(8).toInt()
-                val size = Tools.appContext!!.dp(36).toInt() + p * 2
+                val p = parent.dp(8).toInt()
+                val size = parent.dp(36).toInt() + p * 2
                 maxWidth = size
                 maxHeight = size
                 minimumWidth = size

@@ -166,7 +166,7 @@ class Home : AppCompatActivity() {
     private fun setCustomizations() {
 
         feed.update(this, drawer)
-        drawer.updateTheme()
+        drawer.updateTheme(feed)
         drawer.locked = !Settings["drawer:slide_up", true]
 
         applyFontSetting()
@@ -198,7 +198,7 @@ class Home : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         onUpdate()
-        dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent, this)
+        dock.loadAppsAndUpdateHome(drawer, feed, feed.desktopContent)
     }
 
     override fun onResume() {

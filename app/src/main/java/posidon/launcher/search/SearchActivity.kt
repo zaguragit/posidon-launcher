@@ -113,7 +113,7 @@ class SearchActivity : AppCompatActivity() {
         }
         searchTxt.imeOptions = if (Settings["search:enter_is_go", false]) EditorInfo.IME_ACTION_GO else EditorInfo.IME_ACTION_DONE
         findViewById<View>(R.id.searchbar).background = ShapeDrawable().apply {
-            val tr = Tools.appContext!!.dp(Settings["searchradius", 0])
+            val tr = dp(Settings["searchradius", 0])
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }

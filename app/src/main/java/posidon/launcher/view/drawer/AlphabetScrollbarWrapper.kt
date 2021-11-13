@@ -37,7 +37,7 @@ class AlphabetScrollbarWrapper(
             return 0
         }
         var ret = 0
-        val scrollbarWidth = Tools.appContext!!.dp(Settings["drawer:scrollbar:width", 24]).toInt()
+        val scrollbarWidth = dp(Settings["drawer:scrollbar:width", 24]).toInt()
         val reserveSpace = Settings["drawer:scrollbar:reserve_space", true]
         val position = Settings["drawer:scrollbar:position", 1]
         val isHorizontal = position == 2
