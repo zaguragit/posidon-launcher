@@ -3,4 +3,5 @@
 - Added a button to clear all custom icons: Theme -> Icon pack -> Clear all custom icons
 - Improved picture-less contact icons
 - Improved icon badging
+- Added setting for hiding persistent notifications
 - Fixed bugs

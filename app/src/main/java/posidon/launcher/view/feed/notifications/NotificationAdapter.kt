@@ -18,24 +18,19 @@ import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.feed.notifications.Notification
+import posidon.launcher.feed.notifications.NotificationItem
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.Tools
 import posidon.launcher.view.SwipeableLayout
+import posidon.launcher.view.feed.notifications.viewHolders.NotificationViewHolder
 
-class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
 
-    private var groups = ArrayList<ArrayList<Notification>>()
+    private var groups = ArrayList<ArrayList<NotificationItem>>()
 
     override fun getItemCount() = groups.size
-
-    class NotificationViewHolder(
-        val view: ViewGroup,
-        val card: SwipeableLayout,
-        val linearLayout: LinearLayout
-    ) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val context = parent.context
@@ -83,18 +78,17 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
                 }
             } else {
                 val v1 = when {
-                    notification.progress != -1f -> {
+                    notification.max != 0 -> {
                         LayoutInflater.from(context).inflate(R.layout.notification_progress, null).apply {
                             val progressBar = findViewById<ProgressBar>(R.id.progress)
-                            if (notification.progress == -2f) {
+                            if (notification.progress == -1) {
                                 progressBar.isIndeterminate = true
                             } else {
                                 progressBar.isIndeterminate = false
                                 progressBar.progressTintList = ColorStateList.valueOf(Global.accentColor)
                                 progressBar.progressBackgroundTintList = ColorStateList.valueOf(Global.accentColor)
-                                val percent = (notification.progress * 100).toInt()
-                                progressBar.progress = percent
-                                progressBar.max = 100
+                                progressBar.progress = notification.progress
+                                progressBar.max = notification.max
                             }
                         }
                     }
@@ -239,7 +233,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
         }
     }
 
-    fun update(groups: ArrayList<ArrayList<Notification>>) {
+    fun update(groups: ArrayList<ArrayList<NotificationItem>>) {
         this.groups = groups
         notifyDataSetChanged()
     }
