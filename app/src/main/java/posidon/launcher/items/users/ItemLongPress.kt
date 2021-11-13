@@ -25,7 +25,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
-import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.recycler.LinearLayoutManager
 
 object ItemLongPress {
 

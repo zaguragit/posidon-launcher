@@ -30,5 +30,5 @@ dependencies {
     implementation 'com.pixplicity.sharp:library:1.1.0'
     implementation 'io.posidon:android.loader:master-SNAPSHOT'
     implementation 'io.posidon:android.convenienceLib:master-SNAPSHOT'
-    implementation 'io.posidon:android.launcherUtils:940c5db917'
+    implementation 'io.posidon:android.launcherUtils:b69026b1b5'
 }

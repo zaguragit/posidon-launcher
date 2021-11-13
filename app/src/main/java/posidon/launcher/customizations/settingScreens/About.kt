@@ -27,7 +27,7 @@ import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.*
 import posidon.launcher.tools.theme.applyFontSetting
-import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.recycler.LinearLayoutManager
 import java.net.URL
 
 class About : Activity() {

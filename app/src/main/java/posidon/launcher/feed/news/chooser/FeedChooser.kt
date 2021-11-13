@@ -24,7 +24,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.vibrate
-import posidon.launcher.view.GridLayoutManager
+import posidon.launcher.view.recycler.GridLayoutManager
 
 class FeedChooser : AppCompatActivity() {
 

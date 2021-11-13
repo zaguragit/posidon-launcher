@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.recycler
 
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable

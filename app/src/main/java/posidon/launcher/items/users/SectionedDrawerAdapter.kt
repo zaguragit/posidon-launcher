@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.SectionIndexer
 import posidon.launcher.Global
-import posidon.launcher.view.HighlightAdapter
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.groupView.AppSectionView
+import posidon.launcher.view.recycler.HighlightAdapter
 
-class SectionedDrawerAdapter(val drawer: DrawerView) : BaseAdapter(), SectionIndexer, HighlightAdapter {
+class SectionedDrawerAdapter(val drawer: DrawerView) : BaseAdapter(), SectionIndexer,
+    HighlightAdapter {
 
     override fun getCount(): Int = Global.appSections.size
     override fun getItem(i: Int) = Global.appSections[i]
