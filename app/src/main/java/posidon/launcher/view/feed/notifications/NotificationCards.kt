@@ -21,9 +21,9 @@ import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.theme.mainFont
-import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
 import posidon.launcher.view.feed.FeedSection
+import posidon.launcher.view.recycler.LinearLayoutManager
 
 class NotificationCards : LinearLayout, FeedSection {
 

@@ -172,7 +172,7 @@ class SearchActivity : AppCompatActivity() {
         search("")
 
         if (Settings["search:asHome", false]) {
-            (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppCallback(this, ::loadApps))
+            (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppCallback(::loadApps))
             loadApps()
         }
     }
@@ -184,7 +184,7 @@ class SearchActivity : AppCompatActivity() {
             packPackages = arrayOf(Settings["iconpack", "system"]),
         )
         appLoader.async(applicationContext, iconConfig) {
-            App.onFinishLoad(it.tmpApps, it.tmpAppSections, it.tmpHidden, it.appsByName)
+            App.onFinishLoad(it.list, it.sections, it.hidden, it.byName)
             Home.instance.runOnUiThread {
                 onAppLoaderEnd()
             }

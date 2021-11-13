@@ -9,8 +9,8 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.android.loader.rss.RssItem
 import posidon.launcher.storage.Settings
-import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.FeedSection
+import posidon.launcher.view.recycler.LinearLayoutManager
 import kotlin.math.pow
 
 class NewsCards(c: Activity) : RecyclerView(c), FeedSection {

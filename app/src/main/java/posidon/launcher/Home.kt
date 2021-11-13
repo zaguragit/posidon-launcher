@@ -54,6 +54,12 @@ class Home : AppCompatActivity() {
         }
     }
 
+    val appReloader = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            drawer.loadApps()
+        }
+    }
+
     private lateinit var powerManager: PowerManager
 
     init { instance = this }
@@ -96,8 +102,17 @@ class Home : AppCompatActivity() {
 
         setContentView(R.layout.main)
 
-        (getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).registerCallback(AppCallback(this, drawer::loadApps))
+        getSystemService(LauncherApps::class.java).registerCallback(AppCallback(drawer::loadApps))
+
         registerReceiver(batteryInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        registerReceiver(
+            appReloader,
+            IntentFilter().apply {
+                addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE)
+                addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE)
+                addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED)
+            }
+        )
 
         drawer.init(this)
         feed.init(drawer)
@@ -270,6 +285,9 @@ class Home : AppCompatActivity() {
     override fun onDestroy() {
         runCatching {
             unregisterReceiver(batteryInfoReceiver)
+        }
+        runCatching {
+            unregisterReceiver(appReloader)
         }
         super.onDestroy()
     }

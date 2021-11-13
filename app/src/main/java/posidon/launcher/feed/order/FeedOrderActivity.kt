@@ -18,8 +18,8 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.theme.applyFontSetting
-import posidon.launcher.view.LinearLayoutManager
 import posidon.launcher.view.feed.Feed
+import posidon.launcher.view.recycler.LinearLayoutManager
 
 class FeedOrderActivity : AppCompatActivity() {
 

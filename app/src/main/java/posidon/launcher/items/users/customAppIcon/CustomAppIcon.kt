@@ -20,8 +20,8 @@ import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.view.GridLayoutManager
-import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.recycler.GridLayoutManager
+import posidon.launcher.view.recycler.LinearLayoutManager
 import kotlin.concurrent.thread
 
 class CustomAppIcon : AppCompatActivity() {

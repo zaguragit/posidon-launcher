@@ -47,7 +47,7 @@ class DesktopMode : FragmentActivity() {
             packPackages = arrayOf(Settings["iconpack", "system"]),
         )
         appLoader.async(applicationContext, iconConfig) {
-            App.onFinishLoad(it.tmpApps, it.tmpAppSections, it.tmpHidden, it.appsByName)
+            App.onFinishLoad(it.list, it.sections, it.hidden, it.byName)
         }
     }
 

@@ -32,7 +32,7 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
-import posidon.launcher.view.GridLayoutManager
+import posidon.launcher.view.recycler.GridLayoutManager
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList

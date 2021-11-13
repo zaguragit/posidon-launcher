@@ -26,7 +26,7 @@ import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.R
 import posidon.launcher.drawable.ColorPreviewDrawable
 import posidon.launcher.tools.Tools
-import posidon.launcher.view.LinearLayoutManager
+import posidon.launcher.view.recycler.LinearLayoutManager
 
 object ColorTools {
 

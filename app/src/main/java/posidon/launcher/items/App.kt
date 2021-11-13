@@ -9,7 +9,6 @@ import android.content.pm.LauncherApps.ShortcutQuery
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -19,9 +18,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -41,6 +41,20 @@ class App(
 ) : LauncherItem() {
 
     override var icon: Drawable? = null
+        set(value) {
+            field = value
+            val palette = Palette.from(icon!!.toBitmap(32, 32)).generate()
+            val newHSL = palette.dominantSwatch?.hsl
+            if (newHSL == null || newHSL[1] < 0.2f) {
+                palette.vibrantSwatch?.hsl
+            }
+            hsl = newHSL ?: run {
+                val d = -0xdad9d9
+                FloatArray(3).also {
+                    ColorUtils.colorToHSL(d, it)
+                }
+            }
+        }
 
     override var notificationCount = 0
 
@@ -119,16 +133,10 @@ class App(
         d.show()
     }
 
+    var hsl = FloatArray(3)
+        private set
     override fun getColor(): Int {
-        val palette = Palette.from(icon!!.toBitmap()).generate()
-        val def = -0xdad9d9
-        var color = palette.getDominantColor(def)
-        val hsv = FloatArray(3)
-        Color.colorToHSV(color, hsv)
-        if (hsv[1] < 0.2f) {
-            color = palette.getVibrantColor(def)
-        }
-        return color
+        return ColorUtils.HSLToColor(hsl)
     }
 
     override fun toString() = "$packageName/$name/${userHandle.hashCode()}"

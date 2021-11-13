@@ -1,4 +1,4 @@
-package posidon.launcher.view
+package posidon.launcher.view.recycler
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView

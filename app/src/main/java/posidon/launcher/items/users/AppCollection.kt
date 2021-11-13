@@ -1,35 +1,31 @@
 package posidon.launcher.items.users
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.os.UserHandle
-import androidx.palette.graphics.Palette
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.launcherutils.appLoading.SimpleAppCollection
-import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.arrayListOf
-import kotlin.collections.indexOfFirst
 import kotlin.collections.set
-import kotlin.collections.sortWith
 
 class AppCollection(val size: Int) : SimpleAppCollection() {
 
-    var tmpApps = ArrayList<App>()
-    val tmpAppSections = ArrayList<ArrayList<App>>()
-    var tmpHidden = ArrayList<App>()
-    var appsByName = HashMap<String, ArrayList<App>>()
+    var list = ArrayList<App>()
+    val sections = ArrayList<ArrayList<App>>()
+    var hidden = ArrayList<App>()
+    var byName = HashMap<String, ArrayList<App>>()
 
     private fun putInSecondMap(app: App) {
-        val list = appsByName[app.packageName]
+        val list = byName[app.packageName]
         if (list == null) {
-            appsByName[app.packageName] = arrayListOf(app)
+            byName[app.packageName] = arrayListOf(app)
             return
         }
         val thisAppI = list.indexOfFirst {
@@ -64,36 +60,34 @@ class AppCollection(val size: Int) : SimpleAppCollection() {
             Icons.animateIfShould(context, icon)
         }
 
+        if (!extra.isUserRunning) {
+            icon.convertToGrayscale()
+        }
+
         putInSecondMap(app)
         if (Settings["app:$app:hidden", false]) {
-            tmpHidden.add(app)
+            hidden.add(app)
         } else {
-            tmpApps.add(app)
+            list.add(app)
         }
     }
 
     override fun finalize(context: Context) {
 
-        if (Settings["drawer:sorting", 0] == 1) tmpApps.sortWith { o1, o2 ->
-            val iHsv = floatArrayOf(0f, 0f, 0f)
-            val jHsv = floatArrayOf(0f, 0f, 0f)
-            Color.colorToHSV(Palette.from(o1.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), iHsv)
-            Color.colorToHSV(Palette.from(o2.icon!!.toBitmap()).generate().getVibrantColor(0xff252627.toInt()), jHsv)
-            iHsv[0].compareTo(jHsv[0])
-        }
-        else tmpApps.sortWith { o1, o2 ->
+        if (Settings["drawer:sorting", 0] == 1) list.sortBy { it.hsl[0] }
+        else list.sortWith { o1, o2 ->
             o1.label.compareTo(o2.label, ignoreCase = true)
         }
 
-        var currentChar = tmpApps[0].label[0].uppercaseChar()
-        var currentSection = ArrayList<App>().also { tmpAppSections.add(it) }
-        for (app in tmpApps) {
+        var currentChar = list[0].label[0].uppercaseChar()
+        var currentSection = ArrayList<App>().also { sections.add(it) }
+        for (app in list) {
             if (app.label.startsWith(currentChar, ignoreCase = true)) {
                 currentSection.add(app)
             }
             else currentSection = ArrayList<App>().apply {
                 add(app)
-                tmpAppSections.add(this)
+                sections.add(this)
                 currentChar = app.label[0].uppercaseChar()
             }
         }
@@ -109,5 +103,11 @@ class AppCollection(val size: Int) : SimpleAppCollection() {
         icon = Icons.generateAdaptiveIcon(icon)
         icon = Icons.applyInsets(icon)
         return icon
+    }
+
+    fun Drawable.convertToGrayscale() {
+        colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
+            setSaturation(0f)
+        })
     }
 }

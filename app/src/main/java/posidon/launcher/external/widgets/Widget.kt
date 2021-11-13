@@ -26,9 +26,9 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.view.GridLayoutManager
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.feed.WidgetSection
+import posidon.launcher.view.recycler.GridLayoutManager
 
 class Widget(
     val widgetId: Int

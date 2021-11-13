@@ -12,7 +12,7 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.view.HighlightAdapter
+import posidon.launcher.view.recycler.HighlightAdapter
 
 class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
 
