@@ -1,6 +1,7 @@
 package posidon.launcher.wall
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -42,7 +43,7 @@ class WallActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         var image = img
-        if (image != null && image.height / image.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) {
+        if (image != null && image.height / image.width < Device.screenHeight(this) / Device.screenWidth(this)) {
             image = Wallpaper.centerCropWallpaper(this, image)
         }
         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
@@ -112,7 +113,9 @@ class WallActivity : AppCompatActivity() {
                     onImgLoaded()
                     if (it != null) {
                         image = it
-                        if (it.height / it.width < resources.displayMetrics.heightPixels / resources.displayMetrics.widthPixels) image = Wallpaper.centerCropWallpaper(this, it)
+                        val displayWidth = Device.screenWidth(this)
+                        val displayHeight = Device.screenHeight(this)
+                        if (it.height / it.width < displayHeight / displayWidth) image = Wallpaper.centerCropWallpaper(this, it)
                         findViewById<ImageView>(R.id.theimg).setImageBitmap(image)
                     }
                 }}
@@ -188,6 +191,7 @@ class WallActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 0 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) saveBitmap(img!!, Gallery.walls[index].name!!)
     }

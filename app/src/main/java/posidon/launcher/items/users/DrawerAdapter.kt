@@ -20,8 +20,6 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
     override fun getItem(i: Int) = Global.apps[i]
     override fun getItemId(i: Int): Long = 0
 
-    private val appSize = Tools.appContext!!.dp(Settings["drawer:icons:size", 74]).toInt()
-
     internal class ViewHolder(
         val icon: ImageView,
         val iconFrame: FrameLayout,
@@ -41,6 +39,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
                 convertView.findViewById(R.id.iconFrame),
                 convertView.findViewById(R.id.icontxt),
                 convertView.findViewById(R.id.notificationBadge))
+            val appSize = parent.dp(Settings["drawer:icons:size", 74]).toInt()
             holder.iconFrame.layoutParams.height = appSize
             holder.iconFrame.layoutParams.width = appSize
             convertView.tag = holder

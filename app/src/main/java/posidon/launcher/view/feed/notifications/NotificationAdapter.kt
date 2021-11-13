@@ -22,7 +22,6 @@ import posidon.launcher.feed.notifications.NotificationItem
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.Tools
 import posidon.launcher.view.SwipeableLayout
 import posidon.launcher.view.feed.notifications.viewHolders.NotificationViewHolder
 
@@ -35,8 +34,8 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val context = parent.context
         val view = RelativeLayout(context)
-        val hMargin = Tools.appContext!!.dp(Settings["feed:card_margin_x", 16]).toInt()
-        val vMargin = Tools.appContext!!.dp(Settings["feed:card_margin_y", 9]).toInt()
+        val hMargin = parent.dp(Settings["feed:card_margin_x", 16]).toInt()
+        val vMargin = parent.dp(Settings["feed:card_margin_y", 9]).toInt()
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
         val ll = LinearLayout(context).apply {

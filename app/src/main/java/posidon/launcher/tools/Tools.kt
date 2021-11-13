@@ -13,7 +13,6 @@ import android.media.AudioAttributes
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.launcherutils.Launcher
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.R
@@ -37,7 +37,6 @@ import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
-import kotlin.math.min
 
 object Tools {
 
@@ -61,15 +60,7 @@ object Tools {
             navbarHeight = 0
             return
         }
-        val metrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(metrics)
-        val usableHeight = metrics.heightPixels
-        activity.windowManager.defaultDisplay.getRealMetrics(metrics)
-        val realHeight = metrics.heightPixels
-        navbarHeight = if (realHeight > usableHeight) realHeight - usableHeight else 0
-        val resources = activity.resources
-        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        navbarHeight = min(if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0, navbarHeight)
+        navbarHeight = activity.getNavigationBarHeight()
     }
 
     inline val isDefaultLauncher: Boolean get() {
