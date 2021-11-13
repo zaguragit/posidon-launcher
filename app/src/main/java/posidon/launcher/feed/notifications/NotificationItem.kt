@@ -4,20 +4,29 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.graphics.drawable.Drawable
 
-class Notification(
+class NotificationItem(
     val title: CharSequence?,
     val text: CharSequence?,
+    val source: CharSequence,
     val isSummary: Boolean,
     val bigPic: Drawable?,
     val icon: Drawable?,
     val actions: Array<Notification.Action>?,
     private val contentIntent: PendingIntent?,
     val key: String,
-    val progress: Float
+    val progress: Int,
+    val max: Int,
+    val autoCancel: Boolean,
 ) {
     fun open() {
-        try { contentIntent?.send() }
-        catch (e: Exception) {}
+        try {
+            contentIntent?.send()
+            if (autoCancel) cancel()
+        }
+        catch (e: Exception) {
+            cancel()
+            e.printStackTrace()
+        }
     }
 
     fun cancel() {
@@ -27,7 +36,7 @@ class Notification(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as posidon.launcher.feed.notifications.Notification
+        other as NotificationItem
         if (title != other.title) return false
         if (isSummary != other.isSummary) return false
         if (key != other.key) return false
