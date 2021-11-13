@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
@@ -33,7 +34,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
 import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.view.NestedScrollView
-import posidon.launcher.view.drawer.BottomDrawerBehavior
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.news.NewsCards
 import posidon.launcher.view.feed.notifications.NotificationCards
@@ -49,7 +49,7 @@ class Feed : FrameLayout {
     inline fun init(drawer: DrawerView) {
         this.drawer = drawer
         onTopOverScroll = {
-            if (!LauncherMenu.isActive && drawer.state != BottomDrawerBehavior.STATE_EXPANDED) {
+            if (!LauncherMenu.isActive && drawer.state != BottomSheetBehavior.STATE_EXPANDED) {
                 Gestures.performTrigger(Settings["gesture:feed:top_overscroll", Gestures.PULL_DOWN_NOTIFICATIONS])
             }
         }
@@ -170,7 +170,7 @@ class Feed : FrameLayout {
 
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
-            scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
+            scroll.setOnScrollChangeListener { _, _, y, _, oldY ->
                 val a = dp(6)
                 if (y > a) {
                     val distance = oldY - y
@@ -178,7 +178,7 @@ class Feed : FrameLayout {
                     handleDockOnScroll(distance, a, y, drawer)
                 } else {
                     if (!LauncherMenu.isActive) {
-                        drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
+                        drawer.state = BottomSheetBehavior.STATE_COLLAPSED
                     }
                     if (y < a && oldY >= a) {
                         newsCards?.hide()
@@ -187,7 +187,7 @@ class Feed : FrameLayout {
             }
         } else {
             newsCards?.show()
-            scroll.setOnScrollChangeListener { _: androidx.core.widget.NestedScrollView, _, y, _, oldY ->
+            scroll.setOnScrollChangeListener { _, _, y, _, oldY ->
                 val a = dp(6)
                 val distance = oldY - y
                 handleDockOnScroll(distance, a, y, drawer)
@@ -219,10 +219,12 @@ class Feed : FrameLayout {
     private fun handleDockOnScroll(distance: Int, threshold: Float, y: Int, drawer: DrawerView) {
         if (distance > threshold || y < threshold || y >= desktopContent.height - drawer.dock.dockHeight - height) {
             if (!LauncherMenu.isActive) {
-                drawer.state = BottomDrawerBehavior.STATE_COLLAPSED
+                drawer.isHideable = false
+                drawer.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         } else if (distance < -threshold) {
-            drawer.state = BottomDrawerBehavior.STATE_HIDDEN
+            drawer.isHideable = true
+            drawer.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 

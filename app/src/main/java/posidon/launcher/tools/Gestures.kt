@@ -3,13 +3,13 @@ package posidon.launcher.tools
 import android.content.Intent
 import android.view.ScaleGestureDetector
 import android.view.View
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.android.conveniencelib.pullStatusbar
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.items.App
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.view.drawer.BottomDrawerBehavior
 
 object Gestures {
 
@@ -28,7 +28,7 @@ object Gestures {
     fun performTrigger(key: String) {
         when (key) {
             PULL_DOWN_NOTIFICATIONS -> Tools.appContext!!.pullStatusbar()
-            OPEN_APP_DRAWER -> Home.instance.drawer.state = BottomDrawerBehavior.STATE_EXPANDED
+            OPEN_APP_DRAWER -> Home.instance.drawer.state = BottomSheetBehavior.STATE_EXPANDED
             OPEN_SEARCH -> Tools.appContext!!.startActivity(Intent(Tools.appContext, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             OPEN_OVERVIEW -> LauncherMenu.openOverview(Home.instance)
             REFRESH_FEED -> Home.instance.feed.loadNews()

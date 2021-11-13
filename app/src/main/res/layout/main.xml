@@ -23,7 +23,7 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="posidon.launcher.view.drawer.LockableBottomDrawerBehavior"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:hideable="false"
         app:peekHeight="0dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
