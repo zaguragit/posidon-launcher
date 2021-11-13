@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.launcher.Home
@@ -76,10 +77,10 @@ class AlphabetScrollbarWrapper(
                 setPadding(0, context.getStatusBarHeight() + context.dp(12).toInt(), 0, dock.dockHeight + Tools.navbarHeight)
             }
             onStartScroll = {
-                if (drawer.state != BottomDrawerBehavior.STATE_EXPANDED)
-                    drawer.state = BottomDrawerBehavior.STATE_EXPANDED
+                if (drawer.state != BottomSheetBehavior.STATE_EXPANDED)
+                    drawer.state = BottomSheetBehavior.STATE_EXPANDED
             }
-            onCancelScroll = { drawer.state = BottomDrawerBehavior.STATE_COLLAPSED }
+            onCancelScroll = { drawer.state = BottomSheetBehavior.STATE_COLLAPSED }
             floatingFactor = 1f
             alpha = 1f
         } else {

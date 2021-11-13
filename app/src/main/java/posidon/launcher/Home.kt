@@ -13,6 +13,7 @@ import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import io.posidon.android.launcherutils.system.GestureNavContract
@@ -31,7 +32,6 @@ import posidon.launcher.tools.Tools.updateNavbarHeight
 import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.ResizableLayout
-import posidon.launcher.view.drawer.BottomDrawerBehavior.*
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference

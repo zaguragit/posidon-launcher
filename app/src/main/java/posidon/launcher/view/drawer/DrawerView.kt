@@ -17,6 +17,7 @@ import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
@@ -146,7 +147,7 @@ class DrawerView : FrameLayout {
 
     fun setKustomVars() {
         if (Settings["kustom:variables:enable", false]) {
-            if (behavior.state == BottomDrawerBehavior.STATE_EXPANDED) {
+            if (behavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 Kustom[context, "posidon", "screen"] = "drawer"
             } else {
                 Kustom[context, "posidon", "screen"] = "home"
@@ -156,7 +157,7 @@ class DrawerView : FrameLayout {
 
     fun tryBlur() {
         if (Tools.canBlurDrawer) {
-            val shouldHide = behavior.state == BottomDrawerBehavior.STATE_COLLAPSED || behavior.state == BottomDrawerBehavior.STATE_HIDDEN
+            val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
                 val blurLayers = Settings["blurLayers", 1]
                 val radius = Settings["drawer:blur:rad", 15f]
@@ -171,13 +172,13 @@ class DrawerView : FrameLayout {
     }
 
     inline fun init(home: Home) {
-        behavior = LockableBottomDrawerBehavior.from(this).apply {
+        behavior = BottomSheetBehavior.from(this).apply {
             isHideable = false
             peekHeight = 0
-            setState(BottomDrawerBehavior.STATE_COLLAPSED)
+            setState(BottomSheetBehavior.STATE_COLLAPSED)
         }
 
-        behavior.addBottomSheetCallback(object : BottomDrawerBehavior.BottomSheetCallback() {
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 
             val things = IntArray(4)
             val radii = FloatArray(8)
@@ -186,7 +187,7 @@ class DrawerView : FrameLayout {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomDrawerBehavior.STATE_COLLAPSED -> {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
                         if (home.hasWindowFocus() && Settings["kustom:variables:enable", false]) {
                             Kustom[context, "posidon", "screen"] = "home"
                         }
@@ -199,7 +200,7 @@ class DrawerView : FrameLayout {
                         drawerContent.isInvisible = true
                         dock.isInvisible = false
                     }
-                    BottomDrawerBehavior.STATE_EXPANDED -> {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
                         if (Settings["kustom:variables:enable", false]) {
                             Kustom[context, "posidon", "screen"] = "drawer"
                         }
@@ -366,22 +367,25 @@ class DrawerView : FrameLayout {
         })
     }
 
-    lateinit var behavior: LockableBottomDrawerBehavior<DrawerView>
+    lateinit var behavior: BottomSheetBehavior<DrawerView>
 
     inline var locked: Boolean
-        get() = behavior.locked
-        set(value) { behavior.locked = value }
+        get() = !behavior.isDraggable
+        set(value) { behavior.isDraggable = !value }
 
     inline var state: Int
-        get() = behavior.getState()
+        get() = behavior.state
         set(value) = behavior.setState(value)
+
+    inline var isHideable: Boolean
+        get() = behavior.isHideable
+        set(value) { behavior.isHideable = value }
 
     inline var peekHeight: Int
         get() = behavior.peekHeight
         set(value) = behavior.setPeekHeight(value)
 
     init {
-        //orientation = VERTICAL
         addView(drawerContent, LayoutParams(MATCH_PARENT, MATCH_PARENT))
         addView(dock, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
             gravity = Gravity.TOP

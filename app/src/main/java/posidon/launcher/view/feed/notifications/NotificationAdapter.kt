@@ -216,7 +216,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
             }
 
             view.findViewById<TextView>(R.id.title).run {
-                text = notification.title
+                text = notification.title ?: notification.source
                 setTextColor(Settings["notificationtitlecolor", -0xeeeded])
             }
             view.findViewById<TextView>(R.id.txt).run {

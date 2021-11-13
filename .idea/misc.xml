@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/layout/custom_search.xml" value="0.20969945355191258" />
         <entry key="app/src/main/res/layout/custom_theme.xml" value="0.19023224043715847" />
         <entry key="app/src/main/res/layout/customizations.xml" value="0.11707566462167689" />
+        <entry key="app/src/main/res/layout/main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/notification_progress.xml" value="0.15868055555555555" />
         <entry key="app/src/main/res/layout/stack_trace_activity.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/wall_item.xml" value="0.23854166666666668" />
