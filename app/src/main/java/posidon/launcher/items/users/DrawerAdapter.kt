@@ -32,22 +32,22 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
         val app = Global.apps[i]
         if (convertView == null) {
             val li = Tools.appContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = if (Settings["drawer:columns", 4] > 2) li.inflate(R.layout.drawer_item, parent, false)
+            convertView = if (Settings["drawer:columns", 5] > 2) li.inflate(R.layout.drawer_item, parent, false)
                 else li.inflate(R.layout.list_item, parent, false)
             holder = ViewHolder(
                 convertView.findViewById(R.id.iconimg),
                 convertView.findViewById(R.id.iconFrame),
                 convertView.findViewById(R.id.icontxt),
                 convertView.findViewById(R.id.notificationBadge))
-            val appSize = parent.dp(Settings["drawer:icons:size", 74]).toInt()
+            val appSize = parent.dp(Settings["drawer:icons:size", 64]).toInt()
             holder.iconFrame.layoutParams.height = appSize
             holder.iconFrame.layoutParams.width = appSize
             convertView.tag = holder
 
-            if (Settings["labelsenabled", false]) {
+            if (Settings["labelsenabled", true]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
-                Customizer.styleLabel("drawer:labels", holder.text, -0x11111112, 12f)
+                Customizer.styleLabel("drawer:labels", holder.text, 0x70ffffff, 12f)
             } else holder.text.visibility = View.INVISIBLE
 
         } else {

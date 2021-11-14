@@ -23,10 +23,10 @@ import kotlin.math.min
 @SuppressLint("ViewConstructor")
 class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupView(drawer.context) {
 
-    private val appSize = dp(Settings["drawer:icons:size", 74]).toInt()
+    private val appSize = dp(Settings["drawer:icons:size", 64]).toInt()
 
     var columns = Settings["$themeKey:columns", 4]
-    val labelsEnabled = Settings["labelsenabled", false]
+    val labelsEnabled = Settings["labelsenabled", true]
 
     init {
         when (Settings["$themeKey:sec_name_pos", 0]) {

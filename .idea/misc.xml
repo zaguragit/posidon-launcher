@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.47919375812743825" />
         <entry key="../../../../../layout/custom_preview.xml" value="0.4083333333333333" />
         <entry key="app/src/main/res/drawable/custom_catbg.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/custom_dock.xml" value="0.24930555555555556" />
@@ -48,7 +49,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

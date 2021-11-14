@@ -72,7 +72,7 @@ class DrawerView : FrameLayout {
             drawerGrid.numColumns = 1
             drawerGrid.verticalSpacing = 0
         } else {
-            drawerGrid.numColumns = Settings["drawer:columns", 4]
+            drawerGrid.numColumns = Settings["drawer:columns", 5]
             drawerGrid.verticalSpacing = dp(Settings["verticalspacing", 12]).toInt()
         }
         val searchBarEnabled = Settings["drawersearchbarenabled", true]
@@ -217,13 +217,13 @@ class DrawerView : FrameLayout {
                 }
                 ItemLongPress.currentPopup?.dismiss()
                 things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
-                things[1] = Settings["dock:background_color", -0x78000000]
-                things[2] = Settings["dock:background_type", 0]
+                things[1] = Settings["dock:background_color", 0xbe080808.toInt()]
+                things[2] = Settings["dock:background_type", 1]
                 things[3] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) min(
                     rootWindowInsets.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)?.radius ?: 0,
                     rootWindowInsets.getRoundedCorner(RoundedCorner.POSITION_TOP_RIGHT)?.radius ?: 0,
                 ) else 0
-                colors[0] = Settings["drawer:background_color", -0x78000000]
+                colors[0] = Settings["drawer:background_color", 0xbe080808.toInt()]
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {

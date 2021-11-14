@@ -46,14 +46,14 @@ class DockView : LinearLayout {
             leftMargin = m
             rightMargin = m
         }
-        val bgColor = Settings["dock:background_color", -0x78000000]
-        when (Settings["dock:background_type", 0]) {
+        val bgColor = Settings["dock:background_color", 0xbe080808.toInt()]
+        when (Settings["dock:background_type", 1]) {
             1 -> {
                 containerContainer.background = null
                 drawer.background = LayerDrawable(arrayOf(
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor and 0x00ffffff, bgColor)),
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor,
-                        Settings["drawer:background_color", -0x78000000]))
+                        Settings["drawer:background_color", 0xbe080808.toInt()]))
                 ))
             }
             2 -> {
@@ -271,7 +271,7 @@ class DockView : LinearLayout {
         }
         run {
             val bg = drawer.background
-            if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
+            if (Settings["dock:background_type", 1] == 1 && bg is LayerDrawable) {
                 bg.setLayerInset(0, 0, 0, 0, Device.screenHeight(context) - drawer.peekHeight)
                 bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
             }
