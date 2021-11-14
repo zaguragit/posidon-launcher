@@ -17,7 +17,7 @@ class HiddenAppsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.hidden_apps_activity)
         val grid = findViewById<GridView>(R.id.grid)
-        grid.numColumns = Settings["drawer:columns", 4]
+        grid.numColumns = Settings["drawer:columns", 5]
         grid.adapter = AppsAdapter(this, App.hidden.toTypedArray())
         grid.setOnItemClickListener { _, view, i, _ ->
             App.hidden[i].open(this, view)

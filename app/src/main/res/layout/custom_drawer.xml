@@ -35,14 +35,14 @@
                     app:drawable="@drawable/ic_color"
                     app:label="@string/background"
                     app:key="drawer:background_color"
-                    app:def="#88000000"/>
+                    app:def="#be080808"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:label="@string/columns"
                     app:key="drawer:columns"
-                    app:def="4"
+                    app:def="5"
                     app:max="7"
                     app:startsWith1="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     app:label="@string/iconSize"
                     app:key="drawer:icons:size"
-                    app:def="74"
+                    app:def="64"
                     app:startsWith1="true"
                     app:max="96"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
@@ -99,7 +99,7 @@
                     android:layout_marginBottom="12dp"
                     app:label="@string/appLabels"
                     app:key="labelsenabled"
-                    app:def="false"/>
+                    app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
@@ -116,7 +116,7 @@
                     app:drawable="@drawable/ic_color"
                     app:label="@string/labelColor"
                     app:key="drawer:labels:color"
-                    app:def="#EEEEEEEE"/>
+                    app:def="#70ffffff"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"

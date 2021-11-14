@@ -28,9 +28,9 @@ class IconpacksAdapter(val iconPacks: List<App>, val onSelectIconPack: (String) 
             convertView.findViewById(R.id.iconimg),
             convertView.findViewById(R.id.icontxt))
         holder.text.visibility = View.VISIBLE
-        Customizer.styleLabel("drawer:labels", holder.text, -0x11111112, 12f)
+        Customizer.styleLabel("drawer:labels", holder.text, 0x70ffffff, 12f)
         convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
-            val appSize = parent.dp(Settings["drawer:icons:size", 74]).toInt()
+            val appSize = parent.dp(Settings["drawer:icons:size", 64]).toInt()
             width = appSize
             height = appSize
         }
