@@ -27,7 +27,7 @@ class CustomNotifications : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
 
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.grouping_label), ColorStateList.valueOf(Global.accentColor))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.grouping_label), ColorStateList.valueOf(Global.getPastelAccent()))
 
         findViewById<Spinner>(R.id.notificationGrouping).run {
             data = resources.getStringArray(R.array.notificationGrouping)

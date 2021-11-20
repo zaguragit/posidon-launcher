@@ -36,7 +36,7 @@ class CustomOther : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
 
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.app_open_anim_label), ColorStateList.valueOf(Global.accentColor))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.app_open_anim_label), ColorStateList.valueOf(Global.getPastelAccent()))
 
         val hapticbar = findViewById<SeekBar>(R.id.hapticbar)
         hapticbar.progress = Settings["hapticfeedback", 14]
