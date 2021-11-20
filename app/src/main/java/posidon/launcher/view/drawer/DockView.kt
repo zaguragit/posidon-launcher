@@ -227,7 +227,7 @@ class DockView : LinearLayout {
                     if (c != 0) {
                         badge.visibility = View.VISIBLE
                         badge.text = if (notifBadgesShowNum) c.toString() else ""
-                        Icons.generateNotificationBadgeBGnFG { bg, fg ->
+                        Icons.generateNotificationBadgeBGnFG(item.icon) { bg, fg ->
                             badge.background = bg
                             badge.setTextColor(fg)
                         }
