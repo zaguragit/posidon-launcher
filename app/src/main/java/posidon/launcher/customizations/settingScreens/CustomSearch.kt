@@ -26,7 +26,7 @@ class CustomSearch : AppCompatActivity() {
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
 
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.hint_label), ColorStateList.valueOf(Global.accentColor))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.hint_label), ColorStateList.valueOf(Global.getPastelAccent()))
 
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", "Search.."]
         Global.customized = true

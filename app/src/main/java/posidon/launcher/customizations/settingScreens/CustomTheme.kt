@@ -51,8 +51,8 @@ class CustomTheme : AppCompatActivity() {
             catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
         }
 
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.font_label), ColorStateList.valueOf(Global.accentColor))
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.background_type_label), ColorStateList.valueOf(Global.accentColor))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.font_label), ColorStateList.valueOf(Global.getPastelAccent()))
+        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.background_type_label), ColorStateList.valueOf(Global.getPastelAccent()))
 
         val fontName = findViewById<TextView>(R.id.fontname)
         fontName.text = Fonts.getFontName(this)
