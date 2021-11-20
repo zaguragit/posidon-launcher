@@ -120,7 +120,7 @@ object NotificationCreator {
             actions = notification.notification.actions,
             contentIntent = notification.notification.contentIntent,
             key = notification.key,
-            progress = if (intermediate) -1 else progress,
+            progress = if (intermediate) -2 else progress,
             max = if (intermediate) 0 else maxProgress,
             autoCancel = autoCancel,
         )

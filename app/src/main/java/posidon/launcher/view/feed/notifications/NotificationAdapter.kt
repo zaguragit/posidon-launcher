@@ -77,10 +77,10 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
                 }
             } else {
                 val v1 = when {
-                    notification.max != 0 -> {
+                    notification.max != -1 && notification.progress != -1 && notification.max != notification.progress -> {
                         LayoutInflater.from(context).inflate(R.layout.notification_progress, null).apply {
                             val progressBar = findViewById<ProgressBar>(R.id.progress)
-                            if (notification.progress == -1) {
+                            if (notification.progress == -2) {
                                 progressBar.isIndeterminate = true
                             } else {
                                 progressBar.isIndeterminate = false
@@ -91,13 +91,13 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
                             }
                         }
                     }
-                    notification.bigPic == null -> {
-                        LayoutInflater.from(context).inflate(R.layout.notification_normal, null)
-                    }
-                    else -> {
+                    notification.bigPic != null -> {
                         LayoutInflater.from(context).inflate(R.layout.notification_big_pic, null).apply {
                             findViewById<ImageView>(R.id.bigPic).setImageDrawable(notification.bigPic)
                         }
+                    }
+                    else -> {
+                        LayoutInflater.from(context).inflate(R.layout.notification_normal, null)
                     }
                 }.apply {
                     setBackgroundColor(Settings["notificationbgcolor", -0x1])

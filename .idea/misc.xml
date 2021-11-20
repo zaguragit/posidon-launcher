@@ -41,7 +41,7 @@
         <entry key="app/src/main/res/layout/custom_other.xml" value="0.2189207650273224" />
         <entry key="app/src/main/res/layout/custom_search.xml" value="0.20969945355191258" />
         <entry key="app/src/main/res/layout/custom_theme.xml" value="0.19023224043715847" />
-        <entry key="app/src/main/res/layout/customizations.xml" value="0.11707566462167689" />
+        <entry key="app/src/main/res/layout/customizations.xml" value="0.33" />
         <entry key="app/src/main/res/layout/main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/notification_progress.xml" value="0.15868055555555555" />
         <entry key="app/src/main/res/layout/stack_trace_activity.xml" value="0.23854166666666668" />
@@ -49,7 +49,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
