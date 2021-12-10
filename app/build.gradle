@@ -25,10 +25,10 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.pixplicity.sharp:library:1.1.0'
     implementation 'io.posidon:android.loader:master-SNAPSHOT'
     implementation 'io.posidon:android.convenienceLib:master-SNAPSHOT'
-    implementation 'io.posidon:android.launcherUtils:b69026b1b5'
+    implementation 'io.posidon:android.launcherUtils:14c528f32d'
 }
