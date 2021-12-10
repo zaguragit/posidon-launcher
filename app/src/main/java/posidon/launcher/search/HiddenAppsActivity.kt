@@ -5,10 +5,12 @@ import android.view.DragEvent
 import android.view.View
 import android.widget.GridView
 import androidx.appcompat.app.AppCompatActivity
+import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.users.AppsAdapter
 import posidon.launcher.items.users.ItemLongPress
+import posidon.launcher.items.users.ItemLongPress.UNHIDE
 import posidon.launcher.storage.Settings
 import kotlin.math.abs
 
@@ -23,7 +25,13 @@ class HiddenAppsActivity : AppCompatActivity() {
             App.hidden[i].open(this, view)
         }
         grid.setOnItemLongClickListener { _, view, i, _ ->
-            ItemLongPress.onItemLongPress(this, view, App.hidden[i], null, null)
+            val app = App.hidden[i]
+            ItemLongPress.onItemLongPress(this, view, app, null, onRemove = {
+                App.hidden.remove(app)
+                grid.adapter = AppsAdapter(this, App.hidden.toTypedArray())
+                app.setUnhidden()
+                Global.shouldSetApps = true
+            }, removeFunction = UNHIDE)
             true
         }
         window.decorView.findViewById<View>(android.R.id.content).setOnDragListener { _, event ->

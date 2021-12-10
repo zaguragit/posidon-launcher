@@ -95,7 +95,7 @@ class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupVi
                 ItemLongPress.onItemLongPress(context, it, item, null, {
                     item.setHidden()
                     drawer.loadApps()
-                }, isRemoveFnActuallyHide = true)
+                }, removeFunction = ItemLongPress.HIDE)
                 true
             }
             (layoutParams as GridLayout.LayoutParams).bottomMargin = dp(Settings["verticalspacing", 12]).toInt()

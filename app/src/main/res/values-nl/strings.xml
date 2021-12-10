@@ -218,6 +218,7 @@
     <string name="clear_custom_icons">Clear all custom icons</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="hide_persistent_notifications">Hide persistent notifications</string>
+    <string name="unhide">Unhide</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d meldingen</item>
