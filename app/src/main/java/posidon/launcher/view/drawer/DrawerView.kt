@@ -135,7 +135,7 @@ class DrawerView : FrameLayout {
                 ItemLongPress.onItemLongPress(context, view, app, null, {
                     app.setHidden()
                     loadApps()
-                }, isRemoveFnActuallyHide = true)
+                }, removeFunction = ItemLongPress.HIDE)
                 true
             }
         }

@@ -29,8 +29,12 @@ import posidon.launcher.view.recycler.LinearLayoutManager
 
 object ItemLongPress {
 
+    const val REMOVE = 0
+    const val HIDE = 1
+    const val UNHIDE = 2
+
     var currentPopup: PopupWindow? = null
-    fun makePopupWindow(context: Context, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, canHide: Boolean): PopupWindow {
+    fun makePopupWindow(context: Context, item: LauncherItem, onEdit: ((View) -> Unit)?, onRemove: ((View) -> Unit)?, onInfo: ((View) -> Unit)?, removeFunction: Int): PopupWindow {
 
         if (Settings["kustom:variables:enable", false]) {
             Kustom[context, "posidon", "screen"] = "popup"
@@ -81,16 +85,24 @@ object ItemLongPress {
             removeButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
             propertiesButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
             editButton.compoundDrawableTintList = ColorStateList.valueOf(txtColor)
-            if (canHide) {
-                removeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_hide, 0, 0, 0)
-                removeButton.setText(R.string.hide)
+            when (removeFunction) {
+                HIDE -> {
+                    removeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_hide, 0, 0, 0)
+                    removeButton.setText(R.string.hide)
+                }
+                UNHIDE -> {
+                    removeButton.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_hide, 0, 0, 0)
+                    removeButton.setText(R.string.unhide)
+                }
             }
         } else {
             (removeButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
             (propertiesButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
             (editButton as ImageView).imageTintList = ColorStateList.valueOf(txtColor)
-            if (canHide) {
-                removeButton.setImageResource(R.drawable.ic_hide)
+            when (removeFunction) {
+                HIDE, UNHIDE -> {
+                    removeButton.setImageResource(R.drawable.ic_hide)
+                }
             }
         }
 
@@ -118,7 +130,7 @@ object ItemLongPress {
         return window
     }
 
-    inline fun onItemLongPress(context: Context, view: View, item: LauncherItem, noinline onEdit: ((View) -> Unit)?, noinline onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view, isRemoveFnActuallyHide: Boolean = false) {
+    inline fun onItemLongPress(context: Context, view: View, item: LauncherItem, noinline onEdit: ((View) -> Unit)?, noinline onRemove: ((View) -> Unit)?, dockI: Int = -1, folderI: Int = -1, parentView: View = view, removeFunction: Int = REMOVE) {
         if (currentPopup == null) {
             context.vibrate()
 
@@ -136,7 +148,7 @@ object ItemLongPress {
                     hsv[2] = 0.5f
                 }
                 realItem.showProperties(context, Color.HSVToColor(hsv))
-            }) else null, isRemoveFnActuallyHide)
+            }) else null, removeFunction)
 
             if (!Settings["locked", false]) {
                 popupWindow.isFocusable = false // !

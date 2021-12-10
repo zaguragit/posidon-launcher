@@ -5,6 +5,7 @@
 - Improved icon badging
 - Added grayscale effect to work apps when the work profile is turned off
 - Added setting for hiding persistent notifications
+- Added an unhide option to hidden apps' long press menus
 - Improved app drawer opening transition
 - Added dynamic calendar icon support (for icon packs)
 - Fixed bugs
