@@ -3,7 +3,8 @@
 - Added a button to clear all custom icons: Theme -> Icon pack -> Clear all custom icons
 - Improved picture-less contact icons
 - Improved icon badging
-- Added greyscale effect to work apps when the work profile is turned off
+- Added grayscale effect to work apps when the work profile is turned off
 - Added setting for hiding persistent notifications
 - Improved app drawer opening transition
+- Added dynamic calendar icon support (for icon packs)
 - Fixed bugs
