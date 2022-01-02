@@ -9,23 +9,24 @@
     android:paddingTop="8dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="28dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
         <ImageView
             android:id="@+id/iconimg"
-            android:layout_width="20dp"
-            android:layout_height="20dp"/>
+            android:layout_width="@dimen/notification_summary_icon_size"
+            android:layout_height="@dimen/notification_summary_icon_size"/>
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="10dp"
             android:textSize="14sp"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/txt"
             android:layout_width="wrap_content"
