@@ -1,4 +1,5 @@
 - Redesigned launcher settings' UI
+- Made notifications more compact
 - Added setting for icon sizes in scaled pixels
 - Added a button to clear all custom icons: Theme -> Icon pack -> Clear all custom icons
 - Improved picture-less contact icons
