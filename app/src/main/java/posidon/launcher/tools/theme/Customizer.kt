@@ -26,6 +26,20 @@ object Customizer {
         }
     }
 
+    fun genBG(context: Context, namespace: String, onlyCurveTop: Boolean, defRadius: Int, defColor: Int): Drawable {
+        val strokeWidth = Settings["$namespace:stroke:width", 0]
+        val radius = Settings["$namespace:radius", defRadius]
+        val backgroundColor = Settings["$namespace:color", defColor]
+        val strokeColor = Settings["$namespace:stroke:color", 0]
+        return GradientDrawable().apply {
+            val r = context.dp(radius)
+            shape = RECTANGLE
+            cornerRadii = if (onlyCurveTop) floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f) else floatArrayOf(r, r, r, r, r, r, r, r)
+            setColor(backgroundColor)
+            setStroke(context.dp(strokeWidth).toInt(), strokeColor)
+        }
+    }
+
     fun getCustomIcon(key: String): Drawable? {
         val customIcon = Settings.getString(key)
         if (!customIcon.isNullOrEmpty()) {
@@ -39,15 +53,5 @@ object Customizer {
             }
         }
         return null
-    }
-
-    fun genBG(context: Context, namespace: String, onlyCurveTop: Boolean, defRadius: Int, defColor: Int): Drawable {
-        return GradientDrawable().apply {
-            val r = context.dp(Settings["$namespace:radius", defRadius])
-            shape = RECTANGLE
-            cornerRadii = if (onlyCurveTop) floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f) else floatArrayOf(r, r, r, r, r, r, r, r)
-            setColor(Settings["$namespace:color", defColor])
-            setStroke(context.dp(Settings["$namespace:stroke:width", 0]).toInt(), Settings["$namespace:stroke:color", 0])
-        }
     }
 }

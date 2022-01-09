@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:layout_margin="8dp"
         android:padding="16dp"
-        android:background="@drawable/button_bg_round"
+        android:background="@drawable/button_bg"
         android:src="@drawable/customizations"/>
     <ImageView
         android:id="@+id/sectionsBtn"
@@ -21,6 +21,6 @@
         android:layout_weight="1"
         android:layout_margin="8dp"
         android:padding="16dp"
-        android:background="@drawable/button_bg_round"
+        android:background="@drawable/button_bg"
         android:src="@drawable/sections"/>
 </LinearLayout>

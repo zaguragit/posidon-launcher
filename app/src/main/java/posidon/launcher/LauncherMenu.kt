@@ -3,6 +3,7 @@ package posidon.launcher
 import android.app.Activity
 import android.app.ActivityOptions
 import android.app.Dialog
+import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.os.Build
 import android.view.Gravity
@@ -42,13 +43,20 @@ object LauncherMenu {
             dialog = Dialog(home, R.style.longpressmenusheet).apply {
                 setContentView(R.layout.menu)
                 this.window!!.setGravity(Gravity.BOTTOM)
-                findViewById<View>(R.id.custombtn).setOnClickListener {
-                    home.open(Customizations::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
-                    dialog?.dismiss()
+                val tintList = ColorStateList.valueOf(Global.getDarkAccent())
+                findViewById<View>(R.id.custombtn).run {
+                    backgroundTintList = tintList
+                    setOnClickListener {
+                        home.open(Customizations::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
+                        dialog?.dismiss()
+                    }
                 }
-                findViewById<View>(R.id.sectionsBtn).setOnClickListener {
-                    home.open(FeedOrderActivity::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
-                    dialog?.dismiss()
+                findViewById<View>(R.id.sectionsBtn).run {
+                    backgroundTintList = tintList
+                    setOnClickListener {
+                        home.open(FeedOrderActivity::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
+                        dialog?.dismiss()
+                    }
                 }
                 setOnDismissListener {
                     exit(homescreen, window, drawer)

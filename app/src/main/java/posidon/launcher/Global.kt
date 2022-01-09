@@ -27,6 +27,15 @@ object Global {
         return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
     }
 
+    fun getDarkAccent(): Int {
+        val lab = DoubleArray(3)
+        ColorUtils.colorToLAB(accentColor, lab)
+        lab[0] = 15.0
+        lab[1] = lab[1] * 0.3
+        lab[2] = lab[2] * 0.3
+        return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
+    }
+
     var appSections = ArrayList<ArrayList<App>>()
     var apps = ArrayList<App>()
 
