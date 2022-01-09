@@ -362,7 +362,7 @@ class DrawerView : FrameLayout {
 
     val drawerContent = FrameLayout(context).apply {
         addView(drawerGrid, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        addView(searchBarVBox, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+        addView(searchBarVBox, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
             this.gravity = Gravity.BOTTOM
         })
     }
