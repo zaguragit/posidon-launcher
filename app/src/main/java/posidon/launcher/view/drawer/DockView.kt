@@ -260,7 +260,7 @@ class DockView : LinearLayout {
         container.layoutParams.height = containerHeight
         setPadding(0, 0, 0, addition)
         drawer.peekHeight = (dockHeight + Tools.navbarHeight + dp(Settings["dockbottompadding", 10])).toInt()
-        drawer.drawerContent.layoutParams.height = Device.screenHeight(context)
+        drawer.drawerContent.layoutParams.height = Device.screenHeight(context) + Tools.navbarHeight
         if (Settings["feed:show_behind_dock", false]) {
             desktopContent.setPadding(0, dp(12).toInt(), 0, (dockHeight + Tools.navbarHeight + dp(Settings["dockbottompadding", 10])).toInt())
         } else {
@@ -272,7 +272,7 @@ class DockView : LinearLayout {
         run {
             val bg = drawer.background
             if (Settings["dock:background_type", 1] == 1 && bg is LayerDrawable) {
-                bg.setLayerInset(0, 0, 0, 0, Device.screenHeight(context) - drawer.peekHeight)
+                bg.setLayerInset(0, 0, 0, 0, (Device.screenHeight(context) + Tools.navbarHeight) - drawer.peekHeight)
                 bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
             }
         }
