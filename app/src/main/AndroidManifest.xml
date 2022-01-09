@@ -244,32 +244,6 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
 
-
-        <activity
-            android:name=".wall.Gallery"
-            android:icon="@drawable/walls"
-            android:label="@string/walls"
-            android:taskAffinity="posidon.launcher.wall.Gallery"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/wallgallery"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".wall.WallActivity"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/wallprev" />
-        <activity
-            android:name=".external.ApplyIcons"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="posidon.launcher.action.APPLY_ICONPACK" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".search.SearchActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

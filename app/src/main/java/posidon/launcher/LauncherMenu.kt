@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.app.Dialog
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.Gravity
 import android.view.View
@@ -18,12 +16,9 @@ import posidon.android.conveniencelib.dp
 import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
-import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.DrawerView
-import posidon.launcher.wall.Gallery
 
 object LauncherMenu {
 
@@ -51,20 +46,18 @@ object LauncherMenu {
                     home.open(Customizations::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
                     dialog?.dismiss()
                 }
-                findViewById<View>(R.id.wallbtn).setOnClickListener {
-                    home.open(Gallery::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
-                    dialog?.dismiss()
-                }
                 findViewById<View>(R.id.sectionsBtn).setOnClickListener {
                     home.open(FeedOrderActivity::class.java, ActivityOptions.makeCustomAnimation(home, R.anim.slideup, R.anim.home_exit).toBundle())
                     dialog?.dismiss()
                 }
-                setOnDismissListener { exit(homescreen, window, drawer) }
+                setOnDismissListener {
+                    exit(homescreen, window, drawer)
+                }
             }
             page.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth / 2f)
-            }.scaleX(0.65f).scaleY(0.65f).translationY(page.height * -0.05f).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 450L
+            }.scaleX(0.99f).scaleY(0.99f).translationY(-home.dp(96)).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 200L
             drawer.scrollBar.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth)
@@ -72,11 +65,7 @@ object LauncherMenu {
             drawer.isHideable = true
             drawer.state = BottomSheetBehavior.STATE_HIDDEN
             page.setBackgroundResource(R.drawable.page)
-            if (Tools.canBlurDrawer) {
-                window.setBackgroundDrawable(LayerDrawable(arrayOf(BitmapDrawable(home.resources, Wallpaper.blurredWall(Settings["drawer:blur:rad", 15f])), home.getDrawable(R.drawable.black_gradient))))
-            } else {
-                window.setBackgroundDrawableResource(R.drawable.black_gradient)
-            }
+            window.setBackgroundDrawableResource(R.drawable.black_gradient)
             homescreen.setOnClickListener { dialog?.dismiss() }
             dialog?.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -93,7 +82,7 @@ object LauncherMenu {
         drawer.isHideable = false
         drawer.state = BottomSheetBehavior.STATE_COLLAPSED
         val page = homescreen.findViewById<View>(R.id.feed)
-        page.animate().translationX(0f).scaleX(1f).scaleY(1f).translationY(0f).duration = 400L
+        page.animate().translationX(0f).scaleX(1f).scaleY(1f).translationY(0f).duration = 200L
         page.setBackgroundColor(0x0)
         window.setBackgroundDrawableResource(android.R.color.transparent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {

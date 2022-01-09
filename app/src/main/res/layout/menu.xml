@@ -2,26 +2,25 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="128dp"
-    android:padding="28dp"
-    android:layout_marginBottom="18dp"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
     android:orientation="horizontal">
     <ImageView
         android:id="@+id/custombtn"
         android:layout_width="200dp"
-        android:layout_height="match_parent"
+        android:layout_height="64dp"
         android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:padding="16dp"
+        android:background="@drawable/button_bg_round"
         android:src="@drawable/customizations"/>
-    <ImageView
-        android:id="@+id/wallbtn"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:src="@drawable/walls"/>
     <ImageView
         android:id="@+id/sectionsBtn"
         android:layout_width="200dp"
-        android:layout_height="match_parent"
+        android:layout_height="64dp"
         android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:padding="16dp"
+        android:background="@drawable/button_bg_round"
         android:src="@drawable/sections"/>
 </LinearLayout>
