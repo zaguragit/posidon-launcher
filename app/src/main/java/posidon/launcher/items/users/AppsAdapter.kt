@@ -44,7 +44,7 @@ class AppsAdapter(
                 convertView.findViewById(R.id.iconFrame),
                 convertView.findViewById(R.id.icontxt))
 
-            if (Settings["labelsenabled", true]) {
+            if (Settings["drawer:labels:enabled", true]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
                 Customizer.styleLabel("drawer:labels", holder.text, 0x70ffffff, 12f)

@@ -29,6 +29,7 @@
         <entry key="app/src/main/res/drawable/settings_card_separator.xml" value="0.22777777777777777" />
         <entry key="app/src/main/res/drawable/settings_suggestion_card.xml" value="0.22777777777777777" />
         <entry key="app/src/main/res/layout-land/color_picker.xml" value="0.22991967871485944" />
+        <entry key="app/src/main/res/layout-land/tutorial_welcome.xml" value="0.165625" />
         <entry key="app/src/main/res/layout-sw600dp/color_picker.xml" value="0.268359375" />
         <entry key="app/src/main/res/layout/app_edit_menu.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/color_picker.xml" value="0.23854166666666668" />
@@ -51,6 +52,11 @@
         <entry key="app/src/main/res/layout/notification_normal_summary.xml" value="0.22465277777777778" />
         <entry key="app/src/main/res/layout/notification_progress.xml" value="0.15868055555555555" />
         <entry key="app/src/main/res/layout/stack_trace_activity.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/tutorial1.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/tutorial2.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/tutorial3.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/tutorial4.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/tutorial_welcome.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/wall_item.xml" value="0.23854166666666668" />
       </map>
     </option>

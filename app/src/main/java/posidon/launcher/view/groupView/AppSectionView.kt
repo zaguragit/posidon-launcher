@@ -26,7 +26,7 @@ class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupVi
     private val appSize = dp(Settings["drawer:icons:size", 64]).toInt()
 
     var columns = Settings["$themeKey:columns", 4]
-    val labelsEnabled = Settings["labelsenabled", true]
+    val labelsEnabled = Settings["drawer:labels:enabled", true]
 
     init {
         when (Settings["$themeKey:sec_name_pos", 0]) {

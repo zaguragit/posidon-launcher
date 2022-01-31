@@ -25,10 +25,14 @@ import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.sp
 import posidon.launcher.R
-import posidon.launcher.items.*
+import posidon.launcher.items.App
+import posidon.launcher.items.Folder
+import posidon.launcher.items.LauncherItem
+import posidon.launcher.items.PinnedShortcut
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import java.util.*
@@ -176,7 +180,7 @@ class DockView : LinearLayout {
         val marginX = dp(Settings["dock:margin_x", 16]).toInt()
         val appSize = min(dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
-        val showLabels = Settings["dockLabelsEnabled", false]
+        val showLabels = Settings["dock:labels:enabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
         container.run {
@@ -249,7 +253,7 @@ class DockView : LinearLayout {
         val marginX = dp(Settings["dock:margin_x", 16]).toInt()
         val appSize = min(dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
-        val containerHeight = (appSize + if (Settings["dockLabelsEnabled", false]) (sp(Settings["dock:labels:text_size", 12f]) + dp(4)).toInt() else 0) * rowCount
+        val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (sp(Settings["dock:labels:text_size", 12f]) + dp(4)).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
             containerHeight + dp(84).toInt()
         } else {

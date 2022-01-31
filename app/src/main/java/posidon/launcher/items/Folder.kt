@@ -3,7 +3,10 @@ package posidon.launcher.items
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
-import android.graphics.drawable.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.*
 import android.widget.*
@@ -18,7 +21,8 @@ import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
 import kotlin.math.abs
@@ -201,7 +205,7 @@ class Folder : LauncherItem {
         val appSize = min(context.dp(Settings["dock:icons:size", 74]).toInt(), ((Device.screenWidth(context) - context.dp(32)) / columnCount).toInt())
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
-        val labelsEnabled = Settings["folderLabelsEnabled", false]
+        val labelsEnabled = Settings["folder:labels:enabled", false]
         container.removeAllViews()
         for (folderI in 0 until appListSize) {
             val item = items[folderI]

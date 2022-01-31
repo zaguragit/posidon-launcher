@@ -44,7 +44,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             holder.iconFrame.layoutParams.width = appSize
             convertView.tag = holder
 
-            if (Settings["labelsenabled", true]) {
+            if (Settings["drawer:labels:enabled", true]) {
                 holder.text.text = app.label
                 holder.text.visibility = View.VISIBLE
                 Customizer.styleLabel("drawer:labels", holder.text, 0x70ffffff, 12f)
