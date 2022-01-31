@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/accent"
+        app:cardBackgroundColor="#1155ff"
         app:cardCornerRadius="12dp"
         app:cardPreventCornerOverlap="true"
         app:cardElevation="0dp">
@@ -41,8 +41,8 @@
         android:fontFamily="@font/atkinson_hyperlegible"
         android:text="@string/start"
         android:textSize="18sp"
-        android:textColor="@color/accent"
-        android:background="@drawable/button_bg_round"
+        android:textColor="#1155ff"
+        android:background="@drawable/button_bg"
         android:backgroundTint="#ffffffff"/>
     </androidx.cardview.widget.CardView>
 </merge>

@@ -43,7 +43,7 @@ object Tools {
     var appContextReference = WeakReference<Context>(null)
     inline val appContext get() = appContextReference.get()
 
-    inline val canBlurDrawer get() = Settings["drawer:blur", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    inline val canBlurDrawer get() = Settings["drawer:blur:enabled", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     inline val canBlurSearch get() = Settings["search:blur", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 	var navbarHeight = 0

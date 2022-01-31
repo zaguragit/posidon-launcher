@@ -23,13 +23,13 @@ import kotlin.math.min
 @SuppressLint("ViewConstructor")
 class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupView(drawer.context) {
 
-    private val appSize = dp(Settings["drawer:icons:size", 64]).toInt()
+    private val appSize = dp(Settings["$themeKey:icons:size", 64]).toInt()
 
     var columns = Settings["$themeKey:columns", 4]
-    val labelsEnabled = Settings["drawer:labels:enabled", true]
+    val labelsEnabled = Settings["$themeKey:labels:enabled", true]
 
     init {
-        when (Settings["$themeKey:sec_name_pos", 0]) {
+        when (Settings["$themeKey:sections:name:position", 0]) {
             0 -> orientation = VERTICAL
             1 -> {
                 orientation = HORIZONTAL
@@ -77,7 +77,7 @@ class AppSectionView(val drawer: DrawerView, val themeKey: String) : ItemGroupVi
                 if (labelsEnabled) {
                     text = item.label
                     visibility = View.VISIBLE
-                    Customizer.styleLabel("$themeKey:labels", this, -0x11111112, 12f)
+                    Customizer.styleLabel("$themeKey:labels", this, -0x11111112, 12)
                 } else visibility = View.GONE
             }
             findViewById<TextView>(R.id.notificationBadge).run {

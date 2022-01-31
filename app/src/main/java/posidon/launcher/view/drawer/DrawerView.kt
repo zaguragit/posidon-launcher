@@ -68,7 +68,7 @@ class DrawerView : FrameLayout {
         if (Global.shouldSetApps) {
             loadApps()
         } else onAppLoaderEnd()
-        if (Settings["drawer:sections_enabled", false]) {
+        if (Settings["drawer:sections:enabled", false]) {
             drawerGrid.numColumns = 1
             drawerGrid.verticalSpacing = 0
         } else {
@@ -123,7 +123,7 @@ class DrawerView : FrameLayout {
         Dock.clearCache()
         val home = Home.instance
         val s = drawerGrid.scrollY
-        if (Settings["drawer:sections_enabled", false]) {
+        if (Settings["drawer:sections:enabled", false]) {
             drawerGrid.adapter = SectionedDrawerAdapter(this)
             drawerGrid.onItemClickListener = null
             drawerGrid.onItemLongClickListener = null
@@ -159,8 +159,8 @@ class DrawerView : FrameLayout {
         if (Tools.canBlurDrawer) {
             val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
             thread(isDaemon = true) {
-                val blurLayers = Settings["blurLayers", 1]
-                val radius = Settings["drawer:blur:rad", 15f]
+                val blurLayers = Settings["drawer:blur:layers", 1]
+                val radius = Settings["drawer:blur:radius", 15].toFloat()
                 for (i in 0 until blurLayers) {
                     val bmp = Wallpaper.blurredWall(radius / blurLayers * (i + 1))
                     val bd = FastBitmapDrawable(bmp)
@@ -216,7 +216,7 @@ class DrawerView : FrameLayout {
                     }
                 }
                 ItemLongPress.currentPopup?.dismiss()
-                things[0] = if (Tools.canBlurDrawer) Settings["blurLayers", 1] else 0
+                things[0] = if (Tools.canBlurDrawer) Settings["drawer:blur:layers", 1] else 0
                 things[1] = Settings["dock:background_color", 0xbe080808.toInt()]
                 things[2] = Settings["dock:background_type", 1]
                 things[3] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) min(

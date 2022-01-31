@@ -13,14 +13,14 @@ import posidon.launcher.tools.Tools
 
 object Customizer {
 
-    fun styleLabel(namespace: String, view: TextView, defaultColor: Int, defaultTextSize: Float) {
+    fun styleLabel(namespace: String, view: TextView, defaultColor: Int, defaultTextSize: Int) {
         view.setTextColor(Settings["$namespace:color", defaultColor])
         val maxLines = Settings["$namespace:max_lines", 1]
         view.isSingleLine = maxLines == 1
         view.maxLines = maxLines
         view.ellipsize = TextUtils.TruncateAt.END
         val textSize = Settings["$namespace:text_size", defaultTextSize]
-        view.textSize = textSize
+        view.textSize = textSize.toFloat()
         view.layoutParams = view.layoutParams.also {
             it.height = (view.sp(textSize) + view.dp(4)).toInt()
         }

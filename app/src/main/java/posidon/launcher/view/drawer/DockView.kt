@@ -204,7 +204,7 @@ class DockView : LinearLayout {
             } else {
                 if (showLabels) {
                     label.text = item.label
-                    Customizer.styleLabel("dock:labels", label, -0x11111112, 12f)
+                    Customizer.styleLabel("dock:labels", label, -0x11111112, 12)
                 } else {
                     label.isVisible = false
                 }
@@ -253,7 +253,7 @@ class DockView : LinearLayout {
         val marginX = dp(Settings["dock:margin_x", 16]).toInt()
         val appSize = min(dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
-        val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (sp(Settings["dock:labels:text_size", 12f]) + dp(4)).toInt() else 0) * rowCount
+        val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (sp(Settings["dock:labels:text_size", 12]) + dp(4)).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
             containerHeight + dp(84).toInt()
         } else {

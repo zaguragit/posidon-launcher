@@ -39,7 +39,7 @@ class AppList : FragmentActivity() {
             finish()
         }
 
-        findViewById<ImageView>(R.id.blur).setImageBitmap(Wallpaper.blurredWall(Settings["drawer:blur:rad", 15f]))
+        findViewById<ImageView>(R.id.blur).setImageBitmap(Wallpaper.blurredWall(Settings["drawer:blur:radius", 15].toFloat()))
     }
 
     fun openSearch(v: View) { startActivity(Intent(this, SearchActivity::class.java), ActivityOptions.makeCustomAnimation(this, R.anim.fadein, R.anim.fadeout).toBundle()) }

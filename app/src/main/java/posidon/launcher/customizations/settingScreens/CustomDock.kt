@@ -70,26 +70,7 @@ class CustomDock : AppCompatActivity() {
                     max = 32,
                 )
             }
-            card {
-                switchTitle(
-                    labelId = R.string.app_labels,
-                    key = "dock:labels:enabled",
-                    default = false,
-                )
-                color(
-                    labelId = R.string.color,
-                    iconId = R.drawable.ic_color,
-                    key = "dock:labels:color",
-                    default = 0xEEEEEEEE.toInt(),
-                )
-                numberSeekBar(
-                    labelId = R.string.text_size,
-                    key = "dock:labels:text_size",
-                    default = 12,
-                    max = 32,
-                    startsWith1 = true,
-                )
-            }
+            labelSettings("dock:labels", 0xEEEEEEEE.toInt(), 12)
         }
         Global.customized = true
     }

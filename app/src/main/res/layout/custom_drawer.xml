@@ -219,14 +219,14 @@
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
                     app:label="@string/blur"
-                    app:key="drawer:blur"
+                    app:key="drawer:blur:enabled"
                     app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView
                     style="@style/settingsEntry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:label="@string/radius"
-                    app:key="drawer:blur:rad"
+                    app:key="drawer:blur:radius"
                     app:def="15"
                     app:max="25"
                     app:isFloat="true"/>
@@ -235,7 +235,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:label="@string/blur_layers"
-                    app:key="blurLayers"
+                    app:key="drawer:blur:layers"
                     app:def="1"
                     app:max="4"
                     app:startsWith1="true"/>
@@ -252,7 +252,7 @@
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
                     app:label="@string/sections"
-                    app:key="drawer:sections_enabled"
+                    app:key="drawer:sections:enabled"
                     app:def="false"/>
                 <posidon.launcher.view.setting.SpinnerSettingView
                     style="@style/settingsEntry"
@@ -260,7 +260,7 @@
                     android:layout_height="wrap_content"
                     app:drawable="@drawable/ic_label"
                     app:label="@string/name_position"
-                    app:key="drawer:sec_name_pos"
+                    app:key="drawer:sections:name:position"
                     app:def="0"
                     app:array="@array/namePositions"/>
             </LinearLayout>

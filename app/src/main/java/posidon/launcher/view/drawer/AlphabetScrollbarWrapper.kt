@@ -53,7 +53,7 @@ class AlphabetScrollbarWrapper(
             else {
                 val m = if (reserveSpace) scrollbarWidth else 0
                 if (position == 0) leftMargin = m
-                else rightMargin = if (Settings["drawer:sections_enabled", false]) 0 else m
+                else rightMargin = if (Settings["drawer:sections:enabled", false]) 0 else m
             }
         }
         orientation = if (isHorizontal) HORIZONTAL else VERTICAL

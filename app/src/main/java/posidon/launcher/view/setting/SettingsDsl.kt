@@ -1,8 +1,10 @@
 package posidon.launcher.view.setting
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -70,13 +72,11 @@ fun SettingsViewScope.numberSeekBar(
     default: Int,
     max: Int,
     startsWith1: Boolean = false,
-) {
-    viewGroup.addView(NumberBarSettingView(viewGroup.context, key, default, labelId).apply {
-        this.startsWith1 = startsWith1
-        this.value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
-        this.max = max
-    }, settingsEntryLayoutParams())
-}
+) = viewGroup.addView(NumberBarSettingView(viewGroup.context, key, default, labelId).apply {
+    this.startsWith1 = startsWith1
+    this.value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
+    this.max = max
+}, settingsEntryLayoutParams())
 
 fun SettingsViewScope.switch(
     @StringRes
@@ -111,42 +111,53 @@ fun SettingsViewScope.spinner(
     key: String,
     default: Int,
     @ArrayRes
-    array: Int
-) {
-    viewGroup.addView(SpinnerSettingView(viewGroup.context, key, default, labelId, iconId).apply {
-        this.array = resources.getStringArray(array)
-        selectionI = Settings[key, default]
-    }, settingsEntryLayoutParams())
-}
+    array: Int,
+) = viewGroup.addView(SpinnerSettingView(viewGroup.context, key, default, labelId, iconId).apply {
+    this.array = resources.getStringArray(array)
+    selectionI = Settings[key, default]
+}, settingsEntryLayoutParams())
+
+@SuppressLint("UseCompatLoadingForDrawables")
+fun SettingsViewScope.clickable(
+    @StringRes
+    labelId: Int,
+    @DrawableRes
+    iconId: Int,
+    onClick: (View) -> Unit,
+) = viewGroup.addView(ClickableSettingView(
+    viewGroup.context,
+    viewGroup.context.getString(labelId),
+    viewGroup.context.getDrawable(iconId)!!,
+).apply { setOnClickListener(onClick) }, settingsEntryLayoutParams())
 
 fun SettingsViewScope.switchTitle(
     @StringRes
     labelId: Int,
     key: String,
     default: Boolean,
-) {
-    viewGroup.addView(HeaderSwitchSettingView(viewGroup.context).apply {
-        this.label = context.getString(labelId)
-        this.value = Settings[key, default]
-        this.key = key
-    }, settingsTitleLayoutParams())
-}
+) = viewGroup.addView(HeaderSwitchSettingView(viewGroup.context).apply {
+    this.label = context.getString(labelId)
+    this.value = Settings[key, default]
+    this.key = key
+}, settingsTitleLayoutParams())
 
 fun SettingsViewScope.title(
     @StringRes
     labelId: Int,
-) {
-    viewGroup.addView(HeaderSettingView(viewGroup.context).apply {
-        this.label = context.getString(labelId)
-    }, settingsTitleLayoutParams())
-}
+) = viewGroup.addView(HeaderSettingView(viewGroup.context).apply {
+    this.label = context.getString(labelId)
+}, settingsTitleLayoutParams())
 
-private fun SettingsViewScope.settingsEntryLayoutParams() = ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+private fun SettingsViewScope.settingsEntryLayoutParams() = ViewGroup.MarginLayoutParams(
+    MATCH_PARENT, WRAP_CONTENT
+).apply {
     leftMargin = viewGroup.dp(12).toInt()
     rightMargin = viewGroup.dp(12).toInt()
 }
 
-private fun SettingsViewScope.settingsTitleLayoutParams() = ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+private fun SettingsViewScope.settingsTitleLayoutParams() = ViewGroup.MarginLayoutParams(
+    MATCH_PARENT, WRAP_CONTENT
+).apply {
     topMargin = -viewGroup.dp(12).toInt()
     bottomMargin = viewGroup.dp(12).toInt()
 }
