@@ -57,7 +57,7 @@
             <ImageView
                 android:id="@+id/edit"
                 android:background="@drawable/button_bg_round"
-                android:backgroundTint="#1155ff"
+                android:backgroundTint="#0ee463"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:padding="6dp"

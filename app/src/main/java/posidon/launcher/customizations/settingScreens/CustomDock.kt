@@ -1,26 +1,18 @@
 package posidon.launcher.customizations.settingScreens
 
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.setting.*
-
 
 class CustomDock : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Settings.init(applicationContext)
-        applyFontSetting()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
-        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
+        configureWindowForSettings()
         setSettingsContentView(R.string.settings_title_dock) {
             card {
                 numberSeekBar(

@@ -38,19 +38,21 @@ import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
-import posidon.launcher.items.*
+import posidon.launcher.items.App
+import posidon.launcher.items.ContactItem
+import posidon.launcher.items.LauncherItem
+import posidon.launcher.items.SettingsItem
 import posidon.launcher.items.users.AppCallback
 import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.parsing.Parser
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Sort
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.searchOptimize
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.tools.theme.Wallpaper
-import posidon.launcher.tools.theme.applyFontSetting
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -78,7 +80,6 @@ class SearchActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_layout)
-        applyFontSetting()
         smartBox = findViewById(R.id.smartbox)
         answerBox = findViewById(R.id.instantAnswer)
         topPaddingWhenSmartBoxIsShown = (dp(82) + sp(46)).toInt()

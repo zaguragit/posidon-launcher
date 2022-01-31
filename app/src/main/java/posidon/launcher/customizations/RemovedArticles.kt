@@ -22,14 +22,12 @@ import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.recycler.LinearLayoutManager
 
 class RemovedArticles : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting()
         setContentView(RecyclerView(this).apply {
             layoutManager = LinearLayoutManager(this@RemovedArticles)
             adapter = Adapter(this@RemovedArticles)

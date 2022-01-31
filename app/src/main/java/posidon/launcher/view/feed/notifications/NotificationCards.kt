@@ -20,7 +20,6 @@ import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.theme.mainFont
 import posidon.launcher.view.feed.Feed
 import posidon.launcher.view.feed.FeedSection
 import posidon.launcher.view.recycler.LinearLayoutManager
@@ -168,7 +167,6 @@ class NotificationCards : LinearLayout, FeedSection {
         notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
         parentNotification.background = notificationBackground
         parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-        parentNotificationTitle.typeface = context.mainFont
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(Global.accentColor) > .6f) -0x1000000 else -0x1)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(Global.accentColor)

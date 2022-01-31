@@ -1,6 +1,5 @@
 <resources>
     <string name="aboutbtn">About</string>
-    <string name="walls">Walls</string>
 
     <string name="app_labels">App labels</string>
     <string name="icon_pack">Icon pack</string>
@@ -51,7 +50,7 @@
     <string name="edit">Edit</string>
     <string name="remove_icon">Remove icon</string>
     <string name="colorpicker_hint">Hex code (ff000000 for black)</string>
-    <string name="apply">apply</string>
+    <string name="apply">Apply</string>
     <string name="setting_show_component">Show component in app properties</string>
     <string name="color">Color</string>
     <string name="radius">Radius</string>
@@ -64,9 +63,6 @@
     <string name="text_color">Text color</string>
     <string name="images">Images</string>
     <string name="title_color">Title color</string>
-    <string name="sans_serif">Sans Serif</string>
-    <string name="posidon_sans">Posidon Sans</string>
-    <string name="monospace">Monospace</string>
     <string name="math_operation">Math Operation</string>
     <string name="ip_address_external">IP address (external)</string>
     <string name="failed_to_connect">Failed to connect</string>
@@ -92,8 +88,6 @@
     <string name="statusbar">Statusbar</string>
     <string name="notifications">Notifications</string>
     <string name="text_shadow">Text shadow</string>
-    <string name="ubuntu">Ubuntu</string>
-    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Home screen</string>
     <string name="wall_apply_lock_screen">Lock screen</string>
     <string name="wall_apply_both">Both</string>
@@ -106,7 +100,6 @@
     <string name="remove">Remove</string>
     <string name="labelColor">Label color</string>
     <string name="collapse_notifications">Collapse notifications</string>
-    <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">App open anim</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
@@ -143,7 +136,6 @@
     <string name="notification_badges">Notification badges</string>
     <string name="read_method">Reading method</string>
     <string name="console">Console</string>
-    <string name="inter">Inter</string>
     <string name="search_as_home">Search as home</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>

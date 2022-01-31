@@ -31,9 +31,12 @@
         <entry key="app/src/main/res/layout-land/color_picker.xml" value="0.22991967871485944" />
         <entry key="app/src/main/res/layout-land/tutorial_welcome.xml" value="0.165625" />
         <entry key="app/src/main/res/layout-sw600dp/color_picker.xml" value="0.268359375" />
+        <entry key="app/src/main/res/layout/about.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/app_edit_menu.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/color_picker.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/confirmation_dialog.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_about.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/custom_dev.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/custom_dock.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_drawer.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/custom_hidden_apps.xml" value="0.23854166666666668" />
@@ -45,6 +48,7 @@
         <entry key="app/src/main/res/layout/custom_search.xml" value="0.20969945355191258" />
         <entry key="app/src/main/res/layout/custom_theme.xml" value="0.19023224043715847" />
         <entry key="app/src/main/res/layout/customizations.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/font_list.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/menu.xml" value="0.23506944444444444" />
         <entry key="app/src/main/res/layout/notification_big_pic.xml" value="0.22465277777777778" />
@@ -58,6 +62,7 @@
         <entry key="app/src/main/res/layout/tutorial4.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/tutorial_welcome.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/wall_item.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/mipmap-anydpi/ic.xml" value="0.1655" />
       </map>
     </option>
   </component>

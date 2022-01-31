@@ -62,7 +62,7 @@ object ColorTools {
                 add(0xffddb63f.toInt())
                 add(0xff5a5bfa.toInt())
                 add(0xff5ae1be.toInt())
-                add(0xff17c25b.toInt())
+                add(0xff0ee463.toInt())
             }).apply { onItemClickListener = { color -> txt.setText(Integer.toHexString(color)) }}
         }
         var updatingAllowed = true
@@ -190,7 +190,7 @@ object ColorTools {
                 add(0xffddb63f.toInt())
                 add(0xff5a5bfa.toInt())
                 add(0xff5ae1be.toInt())
-                add(0xff17c25b.toInt())
+                add(0xff0ee463.toInt())
             }).apply { onItemClickListener = { color -> txt.setText(Integer.toHexString(color and 0xffffff)) }}
         }
         var updatingAllowed = true
@@ -292,13 +292,13 @@ object ColorTools {
     fun getWallpaperColors(context: Context) = ArrayList<Int>().apply {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             val palette = Palette.from(WallpaperManager.getInstance(context).fastDrawable.toBitmap()).generate()
-            add(palette.getDominantColor(0xff1155ff.toInt()))
-            add(palette.getDarkVibrantColor(0xff1155ff.toInt()))
-            add(palette.getVibrantColor(0xff1155ff.toInt()))
-            add(palette.getLightMutedColor(0xff1155ff.toInt()))
-            add(palette.getMutedColor(0xff1155ff.toInt()))
-            add(palette.getDarkMutedColor(0xff1155ff.toInt()))
-            add(palette.getLightVibrantColor(0xff1155ff.toInt()))
+            add(palette.getDominantColor(0xff0ee463.toInt()))
+            add(palette.getDarkVibrantColor(0xff0ee463.toInt()))
+            add(palette.getVibrantColor(0xff0ee463.toInt()))
+            add(palette.getLightMutedColor(0xff0ee463.toInt()))
+            add(palette.getMutedColor(0xff0ee463.toInt()))
+            add(palette.getDarkMutedColor(0xff0ee463.toInt()))
+            add(palette.getLightVibrantColor(0xff0ee463.toInt()))
         }
     }
 

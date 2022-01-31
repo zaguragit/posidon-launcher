@@ -30,8 +30,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
 import posidon.launcher.tools.vibrate
-import java.util.*
-import kotlin.collections.ArrayList
 
 class App(
     val packageName: String,
@@ -96,7 +94,7 @@ class App(
             }
             Palette.from(icon!!.toBitmap()).generate {
                 if (it != null)
-                    findViewById<View>(R.id.edit)!!.backgroundTintList = ColorStateList.valueOf(it.getDarkVibrantColor(it.getDarkMutedColor(0xff1155ff.toInt())))
+                    findViewById<View>(R.id.edit)!!.backgroundTintList = ColorStateList.valueOf(it.getDarkVibrantColor(it.getDarkMutedColor(0xff0ee463.toInt())))
             }
             setOnClickListener {
                 val intent = Intent(context, CustomAppIcon::class.java)

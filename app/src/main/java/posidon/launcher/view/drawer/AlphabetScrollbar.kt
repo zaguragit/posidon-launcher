@@ -6,12 +6,12 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.SectionIndexer
 import androidx.annotation.IntDef
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
 import posidon.launcher.items.users.ItemLongPress
-import posidon.launcher.tools.theme.mainFont
 import posidon.launcher.view.recycler.HighlightAdapter
 import kotlin.math.roundToInt
 
@@ -44,7 +44,6 @@ open class AlphabetScrollbar(
 
     fun updateTheme() {
         paint.apply {
-            typeface = context.mainFont
             textSize = context.dp(16)
         }
         invalidate()

@@ -1,6 +1,5 @@
 package posidon.launcher.customizations.settingScreens
 
-import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -18,15 +17,12 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Global
-import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.theme.Fonts
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.Spinner
 import posidon.launcher.view.setting.ColorSettingView
 
@@ -37,7 +33,6 @@ class CustomTheme : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting()
         setContentView(R.layout.custom_theme)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
@@ -51,65 +46,7 @@ class CustomTheme : AppCompatActivity() {
             catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
         }
 
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.font_label), ColorStateList.valueOf(Global.getPastelAccent()))
         TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.background_type_label), ColorStateList.valueOf(Global.getPastelAccent()))
-
-        val fontName = findViewById<TextView>(R.id.fontname)
-        fontName.text = Fonts.getFontName(this)
-        findViewById<View>(R.id.fontbox).setOnClickListener {
-            Dialog(this@CustomTheme).apply {
-                setContentView(R.layout.font_list)
-                findViewById<View>(R.id.sansserif).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.SANS_SERIF
-                    fontName.text = getString(R.string.sans_serif)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.posidonsans).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.POSIDON_SANS
-                    fontName.text = getString(R.string.posidon_sans)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.monospace).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.MONOSPACE
-                    fontName.text = getString(R.string.monospace)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.ubuntu).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.UBUNTU
-                    fontName.text = getString(R.string.ubuntu)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.lexendDeca).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.LEXEND_DECA
-                    fontName.text = getString(R.string.lexend_deca)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.inter).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.INTER
-                    fontName.text = getString(R.string.inter)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-                findViewById<View>(R.id.open_dyslexic).setOnClickListener {
-                    dismiss()
-                    Settings["font"] = Fonts.OPEN_DYSLEXIC
-                    fontName.text = getString(R.string.open_dyslexic)
-                    applyFontSetting()
-                    Home.instance.applyFontSetting()
-                }
-            }.show()
-        }
 
         findViewById<ColorSettingView>(R.id.accentColorSetting).onSelected = {
             Global.accentColor = it

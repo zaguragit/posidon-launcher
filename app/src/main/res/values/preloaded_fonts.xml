@@ -2,12 +2,9 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/posidon_sans</item>
-        <item>@font/clear_font</item>
-        <item>@font/ubuntu_medium</item>
-        <item>@font/ubuntu_mono</item>
         <item>@font/roboto_mono</item>
         <item>@font/lexend_deca</item>
+        <item>@font/atkinson_hyperlegible</item>
         <item>@font/inter</item>
-        <item>@font/open_dyslexic3</item>
     </array>
 </resources>

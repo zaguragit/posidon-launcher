@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">posidon-startscherm</string>
     <string name="aboutbtn">Over</string>
-    <string name="walls">Achtergronden</string>
 
     <string name="app_labels">App-labels</string>
     <string name="icon_pack">Pictogramthema</string>
@@ -52,7 +50,7 @@
     <string name="edit">Bewerken</string>
     <string name="remove_icon">Pictogram verwijderen</string>
     <string name="colorpicker_hint">Hexcode (ff000000 voor zwart)</string>
-    <string name="apply">toepassen</string>
+    <string name="apply">Toepassen</string>
     <string name="setting_show_component">Onderdeel tonen in app-eigenschappen</string>
     <string name="color">Kleur</string>
     <string name="radius">Straal</string>
@@ -65,9 +63,6 @@
     <string name="text_color">Tekstkleur</string>
     <string name="images">Afbeeldingen</string>
     <string name="title_color">Titelkleur</string>
-    <string name="sans_serif">Schreefloos</string>
-    <string name="posidon_sans">Posidon Sans</string>
-    <string name="monospace">Monospace</string>
     <string name="math_operation">Wiskunde-opdracht</string>
     <string name="ip_address_external">IP-adres (extern)</string>
     <string name="failed_to_connect">Kan niet verbinden</string>
@@ -93,8 +88,6 @@
     <string name="statusbar">Statusbalk</string>
     <string name="notifications">Meldinges</string>
     <string name="text_shadow">Tekstschaduw</string>
-    <string name="ubuntu">Ubuntu</string>
-    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Startscherm</string>
     <string name="wall_apply_lock_screen">Vergrendelscherm</string>
     <string name="wall_apply_both">Beide</string>
@@ -107,7 +100,6 @@
     <string name="remove">Verwijderen</string>
     <string name="labelColor">Labelkleur</string>
     <string name="collapse_notifications">Meldingen inklappen</string>
-    <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">Animatie bij openen van app</string>
     <string name="no">Nee</string>
     <string name="yes">Ja</string>
@@ -144,7 +136,6 @@
     <string name="notification_badges">Notification badges</string>
     <string name="read_method">Reading method</string>
     <string name="console">Console</string>
-    <string name="inter">Inter</string>
     <string name="search_as_home">Search as home</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>

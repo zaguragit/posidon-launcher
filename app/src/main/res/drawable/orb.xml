@@ -39,16 +39,16 @@
                     android:propertyName="strokeColor"
                     android:startOffset="100"
                     android:duration="2000"
-                    android:valueFrom="#1155ff"
-                    android:valueTo="#881155ff"
+                    android:valueFrom="#0ee463"
+                    android:valueTo="#880ee463"
                     android:valueType="colorType"
                     android:interpolator="@android:anim/overshoot_interpolator"/>
                 <objectAnimator
                     android:propertyName="strokeColor"
                     android:startOffset="2000"
                     android:duration="2000"
-                    android:valueFrom="#881155ff"
-                    android:valueTo="#1155ff"
+                    android:valueFrom="#880ee463"
+                    android:valueTo="#0ee463"
                     android:valueType="colorType"
                     android:interpolator="@android:anim/anticipate_interpolator"/>
             </set>

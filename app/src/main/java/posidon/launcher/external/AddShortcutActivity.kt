@@ -10,14 +10,12 @@ import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.items.PinnedShortcut
 import posidon.launcher.tools.Dock
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.drawer.DockView
 
 class AddShortcutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting()
         val launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         val shortcut = launcherApps.getPinItemRequest(intent).shortcutInfo
         val hasHostPermission = launcherApps.hasShortcutHostPermission()

@@ -30,25 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:id="@+id/fontbox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/font_label"
-                        style="@style/settingsbtn"
-                        android:layout_width="0dp"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="1"
-                        android:text="@string/font"/>
-                    <TextView
-                        android:id="@+id/fontname"
-                        style="@style/settingsTextPreview"
-                        android:layout_width="wrap_content"
-                        android:text="@string/sans_serif"/>
-                </LinearLayout>
                 <posidon.launcher.view.setting.ColorSettingView
                     style="@style/settingsEntry"
                     android:id="@+id/accentColorSetting"
@@ -57,7 +38,7 @@
                     app:drawable="@drawable/ic_color"
                     app:label="@string/accent_color"
                     app:key="accent"
-                    app:def="#1155ff"
+                    app:def="#0ee463"
                     app:hasAlpha="false"/>
             </LinearLayout>
 

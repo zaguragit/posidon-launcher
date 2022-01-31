@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
-        android:fontFamily="@font/posidon_sans"
+        android:fontFamily="@font/atkinson_hyperlegible"
         android:textColor="#ffffff"
         android:textSize="20sp"
         android:format12Hour="d MMMM | cccc"

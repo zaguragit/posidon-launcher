@@ -1,10 +1,12 @@
 package posidon.launcher.view.setting
 
 import android.app.Activity
+import android.os.Build
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ArrayRes
@@ -17,11 +19,18 @@ import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.R
+import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
 @JvmInline
 value class SettingsViewScope(val viewGroup: ViewGroup)
+
+internal inline fun Activity.configureWindowForSettings() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
+    else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+    window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
+}
 
 inline fun Activity.setSettingsContentView(@StringRes titleId: Int, builder: SettingsViewScope.() -> Unit) {
     setContentView(NestedScrollView(this).apply {

@@ -21,9 +21,9 @@
                 android:id="@+id/maincard"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
-                app:cardBackgroundColor="@color/accent"
+                app:cardBackgroundColor="#1155ff"
                 app:cardPreventCornerOverlap="true"
-                app:cardCornerRadius="25dp">
+                app:cardCornerRadius="16dp">
                 <ImageView
                     android:id="@+id/img"
                     android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/button_bg_round"
+                        android:background="@drawable/button_bg"
                         android:backgroundTint="#279fd1"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
@@ -86,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/button_bg_round"
+                        android:background="@drawable/button_bg"
                         android:backgroundTint="#333333"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/button_bg_round"
+                        android:background="@drawable/button_bg"
                         android:backgroundTint="#1da1f2"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
@@ -145,7 +145,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:background="@drawable/button_bg_round"
+                        android:background="@drawable/button_bg"
                         android:backgroundTint="#17C25B"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
@@ -160,7 +160,7 @@
                             android:padding="2dp"
                             android:layout_gravity="end|bottom"
                             android:src="@drawable/ic_search"
-                            android:tint="#ffffff"/>
+                            android:tint="#ffffff" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
                     app:cardPreventCornerOverlap="true"
                     android:elevation="0dp">
                     <ImageView
-                        android:id="@+id/leoProfile"
+                        android:id="@+id/dev_profile"
                         android:layout_width="96dp"
                         android:layout_height="96dp"/>
                 </androidx.cardview.widget.CardView>

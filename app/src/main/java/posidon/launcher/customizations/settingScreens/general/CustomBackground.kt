@@ -21,14 +21,12 @@ import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.setting.NumberBarSettingView
 
 class CustomBackground : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting()
         val extras = intent.extras!!
         val namespace = extras.getString("namespace")!!
         val onlyCurveTop = extras.getBoolean("onlyCurveTop")

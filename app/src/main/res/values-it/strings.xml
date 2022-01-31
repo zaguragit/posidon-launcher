@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">posidon launcher</string>
     <string name="aboutbtn">Informazioni</string>
-    <string name="walls">Walls</string>
 
     <string name="app_labels">Etichette app</string>
     <string name="icon_pack">Icon pack</string>
@@ -52,7 +50,7 @@
     <string name="edit">Modifica</string>
     <string name="remove_icon">Rimuovi icona</string>
     <string name="colorpicker_hint">Codice esadecimale (ff000000 per nero)</string>
-    <string name="apply">apply</string>
+    <string name="apply">Apply</string>
     <string name="setting_show_component">Mostra componente nelle proprietà dell\'app</string>
     <string name="color">Colore</string>
     <string name="radius">Raggio</string>
@@ -65,9 +63,6 @@
     <string name="text_color">Colore testo</string>
     <string name="images">Immagini</string>
     <string name="title_color">Colore titolo</string>
-    <string name="sans_serif">Sans Serif</string>
-    <string name="posidon_sans">Posidon Sans</string>
-    <string name="monospace">Monospace</string>
     <string name="math_operation">Operazione matematica</string>
     <string name="ip_address_external">indirizzo IP (esterno)</string>
     <string name="failed_to_connect">Connessione non riuscita</string>
@@ -94,8 +89,6 @@
 
     <string name="notifications">Notifiche</string>
     <string name="text_shadow">Text shadow</string>
-    <string name="ubuntu">Ubuntu</string>
-    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Schermata iniziale</string>
     <string name="wall_apply_lock_screen">Schermata di blocco</string>
     <string name="wall_apply_both">Entrambi</string>
@@ -108,7 +101,6 @@
     <string name="remove">Rimuovi</string>
     <string name="labelColor">Colore etichetta</string>
     <string name="collapse_notifications">Comprimi notifiche</string>
-    <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">App aperta anim</string>
     <string name="no">No</string>
     <string name="yes">Sì</string>
@@ -145,7 +137,6 @@
     <string name="notification_badges">Badge di notifica</string>
     <string name="read_method">Metodo di lettura</string>
     <string name="console">Console</string>
-    <string name="inter">Inter</string>
     <string name="search_as_home">Cerca come home</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>

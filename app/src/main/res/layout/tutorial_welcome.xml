@@ -38,7 +38,7 @@
         android:paddingRight="30dp"
         android:paddingLeft="30dp"
         android:layout_marginBottom="72dp"
-        android:fontFamily="@font/lexend_deca"
+        android:fontFamily="@font/atkinson_hyperlegible"
         android:text="@string/start"
         android:textSize="18sp"
         android:textColor="@color/accent"

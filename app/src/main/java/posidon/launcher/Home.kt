@@ -1,11 +1,16 @@
 package posidon.launcher
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
-import android.graphics.*
-import android.graphics.drawable.*
+import android.graphics.Picture
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.RectF
 import android.os.*
 import android.util.Log
 import android.view.*
@@ -13,7 +18,8 @@ import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import io.posidon.android.launcherutils.system.GestureNavContract
@@ -27,15 +33,16 @@ import posidon.launcher.items.users.AppCallback
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Dock
+import posidon.launcher.tools.Gestures
+import posidon.launcher.tools.StackTraceActivity
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.updateNavbarHeight
-import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.tutorial.WelcomeActivity
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.math.abs
 import kotlin.system.exitProcess
 
@@ -84,7 +91,7 @@ class Home : AppCompatActivity() {
             Process.killProcess(Process.myPid())
             exitProcess(0)
         }
-        Global.accentColor = Settings["accent", 0x1155ff] or -0x1000000
+        Global.accentColor = Settings["accent", 0x0ee463] or -0x1000000
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
@@ -183,8 +190,6 @@ class Home : AppCompatActivity() {
         feed.update(this, drawer)
         drawer.updateTheme(feed)
         drawer.locked = !Settings["drawer:slide_up", true]
-
-        applyFontSetting()
 
         if (Settings["hidestatus", false]) {
             window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)

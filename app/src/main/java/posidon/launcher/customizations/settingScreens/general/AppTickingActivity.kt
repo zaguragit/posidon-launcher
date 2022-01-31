@@ -14,14 +14,12 @@ import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.App
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.theme.applyFontSetting
 import kotlin.concurrent.thread
 
 abstract class AppTickingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyFontSetting()
         setContentView(R.layout.custom_hidden_apps)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         thread {

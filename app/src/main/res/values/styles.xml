@@ -8,18 +8,10 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:dialogTheme">@style/dialog</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="android:fontFamily">@font/lexend_deca</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
-
-    <style name="font_sans_serif"><item name="android:fontFamily">sans-serif</item></style>
-    <style name="font_posidon_sans"><item name="android:fontFamily">@font/posidon_sans</item></style>
-    <style name="font_monospace"><item name="android:fontFamily">@font/ubuntu_mono</item></style>
-    <style name="font_ubuntu"><item name="android:fontFamily">@font/ubuntu_medium</item></style>
-    <style name="font_lexend_deca"><item name="android:fontFamily">@font/lexend_deca</item></style>
-    <style name="font_inter"><item name="android:fontFamily">@font/inter</item></style>
-    <style name="font_open_dyslexic"><item name="android:fontFamily">@font/open_dyslexic3</item></style>
 
     <style name="longpressmenusheet" parent="Theme.AppCompat.Dialog">
         <item name="android:backgroundDimEnabled">false</item>
@@ -121,20 +113,6 @@
     <style name="settingsEntry">
         <item name="android:layout_marginLeft">12dp</item>
         <item name="android:layout_marginRight">12dp</item>
-    </style>
-
-    <style name="wallgallery" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/wallgallerybg</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="android:windowBackground">@color/wallgallerybg</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:fontFamily">@font/posidon_sans</item>
-    </style>
-
-    <style name="wallprev" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:fontFamily">@font/posidon_sans</item>
     </style>
 
     <style name="tutorial" parent="Theme.AppCompat.NoActionBar">

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="accent">#1155ff</color>
-    <color name="secondaryAccent">#17C25B</color>
+    <color name="accent">#0ee463</color>
     <color name="settingsbg">#000000</color>
     <color name="settingscardbg">#111213</color>
     <color name="cardbg">#111213</color>

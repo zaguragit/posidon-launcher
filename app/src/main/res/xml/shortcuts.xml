@@ -11,15 +11,4 @@
             android:targetPackage="posidon.launcher"
             android:targetClass="posidon.launcher.customizations.settingScreens.Customizations" />
     </shortcut>
-    <shortcut
-        android:shortcutId="walls"
-        android:enabled="true"
-        android:icon="@drawable/walls"
-        android:shortcutShortLabel="@string/walls"
-        android:shortcutLongLabel="@string/walls">
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetPackage="posidon.launcher"
-            android:targetClass="posidon.launcher.wall.Gallery" />
-    </shortcut>
 </shortcuts>

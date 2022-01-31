@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">posidon launcher</string>
     <string name="aboutbtn">О приложении</string>
-    <string name="walls">Обои</string>
 
     <string name="app_labels">Ярлыки приложений</string>
     <string name="icon_pack">Пакет иконок</string>
@@ -65,9 +63,6 @@
     <string name="text_color">Цвет текста</string>
     <string name="images">Изображения</string>
     <string name="title_color">Цвет заголовка</string>
-    <string name="sans_serif">Без засечек</string>
-    <string name="posidon_sans">Posidon Sans</string>
-    <string name="monospace">Monospace</string>
     <string name="math_operation">Математическая операция</string>
     <string name="ip_address_external">IP-адрес (внешний)</string>
     <string name="failed_to_connect">Не удалось подключиться</string>
@@ -93,8 +88,6 @@
     <string name="statusbar">Строка состояния</string>
     <string name="notifications">Уведомления</string>
     <string name="text_shadow">Тень под текстом</string>
-    <string name="ubuntu">Ubuntu</string>
-    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Домашний экран</string>
     <string name="wall_apply_lock_screen">Экран блокировки</string>
     <string name="wall_apply_both">Везде</string>
@@ -107,7 +100,6 @@
     <string name="remove">Удалить</string>
     <string name="labelColor">Цвет ярлыка</string>
     <string name="collapse_notifications">Свернуть уведомления</string>
-    <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">Анимация при открытии приложения</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
@@ -144,7 +136,6 @@
     <string name="notification_badges">Значки уведомлений</string>
     <string name="read_method">Способ чтения</string>
     <string name="console">Консоль</string>
-    <string name="inter">Интер</string>
     <string name="search_as_home">Поиск как домашний</string>
     <string name="gesture_top_overscroll">Верхняя прокрутка</string>
     <string name="gesture_bottom_overscroll">Нижняя прокрутка</string>

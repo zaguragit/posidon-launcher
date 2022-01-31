@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">posidon launcher</string>
     <string name="aboutbtn">Sobre</string>
-    <string name="walls">Fondos</string>
 
     <string name="app_labels">Etiquetas de apps</string>
     <string name="icon_pack">Paquete de iconos</string>
@@ -52,7 +50,7 @@
     <string name="edit">Editar</string>
     <string name="remove_icon">Eliminar icono</string>
     <string name="colorpicker_hint">Hex code (ff000000 for black)</string>
-    <string name="apply">applicar</string>
+    <string name="apply">Aplicar</string>
     <string name="setting_show_component">Enseñar componente en propiedades de apps</string>
     <string name="color">Color</string>
     <string name="radius">Radius</string>
@@ -65,9 +63,6 @@
     <string name="text_color">Color de texto</string>
     <string name="images">Imágenes</string>
     <string name="title_color">Color del titulo</string>
-    <string name="sans_serif">Sans Serif</string>
-    <string name="posidon_sans">Posidon Sans</string>
-    <string name="monospace">Monospace</string>
     <string name="math_operation">Operación matematica</string>
     <string name="ip_address_external">IP (externo)</string>
     <string name="failed_to_connect">No se pudo conectar</string>
@@ -93,8 +88,6 @@
     <string name="statusbar">Statusbar</string>
     <string name="notifications">Notificaciones</string>
     <string name="text_shadow">Sombra de texto</string>
-    <string name="ubuntu">Ubuntu</string>
-    <string name="lexend_deca">Lexend Deca</string>
     <string name="wall_apply_home_screen">Pantalla de inicio</string>
     <string name="wall_apply_lock_screen">Pantalla de bloqueo</string>
     <string name="wall_apply_both">Ambos</string>
@@ -107,7 +100,6 @@
     <string name="remove">Quitar</string>
     <string name="labelColor">Color de etiquetas</string>
     <string name="collapse_notifications">Colapsar notificaciones</string>
-    <string name="open_dyslexic">OpenDyslexic3</string>
     <string name="app_open_animation">Animacion de apertura de apps</string>
     <string name="no">No</string>
     <string name="yes">Si</string>
@@ -144,7 +136,6 @@
     <string name="notification_badges">Notification badges</string>
     <string name="read_method">Reading method</string>
     <string name="console">Consola</string>
-    <string name="inter">Inter</string>
     <string name="search_as_home">Busqueda como pantalla de inicio</string>
     <string name="gesture_top_overscroll">Top overscroll</string>
     <string name="gesture_bottom_overscroll">Bottom overscroll</string>

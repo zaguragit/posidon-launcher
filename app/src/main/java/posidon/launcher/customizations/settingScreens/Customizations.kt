@@ -15,7 +15,6 @@ import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.theme.applyFontSetting
 import kotlin.math.max
 
 class Customizations : AppCompatActivity() {
@@ -23,7 +22,6 @@ class Customizations : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Settings.init(applicationContext)
-        applyFontSetting()
         setContentView(R.layout.customizations)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
