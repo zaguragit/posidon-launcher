@@ -3,7 +3,7 @@
     <string name="aboutbtn">Over</string>
     <string name="walls">Achtergronden</string>
 
-    <string name="appLabels">App-labels</string>
+    <string name="app_labels">App-labels</string>
     <string name="icon_pack">Pictogramthema</string>
     <string name="iconSize">Pictogramgrootte</string>
     <string name="columns">Kolommen</string>

@@ -9,10 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.media.AudioAttributes
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -24,10 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.launcherutils.Launcher
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.getNavigationBarHeight
-import posidon.android.conveniencelib.toBitmap
+import posidon.android.conveniencelib.*
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -35,7 +29,6 @@ import posidon.launcher.storage.Settings
 import posidon.launcher.view.recycler.GridLayoutManager
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 object Tools {
@@ -176,20 +169,7 @@ object Tools {
     }
 }
 
-inline fun Context.getStatusBarHeight(): Int {
-    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-    return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
-}
-
-inline fun Context.vibrate() {
-    val duration = Settings["hapticfeedback", 14]
-    if (duration != 0) {
-        getSystemService(Vibrator::class.java).vibrate(
-            VibrationEffect.createOneShot(duration.toLong(), VibrationEffect.DEFAULT_AMPLITUDE),
-            AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
-        )
-    }
-}
+inline fun Context.vibrate() = vibrate(Settings["hapticfeedback", 14])
 
 inline fun Context.open(action: String, b: Bundle? = null, block: Intent.() -> Unit) = startActivity(Intent(action)
     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK).also(block), b)

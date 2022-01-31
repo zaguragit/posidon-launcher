@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.android.conveniencelib.onEnd
 import posidon.android.loader.rss.RssItem
 import posidon.android.loader.rss.RssLoader
@@ -32,14 +33,11 @@ import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Gestures
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.view.NestedScrollView
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.news.NewsCards
 import posidon.launcher.view.feed.notifications.NotificationCards
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.math.abs
 
 class Feed : FrameLayout {

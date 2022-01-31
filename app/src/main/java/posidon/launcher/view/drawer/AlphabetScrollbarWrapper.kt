@@ -11,10 +11,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Home
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.getStatusBarHeight
 import kotlin.math.roundToInt
 
 class AlphabetScrollbarWrapper(

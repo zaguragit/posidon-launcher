@@ -16,11 +16,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.*
+import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.recycler.LinearLayoutManager
 

@@ -36,6 +36,15 @@ object Global {
         return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
     }
 
+    fun getForeground(): Int {
+        val lab = DoubleArray(3)
+        ColorUtils.colorToLAB(accentColor, lab)
+        lab[0] = 100.0
+        lab[1] = lab[1] * 0.2
+        lab[2] = lab[2] * 0.2
+        return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
+    }
+
     var appSections = ArrayList<ArrayList<App>>()
     var apps = ArrayList<App>()
 

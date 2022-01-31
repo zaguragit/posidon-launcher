@@ -17,32 +17,36 @@ class HeaderSwitchSettingView : HeaderSettingView {
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet?) : super(c, a)
     constructor(c: Context, a: AttributeSet?, sa: Int) : super(c, a, sa)
-    constructor(c: Context, a: AttributeSet?, sa: Int, sr: Int) : super(c, a, sa, sr)
+    constructor(c: Context, attrs: AttributeSet?, sa: Int, sr: Int) : super(c, attrs, sa, sr) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, sa, sr)
+        val default = a.getBoolean(R.styleable.SettingView_def, false)
+        key = a.getString(R.styleable.SettingView_key)!!
+        value = Settings[key, default]
+        a.recycle()
+    }
+
+    var value: Boolean
+        get() = switch.isChecked
+        set(value) {
+            switch.isChecked = value
+        }
+
+    lateinit var key: String
 
     var onCheckedChange: ((Boolean) -> Unit)? = null
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
-
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
-
-        val key = a.getString(R.styleable.SettingView_key)!!
-
-        val default = a.getBoolean(R.styleable.SettingView_def, false)
-
         switch = Switch(context).apply {
             val p = dp(12).toInt()
             setPadding(p, p, p, p)
             layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT, Gravity.CENTER_VERTICAL or Gravity.END).apply {
                 marginEnd = dp(12).toInt()
             }
-            isChecked = Settings[key, default]
             setOnCheckedChangeListener { _, checked ->
                 Settings[key] = checked
                 onCheckedChange?.invoke(checked)
             }
         }
         addView(switch)
-
-        a.recycle()
     }
 }

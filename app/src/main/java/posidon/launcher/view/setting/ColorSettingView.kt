@@ -22,6 +22,18 @@ class ColorSettingView : IntSettingView {
     constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
     constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
 
+    constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int) : super(c, key, default, labelId, iconId)
+
+    fun setPreviewColor(it: Int) {
+        colorPreview.background = ColorTools.colorPreview(it)
+        val hsv = FloatArray(3)
+        Color.colorToHSV(it, hsv)
+        hsv[1] = min(hsv[1],0.5f)
+        hsv[2] = min(max(0.4f, hsv[2]), 0.75f)
+        val pastel = Color.HSVToColor(hsv)
+        TextViewCompat.setCompoundDrawableTintList(labelView, ColorStateList.valueOf(pastel))
+    }
+
     var onSelected: ((color: Int) -> Unit)? = null
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
@@ -29,18 +41,16 @@ class ColorSettingView : IntSettingView {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ColorSettingView, defStyle, defStyleRes)
 
         val hasAlpha = a.getBoolean(R.styleable.ColorSettingView_hasAlpha, true)
-        colorPreview = View(context).apply {
-            val size = dp(36).toInt()
-            layoutParams = LayoutParams(size, size, 0f).apply {
-                val m = dp(12).toInt()
-                setMargins(m, m, m, m)
-            }
-        }
+        colorPreview = View(context)
+        val size = dp(36).toInt()
+        addView(colorPreview, LayoutParams(size, size, 0f).apply {
+            val m = dp(12).toInt()
+            setMargins(m, m, m, m)
+        })
         run {
             val d = Settings[key, default]
             setPreviewColor(if (hasAlpha) d else d or -0x1000000)
         }
-        addView(colorPreview)
         val pickColor = if (hasAlpha) {
             ColorTools::pickColor
         } else {
@@ -57,15 +67,5 @@ class ColorSettingView : IntSettingView {
         }
 
         a.recycle()
-    }
-
-    private fun setPreviewColor(it: Int) {
-        colorPreview.background = ColorTools.colorPreview(it)
-        val hsv = FloatArray(3)
-        Color.colorToHSV(it, hsv)
-        hsv[1] = min(hsv[1],0.5f)
-        hsv[2] = min(max(0.4f, hsv[2]), 0.75f)
-        val pastel = Color.HSVToColor(hsv)
-        TextViewCompat.setCompoundDrawableTintList(labelView, ColorStateList.valueOf(pastel))
     }
 }

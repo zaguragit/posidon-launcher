@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.external.widgets.Widget
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.theme.applyFontSetting
 import posidon.launcher.view.feed.Feed
 import posidon.launcher.view.recycler.LinearLayoutManager

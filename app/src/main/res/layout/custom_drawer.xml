@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-12dp"
                     android:layout_marginBottom="12dp"
-                    app:label="@string/appLabels"
+                    app:label="@string/app_labels"
                     app:key="labelsenabled"
                     app:def="true"/>
                 <posidon.launcher.view.setting.NumberBarSettingView

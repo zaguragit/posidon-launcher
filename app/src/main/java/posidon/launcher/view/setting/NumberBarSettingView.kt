@@ -1,7 +1,6 @@
 package posidon.launcher.view.setting
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
@@ -21,13 +20,37 @@ class NumberBarSettingView : IntSettingView {
     private lateinit var textIcon: TextView
 
     constructor(c: Context) : super(c)
-    constructor(c: Context, a: AttributeSet) : super(c, a)
-    constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
-    constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
+    constructor(c: Context, a: AttributeSet) : this(c, a, 0, 0)
+    constructor(c: Context, a: AttributeSet, sa: Int) : this(c, a, sa, 0)
+    constructor(c: Context, attrs: AttributeSet, sa: Int, sr: Int) : super(c, attrs, sa, sr) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.NumberBarSettingView, sa, sr)
+        isFloat = a.getBoolean(R.styleable.NumberBarSettingView_isFloat, false)
+        startsWith1 = a.getBoolean(R.styleable.NumberBarSettingView_startsWith1, false)
+        max = a.getInt(R.styleable.NumberBarSettingView_max, 0)
+        value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
+        a.recycle()
+    }
+
+    constructor(c: Context, key: String, default: Int, labelId: Int) : super(c, key, default, labelId, 0)
 
     override val doSpecialIcon get() = true
 
-    override fun populateIcon(a: TypedArray) {
+    var value: Int
+        get() = seekBar.progress + if (startsWith1) 1 else 0
+        set(value) {
+            seekBar.progress = value - if (startsWith1) 1 else 0
+        }
+    var max: Int
+        get() = seekBar.max + if (startsWith1) 1 else 0
+        set(value) {
+            textIcon.text = value.toString()
+            seekBar.max = value - if (startsWith1) 1 else 0
+        }
+
+    var startsWith1 = false
+    var isFloat = false
+
+    override fun populateIcon() {
         textIcon = FontFitTextView(context).apply {
             layoutParams = LayoutParams(dp(48).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
             gravity = Gravity.CENTER
@@ -41,42 +64,21 @@ class NumberBarSettingView : IntSettingView {
     }
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
-
-        val a = context.obtainStyledAttributes(attrs, R.styleable.NumberBarSettingView, defStyle, defStyleRes)
-
         labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(60).toInt())
-
-        val startsWith1 = a.getBoolean(R.styleable.NumberBarSettingView_startsWith1, false)
-        val isFloat = a.getBoolean(R.styleable.NumberBarSettingView_isFloat, false)
-
-        seekBar = Seekbar(context).apply {
-            layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                this.gravity = Gravity.CENTER_VERTICAL
-            }
-            run {
-                var m = a.getInt(R.styleable.NumberBarSettingView_max, 0)
-                if (startsWith1) m--
-                max = m
-            }
-            run {
-                var p = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
+        seekBar = Seekbar(context)
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(s: SeekBar) {}
+            override fun onStopTrackingTouch(s: SeekBar) {}
+            override fun onProgressChanged(s: SeekBar, progress: Int, isUser: Boolean) {
+                var p = progress
+                if (startsWith1) p++
+                if (isFloat) Settings[key] = p.toFloat() else Settings[key] = p
                 textIcon.text = p.toString()
-                if (startsWith1) p--
-                progress = p
+                Global.customized = true
             }
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(s: SeekBar) {}
-                override fun onStopTrackingTouch(s: SeekBar) {}
-                override fun onProgressChanged(s: SeekBar, progress: Int, isUser: Boolean) {
-                    var p = progress
-                    if (startsWith1) p++
-                    if (isFloat) Settings[key] = p.toFloat() else Settings[key] = p
-                    textIcon.text = p.toString()
-                    Global.customized = true
-                }
-            })
-        }
-        addView(seekBar)
-        a.recycle()
+        })
+        addView(seekBar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            this.gravity = Gravity.CENTER_VERTICAL
+        })
     }
 }

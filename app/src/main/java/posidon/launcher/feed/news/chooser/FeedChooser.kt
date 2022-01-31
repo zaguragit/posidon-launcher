@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.news.chooser.suggestions.Suggestions
 import posidon.launcher.feed.news.chooser.suggestions.SuggestionsAdapter
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.recycler.GridLayoutManager
 

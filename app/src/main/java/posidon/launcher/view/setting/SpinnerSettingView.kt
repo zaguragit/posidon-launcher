@@ -14,19 +14,31 @@ class SpinnerSettingView : IntSettingView {
     private lateinit var spinner: Spinner
 
     constructor(c: Context) : super(c)
-    constructor(c: Context, a: AttributeSet) : super(c, a)
-    constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
-    constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
+    constructor(c: Context, a: AttributeSet) : this(c, a, 0)
+    constructor(c: Context, a: AttributeSet, sa: Int) : this(c, a, sa, 0)
+    constructor(c: Context, attrs: AttributeSet, sa: Int, sr: Int) : super(c, attrs, sa, sr) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.SpinnerSettingView, sa, sr)
+        array = a.getTextArray(R.styleable.SpinnerSettingView_array)
+        selectionI = Settings[key, default]
+        a.recycle()
+    }
+
+    constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int) : super(c, key, default, labelId, iconId)
+
+    var array: Array<out CharSequence>
+        get() = spinner.data
+        set(value) {
+            spinner.data = value
+        }
+    var selectionI
+        get() = spinner.selectionI
+        set(value) {
+            spinner.selectionI = value
+        }
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SpinnerSettingView, defStyle, defStyleRes)
-        val array = a.getTextArray(R.styleable.SpinnerSettingView_array)
-
         spinner = Spinner(context).apply {
-
-            data = array
-            selectionI = Settings[key, default]
 
             includeFontPadding = false
             textSize = 15f
@@ -41,6 +53,5 @@ class SpinnerSettingView : IntSettingView {
             }
         }
         addView(spinner, LayoutParams(WRAP_CONTENT, dp(60).toInt()))
-        a.recycle()
     }
 }

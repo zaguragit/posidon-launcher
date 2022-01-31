@@ -3,7 +3,7 @@
     <string name="aboutbtn">Sobre</string>
     <string name="walls">Fondos</string>
 
-    <string name="appLabels">Etiquetas de apps</string>
+    <string name="app_labels">Etiquetas de apps</string>
     <string name="icon_pack">Paquete de iconos</string>
     <string name="iconSize">Tamaño de iconos</string>
     <string name="columns">Columnas</string>

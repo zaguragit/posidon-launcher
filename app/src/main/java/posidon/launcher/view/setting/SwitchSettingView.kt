@@ -18,12 +18,24 @@ class SwitchSettingView : SettingView {
     constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
     constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
 
+    var default: Boolean = false
+
+    constructor(c: Context, key: String, default: Boolean, labelId: Int, iconId: Int) : super(c, key, labelId, iconId) {
+        this.default = default
+    }
+
+    var value: Boolean
+        get() = switch.isChecked
+        set(value) {
+            switch.isChecked = value
+        }
+
     var onCheckedChange: ((Boolean) -> Unit)? = null
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)
-        val default = a.getBoolean(R.styleable.SettingView_def, false)
+        default = a.getBoolean(R.styleable.SettingView_def, false)
 
         switch = Switch(context).apply {
             val p = dp(12).toInt()

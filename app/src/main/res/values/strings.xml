@@ -2,7 +2,7 @@
     <string name="aboutbtn">About</string>
     <string name="walls">Walls</string>
 
-    <string name="appLabels">App labels</string>
+    <string name="app_labels">App labels</string>
     <string name="icon_pack">Icon pack</string>
     <string name="iconSize">Icon size</string>
     <string name="columns">Columns</string>

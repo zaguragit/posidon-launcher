@@ -3,7 +3,7 @@
     <string name="aboutbtn">О приложении</string>
     <string name="walls">Обои</string>
 
-    <string name="appLabels">Ярлыки приложений</string>
+    <string name="app_labels">Ярлыки приложений</string>
     <string name="icon_pack">Пакет иконок</string>
     <string name="iconSize">Размер иконок</string>
     <string name="columns">Столбцы</string>

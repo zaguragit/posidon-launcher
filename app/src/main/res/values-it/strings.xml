@@ -3,7 +3,7 @@
     <string name="aboutbtn">Informazioni</string>
     <string name="walls">Walls</string>
 
-    <string name="appLabels">Etichette app</string>
+    <string name="app_labels">Etichette app</string>
     <string name="icon_pack">Icon pack</string>
     <string name="iconSize">Dimensioni icona</string>
     <string name="columns">Colonne</string>

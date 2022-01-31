@@ -25,6 +25,7 @@ import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.drawable.FastBitmapDrawable
+import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -39,7 +40,6 @@ import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
 import posidon.launcher.tools.Tools
-import posidon.launcher.tools.getStatusBarHeight
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.GridView
 import posidon.launcher.view.feed.Feed

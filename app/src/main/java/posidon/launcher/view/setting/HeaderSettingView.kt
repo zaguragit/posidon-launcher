@@ -25,6 +25,12 @@ open class HeaderSettingView : FrameLayout {
         init(a, sa, sr)
     }
 
+    var label: CharSequence
+        get() = labelView.text
+        set(value) {
+            labelView.text = value
+        }
+
     protected fun init(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.SettingView, defStyle, defStyleRes)

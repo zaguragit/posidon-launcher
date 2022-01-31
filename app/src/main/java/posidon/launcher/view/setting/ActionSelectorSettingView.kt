@@ -21,6 +21,8 @@ class ActionSelectorSettingView : IntSettingView {
     constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
     constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
 
+    constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int) : super(c, key, default, labelId, iconId)
+
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         val array = context.resources.getStringArray(R.array.actions)
