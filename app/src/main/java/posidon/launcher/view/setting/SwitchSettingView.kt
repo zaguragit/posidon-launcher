@@ -22,6 +22,7 @@ class SwitchSettingView : SettingView {
 
     constructor(c: Context, key: String, default: Boolean, labelId: Int, iconId: Int) : super(c, key, labelId, iconId) {
         this.default = default
+        this.value = Settings[key, default]
     }
 
     var value: Boolean

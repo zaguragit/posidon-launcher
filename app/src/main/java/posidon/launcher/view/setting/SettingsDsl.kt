@@ -137,8 +137,8 @@ fun SettingsViewScope.switchTitle(
     default: Boolean,
 ) = viewGroup.addView(HeaderSwitchSettingView(viewGroup.context).apply {
     this.label = context.getString(labelId)
-    this.value = Settings[key, default]
     this.key = key
+    this.value = Settings[key, default]
 }, settingsTitleLayoutParams())
 
 fun SettingsViewScope.title(

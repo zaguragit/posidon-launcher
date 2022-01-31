@@ -74,7 +74,7 @@ class Folder : LauncherItem {
         try {
             val previewApps = min(items.size, 4)
             val drr = arrayOfNulls<Drawable>(previewApps + 1)
-            drr[0] = FastColorDrawable(Settings["folderBG", -0x22eeeded])
+            drr[0] = FastColorDrawable(Settings["folder:background_color", -0x22eeeded])
             for (i in 1..previewApps) {
                 drr[i] = BitmapDrawable(context.resources, items[i - 1].icon!!.toBitmap())
             }
@@ -178,7 +178,7 @@ class Folder : LauncherItem {
             })
 
             content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
-                val bgColor = Settings["folder:window:bg_color", -0x22eeeded]
+                val bgColor = Settings["folder:window:background_color", -0x22eeeded]
                 val r = context.dp(Settings["folder:radius", 18])
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
