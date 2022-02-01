@@ -20,7 +20,7 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.custom_hidden_apps)
+        setContentView(R.layout.hidden_apps)
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         thread {
             val apps = getApps()

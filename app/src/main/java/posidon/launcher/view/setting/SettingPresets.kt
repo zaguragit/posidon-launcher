@@ -2,11 +2,11 @@ package posidon.launcher.view.setting
 
 import posidon.launcher.R
 
-fun SettingsViewScope.labelSettings(namespace: String, defaultColor: Int, defaultTextSize: Int) = card {
+fun SettingsViewScope.labelSettings(namespace: String, defaultEnabled: Boolean, defaultColor: Int, defaultTextSize: Int) = card {
     switchTitle(
         labelId = R.string.app_labels,
         key = "$namespace:enabled",
-        default = true,
+        default = defaultEnabled,
     )
     color(
         labelId = R.string.color,

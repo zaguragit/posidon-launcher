@@ -204,13 +204,13 @@
     <string name="window">Window</string>
     <string name="text_size">Text size</string>
     <string name="hide">Hide</string>
-    <string name="drop_folder_to_mk_card">Drop folder here to use it as a card</string>
     <string name="folder">Folder</string>
     <string name="open_in_app">Open in app</string>
     <string name="clear_custom_icons">Clear all custom icons</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="hide_persistent_notifications">Hide persistent notifications</string>
     <string name="unhide">Unhide</string>
+    <string name="add">Add</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notifiche</item>

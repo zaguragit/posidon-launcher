@@ -62,7 +62,7 @@ class CustomDrawer : AppCompatActivity() {
                     it.context.startActivity(Intent(it.context, CustomHiddenApps::class.java))
                 }
             }
-            labelSettings("drawer:labels", 0x70ffffff, 12)
+            labelSettings("drawer:labels", true, 0x70ffffff, 12)
             card {
                 switchTitle(
                     labelId = R.string.scrollbar,

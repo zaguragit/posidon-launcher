@@ -161,8 +161,8 @@
     <string name="hide_crash_logs">Ocultar crash logs</string>
     <string name="ignore_navbar_height">Ignorar altura del navbar</string>
     <string name="show_number">Mostrar numero</string>
-    <string name="slide_up">Slide up</string>
-    <string name="package_search">Package search</string>
+    <string name="slide_up">Deslizar hacia arriba</string>
+    <string name="package_search">Busqueda por paquete</string>
     <string name="shortcuts">Shortcuts</string>
     <string name="contacts">Contactos</string>
     <string name="keep_position">Mantener posicion</string>
@@ -187,7 +187,7 @@
     <string name="align">Alinear</string>
     <string name="show_above_text">Mostrar sobre texto</string>
     <string name="show_outside">Mostrar fuera</string>
-    <string name="floating_color">Floating color</string>
+    <string name="floating_color">Color flotante</string>
     <string name="width">Width</string>
     <string name="reserve_space">Reservar espacio</string>
     <string name="position">Posición</string>
@@ -200,16 +200,16 @@
     <string name="x_on_duckduckgo">\"%1$s\" en DuckDuckGo</string>
     <string name="widgets">Widgets</string>
     <string name="_default">Por defecto</string>
-    <string name="window">Window</string>
-    <string name="text_size">Text size</string>
-    <string name="hide">Hide</string>
-    <string name="drop_folder_to_mk_card">Drop folder here to use it as a card</string>
-    <string name="folder">Folder</string>
+    <string name="window">Ventana</string>
+    <string name="text_size">Tamaño de texto</string>
+    <string name="hide">Ocultar</string>
+    <string name="folder">Carpeta</string>
     <string name="open_in_app">Open in app</string>
-    <string name="clear_custom_icons">Clear all custom icons</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="hide_persistent_notifications">Hide persistent notifications</string>
-    <string name="unhide">Unhide</string>
+    <string name="clear_custom_icons">Borrar todos los iconos personalizados</string>
+    <string name="are_you_sure">Esta segur@</string>
+    <string name="hide_persistent_notifications">Ocultar notificaciones persistentes</string>
+    <string name="unhide">Desocultar</string>
+    <string name="add">Añadir</string>
 
     <plurals name="num_notifications">
         <item quantity="one">%1$d notificacion</item>

@@ -72,11 +72,8 @@ fun SettingsViewScope.numberSeekBar(
     default: Int,
     max: Int,
     startsWith1: Boolean = false,
-) = viewGroup.addView(NumberBarSettingView(viewGroup.context, key, default, labelId).apply {
-    this.startsWith1 = startsWith1
-    this.value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
-    this.max = max
-}, settingsEntryLayoutParams())
+) = NumberBarSettingView(viewGroup.context, key, default, labelId, startsWith1, max)
+    .also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
 fun SettingsViewScope.switch(
     @StringRes
@@ -85,10 +82,12 @@ fun SettingsViewScope.switch(
     iconId: Int,
     key: String,
     default: Boolean,
-) = viewGroup.addView(
-    SwitchSettingView(viewGroup.context, key, default, labelId, iconId),
-    settingsEntryLayoutParams()
-)
+) = SwitchSettingView(viewGroup.context,
+    key,
+    default,
+    labelId,
+    iconId
+).also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
 fun SettingsViewScope.color(
     @StringRes
@@ -98,10 +97,9 @@ fun SettingsViewScope.color(
     key: String,
     @ColorInt
     default: Int,
-) = viewGroup.addView(
-    ColorSettingView(viewGroup.context, key, default, labelId, iconId),
-    settingsEntryLayoutParams()
-)
+) = ColorSettingView(viewGroup.context, key, default, labelId, iconId)
+    .also { viewGroup.addView(it, settingsEntryLayoutParams()) }
+
 
 fun SettingsViewScope.spinner(
     @StringRes
@@ -112,10 +110,10 @@ fun SettingsViewScope.spinner(
     default: Int,
     @ArrayRes
     array: Int,
-) = viewGroup.addView(SpinnerSettingView(viewGroup.context, key, default, labelId, iconId).apply {
+) = SpinnerSettingView(viewGroup.context, key, default, labelId, iconId).apply {
     this.array = resources.getStringArray(array)
     selectionI = Settings[key, default]
-}, settingsEntryLayoutParams())
+}.also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
 @SuppressLint("UseCompatLoadingForDrawables")
 fun SettingsViewScope.clickable(
@@ -124,29 +122,30 @@ fun SettingsViewScope.clickable(
     @DrawableRes
     iconId: Int,
     onClick: (View) -> Unit,
-) = viewGroup.addView(ClickableSettingView(
+) = ClickableSettingView(
     viewGroup.context,
     viewGroup.context.getString(labelId),
     viewGroup.context.getDrawable(iconId)!!,
-).apply { setOnClickListener(onClick) }, settingsEntryLayoutParams())
+).apply { setOnClickListener(onClick) }
+    .also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
 fun SettingsViewScope.switchTitle(
     @StringRes
     labelId: Int,
     key: String,
     default: Boolean,
-) = viewGroup.addView(HeaderSwitchSettingView(viewGroup.context).apply {
+) = HeaderSwitchSettingView(viewGroup.context).apply {
     this.label = context.getString(labelId)
     this.key = key
     this.value = Settings[key, default]
-}, settingsTitleLayoutParams())
+}.also { viewGroup.addView(it, settingsTitleLayoutParams()) }
 
 fun SettingsViewScope.title(
     @StringRes
     labelId: Int,
-) = viewGroup.addView(HeaderSettingView(viewGroup.context).apply {
+) = HeaderSettingView(viewGroup.context).apply {
     this.label = context.getString(labelId)
-}, settingsTitleLayoutParams())
+}.also { viewGroup.addView(it, settingsTitleLayoutParams()) }
 
 private fun SettingsViewScope.settingsEntryLayoutParams() = ViewGroup.MarginLayoutParams(
     MATCH_PARENT, WRAP_CONTENT

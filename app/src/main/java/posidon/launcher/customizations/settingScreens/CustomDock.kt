@@ -70,7 +70,7 @@ class CustomDock : AppCompatActivity() {
                     max = 32,
                 )
             }
-            labelSettings("dock:labels", 0xEEEEEEEE.toInt(), 12)
+            labelSettings("dock:labels", false, 0xEEEEEEEE.toInt(), 12)
         }
         Global.customized = true
     }

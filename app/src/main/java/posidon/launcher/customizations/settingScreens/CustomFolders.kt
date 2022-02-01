@@ -56,7 +56,7 @@ class CustomFolders : AppCompatActivity() {
                     max = 30,
                 )
             }
-            labelSettings("folder:labels", 0xddfffffff.toInt(), 12)
+            labelSettings("folder:labels", false, 0xddfffffff.toInt(), 12)
         }
         Global.customized = true
     }

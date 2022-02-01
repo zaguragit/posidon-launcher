@@ -67,9 +67,9 @@ class PinnedShortcut : LauncherItem {
                     LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY), Process.myUserHandle()).also {
                 println("ANASTASALANEFASA" + it?.size + "aaa" + it?.joinToString { "\n" + it.`package` + " / " + it.id })
             }
-            (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", "posidon"]) {
-                "scale_up" -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
-                "clip_reveal" -> ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
+            (context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps).startShortcut(packageName, id, view.clipBounds, when (Settings["anim:app_open", 0]) {
+                2 -> ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
+                1 -> ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.measuredWidth, view.measuredHeight)
                 else -> ActivityOptions.makeCustomAnimation(context, R.anim.appopen, R.anim.home_exit)
             }.toBundle(), Process.myUserHandle())
         } catch (e: Exception) {

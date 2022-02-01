@@ -11,6 +11,7 @@ import posidon.android.conveniencelib.sp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.vibrate
 import posidon.launcher.view.FontFitTextView
 import posidon.launcher.view.Seekbar
 
@@ -18,6 +19,8 @@ class NumberBarSettingView : IntSettingView {
 
     private lateinit var seekBar: Seekbar
     private lateinit var textIcon: TextView
+
+    private var doVibrate = false
 
     constructor(c: Context) : super(c)
     constructor(c: Context, a: AttributeSet) : this(c, a, 0, 0)
@@ -29,9 +32,15 @@ class NumberBarSettingView : IntSettingView {
         max = a.getInt(R.styleable.NumberBarSettingView_max, 0)
         value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
         a.recycle()
+        doVibrate = true
     }
 
-    constructor(c: Context, key: String, default: Int, labelId: Int) : super(c, key, default, labelId, 0)
+    constructor(c: Context, key: String, default: Int, labelId: Int, startsWith1: Boolean, max: Int) : super(c, key, default, labelId, 0) {
+        this.startsWith1 = startsWith1
+        this.value = if (isFloat) Settings[key, default.toFloat()].toInt() else Settings[key, default]
+        this.max = max
+        doVibrate = true
+    }
 
     override val doSpecialIcon get() = true
 
@@ -70,15 +79,23 @@ class NumberBarSettingView : IntSettingView {
             override fun onStartTrackingTouch(s: SeekBar) {}
             override fun onStopTrackingTouch(s: SeekBar) {}
             override fun onProgressChanged(s: SeekBar, progress: Int, isUser: Boolean) {
+                if (doVibrate) context.vibrate()
                 var p = progress
                 if (startsWith1) p++
                 if (isFloat) Settings[key] = p.toFloat() else Settings[key] = p
                 textIcon.text = p.toString()
                 Global.customized = true
+                onValueChangeListener?.invoke(p)
             }
         })
         addView(seekBar, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
             this.gravity = Gravity.CENTER_VERTICAL
         })
+    }
+
+    private var onValueChangeListener: ((Int) -> Unit)? = null
+
+    fun setOnValueChangeListener(listener: ((Int) -> Unit)?) {
+        onValueChangeListener = listener
     }
 }
