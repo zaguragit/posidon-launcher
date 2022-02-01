@@ -147,10 +147,6 @@
     <string name="media_player">Проигрыватель медиа</string>
     <string name="show_feed_spinner">Отображать волчок ленты</string>
     <string name="stack_results_from_bottom">Сложить результаты снизу</string>
-    <string name="airplane_mode">Режим полёта</string>
-    <string name="power_usage">Энергопотребление</string>
-    <string name="wireless_title"><![CDATA[Wi-Fi и интернет]]></string>
-    <string name="device_info">Информация об устройстве</string>
     <string name="contacts_access">Доступ к контактам</string>
     <string name="permission_contacts_description">Предоставьте доступ к контактам, чтобы ваши контакты могли отображаться в результатах поиска</string>
     <string name="github_contributors">Вклады на Github</string>

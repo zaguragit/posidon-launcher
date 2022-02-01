@@ -41,7 +41,6 @@ import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.items.App
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
-import posidon.launcher.items.SettingsItem
 import posidon.launcher.items.users.AppCallback
 import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.ItemLongPress
@@ -256,27 +255,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         val settingLoaderThread = thread (isDaemon = true) {
-            if (Settings["search:use_shortcuts", true]) kotlin.runCatching {
-                val settingList = SettingsItem.getList()
-                var i = 0
-                for (setting in settingList) {
-                    if (searchOptimize(setting.label!!).contains(searchOptimizedString) ||
-                        setting.label!!.contains(string) ||
-                        searchOptimize(setting.action).contains(searchOptimizedString) ||
-                        setting.action.contains(string)) {
-                        results.add(setting)
-                        i++
-                        continue
-                    }
-                    for (word in setting.label!!.split(' ', '-', '_')) {
-                        if (searchOptimize(word).contains(searchOptimizedString) || word.contains(string)) {
-                            results.add(setting)
-                            i++
-                            break
-                        }
-                    }
-                    if (i > 10) break
-                }
+            if (Settings["search:use_shortcuts", true]) {
+
             }
         }
         if (canReadContacts && Settings["search:use_contacts", true]) {

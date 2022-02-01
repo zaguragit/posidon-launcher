@@ -147,10 +147,6 @@
     <string name="media_player">Media player</string>
     <string name="show_feed_spinner">Mostrar feed spinner</string>
     <string name="stack_results_from_bottom">Stack results from bottom</string>
-    <string name="airplane_mode">Modo avión</string>
-    <string name="power_usage">Uso de energia</string>
-    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
-    <string name="device_info">Sobre el dispositivo</string>
     <string name="contacts_access">Acceso a contactos</string>
     <string name="permission_contacts_description">El acceso a contactos es nesesario para enseñar contactos en la busqueda</string>
     <string name="github_contributors">Contribuyentes de Github</string>

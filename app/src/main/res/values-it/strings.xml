@@ -148,10 +148,6 @@
     <string name="media_player">Media player</string>
     <string name="show_feed_spinner">Mostra feed spinner</string>
     <string name="stack_results_from_bottom">Stack risultati dal basso</string>
-    <string name="airplane_mode">Modalità aereo</string>
-    <string name="power_usage">Consumo energetico</string>
-    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
-    <string name="device_info">Informazioni sul dispositivo</string>
     <string name="contacts_access">Accesso ai contatti</string>
     <string name="permission_contacts_description">Concedi l\'accesso ai contatti in modo che i tuoi contatti possano apparire nei risultati di ricerca</string>
     <string name="github_contributors">Collaboratori Github</string>

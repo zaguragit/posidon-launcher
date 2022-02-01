@@ -147,10 +147,6 @@
     <string name="media_player">Media player</string>
     <string name="show_feed_spinner">Show feed spinner</string>
     <string name="stack_results_from_bottom">Stack results from bottom</string>
-    <string name="airplane_mode">Airplane mode</string>
-    <string name="power_usage">Power usage</string>
-    <string name="wireless_title"><![CDATA[Wi-Fi & internet]]></string>
-    <string name="device_info">Device info</string>
     <string name="contacts_access">Contacts access</string>
     <string name="permission_contacts_description">Grant contact access so your contacts can show-up in search results</string>
     <string name="github_contributors">Github contributors</string>
