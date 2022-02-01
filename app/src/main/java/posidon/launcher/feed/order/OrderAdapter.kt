@@ -97,7 +97,7 @@ class OrderAdapter(
                 val value = section.substringAfter(':')
                 when (prefix) {
                     "widget" -> {
-                        val component = Settings["widget:$value", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+                        val component = Settings.getString("widget:$value") ?: return
                         val packageName = component.substringBefore('/')
                         try {
                             holder.text.text = "Widget" + " | " + (App.getFromPackage(packageName)?.get(0)?.label ?: context.packageManager.getApplicationInfo(packageName, 0).loadLabel(context.packageManager))

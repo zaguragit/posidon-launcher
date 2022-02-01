@@ -100,58 +100,6 @@
             </LinearLayout>
             <LinearLayout
                 style="@style/settingscard"
-                android:id="@+id/dateFormatCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <posidon.launcher.view.setting.HeaderSettingView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-12dp"
-                    android:layout_marginBottom="12dp"
-                    app:label="@string/settings_title_clock_format"/>
-                <LinearLayout
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/date_label"
-                        style="@style/settingsbtn"
-                        android:layout_width="wrap_content"
-                        android:drawableStart="@drawable/ic_label"
-                        android:layout_weight="0"
-                        android:text="@string/settingsdateformat" />
-                    <EditText
-                        android:id="@+id/dateformat"
-                        style="@style/settingsInput"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/defaultdateformat"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:singleLine="true"/>
-                    <TextClock
-                        android:id="@+id/datefprev"
-                        style="@style/settingsTextPreview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:maxWidth="180dp"/>
-                </LinearLayout>
-                <posidon.launcher.view.setting.ColorSettingView
-                    style="@style/settingsEntry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:drawable="@drawable/ic_color"
-                    app:label="@string/color"
-                    app:key="clockcolor"
-                    app:def="#FFFFFFFF"/>
-            </LinearLayout>
-            <LinearLayout
-                style="@style/settingscard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

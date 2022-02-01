@@ -194,7 +194,7 @@ class Widget(
     fun fromSettings(widgetLayout: ResizableLayout): Boolean {
         return try {
             val widgetManager = AppWidgetManager.getInstance(widgetLayout.context.applicationContext)
-            val str = Settings["widget:$widgetId", "posidon.launcher/posidon.launcher.external.widgets.ClockWidget"]
+            val str = Settings.getString("widget:$widgetId") ?: return false
             val s = str.split("/").toTypedArray()
             val packageName = s[0]
             val className: String = s[1]

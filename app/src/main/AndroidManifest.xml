@@ -31,22 +31,6 @@
             android:enabled="true"
             android:name=".external.kustom.Kustom5SecsProvider"/>
 
-        <receiver
-            android:name=".external.widgets.ClockWidget"
-            android:label="Minimal date"
-            android:exported="true">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/clock_widget_info" />
-        </receiver>
-
-        <receiver
-            android:name=".external.widgets.BigWidget"
-            android:label="Big widget"
-            android:exported="true">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/big_widget_info" />
-        </receiver>
-
         <service
             android:name=".feed.notifications.NotificationService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
