@@ -99,7 +99,8 @@ fun SettingsViewScope.color(
     key: String,
     @ColorInt
     default: Int,
-) = ColorSettingView(viewGroup.context, key, default, labelId, iconId)
+    hasAlpha: Boolean = true,
+) = ColorSettingView(viewGroup.context, key, default, labelId, iconId, hasAlpha)
     .also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
 
@@ -141,6 +142,11 @@ fun SettingsViewScope.clickable(
 ).apply { setOnClickListener(onClick) }
     .also { viewGroup.addView(it, settingsEntryLayoutParams()) }
 
+@SuppressLint("UseCompatLoadingForDrawables")
+inline fun SettingsViewScope.custom(
+    viewBuilder: () -> View
+) = viewBuilder().also { viewGroup.addView(it, settingsEntryLayoutParams()) }
+
 fun SettingsViewScope.switchTitle(
     @StringRes
     labelId: Int,
@@ -159,14 +165,14 @@ fun SettingsViewScope.title(
     this.label = context.getString(labelId)
 }.also { viewGroup.addView(it, settingsTitleLayoutParams()) }
 
-private fun SettingsViewScope.settingsEntryLayoutParams() = ViewGroup.MarginLayoutParams(
+fun SettingsViewScope.settingsEntryLayoutParams() = ViewGroup.MarginLayoutParams(
     MATCH_PARENT, WRAP_CONTENT
 ).apply {
     leftMargin = 12.dp.toPixels(viewGroup)
     rightMargin = 12.dp.toPixels(viewGroup)
 }
 
-private fun SettingsViewScope.settingsTitleLayoutParams() = ViewGroup.MarginLayoutParams(
+fun SettingsViewScope.settingsTitleLayoutParams() = ViewGroup.MarginLayoutParams(
     MATCH_PARENT, WRAP_CONTENT
 ).apply {
     topMargin = -12.dp.toPixels(viewGroup)

@@ -120,14 +120,14 @@ class SearchActivity : AppCompatActivity() {
             paint.color = Settings["searchcolor", 0x33000000]
         }
         if (Tools.canBlurSearch) {
-            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:rad", 15f])), FastColorDrawable(Settings["searchUiBg", -0x78000000]))
+            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:radius", 15].toFloat())), FastColorDrawable(Settings["searchUiBg", -0x78000000]))
             window.setBackgroundDrawable(LayerDrawable(arr))
         } else {
             window.setBackgroundDrawable(FastColorDrawable(Settings["searchUiBg", -0x78000000]))
         }
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
-        searchTxt.hint = Settings["searchhinttxt", "Search.."]
+        searchTxt.hint = Settings["searchhinttxt", getString(R.string.searchbarhint)]
         findViewById<ImageView>(R.id.searchIcon).apply {
             imageTintList = ColorStateList.valueOf(Settings["searchhintcolor", -0x1])
         }

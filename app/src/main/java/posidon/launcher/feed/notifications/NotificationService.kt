@@ -78,8 +78,8 @@ class NotificationService : NotificationListenerService() {
                     app.notificationCount = 0
                 }
                 if (notifications != null) {
-                    val aggregator = when (Settings["notifications:groupingType", "os"]) {
-                        "byApp" -> ({ notification: StatusBarNotification ->
+                    val aggregator = when (Settings["notifications:groupingType", 0]) {
+                        1 -> ({ notification: StatusBarNotification ->
                             val group = ArrayList<NotificationItem>()
                             val packageName = notification.packageName
                             var last: Bundle? = null
@@ -110,7 +110,7 @@ class NotificationService : NotificationListenerService() {
                             }
                             groups.add(group)
                         })
-                        "none" -> ({ notification: StatusBarNotification ->
+                        2 -> ({ notification: StatusBarNotification ->
                             showNotificationBadgeOnPackage(notification.packageName)
                             val group = ArrayList<NotificationItem>()
                             group.add(NotificationCreator.create(applicationContext, notification))

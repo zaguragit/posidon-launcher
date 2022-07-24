@@ -198,7 +198,7 @@ class Home : AppCompatActivity() {
         }
 
         run {
-            val searchHint = Settings["searchhinttxt", "Search.."]
+            val searchHint = Settings["searchhinttxt", getString(R.string.searchbarhint)]
             drawer.searchTxt.text = searchHint
             dock.searchTxt.text = searchHint
         }

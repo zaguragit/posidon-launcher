@@ -4,11 +4,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +20,9 @@ import posidon.launcher.R
 import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Icons
 import posidon.launcher.view.Spinner
-import posidon.launcher.view.setting.ColorSettingView
+import posidon.launcher.view.setting.*
 
 
 class CustomTheme : AppCompatActivity() {
@@ -34,49 +31,107 @@ class CustomTheme : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.custom_theme)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
-        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
-        val pm = packageManager
+        Settings.init(applicationContext)
+        configureWindowForSettings()
 
-        findViewById<TextView>(R.id.icShapeTxt).setTextColor(Global.accentColor)
-        findViewById<TextView>(R.id.iconpack_selector).run {
-            try { text = pm.getApplicationLabel(pm.getApplicationInfo(Settings["iconpack", "system"], 0)) }
-            catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
-        }
-
-        TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.background_type_label), ColorStateList.valueOf(Global.getPastelAccent()))
-
-        findViewById<ColorSettingView>(R.id.accentColorSetting).onSelected = {
-            Global.accentColor = it
-            Global.customized = true
-        }
-
-        findViewById<Spinner>(R.id.iconBackgrounds).apply {
-            data = resources.getStringArray(R.array.iconBackgrounds)
-            selectionI = when (Settings["icon:background_type", "custom"]) {
-                "dominant" -> 0
-                "lv" -> 1
-                "dv" -> 2
-                "lm" -> 3
-                "dm" -> 4
-                else -> 5
-            }
-            setSelectionChangedListener {
-                Settings["icon:background_type"] = when (findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
-                    0 -> "dominant"
-                    1 -> "lv"
-                    2 -> "dv"
-                    3 -> "lm"
-                    4 -> "dm"
-                    else -> "custom"
+        setSettingsContentView(R.string.settings_title_theme) {
+            card {
+                color(
+                    R.string.accent_color,
+                    R.drawable.ic_color,
+                    "accent",
+                    0xff0ee463.toInt(),
+                    hasAlpha = false,
+                ).onSelected = {
+                    Global.accentColor = it
                 }
-                Global.shouldSetApps = true
+            }
+
+            card {
+                title(R.string.settings_title_icons)
+
+                custom {
+                    layoutInflater.inflate(R.layout.custom_icon_pack_selector, viewGroup, false).apply {
+                        val pm = packageManager
+                        findViewById<TextView>(R.id.iconpack_selector).run {
+                            try {
+                                text = pm.getApplicationLabel(pm.getApplicationInfo(
+                                    Settings["iconpack", "system"],
+                                    0
+                                ))
+                            } catch (e: PackageManager.NameNotFoundException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }
+
+                switch(
+                    R.string.animated,
+                    R.drawable.ic_play,
+                    "animatedicons",
+                    default = true,
+                )
+                switch(
+                    R.string.generate_adaptive_icons,
+                    R.drawable.ic_shapes,
+                    "reshapeicons",
+                    default = false,
+                )
+
+                custom {
+                    layoutInflater.inflate(R.layout.custom_background_tint_selector, viewGroup, false).apply {
+                        TextViewCompat.setCompoundDrawableTintList(
+                            findViewById(R.id.background_type_label),
+                            ColorStateList.valueOf(Global.getPastelAccent())
+                        )
+                        findViewById<Spinner>(R.id.iconBackgrounds).run {
+                            data = resources.getStringArray(R.array.iconBackgrounds)
+                            selectionI = when (Settings["icon:background_type", "custom"]) {
+                                "dominant" -> 0
+                                "lv" -> 1
+                                "dv" -> 2
+                                "lm" -> 3
+                                "dm" -> 4
+                                else -> 5
+                            }
+                            setSelectionChangedListener {
+                                Settings["icon:background_type"] =
+                                    when (findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
+                                        0 -> "dominant"
+                                        1 -> "lv"
+                                        2 -> "dv"
+                                        3 -> "lm"
+                                        4 -> "dm"
+                                        else -> "custom"
+                                    }
+                                Global.shouldSetApps = true
+                            }
+                        }
+                    }
+                }
+
+                color(
+                    R.string.background,
+                    R.drawable.ic_color,
+                    "icon:background",
+                    0xff252627.toInt(),
+                )
+                switch(
+                    R.string.recolor_white_bgs,
+                    R.drawable.ic_color_dropper,
+                    "icon:tint_white_bg",
+                    default = true,
+                )
+            }
+
+            card {
+                title(R.string.icon_shape)
+                custom {
+                    layoutInflater.inflate(R.layout.custom_icon_shapes, viewGroup, false)
+                }
             }
         }
-
         val size = 48.dp.toPixels(this)
         val bg = BitmapDrawable(resources, FastColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
         bg.setBounds(0, 0, size, size)

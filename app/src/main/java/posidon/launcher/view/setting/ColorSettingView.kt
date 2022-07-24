@@ -32,7 +32,8 @@ class ColorSettingView : IntSettingView {
         }
     }
 
-    constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int) : super(c, key, default, labelId, iconId) {
+    constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int, hasAlpha: Boolean) : super(c, key, default, labelId, iconId) {
+        this.hasAlpha = hasAlpha
         run {
             val d = Settings[key, default]
             setPreviewColor(if (hasAlpha) d else d or -0x1000000)
