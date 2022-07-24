@@ -87,7 +87,6 @@ class About : Activity() {
             for (i in 0 until array.length()) {
                 val c = array.getJSONObject(i)
                 val name = c.getString("login")
-                if (name == "zaguragit") continue
                 contributors.add(Contributor(
                     name,
                     BitmapFactory.decodeStream(URL(c.getString("avatar_url")).openStream()),
