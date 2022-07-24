@@ -22,11 +22,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.luminance
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.android.loader.rss.RssItem
 import posidon.launcher.Global
 import posidon.launcher.Home
@@ -70,7 +72,7 @@ class NewsAdapter(
         val title = if (Settings["news:cards:title", true]) TextView(context).apply {
             this.gravity = Gravity.BOTTOM
             run {
-                val p = context.dp(16).toInt()
+                val p = 16.dp.toPixels(context)
                 setPadding(p, p, p, p)
             }
             textSize = 18f
@@ -79,14 +81,14 @@ class NewsAdapter(
 
         val source = if (Settings["news:cards:source", true]) TextView(context).apply {
             run {
-                val h = context.dp(12).toInt()
-                val v = context.dp(8).toInt()
+                val h = 12.dp.toPixels(context)
+                val v = 8.dp.toPixels(context)
                 setPadding(h, v, h, v)
             }
             textSize = 12f
             run {
                 val bg = ShapeDrawable()
-                val r = dp(Settings["news:cards:source:radius", 30])
+                val r = Settings["news:cards:source:radius", 30].dp.toFloatPixels(context)
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 bg.paint.color = Settings["news:cards:source:bg_color", 0xff111213.toInt()]
                 background = bg
@@ -95,7 +97,7 @@ class NewsAdapter(
             setTextColor(Settings["news:cards:source:fg_color", -0x1])
         } else null
 
-        val r = context.dp(Settings["feed:card_radius", 15])
+        val r = Settings["feed:card_radius", 15].dp.toFloatPixels(context)
 
         val v = CardView(context).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -108,7 +110,7 @@ class NewsAdapter(
 
         v.run {
             val separateImg = Settings["news:cards:sep_txt", false]
-            val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else dp(Settings["news:cards:height", 240]).toInt()
+            val height = if (Settings["news:cards:wrap_content", true] && !separateImg) MATCH_PARENT else Settings["news:cards:height", 240].dp.toPixels(context)
 
             if (!separateImg && image != null) {
                 addView(image, ViewGroup.LayoutParams(MATCH_PARENT, height))
@@ -134,7 +136,7 @@ class NewsAdapter(
 
                 if (source != null) {
                     addView(source, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                        val m = dp(6).toInt()
+                        val m = 6.dp.toPixels(context)
                         setMargins(m, m, m, m)
                         gravity = selectAlignment(Settings["news:cards:source:align", 0])
                     })
@@ -150,15 +152,15 @@ class NewsAdapter(
 
         return ViewHolder((if (Settings["feed:delete_articles", false]) SwipeableLayout(v).apply {
             val bg = Settings["feed:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (bg.luminance > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             cornerRadiusCompensation = r
             radius = r
             swipeableLayout = this
         } else v).apply {
             layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                val marginY = dp(Settings["feed:card_margin_y", 9]).toInt()
-                val marginX = dp(Settings["feed:card_margin_x", 16]).toInt() / 2
+                val marginY = Settings["feed:card_margin_y", 9].dp.toPixels(context)
+                val marginX = Settings["feed:card_margin_x", 16].dp.toPixels(context) / 2
                 setMargins(marginX, marginY, marginX, marginY)
             }
         }, title, source, image, gradient, swipeableLayout)

@@ -13,9 +13,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.TextViewCompat
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.drawable.MaskedDrawable
-import posidon.android.conveniencelib.toBitmap
+import io.posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.drawable.toBitmap
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.customizations.IconPackPicker
@@ -76,7 +77,7 @@ class CustomTheme : AppCompatActivity() {
             }
         }
 
-        val size = dp(48).toInt()
+        val size = 48.dp.toPixels(this)
         val bg = BitmapDrawable(resources, FastColorDrawable(Global.accentColor and 0x00ffffff or 0x55000000).toBitmap(size, size))
         bg.setBounds(0, 0, size, size)
         icShapeViews.onEachIndexed { i, v ->
@@ -100,7 +101,7 @@ class CustomTheme : AppCompatActivity() {
             val a = pm.getApplicationInfo(Settings["iconpack", "system"], 0)
             i.text = pm.getApplicationLabel(a)
             val icon = a.loadIcon(pm)
-            val s = dp(32).toInt()
+            val s = 32.dp.toPixels(this)
             icon.setBounds(0, 0, s, s)
             t.setCompoundDrawablesRelative(icon, null, null, null)
         }

@@ -59,34 +59,6 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:background="@drawable/button_bg"
-                        android:backgroundTint="#279fd1"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="24dp"
-                        android:onClick="openTelegram">
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="end|bottom"
-                            android:src="@drawable/telegram"
-                            android:tint="#ffffff"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:includeFontPadding="false"
-                            android:text="@string/telegram"
-                            android:textColor="#ffffff"
-                            android:textSize="18sp"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/button_bg"
                         android:backgroundTint="#333333"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
@@ -137,35 +109,6 @@
                             android:layout_height="wrap_content"
                             android:includeFontPadding="false"
                             android:text="@string/twitter"
-                            android:textColor="#ffffff"
-                            android:textSize="18sp"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/button_bg"
-                        android:backgroundTint="#17C25B"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="24dp"
-                        android:onClick="openWebsite">
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="48dp"
-                            android:padding="2dp"
-                            android:layout_gravity="end|bottom"
-                            android:src="@drawable/ic_search"
-                            android:tint="#ffffff" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:includeFontPadding="false"
-                            android:text="@string/website"
                             android:textColor="#ffffff"
                             android:textSize="18sp"/>
                     </LinearLayout>

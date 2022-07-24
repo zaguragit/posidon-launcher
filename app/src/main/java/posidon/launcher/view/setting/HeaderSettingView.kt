@@ -6,7 +6,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 
@@ -41,14 +42,14 @@ open class HeaderSettingView : FrameLayout {
             text = a.getString(R.styleable.SettingView_label)
             textSize = 24f
             includeFontPadding = false
-            val p = dp(16).toInt()
-            setPaddingRelative(dp(24).toInt(), p, p, p)
+            val p = 16.dp.toPixels(context)
+            setPaddingRelative(24.dp.toPixels(context), p, p, p)
             setTextColor(context.resources.getColor(R.color.cardtitle))
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
         addView(labelView)
         val separator = View(context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(2).toInt(), Gravity.BOTTOM)
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 2.dp.toPixels(context), Gravity.BOTTOM)
             setBackgroundResource(R.drawable.settings_card_header_separator)
         }
         addView(separator)

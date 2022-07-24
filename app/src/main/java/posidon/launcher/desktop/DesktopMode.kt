@@ -8,10 +8,11 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.launcherutils.appLoading.IconConfig
-import posidon.android.conveniencelib.Graphics
-import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.users.AppCollection
@@ -36,13 +37,13 @@ class DesktopMode : FragmentActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         val menuBtn = findViewById<ImageView>(R.id.menuBtn)
-        Graphics.tryAnimate(this, menuBtn.drawable)
+        AnimUtils.tryAnimate(this, menuBtn.drawable)
         loadApps()
     }
 
     fun loadApps() {
         val iconConfig = IconConfig(
-            size = dp(65).toInt(),
+            size = 65.dp.toPixels(this),
             density = resources.configuration.densityDpi,
             packPackages = arrayOf(Settings["iconpack", "system"]),
         )

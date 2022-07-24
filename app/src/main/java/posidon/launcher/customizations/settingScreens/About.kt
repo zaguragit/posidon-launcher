@@ -17,8 +17,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import org.json.JSONArray
-import posidon.android.conveniencelib.dp
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.BuildConfig
 import posidon.launcher.Global
@@ -41,7 +42,7 @@ class About : Activity() {
         window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
         val description = findViewById<TextView>(R.id.appname)
         description.text = getString(R.string.app_name) + " - " + BuildConfig.VERSION_NAME
-        TextLoader.load("https://posidon.io/launcher/contributors/pictureUrls") {
+        TextLoader.load("https://posidon.io/posidon_launcher/contributors/pictureUrls") {
             var devLink: String? = null
             var sajidShaikLink: String? = null
             for (line in it.split('\n')) {
@@ -86,7 +87,7 @@ class About : Activity() {
             for (i in 0 until array.length()) {
                 val c = array.getJSONObject(i)
                 val name = c.getString("login")
-                if (name == "leoxshn") continue
+                if (name == "zaguragit") continue
                 contributors.add(Contributor(
                     name,
                     BitmapFactory.decodeStream(URL(c.getString("avatar_url")).openStream()),
@@ -106,23 +107,11 @@ class About : Activity() {
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     }
 
-    fun openTelegram(v: View) { try {
-        val uri = Uri.parse("https://t.me/posidonlauncher")
-        val i = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
-    } catch (ignore: Exception) {} }
-
     fun openGitHub(v: View) { try {
         val uri = Uri.parse("https://github.com/lposidon/posidonLauncher")
         val i = Intent(Intent.ACTION_VIEW, uri)
         startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
     } catch (ignore: Exception) {} }
-
-    fun openWebsite(v: View) {
-        val uri = Uri.parse("https://posidon.io/launcher")
-        val i = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(i, ActivityOptions.makeCustomAnimation(this, R.anim.slideup, R.anim.slidedown).toBundle())
-    }
 
     class Contributor(
         val name: String,
@@ -147,7 +136,7 @@ class About : Activity() {
             val v = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
             return ViewHolder(v,
                 v.findViewById<ImageView>(R.id.iconimg).apply {
-                    val p = context.dp(8).toInt()
+                    val p = 8.dp.toPixels(context)
                     setPadding(p, p, p, p)
                 },
                 v.findViewById(R.id.icontxt)

@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
-import posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.launcher.R
 import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.storage.Settings

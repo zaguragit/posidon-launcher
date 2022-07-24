@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import posidon.android.conveniencelib.Graphics
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -48,7 +49,7 @@ internal class IconsAdapter(
         val viewHolder = ViewHolder(convertView, convertView.findViewById(R.id.iconimg))
         convertView.findViewById<View>(R.id.icontxt).visibility = View.GONE
         convertView.findViewById<View>(R.id.iconFrame).layoutParams.run {
-            val appSize = parent.context.dp(Settings["drawer:icons:size", 64]).toInt()
+            val appSize = Settings["drawer:icons:size", 64].dp.toPixels(parent)
             width = appSize
             height = appSize
         }
@@ -62,7 +63,7 @@ internal class IconsAdapter(
             holder.icon.setImageDrawable(null)
             holder.icon.setOnClickListener(null)
         } else {
-            holder.icon.setImageDrawable(Graphics.tryAnimate(Home.instance, Icons.applyInsets(Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes)))))
+            holder.icon.setImageDrawable(AnimUtils.tryAnimate(Home.instance, Icons.applyInsets(Icons.generateAdaptiveIcon(themeRes.getDrawable(intRes)))))
             holder.icon.setOnClickListener {
                 onSelectIcon("ref:$iconPack|${searchResults[i]}")
             }

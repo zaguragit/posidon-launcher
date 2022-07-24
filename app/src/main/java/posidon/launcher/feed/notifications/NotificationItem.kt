@@ -49,7 +49,7 @@ class NotificationItem(
         result = 31 * result + (actions?.contentHashCode() ?: 0)
         result = 31 * result + (contentIntent?.hashCode() ?: 0)
         result = 31 * result + key.hashCode()
-        result = 31 * result + progress.toInt()
+        result = 31 * result + progress
         return result
     }
 }

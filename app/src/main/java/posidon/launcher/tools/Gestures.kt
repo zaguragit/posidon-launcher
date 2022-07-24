@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.ScaleGestureDetector
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import posidon.android.conveniencelib.pullStatusbar
+import io.posidon.android.conveniencelib.pullStatusbar
 import posidon.launcher.Home
 import posidon.launcher.LauncherMenu
 import posidon.launcher.items.App
@@ -19,6 +19,7 @@ object Gestures {
     const val OPEN_OVERVIEW = "overview"
     const val REFRESH_FEED = "refresh"
     const val OPEN_APP = "app"
+    const val NOTHING = "nothing"
 
     fun onLongPress(v: View): Boolean {
         performTrigger(Settings["gesture:long_press", OPEN_OVERVIEW])

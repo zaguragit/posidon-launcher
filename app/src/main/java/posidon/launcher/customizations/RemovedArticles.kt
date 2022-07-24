@@ -13,10 +13,11 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.luminance
 import androidx.recyclerview.widget.RecyclerView
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -59,11 +60,11 @@ class RemovedArticles : AppCompatActivity() {
             val button = TextView(context).apply {
                 text = context.getString(R.string.restore)
                 textSize = 15f
-                setTextColor(if (Colors.getLuminance(Global.accentColor) > 6f) 0xff000000.toInt() else 0xffffffff.toInt())
+                setTextColor(if (Global.accentColor.luminance > 6f) 0xff000000.toInt() else 0xffffffff.toInt())
                 background = context.getDrawable(R.drawable.button_bg_round)
                 backgroundTintList = ColorStateList.valueOf(Global.accentColor)
-                val h = context.dp(20).toInt()
-                val v = context.dp(8).toInt()
+                val h = 20.dp.toPixels(context)
+                val v = 8.dp.toPixels(context)
                 setPadding(h, v, h, v)
                 includeFontPadding = false
             }
@@ -71,14 +72,14 @@ class RemovedArticles : AppCompatActivity() {
                 addView(label)
                 addView(button)
                 gravity = Gravity.CENTER_VERTICAL
-                val h = context.dp(12).toInt()
-                val v = context.dp(6).toInt()
+                val h = 12.dp.toPixels(context)
+                val v = 6.dp.toPixels(context)
                 setPadding(h, v, h, v)
             }
             (label.layoutParams as LinearLayout.LayoutParams).apply {
                 width = MATCH_PARENT
                 weight = 1f
-                marginEnd = context.dp(12).toInt()
+                marginEnd = 12.dp.toPixels(context)
             }
             (button.layoutParams as LinearLayout.LayoutParams).apply {
                 width = WRAP_CONTENT

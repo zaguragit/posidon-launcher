@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.Switch
@@ -39,7 +40,7 @@ class SwitchSettingView : SettingView {
         default = a.getBoolean(R.styleable.SettingView_def, false)
 
         switch = Switch(context).apply {
-            val p = dp(12).toInt()
+            val p = 12.dp.toPixels(context)
             setPadding(p, p, p, p)
             layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT)
             isChecked = Settings[key, default]

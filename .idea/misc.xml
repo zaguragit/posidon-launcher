@@ -42,8 +42,9 @@
         <entry key="app/src/main/res/layout/custom_drawer.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_feed_order.xml" value="0.16290983606557377" />
         <entry key="app/src/main/res/layout/custom_folders.xml" value="0.16290983606557377" />
+        <entry key="app/src/main/res/layout/custom_gestures.xml" value="0.12082481254260395" />
         <entry key="app/src/main/res/layout/custom_hidden_apps.xml" value="0.23854166666666668" />
-        <entry key="app/src/main/res/layout/custom_home.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/custom_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_icon_pack_picker.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_news.xml" value="0.23736338797814208" />
         <entry key="app/src/main/res/layout/custom_notifications.xml" value="0.23854166666666668" />

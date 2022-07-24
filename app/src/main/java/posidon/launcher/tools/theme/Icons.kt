@@ -6,10 +6,14 @@ import android.graphics.drawable.*
 import android.os.Build
 import android.os.PowerManager
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.*
+import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
-import posidon.android.conveniencelib.*
-import posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.sp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.drawable.ContactDrawable
@@ -42,9 +46,9 @@ object Icons {
                                 bg.draw(Canvas(this))
                                 bg.bounds = tmp
                             }.getPixel(0, 0) and 0xffffff).let {
-                                Colors.red(it) > 0xdd &&
-                                Colors.green(it) > 0xdd &&
-                                Colors.blue(it) > 0xdd
+                                it.red > 0xdd &&
+                                it.green > 0xdd &&
+                                it.blue > 0xdd
                             }) {
                         val bgColor = Settings["icon:background", 0xff252627.toInt()]
                         drr[0] = when (Settings["icon:background_type", "custom"]) {
@@ -110,7 +114,7 @@ object Icons {
         val diameter = max(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val p = 8 * diameter / icSizeDP
         drawable.setLayerInset(0, p, p, p, p)
-        val o = diameter - (Tools.appContext!!.sp(20) * diameter / Tools.appContext!!.dp(icSizeDP)).toInt()
+        val o = diameter - (20.sp.toFloatPixels(Tools.appContext!!) * diameter / icSizeDP.dp.toFloatPixels(Tools.appContext!!)).toInt()
         drawable.setLayerInset(1, o, o, 0, 0)
         return if (icon is BitmapDrawable) {
             BitmapDrawable(Tools.appContext!!.resources, drawable.toBitmap())
@@ -145,20 +149,20 @@ object Icons {
         if (icon != null && bgType == 0) {
             Palette.from(icon.toBitmap()).generate {
                 val bg = it?.getDominantColor(customBG) ?: customBG
-                onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
+                onGenerated(ColorTools.iconBadge(bg), if (bg.luminance > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
             }
         } else if (bgType == 1) {
             val bg = Global.accentColor
-            onGenerated(ColorTools.iconBadge(bg), if (Colors.getLuminance(bg) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(bg), if (bg.luminance > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         } else {
-            onGenerated(ColorTools.iconBadge(customBG), if (Colors.getLuminance(customBG) > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
+            onGenerated(ColorTools.iconBadge(customBG), if (customBG.luminance > .6f) 0xff111213.toInt() else 0xffffffff.toInt())
         }
     }
 
     inline fun animateIfShould(context: Context, drawable: Drawable) {
         if (!(context.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode && Settings["animatedicons", true]) {
             try {
-                Graphics.tryAnimate(Home.instance, drawable)
+                AnimUtils.tryAnimate(Home.instance, drawable)
             } catch (e: Exception) {}
         }
     }

@@ -12,10 +12,11 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.ListPopupWindow
+import androidx.core.graphics.luminance
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
 import posidon.launcher.R
 import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.App
@@ -41,7 +42,7 @@ object ItemLongPress {
         }
 
         val color = item.getColor()
-        val txtColor = if (Colors.getLuminance(color) > .6f) -0xeeeded else -0x1
+        val txtColor = if (color.luminance > .6f) -0xeeeded else -0x1
 
         val content = if (item is App && item.getShortcuts(context)!!.isNotEmpty()) {
             val shortcuts = item.getShortcuts(context)
@@ -51,7 +52,7 @@ object ItemLongPress {
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = ShortcutAdapter(context, shortcuts!!, txtColor)
             recyclerView.background = ShapeDrawable().apply {
-                val r = context.dp(18)
+                val r = 18.dp.toFloatPixels(context)
                 shape = RoundRectShape(floatArrayOf(0f, 0f, 0f, 0f, r, r, r, r), null, null)
                 paint.color = 0x33000000
             }
@@ -72,7 +73,7 @@ object ItemLongPress {
 
         content.findViewById<View>(R.id.bg).background = run {
             val bg = ShapeDrawable()
-            val r = context.dp(18)
+            val r = 18.dp.toFloatPixels(context)
             bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             bg.paint.color = color
             bg

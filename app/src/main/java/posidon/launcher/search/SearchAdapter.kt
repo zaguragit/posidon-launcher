@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.LauncherItem
@@ -60,7 +61,7 @@ internal class SearchAdapter(
         } else {
             holder.notificationBadge.visibility = View.GONE
         }
-        val appSize = context.dp(Settings["search:icons:size", 56]).toInt()
+        val appSize = Settings["search:icons:size", 56].dp.toPixels(context)
         iconFrame.layoutParams.height = appSize
         iconFrame.layoutParams.width = appSize
         return convertView

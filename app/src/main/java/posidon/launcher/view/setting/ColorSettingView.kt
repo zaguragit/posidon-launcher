@@ -6,7 +6,8 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.widget.TextViewCompat
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.ColorTools
@@ -53,9 +54,9 @@ class ColorSettingView : IntSettingView {
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
 
         colorPreview = View(context)
-        val size = dp(36).toInt()
+        val size = 36.dp.toPixels(context)
         addView(colorPreview, LayoutParams(size, size, 0f).apply {
-            val m = dp(12).toInt()
+            val m = 12.dp.toPixels(context)
             setMargins(m, m, m, m)
         })
         setOnClickListener {

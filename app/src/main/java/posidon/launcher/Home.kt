@@ -20,11 +20,11 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.Device
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import io.posidon.android.launcherutils.system.GestureNavContract
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.Graphics
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -258,10 +258,10 @@ class Home : AppCompatActivity() {
     private fun animateAllIconsIfShould() {
         if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
             for (app in Global.apps) {
-                Graphics.tryAnimate(this, app.icon!!)
+                AnimUtils.tryAnimate(this, app.icon!!)
             }
             for (item in Dock) {
-                item?.let { Graphics.tryAnimate(this, it.icon!!) }
+                item?.let { AnimUtils.tryAnimate(this, it.icon!!) }
             }
         }
     }

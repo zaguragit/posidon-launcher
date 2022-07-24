@@ -9,8 +9,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.LauncherMenu
 import posidon.launcher.R
@@ -39,8 +41,8 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
                 dragHandle.visibility = GONE
                 crossButton.visibility = GONE
             }
-            if (layoutParams != null && layoutParams.height < context.dp(MIN_HEIGHT))
-                layoutParams.height = context.dp(MIN_HEIGHT).toInt()
+            if (layoutParams != null && layoutParams.height < MIN_HEIGHT.dp.toFloatPixels(context))
+                layoutParams.height = MIN_HEIGHT.dp.toPixels(context)
         }
 
     override fun addView(child: View, index: Int) {
@@ -76,7 +78,7 @@ open class ResizableLayout(context: Context, attrs: AttributeSet? = null) : Fram
                 MotionEvent.ACTION_MOVE -> {
                     val location = intArrayOf(0, 0)
                     getLocationOnScreen(location)
-                    if (event.rawY - location[1] >= context.dp(MIN_HEIGHT) && event.rawY - location[1] <= maxHeight) {
+                    if (event.rawY - location[1] >= MIN_HEIGHT.dp.toFloatPixels(context) && event.rawY - location[1] <= maxHeight) {
                         val height = (event.rawY - location[1]).toInt()
                         layoutParams.height = height
                         layoutParams = layoutParams

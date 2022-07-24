@@ -1,29 +1,52 @@
 package posidon.launcher.customizations.settingScreens
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.drawable.FastColorDrawable
-import posidon.launcher.tools.Tools
+import posidon.launcher.tools.Gestures
+import posidon.launcher.view.setting.*
 
 class CustomGestures : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.custom_gestures)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
-        else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
-        window.setBackgroundDrawable(FastColorDrawable(Global.getBlackAccent()))
-    }
-
-    override fun onPause() {
-        Global.shouldSetApps = true
-        Global.customized = true
-        super.onPause()
+        configureWindowForSettings()
+        setSettingsContentView(R.string.settings_title_gestures) {
+            card {
+                actionSelector(
+                    labelId = R.string.pinch,
+                    iconId = R.drawable.ic_apps,
+                    key = "gesture:pinch",
+                    default = Gestures.OPEN_OVERVIEW,
+                )
+                actionSelector(
+                    labelId = R.string.long_press,
+                    iconId = R.drawable.ic_apps,
+                    key = "gesture:long_press",
+                    default = Gestures.OPEN_OVERVIEW,
+                )
+                actionSelector(
+                    labelId = R.string.back_button,
+                    iconId = R.drawable.ic_arrow_left,
+                    key = "gesture:back",
+                    default = Gestures.NOTHING,
+                )
+            }
+            card {
+                title(R.string.settings_title_feed)
+                actionSelector(
+                    labelId = R.string.gesture_top_overscroll,
+                    iconId = R.drawable.ic_arrow_up,
+                    key = "gesture:feed:top_overscroll",
+                    default = Gestures.PULL_DOWN_NOTIFICATIONS,
+                )
+                actionSelector(
+                    labelId = R.string.gesture_bottom_overscroll,
+                    iconId = R.drawable.ic_arrow_down,
+                    key = "gesture:feed:bottom_overscroll",
+                    default = Gestures.OPEN_APP_DRAWER,
+                )
+            }
+        }
     }
 }

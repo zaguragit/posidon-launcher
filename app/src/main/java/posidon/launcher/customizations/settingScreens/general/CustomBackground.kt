@@ -16,7 +16,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
@@ -37,7 +38,7 @@ class CustomBackground : AppCompatActivity() {
             fitsSystemWindows = true
             setPadding(0, 0, 0, Tools.navbarHeight)
             addView(NestedScrollView(context).apply {
-                setFadingEdgeLength(dp(64).toInt())
+                setFadingEdgeLength(64.dp.toPixels(context))
                 isVerticalFadingEdgeEnabled = true
                 addView(LinearLayout(context).apply {
                     orientation = VERTICAL
@@ -46,12 +47,12 @@ class CustomBackground : AppCompatActivity() {
                         setText(R.string.background)
                         setTextColor(0xffffffff.toInt())
                         textSize = 32f
-                    }, ViewGroup.LayoutParams(MATCH_PARENT, dp(96).toInt()))
+                    }, ViewGroup.LayoutParams(MATCH_PARENT, 96.dp.toPixels(context)))
                     addView(View(context).apply {
                         background = Customizer.genBG(context, namespace, onlyCurveTop, defColor, defRadius)
                         bgPreview = this
-                    }, ViewGroup.MarginLayoutParams(MATCH_PARENT, dp(160).toInt()).apply {
-                        val m = dp(8).toInt()
+                    }, ViewGroup.MarginLayoutParams(MATCH_PARENT, 160.dp.toPixels(context)).apply {
+                        val m = 8.dp.toPixels(context)
                         setMargins(m, m, m, m)
                     })
                     addView(createSettings(bgPreview, namespace, onlyCurveTop, defColor, defRadius), ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT))

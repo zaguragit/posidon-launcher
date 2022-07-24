@@ -8,8 +8,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -33,7 +34,7 @@ class Customizations : AppCompatActivity() {
         if (Settings["dev:enabled", false]) {
             findViewById<View>(R.id.devoptions).visibility = View.VISIBLE
         }
-        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, dp(24).toInt()))
+        findViewById<View>(R.id.catlist).setPadding(0, 0, 0, max(Tools.navbarHeight, 24.dp.toPixels(this)))
         cardThing()
     }
 

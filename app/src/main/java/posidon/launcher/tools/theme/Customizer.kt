@@ -6,8 +6,9 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.RECTANGLE
 import android.text.TextUtils
 import android.widget.TextView
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.sp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 
@@ -22,7 +23,7 @@ object Customizer {
         val textSize = Settings["$namespace:text_size", defaultTextSize]
         view.textSize = textSize.toFloat()
         view.layoutParams = view.layoutParams.also {
-            it.height = (view.sp(textSize) + view.dp(4)).toInt()
+            it.height = (textSize.dp.toFloatPixels(view) + 4.dp.toFloatPixels(view)).toInt()
         }
     }
 
@@ -32,11 +33,11 @@ object Customizer {
         val backgroundColor = Settings["$namespace:color", defColor]
         val strokeColor = Settings["$namespace:stroke:color", 0]
         return GradientDrawable().apply {
-            val r = context.dp(radius)
+            val r = radius.dp.toFloatPixels(context)
             shape = RECTANGLE
             cornerRadii = if (onlyCurveTop) floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f) else floatArrayOf(r, r, r, r, r, r, r, r)
             setColor(backgroundColor)
-            setStroke(context.dp(strokeWidth).toInt(), strokeColor)
+            setStroke(strokeWidth.dp.toPixels(context), strokeColor)
         }
     }
 

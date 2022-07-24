@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -51,7 +52,7 @@ abstract class AppTickingActivity : AppCompatActivity() {
 
         private val originalApps = apps
 
-        private val appSize = activity.dp(56).toInt()
+        private val appSize = 56.dp.toPixels(activity)
 
         override fun getCount() = apps.size
         override fun getItem(position: Int) = null

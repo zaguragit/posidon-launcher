@@ -26,19 +26,6 @@
             android:text="@string/posidon_launcher_crashed"/>
 
         <TextView
-            android:id="@+id/send"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#C0C1C2"
-            android:textSize="16sp"
-            android:text="@string/send_bug_report"
-            android:layout_marginTop="64dp"
-            android:gravity="center_horizontal"
-            android:paddingTop="15dp"
-            android:paddingBottom="16dp"
-            android:background="@drawable/button_bg_round"/>
-
-        <TextView
             android:id="@+id/stackTrace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

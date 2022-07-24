@@ -10,10 +10,12 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.view.*
 import android.widget.*
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.drawable.toBitmap
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -179,7 +181,7 @@ class Folder : LauncherItem {
 
             content.findViewById<View>(R.id.bg).background = ShapeDrawable().apply {
                 val bgColor = Settings["folder:window:background_color", -0x22eeeded]
-                val r = context.dp(Settings["folder:radius", 18])
+                val r = Settings["folder:radius", 18].dp.toFloatPixels(context)
                 shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 paint.color = bgColor
             }
@@ -202,14 +204,13 @@ class Folder : LauncherItem {
         }
         val appListSize = items.size
         val columnCount = Settings["dock:columns", 5]
-        val appSize = min(context.dp(Settings["dock:icons:size", 74]).toInt(), ((Device.screenWidth(context) - context.dp(32)) / columnCount).toInt())
+        val appSize = min(Settings["dock:icons:size", 74].dp.toPixels(context), ((Device.screenWidth(context) - 32.dp.toFloatPixels(context)) / columnCount).toInt())
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
         val labelsEnabled = Settings["folder:labels:enabled", false]
         container.removeAllViews()
         for (folderI in 0 until appListSize) {
             val item = items[folderI]
-            println("$item")
             val appIcon = createItem(item, context, container, appSize, labelsEnabled, notifBadgesEnabled, notifBadgesShowNum, { v -> onItemLongPress(folderI, v, this) }, { v -> onItemClick(folderI, v, this) })
             container.addView(appIcon)
         }
@@ -245,7 +246,7 @@ class Folder : LauncherItem {
                     child.getLocationInWindow(location)
                     location[0] -= v.x.toInt()
                     location[1] -= v.y.toInt()
-                    val threshHold = min(child.height / 2.toFloat(), v.dp(100))
+                    val threshHold = min(child.height / 2.toFloat(), 100.dp.toFloatPixels(v))
                     val x = abs(location[0] - (event.x - child.height / 2f))
                     val y = abs(location[1] - (event.y - child.height / 2f))
                     println("$x, $y")
@@ -272,7 +273,7 @@ class Folder : LauncherItem {
                 while (i < container.childCount) {
                     val child = container.getChildAt(i)
                     child.getLocationInWindow(location)
-                    val threshHold = min(child.height / 2.toFloat(), v.dp(100))
+                    val threshHold = min(child.height / 2.toFloat(), 100.dp.toFloatPixels(v))
                     val x = abs(location[0] - (event.x - child.height / 2f))
                     val y = abs(location[1] - (event.y - child.height / 2f))
                     if (x < threshHold && y < threshHold) {

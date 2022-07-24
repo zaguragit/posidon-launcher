@@ -9,7 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.service.notification.StatusBarNotification
-import posidon.android.conveniencelib.Graphics
+import io.posidon.android.conveniencelib.AnimUtils
 import posidon.launcher.Home
 import posidon.launcher.storage.Settings
 
@@ -89,7 +89,7 @@ object NotificationCreator {
         val color = getColor(notification)
         val isSummary = notification.notification.flags and Notification.FLAG_GROUP_SUMMARY != 0
         val icon = (if (isSummary) null else getLargeIcon(context, notification)) ?: getSmallIcon(context, notification)?.apply {
-            Graphics.tryAnimate(Home.instance, this)
+            AnimUtils.tryAnimate(Home.instance, this)
             val colorList = ColorStateList.valueOf(
                 if (
                     color == Settings["notificationbgcolor", -0x1] ||

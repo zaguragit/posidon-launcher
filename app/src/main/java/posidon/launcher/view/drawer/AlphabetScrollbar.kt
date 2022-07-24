@@ -9,8 +9,9 @@ import android.view.View
 import android.widget.AbsListView
 import android.widget.SectionIndexer
 import androidx.annotation.IntDef
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
+import androidx.core.graphics.ColorUtils
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.view.recycler.HighlightAdapter
 import kotlin.math.roundToInt
@@ -44,7 +45,7 @@ open class AlphabetScrollbar(
 
     fun updateTheme() {
         paint.apply {
-            textSize = context.dp(16)
+            textSize = 16.dp.toFloatPixels(context)
         }
         invalidate()
     }
@@ -73,7 +74,7 @@ open class AlphabetScrollbar(
         if (sectionIndexer != null && sectionIndexer!!.sections.isNotEmpty()) {
             if (floatingFactor != 0f) {
                 paint.setShadowLayer(floatingFactor * 8f, 0f, floatingFactor * 3f, 0x33000000)
-                paint.color = Colors.blend(floatingColor, textColor, floatingFactor)
+                paint.color = ColorUtils.blendARGB(textColor, floatingColor, floatingFactor)
             } else {
                 paint.clearShadowLayer()
                 paint.color = textColor
@@ -166,12 +167,12 @@ open class AlphabetScrollbar(
         if (orientation == VERTICAL) {
             val out = ((y - paddingTop) / (height - paddingTop - paddingBottom) * sectionIndexer!!.sections.lastIndex).roundToInt()
             if (out < 0) return 0
-            if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
+            if (out > (sectionIndexer?.sections?.lastIndex ?: 0)) return sectionIndexer?.sections?.lastIndex ?: 0
             return out
         } else {
             val out = ((x - paddingLeft) / (width - paddingLeft - paddingRight) * sectionIndexer!!.sections.lastIndex).roundToInt()
             if (out < 0) return 0
-            if (out > sectionIndexer?.sections?.lastIndex ?: 0) return sectionIndexer?.sections?.lastIndex ?: 0
+            if (out > (sectionIndexer?.sections?.lastIndex ?: 0)) return sectionIndexer?.sections?.lastIndex ?: 0
             return out
         }
     }

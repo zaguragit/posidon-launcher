@@ -9,13 +9,13 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Home
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
-import kotlin.math.roundToInt
 
 class AlphabetScrollbarWrapper(
     listView: AbsListView,
@@ -38,7 +38,7 @@ class AlphabetScrollbarWrapper(
             return 0
         }
         var ret = 0
-        val scrollbarWidth = dp(Settings["drawer:scrollbar:width", 24]).toInt()
+        val scrollbarWidth = Settings["drawer:scrollbar:width", 24].dp.toPixels(context)
         val reserveSpace = Settings["drawer:scrollbar:reserve_space", true]
         val position = Settings["drawer:scrollbar:position", 1]
         val isHorizontal = position == 2
@@ -62,7 +62,7 @@ class AlphabetScrollbarWrapper(
                 Home.instance.homeView.addView(this, CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, scrollbarWidth + Tools.navbarHeight).apply {
                     gravity = Gravity.BOTTOM
                 })
-                val h = context.dp(28).toInt()
+                val h = 28.dp.toPixels(context)
                 setPadding(h, 0, h, Tools.navbarHeight)
                 ret = if (reserveSpace) scrollbarWidth else 0
             } else {
@@ -74,7 +74,7 @@ class AlphabetScrollbarWrapper(
                     if (position == 0) leftMargin = m
                     else rightMargin = m
                 }
-                setPadding(0, context.getStatusBarHeight() + context.dp(12).toInt(), 0, dock.dockHeight + Tools.navbarHeight)
+                setPadding(0, context.getStatusBarHeight() + 12.dp.toPixels(context), 0, dock.dockHeight + Tools.navbarHeight)
             }
             onStartScroll = {
                 if (drawer.state != BottomSheetBehavior.STATE_EXPANDED)
@@ -86,7 +86,7 @@ class AlphabetScrollbarWrapper(
         } else {
             if (isHorizontal) {
                 drawer.searchBarVBox.addView(this, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, scrollbarWidth))
-                val h = context.dp(28).toInt()
+                val h = 28.dp.toPixels(context)
                 setPadding(h, 0, h, 0)
             } else {
                 drawer.drawerContent.addView(this, FrameLayout.LayoutParams(
@@ -95,7 +95,7 @@ class AlphabetScrollbarWrapper(
                         (if (position == 0) Gravity.LEFT else Gravity.RIGHT) or Gravity.TOP
                 ))
                 feed.layoutParams = (feed.layoutParams as ViewGroup.MarginLayoutParams).apply { leftMargin = 0; rightMargin = 0 }
-                setPadding(0, (drawer.drawerGrid.paddingTop + context.getStatusBarHeight() + context.dp(Settings["dockbottompadding", 10])).roundToInt(), 0, drawer.drawerGrid.paddingBottom)
+                setPadding(0, drawer.drawerGrid.paddingTop + context.getStatusBarHeight() + Settings["dockbottompadding", 10].dp.toPixels(context), 0, drawer.drawerGrid.paddingBottom)
             }
             onStartScroll = {}
             onCancelScroll = {}

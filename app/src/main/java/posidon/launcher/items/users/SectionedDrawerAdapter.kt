@@ -19,7 +19,7 @@ class SectionedDrawerAdapter(val drawer: DrawerView) : BaseAdapter(), SectionInd
     override fun getView(i: Int, cv: View?, parent: ViewGroup): View {
         val section = Global.appSections[i]
         val convertView = cv as AppSectionView? ?: AppSectionView(drawer, "drawer")
-        convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
+        convertView.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable(convertView.resources) else null
         convertView.setItems(section, parent)
         convertView.title = section[0].label[0].uppercaseChar().toString()
         return convertView

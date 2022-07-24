@@ -5,11 +5,11 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.Toast
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.Graphics
-import posidon.android.conveniencelib.toBitmap
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.drawable.toBitmap
 import posidon.launcher.Home
 import posidon.launcher.tools.Tools
+import posidon.launcher.tools.fastBlur
 import kotlin.concurrent.thread
 
 object Wallpaper {
@@ -59,7 +59,7 @@ object Wallpaper {
                 else -> bitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, displayHeight, false)
             }
             if (radius > 0)
-                try { bitmap = Graphics.fastBlur(bitmap, radius.toInt()) }
+                try { bitmap = fastBlur(bitmap, radius.toInt()) }
                 catch (e: Exception) { e.printStackTrace() }
             return bitmap
         } catch (e: OutOfMemoryError) {

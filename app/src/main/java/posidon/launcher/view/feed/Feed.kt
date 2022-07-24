@@ -18,9 +18,11 @@ import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.getStatusBarHeight
-import posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.android.loader.rss.RssItem
 import posidon.android.loader.rss.RssLoader
 import posidon.android.loader.rss.RssSource
@@ -104,8 +106,8 @@ class Feed : FrameLayout {
 
     init {
         addView(scroll, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        addView(spinner, LayoutParams(dp(48).toInt(), dp(48).toInt()).apply {
-            topMargin = dp(72).toInt()
+        addView(spinner, LayoutParams(48.dp.toPixels(context), 48.dp.toPixels(context)).apply {
+            topMargin = 72.dp.toPixels(context)
             gravity = Gravity.CENTER_HORIZONTAL
         })
     }
@@ -169,7 +171,7 @@ class Feed : FrameLayout {
         if (Settings["hidefeed", false]) {
             newsCards?.hide()
             scroll.setOnScrollChangeListener { _, _, y, _, oldY ->
-                val a = dp(6)
+                val a = 6.dp.toFloatPixels(context)
                 if (y > a) {
                     val distance = oldY - y
                     newsCards?.show()
@@ -186,14 +188,14 @@ class Feed : FrameLayout {
         } else {
             newsCards?.show()
             scroll.setOnScrollChangeListener { _, _, y, _, oldY ->
-                val a = dp(6)
+                val a = 6.dp.toFloatPixels(context)
                 val distance = oldY - y
                 handleDockOnScroll(distance, a, y, drawer)
             }
         }
         val fadingEdge = Settings["feed:fading_edge", true]
         if (fadingEdge && !Settings["hidestatus", false]) {
-            scroll.setPadding(0, context.getStatusBarHeight() - dp(12).toInt(), 0, 0)
+            scroll.setPadding(0, context.getStatusBarHeight() - 12.dp.toPixels(context), 0, 0)
         }
         scroll.isVerticalFadingEdgeEnabled = fadingEdge
 
@@ -238,7 +240,7 @@ class Feed : FrameLayout {
                 val success = items.isNotEmpty()
                 onNewsLoaded(success, newsCards, items)
                 post {
-                    spinner.animate().translationY(dp(-72)).alpha(0f).onEnd {
+                    spinner.animate().translationY(-72.dp.toFloatPixels(context)).alpha(0f).onEnd {
                         spinner.visibility = GONE
                     }
                 }

@@ -20,8 +20,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -92,12 +94,12 @@ class Widget(
                         setTextColor(context.resources.getColor(R.color.cardtitle))
                         textSize = 24f
                         gravity = Gravity.CENTER_HORIZONTAL
-                        val p = dp(8).toInt()
+                        val p = 8.dp.toPixels(this)
                         setPadding(p, p, p, p)
                     })
                     addView(RecyclerView(context).apply {
                         isVerticalFadingEdgeEnabled = true
-                        setFadingEdgeLength(dp(28).toInt())
+                        setFadingEdgeLength(28.dp.toPixels(this))
                         layoutManager = GridLayoutManager(context, 2)
 
                         class VH(
@@ -121,24 +123,24 @@ class Widget(
                                 }
                                 val preview = ImageView(context)
                                 val icon = ImageView(context).apply {
-                                    val p = dp(8).toInt()
+                                    val p = 8.dp.toPixels(this)
                                     setPadding(p, p, p, p)
                                 }
                                 val v = CardView(context).apply {
                                     layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT).apply {
-                                        val m = dp(8).toInt()
+                                        val m = 8.dp.toPixels(context)
                                         setMargins(m, m, m, m)
                                     }
                                     setCardBackgroundColor(resources.getColor(R.color.cardbg))
                                     cardElevation = 10f
-                                    radius = dp(16)
+                                    radius = 16.dp.toFloatPixels(this)
                                     preventCornerOverlap = true
                                     clipToPadding = true
                                     addView(LinearLayout(context).apply {
                                         orientation = LinearLayout.VERTICAL
-                                        val h = dp(48).toInt()
+                                        val h = 48.dp.toPixels(this)
                                         addView(preview, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenWidth(context) / 2 - h))
-                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(2).toInt()))
+                                        addView(View(context).apply { setBackgroundResource(R.drawable.card_separator) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2.dp.toPixels(this)))
                                         addView(LinearLayout(context).apply {
                                             orientation = LinearLayout.HORIZONTAL
                                             addView(icon, LinearLayout.LayoutParams(h, h))
@@ -179,7 +181,7 @@ class Widget(
                     })
                 })
                 window!!.findViewById<View>(R.id.design_bottom_sheet).background = ShapeDrawable().apply {
-                    val r = context.dp(18)
+                    val r = 18.dp.toFloatPixels(context)
                     shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
                     paint.color = 0xff0d0e0f.toInt()
                 }

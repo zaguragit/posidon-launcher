@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -17,8 +18,8 @@ class ActionSelectorSettingView : IntSettingView {
     private lateinit var spinner: Spinner
 
     constructor(c: Context) : super(c)
-    constructor(c: Context, a: AttributeSet) : super(c, a)
-    constructor(c: Context, a: AttributeSet, sa: Int) : super(c, a, sa)
+    constructor(c: Context, a: AttributeSet) : this(c, a, 0)
+    constructor(c: Context, a: AttributeSet, sa: Int) : this(c, a, sa, 0)
     constructor(c: Context, a: AttributeSet, sa: Int, sr: Int) : super(c, a, sa, sr)
 
     constructor(c: Context, key: String, default: Int, labelId: Int, iconId: Int) : super(c, key, default, labelId, iconId)
@@ -46,7 +47,7 @@ class ActionSelectorSettingView : IntSettingView {
             setTextColor(context.resources.getColor(R.color.cardspinnertxt))
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
 
-            val h = dp(8).toInt()
+            val h = 8.dp.toPixels(context)
             setPadding(h, 0, h, 0)
 
             setSelectionChangedListener {
@@ -66,6 +67,6 @@ class ActionSelectorSettingView : IntSettingView {
                 }
             }
         }
-        addView(spinner, LayoutParams(WRAP_CONTENT, dp(60).toInt()))
+        addView(spinner, LayoutParams(WRAP_CONTENT, 60.dp.toPixels(context)))
     }
 }

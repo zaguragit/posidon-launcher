@@ -8,7 +8,8 @@ import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.util.StateSet
 import androidx.appcompat.widget.SwitchCompat
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.tools.vibrate
 
@@ -37,8 +38,8 @@ class Switch(
 
     private fun generateTrackDrawable(): Drawable {
         val out = StateListDrawable()
-        out.addState(intArrayOf(android.R.attr.state_checked), generateBG(context, accentColor and 0x00ffffff or 0x55000000))
-        out.addState(StateSet.WILD_CARD, generateBG(context, 0x0effffff))
+        out.addState(intArrayOf(android.R.attr.state_checked), generateBG(accentColor and 0x00ffffff or 0x55000000))
+        out.addState(StateSet.WILD_CARD, generateBG(0x0effffff))
         return out
     }
 
@@ -52,8 +53,8 @@ class Switch(
     companion object {
 
         fun generateCircle(context: Context, color: Int): Drawable {
-            val r = context.dp(18).toInt()
-            val inset = context.dp(4).toInt()
+            val r = 18.dp.toPixels(context)
+            val inset = 4.dp.toPixels(context)
             return LayerDrawable(arrayOf(
                 GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
@@ -66,7 +67,7 @@ class Switch(
             }
         }
 
-        fun generateBG(context: Context, color: Int): Drawable {
+        fun generateBG(color: Int): Drawable {
             return GradientDrawable().apply {
                 cornerRadius = Float.MAX_VALUE
                 setColor(color)

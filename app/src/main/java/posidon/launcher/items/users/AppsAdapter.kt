@@ -8,7 +8,8 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.SectionIndexer
 import android.widget.TextView
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
@@ -23,7 +24,7 @@ class AppsAdapter(
     override fun getItem(position: Int) = null
     override fun getItemId(position: Int): Long = 0
 
-    private val appSize = context.dp(Settings["drawer:icons:size", 64]).toInt()
+    private val appSize = Settings["drawer:icons:size", 64].dp.toPixels(context)
 
     class ViewHolder(
         var icon: ImageView,

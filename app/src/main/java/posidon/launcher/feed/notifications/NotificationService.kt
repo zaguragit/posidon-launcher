@@ -14,15 +14,14 @@ import android.service.notification.StatusBarNotification
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.palette.graphics.Palette
-import posidon.android.conveniencelib.Graphics
-import posidon.android.conveniencelib.toBitmap
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.drawable.toBitmap
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -255,7 +254,7 @@ class NotificationService : NotificationListenerService() {
             } catch (e: Exception) {}
             try {
                 return ResourcesCompat.getDrawable(context.createPackageContext(n.packageName, 0).resources, n.notification.icon, null)?.also {
-                    Graphics.tryAnimate(Home.instance, it)
+                    AnimUtils.tryAnimate(Home.instance, it)
                     val colorList = ColorStateList.valueOf(if (n.notification.color == Settings["notificationbgcolor", -0x1] || n.notification.color == 0) Settings["notificationtitlecolor", -0xeeeded] else n.notification.color)
                     it.setTintList(colorList)
                 }

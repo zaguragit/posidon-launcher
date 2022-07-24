@@ -9,7 +9,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 
@@ -32,19 +33,19 @@ class ClickableSettingView : LinearLayout {
             textSize = 16f
             includeFontPadding = false
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            compoundDrawablePadding = dp(15).toInt()
-            val h = dp(8).toInt()
+            compoundDrawablePadding = 15.dp.toPixels(context)
+            val h = 8.dp.toPixels(context)
             setPadding(h, 0, h, 0)
             setTextColor(context.getColor(R.color.cardtxt))
         }
-        addView(labelView, LayoutParams(0, dp(60).toInt(), 1f))
+        addView(labelView, LayoutParams(0, 60.dp.toPixels(context), 1f))
 
         View(context).apply {
-            val size = dp(24).toInt()
+            val size = 24.dp.toPixels(context)
             background = context.getDrawable(R.drawable.ic_arrow_right)
             backgroundTintList = tint
             addView(this, LayoutParams(size, size, 0f).apply {
-                val m = dp(18).toInt()
+                val m = 18.dp.toPixels(context)
                 setMargins(m, m, m, m)
             })
         }
@@ -62,19 +63,19 @@ class ClickableSettingView : LinearLayout {
             textSize = 16f
             includeFontPadding = false
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            compoundDrawablePadding = dp(15).toInt()
-            val h = dp(8).toInt()
+            compoundDrawablePadding = 15.dp.toPixels(context)
+            val h = 8.dp.toPixels(context)
             setPadding(h, 0, h, 0)
             setTextColor(context.getColor(R.color.cardtxt))
         }
-        addView(labelView, LayoutParams(0, dp(60).toInt(), 1f))
+        addView(labelView, LayoutParams(0, 60.dp.toPixels(context), 1f))
 
         View(context).apply {
-            val size = dp(24).toInt()
+            val size = 24.dp.toPixels(context)
             background = context.getDrawable(R.drawable.ic_arrow_right)
             backgroundTintList = tint
             addView(this, LayoutParams(size, size, 0f).apply {
-                val m = dp(18).toInt()
+                val m = 18.dp.toPixels(context)
                 setMargins(m, m, m, m)
             })
         }

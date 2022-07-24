@@ -10,9 +10,11 @@ import android.widget.ListPopupWindow
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.sp
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.sp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.tools.Tools
 import kotlin.math.min
@@ -36,7 +38,8 @@ class Spinner : AppCompatTextView {
             var height = 0f
             popup = PopupWindow(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(dp(8).toInt(), dp(8).toInt(), dp(8).toInt(), dp(8).toInt())
+                val p = 8.dp.toPixels(context)
+                setPadding(p, p, p, p)
                 for (i in data.indices) {
                     addView(TextView(context).apply {
                         text = data[i]
@@ -47,14 +50,16 @@ class Spinner : AppCompatTextView {
                         }
                         textSize = 18f
                         setTextColor(0xffffffff.toInt())
-                        setPadding(dp(18).toInt(), dp(9).toInt(), dp(18).toInt(), dp(9).toInt())
+                        val vp = 9.dp.toPixels(context)
+                        val hp = 18.dp.toPixels(context)
+                        setPadding(hp, vp, hp, vp)
                         includeFontPadding = false
-                        height += context.sp(18f) + dp(18f)
+                        height += 18.sp.toFloatPixels(context) + 18.dp.toFloatPixels(context)
                     })
                 }
             }, ListPopupWindow.WRAP_CONTENT, ListPopupWindow.WRAP_CONTENT, true).apply {
                 val bg = ShapeDrawable()
-                val r = dp(18)
+                val r = 18.dp.toFloatPixels(context)
                 bg.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
                 bg.paint.color = context.resources.getColor(R.color.cardbg)
                 setBackgroundDrawable(bg)

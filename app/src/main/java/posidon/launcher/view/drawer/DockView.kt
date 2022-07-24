@@ -18,12 +18,14 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
+import androidx.core.graphics.luminance
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.sp
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.sp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
@@ -46,7 +48,7 @@ class DockView : LinearLayout {
 
     fun updateTheme(drawer: View) {
         layoutParams = (layoutParams as MarginLayoutParams).apply {
-            val m = dp(Settings["dock:margin_x", 16]).toInt()
+            val m = Settings["dock:margin_x", 16].dp.toPixels(context)
             leftMargin = m
             rightMargin = m
         }
@@ -61,7 +63,7 @@ class DockView : LinearLayout {
                 ))
             }
             2 -> {
-                val r = dp(Settings["dockradius", 30])
+                val r = Settings["dockradius", 30].dp.toFloatPixels(context)
                 drawer.background = ShapeDrawable().apply {
                     shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
                     paint.color = 0
@@ -74,7 +76,7 @@ class DockView : LinearLayout {
             else -> {
                 containerContainer.background = null
                 drawer.background = ShapeDrawable().apply {
-                    val tr = dp(Settings["dockradius", 30])
+                    val tr = Settings["dockradius", 30].dp.toFloatPixels(context)
                     shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
                     paint.color = bgColor
                 }
@@ -97,10 +99,10 @@ class DockView : LinearLayout {
             battery.indeterminateTintMode = PorterDuff.Mode.MULTIPLY
             battery.progressBackgroundTintList = ColorStateList.valueOf(color)
             battery.progressBackgroundTintMode = PorterDuff.Mode.MULTIPLY
-            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (Colors.getLuminance(color) > .6f) -0x23000000 else -0x11000001)
+            (battery.progressDrawable as LayerDrawable).getDrawable(3).setTint(if (color.luminance > .6f) -0x23000000 else -0x11000001)
         }
         searchBar.background = ShapeDrawable().apply {
-            val r = dp(Settings["dock:search:radius", 30])
+            val r = Settings["dock:search:radius", 30].dp.toFloatPixels(context)
             shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
             paint.color = Settings["docksearchcolor", -0x22000001]
         }
@@ -114,7 +116,7 @@ class DockView : LinearLayout {
 
     val searchIcon = ImageView(context).apply {
         run {
-            val p = dp(8).toInt()
+            val p = 8.dp.toPixels(context)
             setPadding(p, p, p, p)
         }
         setImageResource(R.drawable.ic_search)
@@ -128,7 +130,7 @@ class DockView : LinearLayout {
 
     val battery = ProgressBar(context, null, R.style.Widget_AppCompat_ProgressBar_Horizontal).apply {
         run {
-            val p = dp(10).toInt()
+            val p = 10.dp.toPixels(context)
             setPadding(p, p, p, p)
         }
         max = 100
@@ -143,10 +145,10 @@ class DockView : LinearLayout {
             SearchActivity.open(context)
         }
 
-        addView(searchIcon, LayoutParams(dp(56).toInt(), dp(48).toInt()))
-        addView(searchTxt, LayoutParams(0, dp(48).toInt(), 1f))
-        addView(battery, LayoutParams(dp(56).toInt(), dp(48).toInt()).apply {
-            marginEnd = dp(8).toInt()
+        addView(searchIcon, LayoutParams(56.dp.toPixels(context), 48.dp.toPixels(context)))
+        addView(searchTxt, LayoutParams(0, 48.dp.toPixels(context), 1f))
+        addView(battery, LayoutParams(56.dp.toPixels(context), 48.dp.toPixels(context)).apply {
+            marginEnd = 8.dp.toPixels(context)
         })
     }
 
@@ -155,17 +157,17 @@ class DockView : LinearLayout {
     val containerContainer = FrameLayout(context).apply {
         addView(container, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
             this.gravity = Gravity.CENTER_HORIZONTAL
-            topMargin = dp(8).toInt()
-            bottomMargin = dp(8).toInt()
+            topMargin = 8.dp.toPixels(context)
+            bottomMargin = 8.dp.toPixels(context)
         })
     }
 
     init {
         gravity = Gravity.CENTER_HORIZONTAL
         orientation = VERTICAL
-        addView(searchBar, LayoutParams(MATCH_PARENT, dp(48).toInt()).apply {
-            topMargin = dp(10).toInt()
-            bottomMargin = dp(10).toInt()
+        addView(searchBar, LayoutParams(MATCH_PARENT, 48.dp.toPixels(context)).apply {
+            topMargin = 10.dp.toPixels(context)
+            bottomMargin = 10.dp.toPixels(context)
         })
         addView(containerContainer, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
@@ -177,8 +179,8 @@ class DockView : LinearLayout {
 
     fun loadApps() {
         val columnCount = Settings["dock:columns", 5]
-        val marginX = dp(Settings["dock:margin_x", 16]).toInt()
-        val appSize = min(dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
+        val marginX = Settings["dock:margin_x", 16].dp.toPixels(context)
+        val appSize = min(Settings["dock:icons:size", 74].dp.toPixels(context), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
         val showLabels = Settings["dock:labels:enabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
@@ -250,28 +252,28 @@ class DockView : LinearLayout {
 
     fun updateDimensions(drawer: DrawerView, feed: View, desktopContent: View) {
         val columnCount = Settings["dock:columns", 5]
-        val marginX = dp(Settings["dock:margin_x", 16]).toInt()
-        val appSize = min(dp(Settings["dock:icons:size", 74]).toInt(), (Device.screenWidth(context) - marginX * 2) / columnCount)
+        val marginX = Settings["dock:margin_x", 16].dp.toPixels(context)
+        val appSize = min(Settings["dock:icons:size", 74].dp.toPixels(context), (Device.screenWidth(context) - marginX * 2) / columnCount)
         val rowCount = Settings["dock:rows", 1]
-        val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (sp(Settings["dock:labels:text_size", 12]) + dp(4)).toInt() else 0) * rowCount
+        val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (Settings["dock:labels:text_size", 12].sp.toFloatPixels(context) + 4.dp.toFloatPixels(context)).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
-            containerHeight + dp(84).toInt()
+            containerHeight + 84.dp.toPixels(context)
         } else {
-            containerHeight + dp(14).toInt()
+            containerHeight + 14.dp.toPixels(context)
         }
         val addition = drawer.scrollBar.updateTheme(drawer, feed, this)
         dockHeight += addition
         container.layoutParams.height = containerHeight
         setPadding(0, 0, 0, addition)
-        drawer.peekHeight = (dockHeight + Tools.navbarHeight + dp(Settings["dockbottompadding", 10])).toInt()
+        drawer.peekHeight = dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp.toPixels(context)
         drawer.drawerContent.layoutParams.height = Device.screenHeight(context) + Tools.navbarHeight
         if (Settings["feed:show_behind_dock", false]) {
-            desktopContent.setPadding(0, dp(12).toInt(), 0, (dockHeight + Tools.navbarHeight + dp(Settings["dockbottompadding", 10])).toInt())
+            desktopContent.setPadding(0, 12.dp.toPixels(context), 0, dockHeight + Tools.navbarHeight + Settings["dockbottompadding", 10].dp.toPixels(context))
         } else {
             (feed.layoutParams as MarginLayoutParams).run {
-                bottomMargin = dockHeight + Tools.navbarHeight + dp((Settings["dockbottompadding", 10] - 18)).toInt()
+                bottomMargin = dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toPixels(context)
             }
-            desktopContent.setPadding(0, dp(12).toInt(), 0, dp(24).toInt())
+            desktopContent.setPadding(0, 12.dp.toPixels(context), 0, 24.dp.toPixels(context))
         }
         run {
             val bg = drawer.background
@@ -289,7 +291,7 @@ class DockView : LinearLayout {
             var i = 0
             while (i < container.childCount) {
                 container.getChildAt(i).getLocationOnScreen(location)
-                val threshHold = min(container.getChildAt(i).height / 2.toFloat(), dp(100))
+                val threshHold = min(container.getChildAt(i).height / 2.toFloat(), 100.dp.toFloatPixels(context))
                 if (abs(location[0] - (event.x - container.getChildAt(i).height / 2f)) < threshHold && abs(location[1] - (event.y - container.getChildAt(i).height / 2f)) < threshHold) {
                     Dock.add(item, i)
                     loadApps()

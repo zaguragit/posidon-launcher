@@ -13,7 +13,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -28,7 +29,7 @@ class IconPackPicker : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.custom_icon_pack_picker)
+        setContentView(R.layout.icon_pack_picker)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) window.setDecorFitsSystemWindows(false)
         else window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         findViewById<View>(R.id.settings).setPadding(0, 0, 0, Tools.navbarHeight)
@@ -92,9 +93,9 @@ class IconPackPicker : AppCompatActivity() {
                 val li = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 convertView = li.inflate(R.layout.list_item, parent, false)!!
                 viewHolder = ViewHolder(convertView.findViewById(R.id.iconimg), convertView.findViewById(R.id.icontxt))
-                val appSize = parent.dp(72).toInt()
+                val appSize = 72.dp.toPixels(parent)
                 viewHolder.icon.layoutParams = FrameLayout.LayoutParams(appSize, appSize)
-                viewHolder.icon.setPadding(parent.dp(8).toInt())
+                viewHolder.icon.setPadding(8.dp.toPixels(parent))
                 convertView.tag = viewHolder
             } else viewHolder = convertView.tag as ViewHolder
             viewHolder.icon.setImageDrawable(pacsForAdapter[position].icon)

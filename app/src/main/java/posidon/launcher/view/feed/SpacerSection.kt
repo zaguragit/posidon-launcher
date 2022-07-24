@@ -2,8 +2,10 @@ package posidon.launcher.view.feed
 
 import android.app.Activity
 import android.view.MotionEvent
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
-import posidon.android.conveniencelib.dp
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.ResizableLayout
 
@@ -13,7 +15,7 @@ class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
 
     override fun onAdd(feed: Feed, index: Int) {
         this.i = index
-        layoutParams.height = context.dp(Feed.getSectionsFromSettings()[i].substringAfter(':').toInt()).toInt()
+        layoutParams.height = Feed.getSectionsFromSettings()[i].substringAfter(':').toInt().dp.toPixels(context)
         onResizeListener = object : OnResizeListener {
             override fun onCrossPress() = feed.remove(this@SpacerSection, i)
             override fun onMajorUpdate(newHeight: Int) {}
@@ -31,7 +33,7 @@ class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {
 
     override fun updateTheme(activity: Activity) {}
 
-    override fun toString() = "spacer:" + (layoutParams.height / context.dp(1f)).toInt()
+    override fun toString() = "spacer:" + (layoutParams.height / 1.dp.toFloatPixels(context)).toInt()
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         LiveWallpaper.tap(this, event.rawX.toInt(), event.rawY.toInt())

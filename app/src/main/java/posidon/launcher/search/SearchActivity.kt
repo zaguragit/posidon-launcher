@@ -26,12 +26,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import io.posidon.android.conveniencelib.hideKeyboard
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.sp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.hideKeyboard
-import posidon.android.conveniencelib.sp
 import posidon.android.loader.duckduckgo.DuckInstantAnswer
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.Global
@@ -81,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.search_layout)
         smartBox = findViewById(R.id.smartbox)
         answerBox = findViewById(R.id.instantAnswer)
-        topPaddingWhenSmartBoxIsShown = (dp(82) + sp(46)).toInt()
+        topPaddingWhenSmartBoxIsShown = (82.dp.toFloatPixels(this) + 46.sp.toFloatPixels(this)).toInt()
         searchTxt = findViewById(R.id.searchTxt)
         searchTxt.requestFocus()
         grid = findViewById(R.id.searchgrid)
@@ -113,7 +115,7 @@ class SearchActivity : AppCompatActivity() {
         }
         searchTxt.imeOptions = if (Settings["search:enter_is_go", false]) EditorInfo.IME_ACTION_GO else EditorInfo.IME_ACTION_DONE
         findViewById<View>(R.id.searchbar).background = ShapeDrawable().apply {
-            val tr = dp(Settings["searchradius", 0])
+            val tr = Settings["searchradius", 0].dp.toFloatPixels(this@SearchActivity)
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }
@@ -179,7 +181,7 @@ class SearchActivity : AppCompatActivity() {
 
     fun loadApps() {
         val iconConfig = IconConfig(
-            size = dp(65).toInt(),
+            size = 65.dp.toPixels(this),
             density = resources.configuration.densityDpi,
             packPackages = arrayOf(Settings["iconpack", "system"]),
         )

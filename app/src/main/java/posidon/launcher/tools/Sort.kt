@@ -2,7 +2,7 @@ package posidon.launcher.tools
 
 import android.graphics.Color
 import androidx.palette.graphics.Palette
-import posidon.android.conveniencelib.toBitmap
+import io.posidon.android.conveniencelib.drawable.toBitmap
 import posidon.launcher.items.LauncherItem
 
 object Sort {

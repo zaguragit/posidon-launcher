@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.Switch
@@ -37,10 +38,10 @@ class HeaderSwitchSettingView : HeaderSettingView {
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
         switch = Switch(context).apply {
-            val p = dp(12).toInt()
+            val p = 12.dp.toPixels(context)
             setPadding(p, p, p, p)
             layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT, Gravity.CENTER_VERTICAL or Gravity.END).apply {
-                marginEnd = dp(12).toInt()
+                marginEnd = 12.dp.toPixels(context)
             }
             setOnCheckedChangeListener { _, checked ->
                 Settings[key] = checked

@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.Spinner
@@ -45,13 +46,13 @@ class SpinnerSettingView : IntSettingView {
             setTextColor(context.resources.getColor(R.color.cardspinnertxt))
             gravity = Gravity.START or Gravity.CENTER_VERTICAL
 
-            val h = dp(8).toInt()
+            val h = 8.dp.toPixels(context)
             setPadding(h, 0, h, 0)
 
             setSelectionChangedListener {
                 Settings[key] = it.selectionI
             }
         }
-        addView(spinner, LayoutParams(WRAP_CONTENT, dp(60).toInt()))
+        addView(spinner, LayoutParams(WRAP_CONTENT, 60.dp.toPixels(context)))
     }
 }

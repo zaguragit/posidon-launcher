@@ -12,9 +12,11 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.graphics.luminance
 import androidx.recyclerview.widget.RecyclerView
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.feed.notifications.NotificationService
@@ -49,7 +51,7 @@ class NotificationCards : LinearLayout, FeedSection {
         textSize = 17f
         gravity = Gravity.CENTER_VERTICAL
         run {
-            val h = dp(8).toInt()
+            val h = 8.dp.toPixels(context)
             setPadding(h, 0, h, 0)
         }
     }
@@ -57,7 +59,7 @@ class NotificationCards : LinearLayout, FeedSection {
     private val parentNotificationBtn = ImageView(context).apply {
         setImageResource(R.drawable.ic_notification)
         run {
-            val p = dp(4).toInt()
+            val p = 4.dp.toPixels(context)
             setPaddingRelative(p, p, p, p)
         }
     }
@@ -66,13 +68,13 @@ class NotificationCards : LinearLayout, FeedSection {
 
         orientation = HORIZONTAL
         run {
-            val v = dp(12).toInt()
+            val v = 12.dp.toPixels(context)
             setPadding(v, v, v, v)
         }
 
-        addView(arrowUp, LayoutParams(MATCH_PARENT, dp(48).toInt()))
-        addView(parentNotificationTitle, LayoutParams(0, dp(48).toInt(), 1f))
-        addView(parentNotificationBtn, LayoutParams(dp(48).toInt(), dp(48).toInt()))
+        addView(arrowUp, LayoutParams(MATCH_PARENT, 48.dp.toPixels(context)))
+        addView(parentNotificationTitle, LayoutParams(0, 48.dp.toPixels(context), 1f))
+        addView(parentNotificationBtn, LayoutParams(48.dp.toPixels(context), 48.dp.toPixels(context)))
 
         setOnLongClickListener(Gestures::onLongPress)
         setOnClickListener {
@@ -83,7 +85,7 @@ class NotificationCards : LinearLayout, FeedSection {
 
     init {
         orientation = VERTICAL
-        addView(parentNotification, LayoutParams(MATCH_PARENT, dp(72).toInt()))
+        addView(parentNotification, LayoutParams(MATCH_PARENT, 72.dp.toPixels(context)))
         addView(notifications, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
     }
 
@@ -152,8 +154,8 @@ class NotificationCards : LinearLayout, FeedSection {
     }
 
     override fun updateTheme(activity: Activity) {
-        val marginX = dp(Settings["feed:card_margin_x", 16]).toInt()
-        val marginY = dp(Settings["feed:card_margin_y", 9]).toInt()
+        val marginX = Settings["feed:card_margin_x", 16].dp.toPixels(context)
+        val marginY = Settings["feed:card_margin_y", 9].dp.toPixels(context)
         (parentNotification.layoutParams as LayoutParams).apply {
             leftMargin = marginX
             rightMargin = marginX
@@ -162,12 +164,12 @@ class NotificationCards : LinearLayout, FeedSection {
         }
         parentNotification.layoutParams = parentNotification.layoutParams
         val notificationBackground = ShapeDrawable()
-        val r = dp(Settings["feed:card_radius", 15])
+        val r = Settings["feed:card_radius", 15].dp.toFloatPixels(context)
         notificationBackground.shape = RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null)
         notificationBackground.paint.color = Settings["notificationbgcolor", -0x1]
         parentNotification.background = notificationBackground
         parentNotificationTitle.setTextColor(Settings["notificationtitlecolor", -0xeeeded])
-        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Colors.getLuminance(Global.accentColor) > .6f) -0x1000000 else -0x1)
+        parentNotificationBtn.imageTintList = ColorStateList.valueOf(if (Global.accentColor.luminance > .6f) -0x1000000 else -0x1)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.imageTintList = ColorStateList.valueOf(Global.accentColor)
         parentNotificationBtn.backgroundTintList = ColorStateList.valueOf(Global.accentColor and 0x00ffffff or 0x33000000)

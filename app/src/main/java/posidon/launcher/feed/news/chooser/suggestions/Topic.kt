@@ -1,8 +1,8 @@
 package posidon.launcher.feed.news.chooser.suggestions
 
 import android.content.Context
+import io.posidon.android.conveniencelib.loadRaw
 import org.json.JSONArray
-import posidon.android.conveniencelib.loadRaw
 import posidon.android.loader.rss.RssSource
 
 class Topic (

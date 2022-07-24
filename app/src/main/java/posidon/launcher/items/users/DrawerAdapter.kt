@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -39,7 +40,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
                 convertView.findViewById(R.id.iconFrame),
                 convertView.findViewById(R.id.icontxt),
                 convertView.findViewById(R.id.notificationBadge))
-            val appSize = parent.dp(Settings["drawer:icons:size", 64]).toInt()
+            val appSize = Settings["drawer:icons:size", 64].dp.toPixels(parent.context)
             holder.iconFrame.layoutParams.height = appSize
             holder.iconFrame.layoutParams.width = appSize
             convertView.tag = holder
@@ -54,7 +55,7 @@ class DrawerAdapter : BaseAdapter(), SectionIndexer, HighlightAdapter {
             holder = convertView.tag as ViewHolder
             holder.text.text = app.label
         }
-        convertView!!.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable() else null
+        convertView!!.background = if (highlightI == i) HighlightAdapter.createHighlightDrawable(convertView.resources) else null
         holder.icon.setImageDrawable(app.icon)
         if (Settings["notif:badges", true] && app.notificationCount != 0) {
             val badge = holder.notificationBadge

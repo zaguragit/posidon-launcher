@@ -4,9 +4,10 @@ import android.app.Activity
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.onEnd
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.android.loader.rss.RssItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.view.feed.FeedSection
@@ -46,7 +47,7 @@ class NewsCards(c: Activity) : RecyclerView(c), FeedSection {
 
     override fun updateTheme(activity: Activity) {
         val restAtBottom = Settings["feed:rest_at_bottom", false]
-        val marginX = context.dp(Settings["feed:card_margin_x", 16]).toInt() / 2
+        val marginX = Settings["feed:card_margin_x", 16].dp.toPixels(context) / 2
         (layoutParams as LinearLayout.LayoutParams).setMargins(marginX, 0, marginX, 0)
         layoutManager = if (Settings["news:cards:is_staggered", false]) {
             StaggeredGridLayoutManager(2, VERTICAL).apply {

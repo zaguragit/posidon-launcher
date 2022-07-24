@@ -9,12 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.IconTheming
-import posidon.android.conveniencelib.Graphics
-import posidon.android.conveniencelib.dp
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -66,8 +70,8 @@ class CustomAppIcon : AppCompatActivity() {
                         (recycler.adapter as IconsAdapter).search(s.toString())
                     }
                 })
-                setPadding(dp(18).toInt(), 0, dp(18).toInt(), 0)
-                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, dp(64).toInt())
+                setPadding(18.dp.toPixels(context), 0, 18.dp.toPixels(context), 0)
+                layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, 64.dp.toPixels(context))
                 setBackgroundColor(0xdd111213.toInt())
                 visibility = View.GONE
                 searchBar = this
@@ -83,7 +87,7 @@ class CustomAppIcon : AppCompatActivity() {
         val pacslist = packageManager.queryIntentActivities(mainIntent, 0)
         for (i in pacslist.indices) {
             iconPacks.add(App(pacslist[i].activityInfo.packageName, pacslist[i].activityInfo.name, label = pacslist[i].loadLabel(packageManager).toString()))
-            iconPacks[i].icon = Graphics.tryAnimate(this, Icons.applyInsets(Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))))
+            iconPacks[i].icon = AnimUtils.tryAnimate(this, Icons.applyInsets(Icons.generateAdaptiveIcon(pacslist[i].loadIcon(packageManager))))
         }
 
         recycler.layoutManager = linearLayoutManager

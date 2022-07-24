@@ -4,10 +4,8 @@ import android.app.ActivityManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ShareCompat
 import posidon.launcher.BuildConfig
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -51,14 +49,5 @@ class StackTraceActivity : AppCompatActivity() {
         }.toString()
 
         findViewById<TextView>(R.id.stackTrace).text = str
-
-        findViewById<View>(R.id.send).setOnClickListener {
-            ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain")
-                .setText(str)
-                .setSubject("posidon launcher: crash log")
-                .addEmailTo("it@posidon.io")
-                .startChooser()
-        }
     }
 }

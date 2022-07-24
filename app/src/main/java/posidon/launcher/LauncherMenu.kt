@@ -11,9 +11,10 @@ import android.view.View
 import android.view.Window
 import android.view.animation.PathInterpolator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
 import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
@@ -34,9 +35,9 @@ object LauncherMenu {
             val scrollbarPosition = Settings["drawer:scrollbar:position", 1]
             val scrollbarWidth = if (Settings["drawer:scrollbar:enabled", false] && Settings["drawer:scrollbar:show_outside", false]) {
                 if (scrollbarPosition == 0) {
-                    -home.dp(Settings["drawer:scrollbar:width", 24])
+                    -Settings["drawer:scrollbar:width", 24].dp.toFloatPixels(home)
                 }
-                else home.dp(Settings["drawer:scrollbar:width", 24])
+                else Settings["drawer:scrollbar:width", 24].dp.toFloatPixels(home)
             } else 0f
             val page = homescreen.findViewById<View>(R.id.feed)
             val drawer = homescreen.findViewById<DrawerView>(R.id.drawer)
@@ -65,7 +66,7 @@ object LauncherMenu {
             page.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth / 2f)
-            }.scaleX(0.99f).scaleY(0.99f).translationY(-home.dp(96)).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 200L
+            }.scaleX(0.99f).scaleY(0.99f).translationY(-96.dp.toFloatPixels(home)).setInterpolator(PathInterpolator(0.245f, 1.275f, 0.405f, 1.005f)).duration = 200L
             drawer.scrollBar.animate().apply {
                 if (scrollbarPosition != 2)
                     translationX(scrollbarWidth)

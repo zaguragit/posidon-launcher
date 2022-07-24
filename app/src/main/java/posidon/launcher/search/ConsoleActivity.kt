@@ -13,8 +13,9 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.hideKeyboard
+import io.posidon.android.conveniencelib.hideKeyboard
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
@@ -27,7 +28,7 @@ class ConsoleActivity : AppCompatActivity() {
         TextView(this).apply {
             textSize = 12f
             setTextColor(0xffffffff.toInt())
-            setPadding(dp(20).toInt(), 0, dp(20).toInt(), 0)
+            setPadding(20.dp.toPixels(context), 0, 20.dp.toPixels(context), 0)
         }
     }
     private val input by lazy {
@@ -38,7 +39,7 @@ class ConsoleActivity : AppCompatActivity() {
             maxLines = 1
             background = null
             setTextColor(0xffffffff.toInt())
-            setPadding(dp(20).toInt(), 0, dp(20).toInt(), dp(12).toInt())
+            setPadding(20.dp.toPixels(context), 0, 20.dp.toPixels(context), 12.dp.toPixels(context))
         }
     }
     private val linearLayout by lazy {
@@ -52,7 +53,7 @@ class ConsoleActivity : AppCompatActivity() {
         NestedScrollView(this).apply {
             addView(linearLayout)
             isVerticalFadingEdgeEnabled = true
-            setFadingEdgeLength(dp(64).toInt())
+            setFadingEdgeLength(64.dp.toPixels(context))
             descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
         }
     }

@@ -15,17 +15,19 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.*
 import android.widget.GridView.STRETCH_COLUMN_WIDTH
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.drawable.FastBitmapDrawable
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.drawable.FastBitmapDrawable
-import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -73,17 +75,17 @@ class DrawerView : FrameLayout {
             drawerGrid.verticalSpacing = 0
         } else {
             drawerGrid.numColumns = Settings["drawer:columns", 5]
-            drawerGrid.verticalSpacing = dp(Settings["verticalspacing", 12]).toInt()
+            drawerGrid.verticalSpacing = Settings["verticalspacing", 12].dp.toPixels(context)
         }
         val searchBarEnabled = Settings["drawersearchbarenabled", true]
         run {
-            val searchBarHeight = if (searchBarEnabled) dp(56).toInt() else 0
+            val searchBarHeight = if (searchBarEnabled) 56.dp.toPixels(context) else 0
             val scrollbarWidth = if (
                 Settings["drawer:scrollbar:enabled", false] && // isEnabled
                 Settings["drawer:scrollbar:position", 1] == 2 // isHorizontal
-            ) dp(Settings["drawer:scrollbar:width", 24]).toInt() else 0
+            ) Settings["drawer:scrollbar:width", 24].dp.toPixels(context) else 0
             searchBarVBox.setPadding(0, 0, 0, Tools.navbarHeight + if (Settings["drawer:scrollbar:show_outside", false]) scrollbarWidth else 0)
-            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + searchBarHeight + scrollbarWidth + dp(12).toInt())
+            drawerGrid.setPadding(0, context.getStatusBarHeight(), 0, Tools.navbarHeight + searchBarHeight + scrollbarWidth + 12.dp.toPixels(context))
         }
         if (!searchBarEnabled) {
             searchBar.isVisible = false
@@ -93,7 +95,7 @@ class DrawerView : FrameLayout {
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         searchIcon.imageTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(Settings["searchhintcolor", -0x1]))
         searchBarVBox.background = ShapeDrawable().apply {
-            val tr = dp(Settings["searchradius", 0])
+            val tr = Settings["searchradius", 0].dp.toFloatPixels(context)
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }
@@ -107,7 +109,7 @@ class DrawerView : FrameLayout {
 
     fun loadApps() {
         val iconConfig = IconConfig(
-            size = dp(65).toInt(),
+            size = 65.dp.toPixels(context),
             density = resources.configuration.densityDpi,
             packPackages = arrayOf(Settings["iconpack", "system"]),
         )
@@ -196,7 +198,7 @@ class DrawerView : FrameLayout {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
                             home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(context), Device.screenHeight(context)))
                         }
-                        floats[0] = context.dp(Settings["dockradius", 30])
+                        floats[0] = Settings["dockradius", 30].dp.toFloatPixels(context)
                         drawerContent.isInvisible = true
                         dock.isInvisible = false
                     }
@@ -240,21 +242,23 @@ class DrawerView : FrameLayout {
                                 val r = things[3].toFloat() * slideOffset + floats[0] * inverseOffset
                                 radii.fill(r, 0, 4)
                                 bg as ShapeDrawable
-                                bg.paint.color = Colors.blend(colors[0], things[1], slideOffset)
+                                bg.paint.color = ColorUtils.blendARGB(colors[1], things[0], slideOffset)
                                 bg.shape = RoundRectShape(radii, null, null)
                             }
                             1 -> {
-                                val topColorFill = slideOffset
-                                val r = things[3].toFloat() * topColorFill
+                                val r = things[3].toFloat() * slideOffset
                                 radii.fill(r, 0, 4)
                                 bg as LayerDrawable
-                                val midColor = Colors.blend(colors[0], things[1], slideOffset)
+                                val midColor =
+                                    ColorUtils.blendARGB(colors[1], things[0], slideOffset)
                                 (bg.getDrawable(0) as GradientDrawable).also {
-                                    val topColor = midColor and 0x00ffffff or ((0xff * topColorFill).toInt() shl 24)
+                                    val topColor =
+                                        midColor and 0x00ffffff or ((0xff * slideOffset).toInt() shl 24)
                                     it.cornerRadii = radii
                                     it.colors = intArrayOf(topColor, midColor)
                                 }
-                                (bg.getDrawable(1) as GradientDrawable).colors = intArrayOf(midColor, colors[0])
+                                (bg.getDrawable(1) as GradientDrawable).colors =
+                                    intArrayOf(midColor, colors[0])
                             }
                             2 -> {
                                 val r = things[3].toFloat() * slideOffset + floats[0] * inverseOffset
@@ -277,7 +281,7 @@ class DrawerView : FrameLayout {
                     val scrollbarPosition = Settings["drawer:scrollbar:position", 1]
                     if (scrollbarPosition == 2) scrollBar.translationY = scrollBar.height.toFloat() * -slideOffset
                     if (!Settings["feed:show_behind_dock", false]) {
-                        (home.feed.layoutParams as MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + context.dp((Settings["dockbottompadding", 10] - 18)))).toInt()
+                        (home.feed.layoutParams as MarginLayoutParams).bottomMargin = ((1 + slideOffset) * (dock.dockHeight + Tools.navbarHeight + (Settings["dockbottompadding", 10] - 18).dp.toPixels(context))).toInt()
                         home.feed.requestLayout()
                     }
                 }
@@ -311,7 +315,7 @@ class DrawerView : FrameLayout {
         selector = NonDrawable()
         isVerticalScrollBarEnabled = false
         isVerticalFadingEdgeEnabled = true
-        setFadingEdgeLength(context.dp(72).toInt())
+        setFadingEdgeLength(72.dp.toPixels(context))
         clipToPadding = false
         alpha = 0f
         setOnTouchListener { _, event ->
@@ -323,7 +327,7 @@ class DrawerView : FrameLayout {
 
     val searchIcon = ImageView(context).apply {
         run {
-            val p = context.dp(12).toInt()
+            val p = 12.dp.toPixels(context)
             setPadding(p, p, p, p)
         }
         setImageResource(R.drawable.ic_search)
@@ -332,7 +336,7 @@ class DrawerView : FrameLayout {
 
     val searchTxt = TextView(context).apply {
         run {
-            val p = context.dp(12).toInt()
+            val p = 12.dp.toPixels(context)
             setPadding(p, p, p, p)
         }
         gravity = Gravity.CENTER_VERTICAL
@@ -345,12 +349,12 @@ class DrawerView : FrameLayout {
         setOnClickListener {
             SearchActivity.open(context)
         }
-        val height = context.dp(56).toInt()
+        val height = 56.dp.toPixels(context)
         addView(searchIcon, LayoutParams(height, height).apply {
-            marginStart = context.dp(8).toInt()
+            marginStart = 8.dp.toPixels(context)
         })
         addView(searchTxt, LayoutParams(MATCH_PARENT, height).apply {
-            marginStart = -context.dp(16).toInt()
+            marginStart = -16.dp.toPixels(context)
         })
     }
 

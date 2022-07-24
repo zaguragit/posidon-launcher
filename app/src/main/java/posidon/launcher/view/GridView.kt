@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.widget.GridView
-import posidon.android.conveniencelib.SpringInterpolator
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.AnimUtils
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 
 class GridView : GridView {
 
@@ -13,12 +14,12 @@ class GridView : GridView {
     constructor(context: Context, attr: AttributeSet) : super(context, attr)
     constructor(context: Context, attr: AttributeSet, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 
-    private var maxOverScroll = context.dp(48)
+    private var maxOverScroll = 48.dp.toFloatPixels(context)
     private var startTime = System.currentTimeMillis()
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        maxOverScroll = context.dp(48)
+        maxOverScroll = 48.dp.toFloatPixels(context)
     }
 
     override fun overScrollBy(deltaX: Int, deltaY: Int, scrollX: Int, scrollY: Int, scrollRangeX: Int, scrollRangeY: Int, mx: Int, my: Int, isTouchEvent: Boolean): Boolean {
@@ -30,7 +31,7 @@ class GridView : GridView {
                 startTime = System.currentTimeMillis()
             } else {
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
-                val interpolation: Float = SpringInterpolator.springInterpolate(elapsedTime.toFloat() / 800f)
+                val interpolation: Float = AnimUtils.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
             }
         } else if (futureScroll < 0) {
@@ -39,7 +40,7 @@ class GridView : GridView {
                 startTime = System.currentTimeMillis()
             } else {
                 val elapsedTime: Long = System.currentTimeMillis() - startTime
-                val interpolation: Float = SpringInterpolator.springInterpolate(elapsedTime.toFloat() / 800f)
+                val interpolation: Float = AnimUtils.springInterpolate(elapsedTime.toFloat() / 800f)
                 deltaY = (deltaY / 2 * interpolation).toInt()
             }
         } else {

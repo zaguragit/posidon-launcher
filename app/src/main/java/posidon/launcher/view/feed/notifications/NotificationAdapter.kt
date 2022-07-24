@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.luminance
 import androidx.recyclerview.widget.RecyclerView
-import posidon.android.conveniencelib.Colors
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
@@ -34,8 +36,8 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): NotificationViewHolder {
         val context = parent.context
         val view = RelativeLayout(context)
-        val hMargin = parent.dp(Settings["feed:card_margin_x", 16]).toInt()
-        val vMargin = parent.dp(Settings["feed:card_margin_y", 9]).toInt()
+        val hMargin = Settings["feed:card_margin_x", 16].dp.toPixels(parent)
+        val vMargin = Settings["feed:card_margin_y", 9].dp.toPixels(parent)
         view.setPadding(hMargin, vMargin, hMargin, vMargin)
 
         val ll = LinearLayout(context).apply {
@@ -45,12 +47,12 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
 
         val card = SwipeableLayout(ll).apply {
             val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-            setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
+            setIconColor(if (bg.luminance > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
             setSwipeColor(bg)
             preventCornerOverlap = true
             elevation = 0f
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            radius = dp(Settings["feed:card_radius", 15])
+            radius = Settings["feed:card_radius", 15].dp.toFloatPixels(context)
         }
         view.addView(card)
 
@@ -102,7 +104,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
                 }.apply {
                     setBackgroundColor(Settings["notificationbgcolor", -0x1])
                     findViewById<TextView>(R.id.txt).maxLines = Settings["notif:text:max_lines", 3]
-                    val padding = dp(8).toInt()
+                    val padding = 8.dp.toPixels(context)
                     when {
                         notificationI == 0 || (notificationI == 1 && group[0].isSummary) -> {
                             if (notificationI == group.lastIndex) {
@@ -128,7 +130,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
                     NotificationService.update()
                 }.apply {
                     val bg = Settings["notif:card_swipe_bg_color", 0x880d0e0f.toInt()]
-                    setIconColor(if (Colors.getLuminance(bg) > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
+                    setIconColor(if (bg.luminance > .6f) 0xff000000.toInt() else 0xffffffff.toInt())
                     setSwipeColor(bg)
                 }
                 if (notification.actions != null && Settings["notificationActionsEnabled", false]) {
@@ -138,16 +140,16 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
                         a.text = action.title
                         a.textSize = 14f
                         a.setTextColor(Settings["notificationActionTextColor", -0xdad9d9])
-                        val r = context.dp(Settings["notif:actions:radius", 24])
+                        val r = Settings["notif:actions:radius", 24].dp.toFloatPixels(context)
                         val bg = ShapeDrawable(RoundRectShape(floatArrayOf(r, r, r, r, r, r, r, r), null, null))
                         bg.paint.color = Settings["notificationActionBGColor", 0x88e0e0e0.toInt()]
                         a.background = bg
-                        val vPadding = context.dp(10).toInt()
-                        val hPadding = context.dp(15).toInt()
+                        val vPadding = 10.dp.toPixels(context)
+                        val hPadding = 15.dp.toPixels(context)
                         a.setPadding(hPadding, vPadding, hPadding, vPadding)
                         v1.findViewById<LinearLayout>(R.id.action_list).addView(a)
-                        (a.layoutParams as LinearLayout.LayoutParams).leftMargin = context.dp(6).toInt()
-                        (a.layoutParams as LinearLayout.LayoutParams).rightMargin = context.dp(6).toInt()
+                        (a.layoutParams as LinearLayout.LayoutParams).leftMargin = 6.dp.toPixels(context)
+                        (a.layoutParams as LinearLayout.LayoutParams).rightMargin = 6.dp.toPixels(context)
                         a.setOnClickListener {
                             try {
                                 val oldInputs = action.remoteInputs

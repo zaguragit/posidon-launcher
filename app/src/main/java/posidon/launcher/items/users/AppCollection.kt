@@ -11,8 +11,6 @@ import posidon.launcher.items.App
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class AppCollection(val size: Int) : SimpleAppCollection() {
@@ -48,11 +46,9 @@ class AppCollection(val size: Int) : SimpleAppCollection() {
         extra: AppLoader.ExtraAppInfo<Nothing?>
     ) {
         val lk = "$packageName/$name?label"
-        val label = Settings[lk, label].let {
-            if (it.isEmpty()) {
-                Settings[lk] = null
-                label
-            } else it
+        val label = Settings[lk, label].ifEmpty {
+            Settings[lk] = null
+            label
         }
 
         val app = App(packageName, name, profile, label).apply {

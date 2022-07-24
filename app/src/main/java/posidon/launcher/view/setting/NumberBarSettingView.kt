@@ -6,8 +6,10 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.sp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.sp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.storage.Settings
@@ -61,10 +63,10 @@ class NumberBarSettingView : IntSettingView {
 
     override fun populateIcon() {
         textIcon = FontFitTextView(context).apply {
-            layoutParams = LayoutParams(dp(48).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
+            layoutParams = LayoutParams(48.dp.toPixels(context), ViewGroup.LayoutParams.MATCH_PARENT)
             gravity = Gravity.CENTER
-            defaultTextSize = sp(28f)
-            val p = dp(8).toInt()
+            defaultTextSize = 28.sp.toFloatPixels(context)
+            val p = 8.dp.toPixels(context)
             setPadding(p, 0, p, 0)
             setTextColor(Global.getPastelAccent())
             typeface = resources.getFont(R.font.rubik_medium_caps)
@@ -73,7 +75,7 @@ class NumberBarSettingView : IntSettingView {
     }
 
     override fun populate(attrs: AttributeSet?, defStyle: Int, defStyleRes: Int) {
-        labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(60).toInt())
+        labelView.layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 60.dp.toPixels(context))
         seekBar = Seekbar(context)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(s: SeekBar) {}
