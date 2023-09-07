@@ -2,8 +2,8 @@ package posidon.launcher
 
 import android.graphics.Color
 import androidx.core.graphics.ColorUtils
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.items.App
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.tools.Tools
 import kotlin.math.max
 import kotlin.math.min

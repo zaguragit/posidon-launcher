@@ -25,7 +25,7 @@ class CustomDock : AppCompatActivity() {
                 numberSeekBar(
                     labelId = R.string.settings_rows,
                     key = "dock:rows",
-                    default = 1,
+                    default = 2,
                     max = 5,
                     startsWith1 = true,
                 )
@@ -42,20 +42,20 @@ class CustomDock : AppCompatActivity() {
                     labelId = R.string.background,
                     iconId = R.drawable.ic_color,
                     key = "dock:background_color",
-                    default = 0xbe080808.toInt(),
+                    default = 0xff242424.toInt(),
                 )
                 spinner(
                     labelId = R.string.background_type,
                     iconId = R.drawable.ic_shapes,
                     key = "dock:background_type",
-                    default = 1,
+                    default = 0,
                     array = R.array.bgModes
                 )
                 numberSeekBar(
                     labelId = R.string.radius,
                     key = "dock:radius",
-                    default = 30,
-                    max = 50,
+                    default = 0,
+                    max = 40,
                 )
                 numberSeekBar(
                     labelId = R.string.bottom_padding,

@@ -5,12 +5,7 @@ Minimal: There are constant improvements and optimizations in the ux, to make al
 Feature-rich:
 - Dock supports up to 7 columns and 3 rows of icons
 - News & Notifications feed
-- Vector and animated iconpack support
 - App search
-- Wallpaper gallery (all wallpapers are exclusive)
-- 6 Font options
-- Blur behind app drawer
-- A lot more
 
 Different: This launcher doesn't have pages, it has a scrollable feed. It's UI was inspired by One UI & elementary OS.
 

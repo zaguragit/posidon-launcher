@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.customizations.FakeLauncherActivity
-import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.feed.news.chooser.FeedChooser
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
@@ -72,7 +71,7 @@ class Tutorial : AppCompatActivity() {
             putNotSave("init", false)
             apply()
         }
-        if (!Tools.isDefaultLauncher) chooseLauncher()
+        if (!Tools.isDefaultLauncher(v.context.packageManager)) chooseLauncher()
         startActivity(Intent(this, Home::class.java))
         finish()
     }
@@ -83,7 +82,6 @@ class Tutorial : AppCompatActivity() {
     }
 
     fun chooseFeeds(v: View) { startActivity(Intent(this, FeedChooser::class.java)) }
-    fun iconPackSelector(v: View) { startActivity(Intent(this, IconPackPicker::class.java)) }
 
     private fun chooseLauncher() {
         val packageManager: PackageManager = packageManager

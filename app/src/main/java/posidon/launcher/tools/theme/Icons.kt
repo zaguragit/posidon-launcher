@@ -30,71 +30,19 @@ object Icons {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun generateAdaptiveIcon(drawable: Drawable, iconShape: IconShape = IconShape(Settings["icshape", 4])): Drawable {
-        var containsAnimatable = drawable is Animatable
-        val d: Drawable = if (drawable is AdaptiveIconDrawable || Settings["reshapeicons", false]) {
-            val layerDrawable = if (drawable is AdaptiveIconDrawable) {
-                val drr = arrayOf(drawable.background ?: NonDrawable(), drawable.foreground ?: NonDrawable())
-                if (drr[0] is Animatable || drr[1] is Animatable) {
-                    containsAnimatable = true
-                }
-                if (Settings["icon:tint_white_bg", true]) {
-                    val bg = drr[0]
-                    if ((bg is ColorDrawable && bg.color == 0xffffffff.toInt()) ||
-                            (Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).apply {
-                                val tmp = bg.bounds
-                                bg.bounds = Rect(0, 0, 1, 1)
-                                bg.draw(Canvas(this))
-                                bg.bounds = tmp
-                            }.getPixel(0, 0) and 0xffffff).let {
-                                it.red > 0xdd &&
-                                it.green > 0xdd &&
-                                it.blue > 0xdd
-                            }) {
-                        val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                        drr[0] = when (Settings["icon:background_type", "custom"]) {
-                            "dominant" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDominantColor(bgColor))
-                            "lv" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightVibrantColor(bgColor))
-                            "dv" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkVibrantColor(bgColor))
-                            "lm" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getLightMutedColor(bgColor))
-                            "dm" -> FastColorDrawable(Palette.from(drr[1].toBitmap()).generate().getDarkMutedColor(bgColor))
-                            else -> FastColorDrawable(bgColor)
-                        }
-                    }
-                }
-                val tmp = LayerDrawable(drr)
-                val w = tmp.intrinsicWidth
-                val h = tmp.intrinsicHeight
-                tmp.setLayerInset(0, -w / 6, -h / 6, -w / 6, -h / 6)
-                tmp.setLayerInset(1, -w / 6, -h / 6, -w / 6, -h / 6)
-                tmp
-            } else {
-                val w = drawable.intrinsicWidth
-                val h = drawable.intrinsicHeight
-                val bgColor = Settings["icon:background", 0xff252627.toInt()]
-                val tmp = LayerDrawable(arrayOf(when (Settings["icon:background_type", "custom"]) {
-                    "dominant" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDominantColor(bgColor))
-                    "lv" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightVibrantColor(bgColor))
-                    "dv" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkVibrantColor(bgColor))
-                    "lm" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getLightMutedColor(bgColor))
-                    "dm" -> FastColorDrawable(Palette.from(drawable.toBitmap()).generate().getDarkMutedColor(bgColor))
-                    else -> FastColorDrawable(bgColor)
-                }, drawable))
-                tmp.setLayerInset(1, w / 4, h / 4, w / 4, h / 4)
-                tmp
-            }
-            val width = layerDrawable.intrinsicWidth
-            val height = layerDrawable.intrinsicHeight
-            layerDrawable.setBounds(0, 0, width, height)
-
-            if (iconShape.isSquare) {
-                layerDrawable
-            } else {
-                MaskedDrawable(layerDrawable, iconShape.getPath(width, height))
-            }
-        } else drawable
-        return if (containsAnimatable) d else {
-            BitmapDrawable(Tools.appContext!!.resources, d.toBitmap())
+        if (drawable is AdaptiveIconDrawable) {
+            val tmp = LayerDrawable(arrayOf(drawable.background ?: NonDrawable(), drawable.foreground ?: NonDrawable()))
+            val w = tmp.intrinsicWidth
+            val h = tmp.intrinsicHeight
+            tmp.setLayerInset(0, -w / 6, -h / 6, -w / 6, -h / 6)
+            tmp.setLayerInset(1, -w / 6, -h / 6, -w / 6, -h / 6)
+            val width = tmp.intrinsicWidth
+            val height = tmp.intrinsicHeight
+            tmp.setBounds(0, 0, width, height)
+            return if (iconShape.isSquare) tmp
+                else BitmapDrawable(Tools.appContext!!.resources, MaskedDrawable(tmp, iconShape.getPath(width, height)).toBitmap())
         }
+        return drawable
     }
 
     fun applyInsets(icon: Drawable): Drawable {

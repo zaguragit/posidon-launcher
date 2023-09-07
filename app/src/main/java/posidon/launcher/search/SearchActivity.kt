@@ -31,9 +31,6 @@ import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.sp
 import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.conveniencelib.units.toPixels
-import io.posidon.android.launcherutils.appLoading.AppLoader
-import io.posidon.android.launcherutils.appLoading.IconConfig
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.android.loader.duckduckgo.DuckInstantAnswer
 import posidon.android.loader.text.TextLoader
 import posidon.launcher.Global
@@ -44,10 +41,12 @@ import posidon.launcher.items.App
 import posidon.launcher.items.ContactItem
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.items.users.AppCallback
-import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.parsing.Parser
 import posidon.launcher.storage.Settings
+import posidon.launcher.external.kustom.Kustom
+import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.IconConfig
 import posidon.launcher.tools.Sort
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.searchOptimize
@@ -75,8 +74,6 @@ class SearchActivity : AppCompatActivity() {
     private val daxResultIcon by lazy {
         Icons.applyInsets(Icons.generateAdaptiveIcon(getDrawable(R.drawable.dax)!!))
     }
-
-    val appLoader = AppLoader(::AppCollection)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,12 +116,7 @@ class SearchActivity : AppCompatActivity() {
             shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
             paint.color = Settings["searchcolor", 0x33000000]
         }
-        if (Tools.canBlurSearch) {
-            val arr = arrayOf(BitmapDrawable(Wallpaper.blurredWall(Settings["search:blur:radius", 15].toFloat())), FastColorDrawable(Settings["searchUiBg", -0x78000000]))
-            window.setBackgroundDrawable(LayerDrawable(arr))
-        } else {
-            window.setBackgroundDrawable(FastColorDrawable(Settings["searchUiBg", -0x78000000]))
-        }
+        window.setBackgroundDrawable(FastColorDrawable(Settings["searchUiBg", -0x78000000]))
         searchTxt.setTextColor(Settings["searchtxtcolor", -0x1])
         searchTxt.setHintTextColor(Settings["searchhintcolor", -0x1])
         searchTxt.hint = Settings["searchhinttxt", getString(R.string.searchbarhint)]
@@ -180,17 +172,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun loadApps() {
-        val iconConfig = IconConfig(
-            size = 65.dp.toPixels(this),
-            density = resources.configuration.densityDpi,
-            packPackages = arrayOf(Settings["iconpack", "system"]),
-        )
-        appLoader.async(applicationContext, iconConfig) {
-            App.onFinishLoad(it.list, it.sections, it.hidden, it.byName)
+        AppLoader(applicationContext) {
             Home.instance.runOnUiThread {
                 onAppLoaderEnd()
             }
-        }
+        }.execute()
     }
 
     private fun search(string: String) {

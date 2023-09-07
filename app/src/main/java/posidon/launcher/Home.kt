@@ -16,15 +16,10 @@ import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import io.posidon.android.conveniencelib.AnimUtils
 import io.posidon.android.conveniencelib.Device
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
-import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
-import io.posidon.android.launcherutils.system.GestureNavContract
 import posidon.launcher.feed.notifications.NotificationService
 import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
@@ -33,12 +28,14 @@ import posidon.launcher.items.users.AppCallback
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
-import posidon.launcher.tools.Dock
+import posidon.launcher.external.GestureNavContract
 import posidon.launcher.tools.Gestures
+import posidon.launcher.external.kustom.Kustom
+import posidon.launcher.tools.LiveWallpaper
 import posidon.launcher.tools.StackTraceActivity
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.Tools.updateNavbarHeight
-import posidon.launcher.tutorial.WelcomeActivity
+import posidon.launcher.tutorial.Tutorial
 import posidon.launcher.view.ResizableLayout
 import posidon.launcher.view.drawer.DrawerView
 import posidon.launcher.view.feed.Feed
@@ -49,7 +46,7 @@ import kotlin.system.exitProcess
 class Home : AppCompatActivity() {
 
     val drawer by lazy { findViewById<DrawerView>(R.id.drawer)!! }
-    val dock by lazy { drawer.dock }
+    val dock get() = drawer.dock
 
     val feed by lazy { findViewById<Feed>(R.id.feed)!! }
 
@@ -78,7 +75,7 @@ class Home : AppCompatActivity() {
         Tools.appContextReference = WeakReference(applicationContext)
         Settings.init(applicationContext)
         if (Settings["init", true]) {
-            startActivity(Intent(this, WelcomeActivity::class.java))
+            startActivity(Intent(this, Tutorial::class.java))
             finish()
             exitProcess(0)
         }
@@ -142,8 +139,6 @@ class Home : AppCompatActivity() {
                 SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        findViewById<ImageView>(R.id.blur).setImageDrawable(drawer.blurBg)
 
         window.decorView.setOnDragListener { _, event ->
             when (event.action) {
@@ -242,26 +237,14 @@ class Home : AppCompatActivity() {
         if (!Settings["search:asHome", false]) {
             val tmp = Tools.navbarHeight
             updateNavbarHeight(this)
-            drawer.tryBlur()
             if (Global.customized || tmp != Tools.navbarHeight) {
                 setCustomizations()
-            } else animateAllIconsIfShould()
+            }
             if (Settings["news:load_on_resume", true]) {
                 feed.loadNews()
             }
             if (feed.notifications != null || Settings["notif:badges", true]) {
                 NotificationService.onUpdate()
-            }
-        } else animateAllIconsIfShould()
-    }
-
-    private fun animateAllIconsIfShould() {
-        if (!powerManager.isPowerSaveMode && Settings["animatedicons", true]) {
-            for (app in Global.apps) {
-                AnimUtils.tryAnimate(this, app.icon!!)
-            }
-            for (item in Dock) {
-                item?.let { AnimUtils.tryAnimate(this, it.icon!!) }
             }
         }
     }

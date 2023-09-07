@@ -11,6 +11,8 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.UserHandle
+import android.os.UserManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +29,6 @@ import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.conveniencelib.vibrate
-import io.posidon.android.launcherutils.Launcher
 import posidon.launcher.Global
 import posidon.launcher.R
 import posidon.launcher.items.App
@@ -52,9 +53,6 @@ object Tools {
     var appContextReference = WeakReference<Context>(null)
     inline val appContext get() = appContextReference.get()
 
-    inline val canBlurDrawer get() = Settings["drawer:blur:enabled", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    inline val canBlurSearch get() = Settings["search:blur", true] && ContextCompat.checkSelfPermission(appContext!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
 	var navbarHeight = 0
 
 	fun updateNavbarHeight(activity: Activity) {
@@ -65,8 +63,11 @@ object Tools {
         navbarHeight = activity.getNavigationBarHeight()
     }
 
-    inline val isDefaultLauncher: Boolean get() {
-        return Launcher.getDefaultLauncher(appContext!!.packageManager) == "posidon.launcher"
+    fun isDefaultLauncher(packageManager: PackageManager): Boolean {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        val defLauncher = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)?.resolvePackageName
+        return defLauncher == "posidon.launcher"
     }
 
     fun searchOptimize(s: String) = s.lowercase(Locale.getDefault())
@@ -396,3 +397,6 @@ fun fastBlur(bitmap: Bitmap, radius: Int): Bitmap {
     bitmap.setPixels(pix, 0, w, 0, 0, w, h)
     return Bitmap.createScaledBitmap(bitmap, initWidth, initHeight, true)
 }
+
+fun Context.isUserRunning(profile: UserHandle): Boolean =
+    getSystemService(UserManager::class.java).isUserRunning(profile)

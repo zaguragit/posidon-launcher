@@ -83,7 +83,7 @@ class Feed : FrameLayout {
     }
 
     private val scaleGestureDetector = ScaleGestureDetector(context, Gestures.PinchListener)
-    private fun onScrollTouch(v: View?, event: MotionEvent?) = if (hasWindowFocus()) {
+    private fun onScrollTouch(v: View?, event: MotionEvent) = if (hasWindowFocus()) {
         scaleGestureDetector.onTouchEvent(event)
         false
     } else true

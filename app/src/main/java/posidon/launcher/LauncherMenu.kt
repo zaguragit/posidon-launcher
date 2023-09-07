@@ -14,10 +14,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.customizations.settingScreens.Customizations
 import posidon.launcher.feed.order.FeedOrderActivity
 import posidon.launcher.storage.Settings
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.tools.open
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.drawer.DrawerView

@@ -1,29 +1,21 @@
 package posidon.launcher.customizations.settingScreens
 
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.TextViewCompat
 import io.posidon.android.conveniencelib.drawable.MaskedDrawable
 import io.posidon.android.conveniencelib.drawable.toBitmap
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import posidon.launcher.Global
 import posidon.launcher.R
-import posidon.launcher.customizations.IconPackPicker
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.theme.Icons
-import posidon.launcher.view.Spinner
 import posidon.launcher.view.setting.*
-
 
 class CustomTheme : AppCompatActivity() {
 
@@ -48,84 +40,6 @@ class CustomTheme : AppCompatActivity() {
             }
 
             card {
-                title(R.string.settings_title_icons)
-
-                custom {
-                    layoutInflater.inflate(R.layout.custom_icon_pack_selector, viewGroup, false).apply {
-                        val pm = packageManager
-                        findViewById<TextView>(R.id.iconpack_selector).run {
-                            try {
-                                text = pm.getApplicationLabel(pm.getApplicationInfo(
-                                    Settings["iconpack", "system"],
-                                    0
-                                ))
-                            } catch (e: PackageManager.NameNotFoundException) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                }
-
-                switch(
-                    R.string.animated,
-                    R.drawable.ic_play,
-                    "animatedicons",
-                    default = true,
-                )
-                switch(
-                    R.string.generate_adaptive_icons,
-                    R.drawable.ic_shapes,
-                    "reshapeicons",
-                    default = false,
-                )
-
-                custom {
-                    layoutInflater.inflate(R.layout.custom_background_tint_selector, viewGroup, false).apply {
-                        TextViewCompat.setCompoundDrawableTintList(
-                            findViewById(R.id.background_type_label),
-                            ColorStateList.valueOf(Global.getPastelAccent())
-                        )
-                        findViewById<Spinner>(R.id.iconBackgrounds).run {
-                            data = resources.getStringArray(R.array.iconBackgrounds)
-                            selectionI = when (Settings["icon:background_type", "custom"]) {
-                                "dominant" -> 0
-                                "lv" -> 1
-                                "dv" -> 2
-                                "lm" -> 3
-                                "dm" -> 4
-                                else -> 5
-                            }
-                            setSelectionChangedListener {
-                                Settings["icon:background_type"] =
-                                    when (findViewById<Spinner>(R.id.iconBackgrounds).selectionI) {
-                                        0 -> "dominant"
-                                        1 -> "lv"
-                                        2 -> "dv"
-                                        3 -> "lm"
-                                        4 -> "dm"
-                                        else -> "custom"
-                                    }
-                                Global.shouldSetApps = true
-                            }
-                        }
-                    }
-                }
-
-                color(
-                    R.string.background,
-                    R.drawable.ic_color,
-                    "icon:background",
-                    0xff252627.toInt(),
-                )
-                switch(
-                    R.string.recolor_white_bgs,
-                    R.drawable.ic_color_dropper,
-                    "icon:tint_white_bg",
-                    default = true,
-                )
-            }
-
-            card {
                 title(R.string.icon_shape)
                 custom {
                     layoutInflater.inflate(R.layout.custom_icon_shapes, viewGroup, false)
@@ -143,24 +57,6 @@ class CustomTheme : AppCompatActivity() {
         }
         icShapeViews[Settings["icshape", 4]].setBackgroundResource(R.drawable.selection)
         Global.shouldSetApps = true
-    }
-
-    fun iconPackSelector(v: View) = startActivity(Intent(this, IconPackPicker::class.java))
-
-    override fun onResume() {
-        super.onResume()
-        val pm = packageManager
-        val i = findViewById<TextView>(R.id.iconpack_selector)
-        val t = findViewById<TextView>(R.id.iconpack_title)
-        try {
-            val a = pm.getApplicationInfo(Settings["iconpack", "system"], 0)
-            i.text = pm.getApplicationLabel(a)
-            val icon = a.loadIcon(pm)
-            val s = 32.dp.toPixels(this)
-            icon.setBounds(0, 0, s, s)
-            t.setCompoundDrawablesRelative(icon, null, null, null)
-        }
-        catch (e: PackageManager.NameNotFoundException) { e.printStackTrace() }
     }
 
     fun icshapedef(v: View) {

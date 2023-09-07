@@ -41,17 +41,6 @@
                             android:text="@string/feed_sources"
                             android:onClick="chooseFeeds"/>
                     </LinearLayout>
-                    <LinearLayout
-                        style="@style/settingsEntry"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/settingsbtn"
-                            android:onClick="iconPackSelector"
-                            android:layout_width="match_parent"
-                            android:drawableStart="@drawable/ic_image"
-                            android:text="@string/icon_pack" />
-                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

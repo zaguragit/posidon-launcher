@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN"/>
+        </intent>
+    </queries>
+
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -9,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
@@ -54,29 +61,6 @@
             </intent-filter>
             <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
         </activity>
-
-        <activity
-            android:name=".desktop.DesktopMode"
-            android:label="posidon desktop"
-            android:clearTaskOnLaunch="true"
-            android:configChanges="mcc|mnc|uiMode|keyboardHidden|screenSize|orientation"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize"
-            android:allowEmbedded="false"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.SECONDARY_HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".desktop.AppList"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop"/>
 
         <activity
             android:name=".feed.order.FeedOrderActivity"
@@ -194,10 +178,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".customizations.IconPackPicker"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:theme="@style/settings" />
-        <activity
             android:name=".customizations.settingScreens.CustomHiddenApps"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings" />
@@ -254,7 +234,6 @@
             android:name=".tutorial.Tutorial"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/tutorial" />
-        <activity android:name=".tutorial.WelcomeActivity" android:theme="@style/welcome" />
         <activity android:name=".search.HiddenAppsActivity" android:theme="@style/hiddenApps" />
         <activity
             android:name=".customizations.FakeLauncherActivity"
@@ -287,7 +266,6 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:theme="@style/settings"/>
 
-        <activity android:name=".items.users.customAppIcon.CustomAppIcon" android:configChanges="keyboardHidden|screenSize|orientation" />
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>

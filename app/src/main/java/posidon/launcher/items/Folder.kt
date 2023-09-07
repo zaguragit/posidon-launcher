@@ -15,15 +15,14 @@ import io.posidon.android.conveniencelib.drawable.toBitmap
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.conveniencelib.units.toPixels
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.FastColorDrawable
 import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.users.ItemLongPress
-import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Customizer
 import posidon.launcher.tools.theme.Icons
@@ -326,11 +325,6 @@ class Folder : LauncherItem {
         val editWindow = PopupWindow(editContent, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, androidx.appcompat.widget.ListPopupWindow.WRAP_CONTENT, true)
         val editLabel = editContent.findViewById<EditText>(R.id.editlabel)
         editContent.findViewById<ImageView>(R.id.iconimg).setImageDrawable(this@Folder.icon)
-        editContent.findViewById<ImageView>(R.id.iconimg).setOnClickListener {
-            val intent = Intent(context, CustomAppIcon::class.java)
-            intent.putExtra("key", "folder:${uid}:icon")
-            context.startActivity(intent)
-        }
         editLabel.setText(label)
         editWindow.setOnDismissListener {
             label = editLabel.text.toString()

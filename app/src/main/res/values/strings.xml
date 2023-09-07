@@ -30,7 +30,7 @@
     <string name="slogan">Minimal, feature-rich, different.</string>
     <string name="settingshidestatus">Hide statusbar</string>
     <string name="spacing">Spacing</string>
-    <string name="permission_storage_description">Grant storage access for things like accessing the wallpaper for the blur in the app drawer</string>
+    <string name="permission_storage_description">Grant storage access for things</string>
     <string name="storage_access">Storage access</string>
     <string name="notification_access">Notification access</string>
     <string name="permission_notifications_description">Grant notification access to have your notifications displayed on your homescreen</string>

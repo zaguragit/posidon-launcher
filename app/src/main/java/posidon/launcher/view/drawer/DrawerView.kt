@@ -25,22 +25,21 @@ import io.posidon.android.conveniencelib.getStatusBarHeight
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.conveniencelib.units.toPixels
-import io.posidon.android.launcherutils.appLoading.AppLoader
-import io.posidon.android.launcherutils.appLoading.IconConfig
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
 import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.App
 import posidon.launcher.items.Folder
-import posidon.launcher.items.users.AppCollection
 import posidon.launcher.items.users.DrawerAdapter
 import posidon.launcher.items.users.ItemLongPress
 import posidon.launcher.items.users.SectionedDrawerAdapter
 import posidon.launcher.search.SearchActivity
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
+import posidon.launcher.external.kustom.Kustom
+import posidon.launcher.items.users.AppLoader
+import posidon.launcher.items.users.IconConfig
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.theme.Wallpaper
 import posidon.launcher.view.GridView
@@ -54,15 +53,6 @@ import kotlin.math.roundToInt
 class DrawerView : FrameLayout {
 
     val scrollBar by lazy { AlphabetScrollbarWrapper(drawerGrid, AlphabetScrollbar.VERTICAL) }
-
-    val blurBg = LayerDrawable(arrayOf<Drawable>(
-        NonDrawable(),
-        NonDrawable(),
-        NonDrawable(),
-        NonDrawable(),
-    ))
-
-    val appLoader = AppLoader(::AppCollection)
 
     fun updateTheme(feed: Feed) {
         dock.updateTheme(this)
@@ -108,17 +98,11 @@ class DrawerView : FrameLayout {
     }
 
     fun loadApps() {
-        val iconConfig = IconConfig(
-            size = 65.dp.toPixels(context),
-            density = resources.configuration.densityDpi,
-            packPackages = arrayOf(Settings["iconpack", "system"]),
-        )
-        appLoader.async(context.applicationContext, iconConfig) {
-            App.onFinishLoad(it.list, it.sections, it.hidden, it.byName)
+        AppLoader(context.applicationContext) {
             Home.instance.runOnUiThread {
                 onAppLoaderEnd()
             }
-        }
+        }.execute()
     }
 
     fun onAppLoaderEnd() {
@@ -157,22 +141,6 @@ class DrawerView : FrameLayout {
         }
     }
 
-    fun tryBlur() {
-        if (Tools.canBlurDrawer) {
-            val shouldHide = behavior.state == BottomSheetBehavior.STATE_COLLAPSED || behavior.state == BottomSheetBehavior.STATE_HIDDEN
-            thread(isDaemon = true) {
-                val blurLayers = Settings["drawer:blur:layers", 1]
-                val radius = Settings["drawer:blur:radius", 15].toFloat()
-                for (i in 0 until blurLayers) {
-                    val bmp = Wallpaper.blurredWall(radius / blurLayers * (i + 1))
-                    val bd = FastBitmapDrawable(bmp)
-                    if (shouldHide) bd.alpha = 0
-                    blurBg.setDrawable(i, bd)
-                }
-            }
-        }
-    }
-
     inline fun init(home: Home) {
         behavior = BottomSheetBehavior.from(this).apply {
             isHideable = false
@@ -198,7 +166,7 @@ class DrawerView : FrameLayout {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings["gesture:back", ""] == "") {
                             home.window.decorView.findViewById<View>(android.R.id.content).systemGestureExclusionRects = listOf(Rect(0, 0, Device.screenWidth(context), Device.screenHeight(context)))
                         }
-                        floats[0] = Settings["dockradius", 30].dp.toFloatPixels(context)
+                        floats[0] = Settings["dock:radius", 0].dp.toFloatPixels(context)
                         drawerContent.isInvisible = true
                         dock.isInvisible = false
                     }
@@ -218,14 +186,13 @@ class DrawerView : FrameLayout {
                     }
                 }
                 ItemLongPress.currentPopup?.dismiss()
-                things[0] = if (Tools.canBlurDrawer) Settings["drawer:blur:layers", 1] else 0
-                things[1] = Settings["dock:background_color", 0xbe080808.toInt()]
-                things[2] = Settings["dock:background_type", 1]
+                things[1] = Settings["dock:background_color", 0xff242424.toInt()]
+                things[2] = Settings["dock:background_type", 0]
                 things[3] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) min(
                     rootWindowInsets.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)?.radius ?: 0,
                     rootWindowInsets.getRoundedCorner(RoundedCorner.POSITION_TOP_RIGHT)?.radius ?: 0,
                 ) else 0
-                colors[0] = Settings["drawer:background_color", 0xbe080808.toInt()]
+                colors[0] = Settings["drawer:background_color", 0xa4171717.toInt()]
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -242,7 +209,7 @@ class DrawerView : FrameLayout {
                                 val r = things[3].toFloat() * slideOffset + floats[0] * inverseOffset
                                 radii.fill(r, 0, 4)
                                 bg as ShapeDrawable
-                                bg.paint.color = ColorUtils.blendARGB(colors[1], things[0], slideOffset)
+                                bg.paint.color = ColorUtils.blendARGB(colors[1], 0, slideOffset)
                                 bg.shape = RoundRectShape(radii, null, null)
                             }
                             1 -> {
@@ -250,7 +217,7 @@ class DrawerView : FrameLayout {
                                 radii.fill(r, 0, 4)
                                 bg as LayerDrawable
                                 val midColor =
-                                    ColorUtils.blendARGB(colors[1], things[0], slideOffset)
+                                    ColorUtils.blendARGB(colors[1], 0, slideOffset)
                                 (bg.getDrawable(0) as GradientDrawable).also {
                                     val topColor =
                                         midColor and 0x00ffffff or ((0xff * slideOffset).toInt() shl 24)
@@ -266,13 +233,6 @@ class DrawerView : FrameLayout {
                                 bg as ShapeDrawable
                                 bg.paint.color = colors[0] and 0xffffff or (((colors[0] ushr 24).toFloat() * slideOffset).toInt() shl 24)
                                 bg.shape = RoundRectShape(radii, null, null)
-                            }
-                        }
-                        val blurLayers = things[0]
-                        if (blurLayers != 0) {
-                            val repetitive = (slideOffset * 255).roundToInt() * blurLayers
-                            for (i in 0 until blurLayers) {
-                                blurBg.getDrawable(i).alpha = max(min(repetitive - (i shl 8) + i, 255), 0)
                             }
                         }
                     } catch (e: Exception) { e.printStackTrace() }

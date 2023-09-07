@@ -3,7 +3,6 @@ package posidon.launcher.tools
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import com.pixplicity.sharp.Sharp
 import io.posidon.android.conveniencelib.drawable.toBitmap
 import java.io.IOException
 import java.net.URL
@@ -24,9 +23,7 @@ object ImageLoader {
         var img: Bitmap? = null
         try {
             val tmp = URL(url).openConnection().getInputStream().use {
-                if (url.endsWith(".svg"))
-                    Sharp.loadInputStream(it).drawable.toBitmap()
-                else BitmapFactory.decodeStream(it) ?: return@thread
+                BitmapFactory.decodeStream(it) ?: return@thread
             }
             when {
                 w == AUTO && h == AUTO -> img = tmp
@@ -57,26 +54,5 @@ object ImageLoader {
         if (it != null) {
             onFinished(it)
         }
-    }
-
-    fun loadNullableSvg(
-        url: String,
-        onFinished: (img: Drawable?) -> Unit
-    ) = thread {
-        val img: Drawable? = try {
-            URL(url).openConnection().getInputStream().use {
-                Sharp.loadInputStream(it).drawable
-            }
-        }
-        catch (e: IOException) { null }
-        catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-        catch (e: OutOfMemoryError) {
-            System.gc()
-            null
-        }
-        onFinished(img)
     }
 }

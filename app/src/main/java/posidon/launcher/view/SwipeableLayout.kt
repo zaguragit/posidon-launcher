@@ -55,10 +55,10 @@ class SwipeableLayout(
     }
 
     private val onAnimEndListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {}
-        override fun onAnimationCancel(animation: Animator?) {}
-        override fun onAnimationStart(animation: Animator?) {}
-        override fun onAnimationEnd(animation: Animator?) { onSwipeAway?.invoke() }
+        override fun onAnimationRepeat(animation: Animator) {}
+        override fun onAnimationCancel(animation: Animator) {}
+        override fun onAnimationStart(animation: Animator) {}
+        override fun onAnimationEnd(animation: Animator) { onSwipeAway?.invoke() }
     }
 
     private var initX = 0f

@@ -5,8 +5,8 @@ import android.view.MotionEvent
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.conveniencelib.units.toPixels
-import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import posidon.launcher.storage.Settings
+import posidon.launcher.tools.LiveWallpaper
 import posidon.launcher.view.ResizableLayout
 
 class SpacerSection(context: Activity) : ResizableLayout(context), FeedSection {

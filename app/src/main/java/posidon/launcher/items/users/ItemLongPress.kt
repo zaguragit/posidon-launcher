@@ -16,7 +16,6 @@ import androidx.core.graphics.luminance
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
-import io.posidon.android.launcherutils.liveWallpaper.Kustom
 import posidon.launcher.R
 import posidon.launcher.drawable.NonDrawable
 import posidon.launcher.items.App
@@ -24,6 +23,7 @@ import posidon.launcher.items.Folder
 import posidon.launcher.items.LauncherItem
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Dock
+import posidon.launcher.external.kustom.Kustom
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.vibrate
 import posidon.launcher.view.recycler.LinearLayoutManager
@@ -41,8 +41,8 @@ object ItemLongPress {
             Kustom[context, "posidon", "screen"] = "popup"
         }
 
-        val color = item.getColor()
-        val txtColor = if (color.luminance > .6f) -0xeeeded else -0x1
+        val color = Settings["drawer:background_color", 0xa4171717.toInt()]
+        val txtColor = Settings["drawer:labels:color", 0x70ffffff]
 
         val content = if (item is App && item.getShortcuts(context)!!.isNotEmpty()) {
             val shortcuts = item.getShortcuts(context)
@@ -142,13 +142,7 @@ object ItemLongPress {
             val realItem = if (folderI != -1 && item is Folder) item.items[folderI] else item
 
             val popupWindow = makePopupWindow(context, realItem, onEdit, onRemove, if (realItem is App) ({
-                val color = item.getColor()
-                val hsv = FloatArray(3)
-                Color.colorToHSV(color, hsv)
-                if (hsv[2] > 0.5f) {
-                    hsv[2] = 0.5f
-                }
-                realItem.showProperties(context, Color.HSVToColor(hsv))
+                realItem.showProperties(context)
             }) else null, removeFunction)
 
             if (!Settings["locked", false]) {

@@ -140,15 +140,6 @@ class CustomSearch : AppCompatActivity() {
                     default = true,
                 )
             }
-            card {
-                switchTitle(R.string.blur, "search:blur", true)
-                numberSeekBar(
-                    labelId = R.string.radius,
-                    key = "search:blur:radius",
-                    default = 15,
-                    max = 25,
-                )
-            }
         }
         TextViewCompat.setCompoundDrawableTintList(findViewById(R.id.hint_label), ColorStateList.valueOf(Global.getPastelAccent()))
         findViewById<TextView>(R.id.hinttxt).text = Settings["searchhinttxt", getString(R.string.searchbarhint)]

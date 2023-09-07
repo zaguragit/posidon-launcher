@@ -8,12 +8,6 @@
     tools:context=".Home"
     android:id="@+id/homeView">
 
-    <ImageView
-        android:id="@+id/blur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
-
     <posidon.launcher.view.feed.Feed
         android:id="@+id/feed"
         android:layout_width="match_parent"

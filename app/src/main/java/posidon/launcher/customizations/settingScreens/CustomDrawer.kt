@@ -20,7 +20,7 @@ class CustomDrawer : AppCompatActivity() {
                     labelId = R.string.background,
                     iconId = R.drawable.ic_color,
                     key = "drawer:background_color",
-                    default = 0xbe080808.toInt(),
+                    default = 0xa4171717.toInt(),
                 )
                 numberSeekBar(
                     labelId = R.string.columns,
@@ -117,26 +117,6 @@ class CustomDrawer : AppCompatActivity() {
                     key = "drawer:scrollbar:position",
                     default = 1,
                     array = R.array.scrollBarPosition,
-                )
-            }
-            card {
-                switchTitle(
-                    labelId = R.string.blur,
-                    key = "drawer:blur:enabled",
-                    default = true,
-                )
-                numberSeekBar(
-                    labelId = R.string.radius,
-                    key = "drawer:blur:radius",
-                    default = 15,
-                    max = 25,
-                )
-                numberSeekBar(
-                    labelId = R.string.blur_layers,
-                    key = "drawer:blur:layers",
-                    default = 1,
-                    max = 4,
-                    startsWith1 = true,
                 )
             }
             card {

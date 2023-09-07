@@ -18,14 +18,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import posidon.launcher.Global
 import posidon.launcher.Home
 import posidon.launcher.R
-import posidon.launcher.items.users.customAppIcon.CustomAppIcon
 import posidon.launcher.storage.Settings
 import posidon.launcher.tools.Tools
 import posidon.launcher.tools.open
@@ -39,20 +37,6 @@ class App(
 ) : LauncherItem() {
 
     override var icon: Drawable? = null
-        set(value) {
-            field = value
-            val palette = Palette.from(icon!!.toBitmap(32, 32)).generate()
-            val newHSL = palette.dominantSwatch?.hsl
-            if (newHSL == null || newHSL[1] < 0.2f) {
-                palette.vibrantSwatch?.hsl
-            }
-            hsl = newHSL ?: run {
-                val d = -0xdad9d9
-                FloatArray(3).also {
-                    ColorUtils.colorToHSL(d, it)
-                }
-            }
-        }
 
     override var notificationCount = 0
 
@@ -79,29 +63,17 @@ class App(
         } catch (e: Exception) { emptyList() }
     }
 
-    fun showProperties(context: Context, appcolor: Int) {
+    fun showProperties(context: Context) {
         val d = BottomSheetDialog(context, R.style.bottomsheet)
         d.setContentView(R.layout.app_properties)
         val g = context.getDrawable(R.drawable.bottom_sheet) as GradientDrawable
-        g.setColor(appcolor)
+        g.setColor(Settings["drawer:background_color", 0xa4171717.toInt()])
         d.window!!.findViewById<View>(R.id.design_bottom_sheet).background = g
         val appName = d.findViewById<EditText>(R.id.appname)!!.apply {
             setText(label)
         }
-        d.findViewById<View>(R.id.iconFrame)!!.run {
-            findViewById<ImageView>(R.id.iconimg)!!.run {
-                setImageBitmap(icon!!.toBitmap())
-            }
-            Palette.from(icon!!.toBitmap()).generate {
-                if (it != null)
-                    findViewById<View>(R.id.edit)!!.backgroundTintList = ColorStateList.valueOf(it.getDarkVibrantColor(it.getDarkMutedColor(0xff0ee463.toInt())))
-            }
-            setOnClickListener {
-                val intent = Intent(context, CustomAppIcon::class.java)
-                intent.putExtra("key", "app:${this@App}:icon")
-                context.startActivity(intent)
-                d.dismiss()
-            }
+        d.findViewById<ImageView>(R.id.iconimg)!!.run {
+            setImageBitmap(icon!!.toBitmap())
         }
         try {
             d.findViewById<TextView>(R.id.version)!!.text = context.packageManager.getPackageInfo(packageName, 0).versionName
@@ -129,12 +101,6 @@ class App(
             Home.instance.dock.loadApps()
         }
         d.show()
-    }
-
-    var hsl = FloatArray(3)
-        private set
-    override fun getColor(): Int {
-        return ColorUtils.HSLToColor(hsl)
     }
 
     override fun toString() = "$packageName/$name/${userHandle.hashCode()}"

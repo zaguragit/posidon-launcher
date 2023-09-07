@@ -102,7 +102,7 @@ class ContactItem private constructor(
                         val pic = if (iconUri == null) Icons.generateContactPicture(name, tmpLAB, textP) ?: NonDrawable() else try {
                             val inputStream = Tools.appContext!!.contentResolver.openInputStream(iconUri)
                             Drawable.createFromStream(inputStream, iconUri.toString())
-                        } catch (e: FileNotFoundException) { Icons.generateContactPicture(name, tmpLAB, textP) ?: NonDrawable() }
+                        } catch (e: FileNotFoundException) { Icons.generateContactPicture(name, tmpLAB, textP) } ?: NonDrawable()
                         pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
 
                         val icon = Icons.applyInsets(MaskedDrawable(

@@ -46,24 +46,10 @@
         android:layout_height="128dp"
         android:orientation="horizontal"
         android:layout_marginBottom="10dp">
-        <FrameLayout
-            android:id="@+id/iconFrame"
+        <ImageView
+            android:id="@+id/iconimg"
             android:layout_width="128dp"
-            android:layout_height="128dp">
-            <ImageView
-                android:id="@+id/iconimg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-            <ImageView
-                android:id="@+id/edit"
-                android:background="@drawable/button_bg_round"
-                android:backgroundTint="#0ee463"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:padding="6dp"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/ic_edit"/>
-        </FrameLayout>
+            android:layout_height="128dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="128dp"

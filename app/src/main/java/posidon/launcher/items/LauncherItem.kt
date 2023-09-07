@@ -10,11 +10,6 @@ abstract class LauncherItem {
     abstract val label: String?
 
     /**
-     * Color used for item long-press menus and similar stuff
-     */
-    open fun getColor(): Int = -0xdad9d9
-
-    /**
      * What to do when the item is clicked
      *
      * [view]       The view that was clicked

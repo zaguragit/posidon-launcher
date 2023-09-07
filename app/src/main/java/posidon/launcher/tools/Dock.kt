@@ -54,7 +54,7 @@ object Dock {
     inline operator fun iterator() = object : Iterator<LauncherItem?> {
 
         var i = 0
-        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 1]
+        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 2]
 
         override fun hasNext() = i < iconCount
         override fun next() = get(i++)
@@ -63,7 +63,7 @@ object Dock {
     inline fun indexed() = object : Iterator<Pair<LauncherItem?, Int>> {
 
         var i = 0
-        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 1]
+        val iconCount = Settings["dock:columns", 5] * Settings["dock:rows", 2]
 
         override fun hasNext() = i < iconCount
         override fun next() = get(i) to i++

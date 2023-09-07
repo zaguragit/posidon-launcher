@@ -52,18 +52,18 @@ class DockView : LinearLayout {
             leftMargin = m
             rightMargin = m
         }
-        val bgColor = Settings["dock:background_color", 0xbe080808.toInt()]
-        when (Settings["dock:background_type", 1]) {
+        val bgColor = Settings["dock:background_color", 0xff242424.toInt()]
+        when (Settings["dock:background_type", 0]) {
             1 -> {
                 containerContainer.background = null
                 drawer.background = LayerDrawable(arrayOf(
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor and 0x00ffffff, bgColor)),
                     GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(bgColor,
-                        Settings["drawer:background_color", 0xbe080808.toInt()]))
+                        Settings["drawer:background_color", 0xa4171717.toInt()]))
                 ))
             }
             2 -> {
-                val r = Settings["dockradius", 30].dp.toFloatPixels(context)
+                val r = Settings["dock:radius", 0].dp.toFloatPixels(context)
                 drawer.background = ShapeDrawable().apply {
                     shape = RoundRectShape(floatArrayOf(r, r, r, r, 0f, 0f, 0f, 0f), null, null)
                     paint.color = 0
@@ -76,7 +76,7 @@ class DockView : LinearLayout {
             else -> {
                 containerContainer.background = null
                 drawer.background = ShapeDrawable().apply {
-                    val tr = Settings["dockradius", 30].dp.toFloatPixels(context)
+                    val tr = Settings["dock:radius", 0].dp.toFloatPixels(context)
                     shape = RoundRectShape(floatArrayOf(tr, tr, tr, tr, 0f, 0f, 0f, 0f), null, null)
                     paint.color = bgColor
                 }
@@ -181,7 +181,7 @@ class DockView : LinearLayout {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Settings["dock:margin_x", 16].dp.toPixels(context)
         val appSize = min(Settings["dock:icons:size", 74].dp.toPixels(context), (Device.screenWidth(context) - marginX * 2) / columnCount)
-        val rowCount = Settings["dock:rows", 1]
+        val rowCount = Settings["dock:rows", 2]
         val showLabels = Settings["dock:labels:enabled", false]
         val notifBadgesEnabled = Settings["notif:badges", true]
         val notifBadgesShowNum = Settings["notif:badges:show_num", true]
@@ -254,7 +254,7 @@ class DockView : LinearLayout {
         val columnCount = Settings["dock:columns", 5]
         val marginX = Settings["dock:margin_x", 16].dp.toPixels(context)
         val appSize = min(Settings["dock:icons:size", 74].dp.toPixels(context), (Device.screenWidth(context) - marginX * 2) / columnCount)
-        val rowCount = Settings["dock:rows", 1]
+        val rowCount = Settings["dock:rows", 2]
         val containerHeight = (appSize + if (Settings["dock:labels:enabled", false]) (Settings["dock:labels:text_size", 12].sp.toFloatPixels(context) + 4.dp.toFloatPixels(context)).toInt() else 0) * rowCount
         dockHeight = if (Settings["docksearchbarenabled", false] && !Device.isTablet(resources)) {
             containerHeight + 84.dp.toPixels(context)
@@ -277,7 +277,7 @@ class DockView : LinearLayout {
         }
         run {
             val bg = drawer.background
-            if (Settings["dock:background_type", 1] == 1 && bg is LayerDrawable) {
+            if (Settings["dock:background_type", 0] == 1 && bg is LayerDrawable) {
                 bg.setLayerInset(0, 0, 0, 0, (Device.screenHeight(context) + Tools.navbarHeight) - drawer.peekHeight)
                 bg.setLayerInset(1, 0, drawer.peekHeight, 0, 0)
             }
