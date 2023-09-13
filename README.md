@@ -26,3 +26,6 @@ Please read the [contribution guidlines](CONTRIBUTIONS.md)
 You can either contribute to this repo, or to one of it's libraries:
  - [android.loader](https://github.com/lposidon/android.loader)
  - [android.convenienceLib](https://github.com/lposidon/android.convenienceLib)
+
+### Forks
+ - [Ceramic Launcher](https://github.com/zaguragit/CeramicLauncher)
